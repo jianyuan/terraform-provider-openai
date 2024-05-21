@@ -3,12 +3,12 @@
 page_title: "openai_organizations Data Source - terraform-provider-openai"
 subcategory: ""
 description: |-
-  List all organizations
+  List all organizations.
 ---
 
 # openai_organizations (Data Source)
 
-List all organizations
+List all organizations.
 
 ## Example Usage
 

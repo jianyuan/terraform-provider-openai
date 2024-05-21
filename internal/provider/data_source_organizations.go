@@ -11,19 +11,16 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
-// Ensure provider defined types fully satisfy framework interfaces.
-var _ datasource.DataSource = &OrganizationsDataSource{}
+var _ datasource.DataSource = &OrganizationDataSource{}
 
-func NewOrganizationsDataSource() datasource.DataSource {
-	return &OrganizationsDataSource{}
+func NewOrganizationDataSource() datasource.DataSource {
+	return &OrganizationDataSource{}
 }
 
-// OrganizationsDataSource defines the data source implementation.
-type OrganizationsDataSource struct {
+type OrganizationDataSource struct {
 	baseDataSource
 }
 
-// OrganizationDataSourceModel describes the data source data model.
 type OrganizationDataSourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
@@ -39,60 +36,37 @@ func (m *OrganizationDataSourceModel) Fill(organization apiclient.Organization) 
 	return nil
 }
 
-// OrganizationsDataSourceModel describes the data source data model.
-type OrganizationsDataSourceModel struct {
-	Organizations []OrganizationDataSourceModel `tfsdk:"organizations"`
+func (d *OrganizationDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_organization"
 }
 
-func (m *OrganizationsDataSourceModel) Fill(organizations []apiclient.Organization) error {
-	m.Organizations = make([]OrganizationDataSourceModel, len(organizations))
-	for i, organization := range organizations {
-		if err := m.Organizations[i].Fill(organization); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (d *OrganizationsDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_organizations"
-}
-
-func (d *OrganizationsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *OrganizationDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "List all organizations",
+		MarkdownDescription: "Retrieve information about an organization.",
 
 		Attributes: map[string]schema.Attribute{
-			"organizations": schema.SetNestedAttribute{
-				MarkdownDescription: "List of organizations.",
+			"id": schema.StringAttribute{
+				MarkdownDescription: "The unique identifier for the organization. If omitted, the default organization is used.",
+				Optional:            true,
+			},
+			"name": schema.StringAttribute{
+				MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							MarkdownDescription: "Organization ID used in API requests.",
-							Computed:            true,
-						},
-						"name": schema.StringAttribute{
-							MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
-							Computed:            true,
-						},
-						"is_default": schema.BoolAttribute{
-							MarkdownDescription: "Whether this organization is the default organization for the user.",
-							Computed:            true,
-						},
-						"description": schema.StringAttribute{
-							MarkdownDescription: "Description of the organization.",
-							Computed:            true,
-						},
-					},
-				},
+			},
+			"is_default": schema.BoolAttribute{
+				MarkdownDescription: "Whether this organization is the default organization for the user.",
+				Computed:            true,
+			},
+			"description": schema.StringAttribute{
+				MarkdownDescription: "Description of the organization.",
+				Computed:            true,
 			},
 		},
 	}
 }
 
-func (d *OrganizationsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data OrganizationsDataSourceModel
+func (d *OrganizationDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data OrganizationDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
@@ -100,18 +74,49 @@ func (d *OrganizationsDataSource) Read(ctx context.Context, req datasource.ReadR
 		return
 	}
 
-	httpResp, err := d.client.GetOrganizationsWithResponse(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+	var org *apiclient.Organization
+
+	if data.Id.IsNull() {
+		// If the ID is not provided, use the default organization.
+		httpResp, err := d.client.GetOrganizationsWithResponse(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+			return
+		}
+
+		if httpResp.StatusCode() != http.StatusOK {
+			resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+
+		for _, organization := range *httpResp.JSON200.Data {
+			if organization.IsDefault {
+				org = &organization //nolint:exportloopref
+				break
+			}
+		}
+	} else {
+		// If the ID is provided, use the specified organization.
+		httpResp, err := d.client.GetOrganizationWithResponse(ctx, data.Id.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+			return
+		}
+
+		if httpResp.StatusCode() != http.StatusOK {
+			resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+
+		org = httpResp.JSON200
+	}
+
+	if org == nil {
+		resp.Diagnostics.AddError("API Error", "Organization not found")
 		return
 	}
 
-	if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if err := data.Fill(*httpResp.JSON200.Data); err != nil {
+	if err := data.Fill(*org); err != nil {
 		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
 		return
 	}
