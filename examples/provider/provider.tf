@@ -1,3 +1,3 @@
-provider "scaffolding" {
+provider "openai" {
   # example configuration here
 }

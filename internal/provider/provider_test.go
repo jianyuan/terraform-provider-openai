@@ -1,6 +1,3 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
-
 package provider
 
 import (
@@ -15,7 +12,7 @@ import (
 // CLI command executed to create a provider server to which the CLI can
 // reattach.
 var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"scaffolding": providerserver.NewProtocol6WithError(New("test")()),
+	"openai": providerserver.NewProtocol6WithError(New("test")()),
 }
 
 func testAccPreCheck(t *testing.T) {
