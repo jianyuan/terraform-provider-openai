@@ -2,7 +2,7 @@ package provider
 
 import (
 	"context"
-	"net/http"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"golang.org/x/oauth2"
 )
 
 // Ensure OpenAIProvider satisfies various provider interfaces.
@@ -26,7 +28,8 @@ type OpenAIProvider struct {
 
 // OpenAIProviderModel describes the provider data model.
 type OpenAIProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	BaseUrl types.String `tfsdk:"base_url"`
+	ApiKey  types.String `tfsdk:"api_key"`
 }
 
 func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -37,9 +40,14 @@ func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequ
 func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+			"base_url": schema.StringAttribute{
+				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com/v1`.",
 				Optional:            true,
+			},
+			"api_key": schema.StringAttribute{
+				MarkdownDescription: "API key for the OpenAI API.",
+				Optional:            true,
+				Sensitive:           true,
 			},
 		},
 	}
@@ -54,31 +62,52 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
+	var baseUrl string
+	if !data.BaseUrl.IsNull() {
+		baseUrl = data.BaseUrl.ValueString()
+	} else {
+		baseUrl = "https://api.openai.com/v1"
+	}
 
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
+	var apiKey string
+	if !data.ApiKey.IsNull() {
+		apiKey = data.ApiKey.ValueString()
+	} else if v := os.Getenv("OPENAI_API_KEY"); v != "" {
+		apiKey = v
+	}
+
+	if apiKey == "" {
+		resp.Diagnostics.AddError("api_key is required", "api_key is required")
+		return
+	}
+
+	client, err := apiclient.NewClientWithResponses(
+		baseUrl,
+		apiclient.WithHTTPClient(
+			oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: apiKey})),
+		),
+	)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to create API client", err.Error())
+		return
+	}
+
 	resp.DataSourceData = client
 	resp.ResourceData = client
 }
 
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewExampleResource,
-	}
+	return []func() resource.Resource{}
 }
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewExampleDataSource,
+		NewOrganizationsDataSource,
 	}
 }
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {
-	return []func() function.Function{
-		NewExampleFunction,
-	}
+	return []func() function.Function{}
 }
 
 func New(version string) func() provider.Provider {

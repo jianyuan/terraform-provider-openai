@@ -23,4 +23,5 @@ provider "openai" {
 
 ### Optional
 
-- `endpoint` (String) Example provider attribute
+- `api_key` (String, Sensitive) API key for the OpenAI API.
+- `base_url` (String) Base URL for the OpenAI API. Defaults to `https://api.openai.com/v1`.

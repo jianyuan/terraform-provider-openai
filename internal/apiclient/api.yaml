@@ -1,0 +1,99 @@
+openapi: "3.1.0"
+info:
+  title: OpenAI API
+servers:
+  - url: https://api.openai.com/v1
+paths:
+  /organizations:
+    get:
+      operationId: getOrganizations
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Organization"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Organization:
+      type: object
+      required:
+        - created
+        - description
+        - id
+        - is_default
+        - name
+        - settings
+        - title
+      properties:
+        created:
+          type: number
+        description:
+          type: string
+        id:
+          type: string
+        is_default:
+          type: boolean
+        name:
+          type: string
+        parent_org_id:
+          type: string
+        personal:
+          type: boolean
+        projects:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/Project"
+        role:
+          type: string
+        settings:
+          type: object
+          properties:
+            threads_ui_visibility:
+              type: string
+              enum:
+                - NONE
+                - OWNERS
+                - ANY_ROLE
+            usage_dashboard_visibility:
+              type: string
+              enum:
+                - OWNERS
+                - ANY_ROLE
+        title:
+          type: string
+    Project:
+      type: object
+      properties: {} # TODO
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        param: {}
+        code: {}
+security:
+  - bearerAuth: []
