@@ -23,15 +23,17 @@ type OrganizationDataSource struct {
 
 type OrganizationDataSourceModel struct {
 	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
 	IsDefault   types.Bool   `tfsdk:"is_default"`
+	Name        types.String `tfsdk:"name"`
+	Title       types.String `tfsdk:"title"`
 	Description types.String `tfsdk:"description"`
 }
 
 func (m *OrganizationDataSourceModel) Fill(organization apiclient.Organization) error {
 	m.Id = types.StringValue(organization.Id)
-	m.Name = types.StringValue(organization.Title)
 	m.IsDefault = types.BoolValue(organization.IsDefault)
+	m.Name = types.StringValue(organization.Name)
+	m.Title = types.StringValue(organization.Title)
 	m.Description = types.StringValue(organization.Description)
 	return nil
 }
@@ -49,12 +51,16 @@ func (d *OrganizationDataSource) Schema(ctx context.Context, req datasource.Sche
 				MarkdownDescription: "The unique identifier for the organization. If omitted, the default organization is used.",
 				Optional:            true,
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
-				Computed:            true,
-			},
 			"is_default": schema.BoolAttribute{
 				MarkdownDescription: "Whether this organization is the default organization for the user.",
+				Computed:            true,
+			},
+			"name": schema.StringAttribute{
+				MarkdownDescription: "Internal label for your organization.",
+				Computed:            true,
+			},
+			"title": schema.StringAttribute{
+				MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{

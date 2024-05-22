@@ -32,4 +32,5 @@ Read-Only:
 - `description` (String) Description of the organization.
 - `id` (String) Organization ID used in API requests.
 - `is_default` (Boolean) Whether this organization is the default organization for the user.
-- `name` (String) Human-friendly label for your organization, shown in user interfaces.
+- `name` (String) Internal label for your organization.
+- `title` (String) Human-friendly label for your organization, shown in user interfaces.

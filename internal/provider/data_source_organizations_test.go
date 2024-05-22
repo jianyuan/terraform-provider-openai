@@ -23,8 +23,9 @@ func TestAccOrganizationsDataSource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organizations"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
 							"id":          knownvalue.StringExact(acctest.TestOrganizationId),
-							"name":        knownvalue.NotNull(),
 							"is_default":  knownvalue.Bool(true),
+							"name":        knownvalue.NotNull(),
+							"title":       knownvalue.NotNull(),
 							"description": knownvalue.NotNull(),
 						}),
 					})),

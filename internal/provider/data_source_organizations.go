@@ -16,12 +16,10 @@ func NewOrganizationsDataSource() datasource.DataSource {
 	return &OrganizationsDataSource{}
 }
 
-// OrganizationsDataSource defines the data source implementation.
 type OrganizationsDataSource struct {
 	baseDataSource
 }
 
-// OrganizationsDataSourceModel describes the data source data model.
 type OrganizationsDataSourceModel struct {
 	Organizations []OrganizationDataSourceModel `tfsdk:"organizations"`
 }
@@ -54,12 +52,16 @@ func (d *OrganizationsDataSource) Schema(ctx context.Context, req datasource.Sch
 							MarkdownDescription: "Organization ID used in API requests.",
 							Computed:            true,
 						},
-						"name": schema.StringAttribute{
-							MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
-							Computed:            true,
-						},
 						"is_default": schema.BoolAttribute{
 							MarkdownDescription: "Whether this organization is the default organization for the user.",
+							Computed:            true,
+						},
+						"name": schema.StringAttribute{
+							MarkdownDescription: "Internal label for your organization.",
+							Computed:            true,
+						},
+						"title": schema.StringAttribute{
+							MarkdownDescription: "Human-friendly label for your organization, shown in user interfaces.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{
