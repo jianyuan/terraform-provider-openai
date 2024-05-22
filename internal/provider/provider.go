@@ -41,7 +41,7 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
-				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com/v1`.",
+				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com`.",
 				Optional:            true,
 			},
 			"api_key": schema.StringAttribute{
@@ -66,7 +66,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if !data.BaseUrl.IsNull() {
 		baseUrl = data.BaseUrl.ValueString()
 	} else {
-		baseUrl = "https://api.openai.com/v1"
+		baseUrl = "https://api.openai.com"
 	}
 
 	var apiKey string

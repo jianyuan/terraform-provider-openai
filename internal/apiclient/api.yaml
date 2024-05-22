@@ -2,9 +2,9 @@ openapi: "3.1.0"
 info:
   title: OpenAI API
 servers:
-  - url: https://api.openai.com/v1
+  - url: https://api.openai.com
 paths:
-  /organizations:
+  /v1/organizations:
     get:
       operationId: getOrganizations
       responses:
@@ -20,7 +20,7 @@ paths:
                       $ref: "#/components/schemas/Organization"
         401:
           $ref: "#/components/responses/Unauthorized"
-  /organizations/{organizationId}:
+  /v1/organizations/{organizationId}:
     get:
       operationId: getOrganization
       parameters:
@@ -37,7 +37,7 @@ paths:
                 $ref: "#/components/schemas/Organization"
         401:
           $ref: "#/components/responses/Unauthorized"
-  /organizations/{organizationId}/users:
+  /v1/organizations/{organizationId}/users:
     get:
       operationId: getOrganizationUsers
       parameters:
@@ -183,7 +183,29 @@ components:
           $ref: "#/components/schemas/User"
     Project:
       type: object
-      properties: {} # TODO
+      required:
+        - created
+        - id
+        - is_initial
+        - object
+        - organization_id
+        - title
+      properties:
+        created:
+          type: number
+        geography: {}
+        id:
+          type: string
+        is_initial:
+          type: boolean
+        object:
+          type: string
+          enum:
+            - project
+        organization_id:
+          type: string
+        title:
+          type: string
     User:
       type: object
       required:

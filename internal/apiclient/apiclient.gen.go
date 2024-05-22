@@ -47,6 +47,11 @@ const (
 	OrganizationUserObjectOrganizationUser OrganizationUserObject = "organization_user"
 )
 
+// Defines values for ProjectObject.
+const (
+	ProjectObjectProject ProjectObject = "project"
+)
+
 // Defines values for Role.
 const (
 	Owner  Role = "owner"
@@ -123,7 +128,18 @@ type OrganizationUser struct {
 type OrganizationUserObject string
 
 // Project defines model for Project.
-type Project = map[string]interface{}
+type Project struct {
+	Created        float32       `json:"created"`
+	Geography      *interface{}  `json:"geography,omitempty"`
+	Id             string        `json:"id"`
+	IsInitial      bool          `json:"is_initial"`
+	Object         ProjectObject `json:"object"`
+	OrganizationId string        `json:"organization_id"`
+	Title          string        `json:"title"`
+}
+
+// ProjectObject defines model for Project.Object.
+type ProjectObject string
 
 // Role defines model for Role.
 type Role string
@@ -271,7 +287,7 @@ func NewGetOrganizationsRequest(server string) (*http.Request, error) {
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/organizations")
+	operationPath := fmt.Sprintf("/v1/organizations")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -305,7 +321,7 @@ func NewGetOrganizationRequest(server string, organizationId string) (*http.Requ
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/organizations/%s", pathParam0)
+	operationPath := fmt.Sprintf("/v1/organizations/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -339,7 +355,7 @@ func NewGetOrganizationUsersRequest(server string, organizationId string) (*http
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/organizations/%s/users", pathParam0)
+	operationPath := fmt.Sprintf("/v1/organizations/%s/users", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
