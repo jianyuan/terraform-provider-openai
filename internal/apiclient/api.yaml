@@ -37,6 +37,46 @@ paths:
                 $ref: "#/components/schemas/Organization"
         401:
           $ref: "#/components/responses/Unauthorized"
+  /organizations/{organizationId}/users:
+    get:
+      operationId: getOrganizationUsers
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - can_invite
+                  - invited
+                  - members
+                properties:
+                  can_invite:
+                    type: boolean
+                  invited:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InvitedUser"
+                  members:
+                    type: object
+                    required:
+                      - data
+                      - object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/OrganizationUser"
+                      object:
+                        $ref: "#/components/schemas/ObjectList"
+        401:
+          $ref: "#/components/responses/Unauthorized"
 components:
   securitySchemes:
     bearerAuth:
@@ -58,6 +98,9 @@ components:
         - id
         - is_default
         - name
+        - object
+        - personal
+        - projects
         - settings
         - title
       properties:
@@ -71,21 +114,33 @@ components:
           type: boolean
         name:
           type: string
+        object:
+          type: string
+          enum:
+            - organization
         parent_org_id:
           type: string
         personal:
           type: boolean
         projects:
           type: object
+          required:
+            - data
+            - object
           properties:
             data:
               type: array
               items:
                 $ref: "#/components/schemas/Project"
+            object:
+              $ref: "#/components/schemas/ObjectList"
         role:
-          type: string
+          $ref: "#/components/schemas/Role"
         settings:
           type: object
+          required:
+            - threads_ui_visibility
+            - usage_dashboard_visibility
           properties:
             threads_ui_visibility:
               type: string
@@ -100,9 +155,80 @@ components:
                 - ANY_ROLE
         title:
           type: string
+    OrganizationUser:
+      type: object
+      required:
+        - created
+        - is_default
+        - is_service_account
+        - object
+        - role
+        - user
+      properties:
+        created:
+          type: number
+        id:
+          type: string
+        is_default:
+          type: boolean
+        is_service_account:
+          type: boolean
+        object:
+          type: string
+          enum:
+            - organization_user
+        role:
+          $ref: "#/components/schemas/Role"
+        user:
+          $ref: "#/components/schemas/User"
     Project:
       type: object
       properties: {} # TODO
+    User:
+      type: object
+      required:
+        - email
+        - id
+        - name
+        - object
+      properties:
+        email:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        object:
+          type: string
+          enum:
+            - user
+        picture:
+          type: string
+    InvitedUser:
+      type: object
+      required:
+        - email
+        - id
+        - is_expired
+        - role
+      properties:
+        email:
+          type: string
+        id:
+          type: string
+        is_expired:
+          type: boolean
+        role:
+          $ref: "#/components/schemas/Role"
+    ObjectList:
+      type: string
+      enum:
+        - list
+    Role:
+      type: string
+      enum:
+        - reader
+        - owner
     Error:
       type: object
       properties:

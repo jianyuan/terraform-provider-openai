@@ -19,6 +19,16 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
+// Defines values for ObjectList.
+const (
+	List ObjectList = "list"
+)
+
+// Defines values for OrganizationObject.
+const (
+	OrganizationObjectOrganization OrganizationObject = "organization"
+)
+
 // Defines values for OrganizationSettingsThreadsUiVisibility.
 const (
 	OrganizationSettingsThreadsUiVisibilityANYROLE OrganizationSettingsThreadsUiVisibility = "ANY_ROLE"
@@ -32,6 +42,22 @@ const (
 	OrganizationSettingsUsageDashboardVisibilityOWNERS  OrganizationSettingsUsageDashboardVisibility = "OWNERS"
 )
 
+// Defines values for OrganizationUserObject.
+const (
+	OrganizationUserObjectOrganizationUser OrganizationUserObject = "organization_user"
+)
+
+// Defines values for Role.
+const (
+	Owner  Role = "owner"
+	Reader Role = "reader"
+)
+
+// Defines values for UserObject.
+const (
+	UserObjectUser UserObject = "user"
+)
+
 // Error defines model for Error.
 type Error struct {
 	Code    *interface{} `json:"code,omitempty"`
@@ -40,25 +66,41 @@ type Error struct {
 	Type    *string      `json:"type,omitempty"`
 }
 
+// InvitedUser defines model for InvitedUser.
+type InvitedUser struct {
+	Email     string `json:"email"`
+	Id        string `json:"id"`
+	IsExpired bool   `json:"is_expired"`
+	Role      Role   `json:"role"`
+}
+
+// ObjectList defines model for ObjectList.
+type ObjectList string
+
 // Organization defines model for Organization.
 type Organization struct {
-	Created     float32 `json:"created"`
-	Description string  `json:"description"`
-	Id          string  `json:"id"`
-	IsDefault   bool    `json:"is_default"`
-	Name        string  `json:"name"`
-	ParentOrgId *string `json:"parent_org_id,omitempty"`
-	Personal    *bool   `json:"personal,omitempty"`
-	Projects    *struct {
-		Data *[]Project `json:"data,omitempty"`
-	} `json:"projects,omitempty"`
-	Role     *string `json:"role,omitempty"`
+	Created     float32            `json:"created"`
+	Description string             `json:"description"`
+	Id          string             `json:"id"`
+	IsDefault   bool               `json:"is_default"`
+	Name        string             `json:"name"`
+	Object      OrganizationObject `json:"object"`
+	ParentOrgId *string            `json:"parent_org_id,omitempty"`
+	Personal    bool               `json:"personal"`
+	Projects    struct {
+		Data   []Project  `json:"data"`
+		Object ObjectList `json:"object"`
+	} `json:"projects"`
+	Role     *Role `json:"role,omitempty"`
 	Settings struct {
-		ThreadsUiVisibility      *OrganizationSettingsThreadsUiVisibility      `json:"threads_ui_visibility,omitempty"`
-		UsageDashboardVisibility *OrganizationSettingsUsageDashboardVisibility `json:"usage_dashboard_visibility,omitempty"`
+		ThreadsUiVisibility      OrganizationSettingsThreadsUiVisibility      `json:"threads_ui_visibility"`
+		UsageDashboardVisibility OrganizationSettingsUsageDashboardVisibility `json:"usage_dashboard_visibility"`
 	} `json:"settings"`
 	Title string `json:"title"`
 }
+
+// OrganizationObject defines model for Organization.Object.
+type OrganizationObject string
 
 // OrganizationSettingsThreadsUiVisibility defines model for Organization.Settings.ThreadsUiVisibility.
 type OrganizationSettingsThreadsUiVisibility string
@@ -66,8 +108,37 @@ type OrganizationSettingsThreadsUiVisibility string
 // OrganizationSettingsUsageDashboardVisibility defines model for Organization.Settings.UsageDashboardVisibility.
 type OrganizationSettingsUsageDashboardVisibility string
 
+// OrganizationUser defines model for OrganizationUser.
+type OrganizationUser struct {
+	Created          float32                `json:"created"`
+	Id               *string                `json:"id,omitempty"`
+	IsDefault        bool                   `json:"is_default"`
+	IsServiceAccount bool                   `json:"is_service_account"`
+	Object           OrganizationUserObject `json:"object"`
+	Role             Role                   `json:"role"`
+	User             User                   `json:"user"`
+}
+
+// OrganizationUserObject defines model for OrganizationUser.Object.
+type OrganizationUserObject string
+
 // Project defines model for Project.
 type Project = map[string]interface{}
+
+// Role defines model for Role.
+type Role string
+
+// User defines model for User.
+type User struct {
+	Email   string     `json:"email"`
+	Id      string     `json:"id"`
+	Name    string     `json:"name"`
+	Object  UserObject `json:"object"`
+	Picture *string    `json:"picture,omitempty"`
+}
+
+// UserObject defines model for User.Object.
+type UserObject string
 
 // Unauthorized defines model for Unauthorized.
 type Unauthorized = Error
@@ -150,6 +221,9 @@ type ClientInterface interface {
 
 	// GetOrganization request
 	GetOrganization(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOrganizationUsers request
+	GetOrganizationUsers(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -166,6 +240,18 @@ func (c *Client) GetOrganizations(ctx context.Context, reqEditors ...RequestEdit
 
 func (c *Client) GetOrganization(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOrganizationRequest(c.Server, organizationId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOrganizationUsers(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOrganizationUsersRequest(c.Server, organizationId)
 	if err != nil {
 		return nil, err
 	}
@@ -237,6 +323,40 @@ func NewGetOrganizationRequest(server string, organizationId string) (*http.Requ
 	return req, nil
 }
 
+// NewGetOrganizationUsersRequest generates requests for GetOrganizationUsers
+func NewGetOrganizationUsersRequest(server string, organizationId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "organizationId", runtime.ParamLocationPath, organizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organizations/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -285,6 +405,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetOrganizationWithResponse request
 	GetOrganizationWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationResponse, error)
+
+	// GetOrganizationUsersWithResponse request
+	GetOrganizationUsersWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationUsersResponse, error)
 }
 
 type GetOrganizationsResponse struct {
@@ -335,6 +458,36 @@ func (r GetOrganizationResponse) StatusCode() int {
 	return 0
 }
 
+type GetOrganizationUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		CanInvite bool          `json:"can_invite"`
+		Invited   []InvitedUser `json:"invited"`
+		Members   struct {
+			Data   []OrganizationUser `json:"data"`
+			Object ObjectList         `json:"object"`
+		} `json:"members"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOrganizationUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOrganizationUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // GetOrganizationsWithResponse request returning *GetOrganizationsResponse
 func (c *ClientWithResponses) GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error) {
 	rsp, err := c.GetOrganizations(ctx, reqEditors...)
@@ -351,6 +504,15 @@ func (c *ClientWithResponses) GetOrganizationWithResponse(ctx context.Context, o
 		return nil, err
 	}
 	return ParseGetOrganizationResponse(rsp)
+}
+
+// GetOrganizationUsersWithResponse request returning *GetOrganizationUsersResponse
+func (c *ClientWithResponses) GetOrganizationUsersWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationUsersResponse, error) {
+	rsp, err := c.GetOrganizationUsers(ctx, organizationId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOrganizationUsersResponse(rsp)
 }
 
 // ParseGetOrganizationsResponse parses an HTTP response from a GetOrganizationsWithResponse call
@@ -404,6 +566,46 @@ func ParseGetOrganizationResponse(rsp *http.Response) (*GetOrganizationResponse,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Organization
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOrganizationUsersResponse parses an HTTP response from a GetOrganizationUsersWithResponse call
+func ParseGetOrganizationUsersResponse(rsp *http.Response) (*GetOrganizationUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOrganizationUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			CanInvite bool          `json:"can_invite"`
+			Invited   []InvitedUser `json:"invited"`
+			Members   struct {
+				Data   []OrganizationUser `json:"data"`
+				Object ObjectList         `json:"object"`
+			} `json:"members"`
+		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
