@@ -86,6 +86,9 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if apiKey == "" {
 		resp.Diagnostics.AddError("api_key is required", "api_key is required")
 		return
+	} else if !strings.HasPrefix(apiKey, "sk-") {
+		resp.Diagnostics.AddError("api_key must start with 'sk-'", "api_key must start with 'sk-'")
+		return
 	}
 
 	var sessionKey string
@@ -97,6 +100,9 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	if sessionKey == "" {
 		resp.Diagnostics.AddError("session_key is required", "session_key is required")
+		return
+	} else if !strings.HasPrefix(sessionKey, "sess-") {
+		resp.Diagnostics.AddError("session_key must start with 'sess-'", "session_key must start with 'sess-'")
 		return
 	}
 
