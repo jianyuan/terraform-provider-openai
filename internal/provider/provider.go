@@ -2,7 +2,9 @@ package provider
 
 import (
 	"context"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
@@ -11,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
-	"golang.org/x/oauth2"
 )
 
 // Ensure OpenAIProvider satisfies various provider interfaces.
@@ -28,8 +29,9 @@ type OpenAIProvider struct {
 
 // OpenAIProviderModel describes the provider data model.
 type OpenAIProviderModel struct {
-	BaseUrl types.String `tfsdk:"base_url"`
-	ApiKey  types.String `tfsdk:"api_key"`
+	BaseUrl    types.String `tfsdk:"base_url"`
+	ApiKey     types.String `tfsdk:"api_key"`
+	SessionKey types.String `tfsdk:"session_key"`
 }
 
 func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -46,6 +48,11 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 			},
 			"api_key": schema.StringAttribute{
 				MarkdownDescription: "API key for the OpenAI API.",
+				Optional:            true,
+				Sensitive:           true,
+			},
+			"session_key": schema.StringAttribute{
+				MarkdownDescription: "Session key for the OpenAI API.",
 				Optional:            true,
 				Sensitive:           true,
 			},
@@ -81,11 +88,29 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
+	var sessionKey string
+	if !data.SessionKey.IsNull() {
+		sessionKey = data.SessionKey.ValueString()
+	} else if v := os.Getenv("OPENAI_SESSION_KEY"); v != "" {
+		sessionKey = v
+	}
+
+	if sessionKey == "" {
+		resp.Diagnostics.AddError("session_key is required", "session_key is required")
+		return
+	}
+
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
-		apiclient.WithHTTPClient(
-			oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: apiKey})),
-		),
+		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+			if strings.HasPrefix(req.URL.Path, "/v1") {
+				req.Header.Set("Authorization", "Bearer "+apiKey)
+			} else if strings.HasPrefix(req.URL.Path, "/dashboard") {
+				req.Header.Set("Authorization", "Bearer "+sessionKey)
+			}
+
+			return nil
+		}),
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create API client", err.Error())
@@ -97,7 +122,9 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewProjectResource,
+	}
 }
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
@@ -105,6 +132,8 @@ func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.Da
 		NewMembersDataSource,
 		NewOrganizationDataSource,
 		NewOrganizationsDataSource,
+		NewProjectDataSource,
+		NewProjectsDataSource,
 	}
 }
 

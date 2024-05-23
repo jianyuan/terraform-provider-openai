@@ -4,6 +4,7 @@
 package apiclient
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -135,6 +136,7 @@ type Project struct {
 	IsInitial      bool          `json:"is_initial"`
 	Object         ProjectObject `json:"object"`
 	OrganizationId string        `json:"organization_id"`
+	Role           *string       `json:"role,omitempty"`
 	Title          string        `json:"title"`
 }
 
@@ -158,6 +160,24 @@ type UserObject string
 
 // Unauthorized defines model for Unauthorized.
 type Unauthorized = Error
+
+// CreateOrganizationProjectJSONBody defines parameters for CreateOrganizationProject.
+type CreateOrganizationProjectJSONBody struct {
+	Geography string `json:"geography"`
+	Title     string `json:"title"`
+}
+
+// UpdateOrganizationProjectJSONBody defines parameters for UpdateOrganizationProject.
+type UpdateOrganizationProjectJSONBody struct {
+	Archive *bool   `json:"archive,omitempty"`
+	Title   *string `json:"title,omitempty"`
+}
+
+// CreateOrganizationProjectJSONRequestBody defines body for CreateOrganizationProject for application/json ContentType.
+type CreateOrganizationProjectJSONRequestBody CreateOrganizationProjectJSONBody
+
+// UpdateOrganizationProjectJSONRequestBody defines body for UpdateOrganizationProject for application/json ContentType.
+type UpdateOrganizationProjectJSONRequestBody UpdateOrganizationProjectJSONBody
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -232,6 +252,22 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
+	// GetOrganizationProjects request
+	GetOrganizationProjects(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateOrganizationProjectWithBody request with any body
+	CreateOrganizationProjectWithBody(ctx context.Context, organizationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateOrganizationProject(ctx context.Context, organizationId string, body CreateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOrganizationProject request
+	GetOrganizationProject(ctx context.Context, organizationId string, projectId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateOrganizationProjectWithBody request with any body
+	UpdateOrganizationProjectWithBody(ctx context.Context, organizationId string, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateOrganizationProject(ctx context.Context, organizationId string, projectId string, body UpdateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetOrganizations request
 	GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -240,6 +276,78 @@ type ClientInterface interface {
 
 	// GetOrganizationUsers request
 	GetOrganizationUsers(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+func (c *Client) GetOrganizationProjects(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOrganizationProjectsRequest(c.Server, organizationId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateOrganizationProjectWithBody(ctx context.Context, organizationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateOrganizationProjectRequestWithBody(c.Server, organizationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateOrganizationProject(ctx context.Context, organizationId string, body CreateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateOrganizationProjectRequest(c.Server, organizationId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOrganizationProject(ctx context.Context, organizationId string, projectId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOrganizationProjectRequest(c.Server, organizationId, projectId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateOrganizationProjectWithBody(ctx context.Context, organizationId string, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateOrganizationProjectRequestWithBody(c.Server, organizationId, projectId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateOrganizationProject(ctx context.Context, organizationId string, projectId string, body UpdateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateOrganizationProjectRequest(c.Server, organizationId, projectId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 }
 
 func (c *Client) GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -276,6 +384,182 @@ func (c *Client) GetOrganizationUsers(ctx context.Context, organizationId string
 		return nil, err
 	}
 	return c.Client.Do(req)
+}
+
+// NewGetOrganizationProjectsRequest generates requests for GetOrganizationProjects
+func NewGetOrganizationProjectsRequest(server string, organizationId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "organizationId", runtime.ParamLocationPath, organizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/dashboard/organizations/%s/projects", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateOrganizationProjectRequest calls the generic CreateOrganizationProject builder with application/json body
+func NewCreateOrganizationProjectRequest(server string, organizationId string, body CreateOrganizationProjectJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateOrganizationProjectRequestWithBody(server, organizationId, "application/json", bodyReader)
+}
+
+// NewCreateOrganizationProjectRequestWithBody generates requests for CreateOrganizationProject with any type of body
+func NewCreateOrganizationProjectRequestWithBody(server string, organizationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "organizationId", runtime.ParamLocationPath, organizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/dashboard/organizations/%s/projects", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetOrganizationProjectRequest generates requests for GetOrganizationProject
+func NewGetOrganizationProjectRequest(server string, organizationId string, projectId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "organizationId", runtime.ParamLocationPath, organizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "projectId", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/dashboard/organizations/%s/projects/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateOrganizationProjectRequest calls the generic UpdateOrganizationProject builder with application/json body
+func NewUpdateOrganizationProjectRequest(server string, organizationId string, projectId string, body UpdateOrganizationProjectJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateOrganizationProjectRequestWithBody(server, organizationId, projectId, "application/json", bodyReader)
+}
+
+// NewUpdateOrganizationProjectRequestWithBody generates requests for UpdateOrganizationProject with any type of body
+func NewUpdateOrganizationProjectRequestWithBody(server string, organizationId string, projectId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "organizationId", runtime.ParamLocationPath, organizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "projectId", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/dashboard/organizations/%s/projects/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
 }
 
 // NewGetOrganizationsRequest generates requests for GetOrganizations
@@ -416,6 +700,22 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
+	// GetOrganizationProjectsWithResponse request
+	GetOrganizationProjectsWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationProjectsResponse, error)
+
+	// CreateOrganizationProjectWithBodyWithResponse request with any body
+	CreateOrganizationProjectWithBodyWithResponse(ctx context.Context, organizationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateOrganizationProjectResponse, error)
+
+	CreateOrganizationProjectWithResponse(ctx context.Context, organizationId string, body CreateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateOrganizationProjectResponse, error)
+
+	// GetOrganizationProjectWithResponse request
+	GetOrganizationProjectWithResponse(ctx context.Context, organizationId string, projectId string, reqEditors ...RequestEditorFn) (*GetOrganizationProjectResponse, error)
+
+	// UpdateOrganizationProjectWithBodyWithResponse request with any body
+	UpdateOrganizationProjectWithBodyWithResponse(ctx context.Context, organizationId string, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateOrganizationProjectResponse, error)
+
+	UpdateOrganizationProjectWithResponse(ctx context.Context, organizationId string, projectId string, body UpdateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateOrganizationProjectResponse, error)
+
 	// GetOrganizationsWithResponse request
 	GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error)
 
@@ -424,6 +724,101 @@ type ClientWithResponsesInterface interface {
 
 	// GetOrganizationUsersWithResponse request
 	GetOrganizationUsersWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationUsersResponse, error)
+}
+
+type GetOrganizationProjectsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data   []Project  `json:"data"`
+		Object ObjectList `json:"object"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOrganizationProjectsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOrganizationProjectsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateOrganizationProjectResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Project
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateOrganizationProjectResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateOrganizationProjectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOrganizationProjectResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Project
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOrganizationProjectResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOrganizationProjectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateOrganizationProjectResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Project
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateOrganizationProjectResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateOrganizationProjectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
 }
 
 type GetOrganizationsResponse struct {
@@ -504,6 +899,58 @@ func (r GetOrganizationUsersResponse) StatusCode() int {
 	return 0
 }
 
+// GetOrganizationProjectsWithResponse request returning *GetOrganizationProjectsResponse
+func (c *ClientWithResponses) GetOrganizationProjectsWithResponse(ctx context.Context, organizationId string, reqEditors ...RequestEditorFn) (*GetOrganizationProjectsResponse, error) {
+	rsp, err := c.GetOrganizationProjects(ctx, organizationId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOrganizationProjectsResponse(rsp)
+}
+
+// CreateOrganizationProjectWithBodyWithResponse request with arbitrary body returning *CreateOrganizationProjectResponse
+func (c *ClientWithResponses) CreateOrganizationProjectWithBodyWithResponse(ctx context.Context, organizationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateOrganizationProjectResponse, error) {
+	rsp, err := c.CreateOrganizationProjectWithBody(ctx, organizationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateOrganizationProjectResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateOrganizationProjectWithResponse(ctx context.Context, organizationId string, body CreateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateOrganizationProjectResponse, error) {
+	rsp, err := c.CreateOrganizationProject(ctx, organizationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateOrganizationProjectResponse(rsp)
+}
+
+// GetOrganizationProjectWithResponse request returning *GetOrganizationProjectResponse
+func (c *ClientWithResponses) GetOrganizationProjectWithResponse(ctx context.Context, organizationId string, projectId string, reqEditors ...RequestEditorFn) (*GetOrganizationProjectResponse, error) {
+	rsp, err := c.GetOrganizationProject(ctx, organizationId, projectId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOrganizationProjectResponse(rsp)
+}
+
+// UpdateOrganizationProjectWithBodyWithResponse request with arbitrary body returning *UpdateOrganizationProjectResponse
+func (c *ClientWithResponses) UpdateOrganizationProjectWithBodyWithResponse(ctx context.Context, organizationId string, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateOrganizationProjectResponse, error) {
+	rsp, err := c.UpdateOrganizationProjectWithBody(ctx, organizationId, projectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateOrganizationProjectResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateOrganizationProjectWithResponse(ctx context.Context, organizationId string, projectId string, body UpdateOrganizationProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateOrganizationProjectResponse, error) {
+	rsp, err := c.UpdateOrganizationProject(ctx, organizationId, projectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateOrganizationProjectResponse(rsp)
+}
+
 // GetOrganizationsWithResponse request returning *GetOrganizationsResponse
 func (c *ClientWithResponses) GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error) {
 	rsp, err := c.GetOrganizations(ctx, reqEditors...)
@@ -529,6 +976,141 @@ func (c *ClientWithResponses) GetOrganizationUsersWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetOrganizationUsersResponse(rsp)
+}
+
+// ParseGetOrganizationProjectsResponse parses an HTTP response from a GetOrganizationProjectsWithResponse call
+func ParseGetOrganizationProjectsResponse(rsp *http.Response) (*GetOrganizationProjectsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOrganizationProjectsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data   []Project  `json:"data"`
+			Object ObjectList `json:"object"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateOrganizationProjectResponse parses an HTTP response from a CreateOrganizationProjectWithResponse call
+func ParseCreateOrganizationProjectResponse(rsp *http.Response) (*CreateOrganizationProjectResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateOrganizationProjectResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Project
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOrganizationProjectResponse parses an HTTP response from a GetOrganizationProjectWithResponse call
+func ParseGetOrganizationProjectResponse(rsp *http.Response) (*GetOrganizationProjectResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOrganizationProjectResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Project
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateOrganizationProjectResponse parses an HTTP response from a UpdateOrganizationProjectWithResponse call
+func ParseUpdateOrganizationProjectResponse(rsp *http.Response) (*UpdateOrganizationProjectResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateOrganizationProjectResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Project
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
 }
 
 // ParseGetOrganizationsResponse parses an HTTP response from a GetOrganizationsWithResponse call
