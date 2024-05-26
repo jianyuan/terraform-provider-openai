@@ -23,6 +23,5 @@ provider "openai" {
 
 ### Optional
 
-- `api_key` (String, Sensitive) API key for the OpenAI API.
 - `base_url` (String) Base URL for the OpenAI API. Defaults to `https://api.openai.com`.
 - `session_key` (String, Sensitive) Session key for the OpenAI API.

@@ -30,7 +30,6 @@ type OpenAIProvider struct {
 // OpenAIProviderModel describes the provider data model.
 type OpenAIProviderModel struct {
 	BaseUrl    types.String `tfsdk:"base_url"`
-	ApiKey     types.String `tfsdk:"api_key"`
 	SessionKey types.String `tfsdk:"session_key"`
 }
 
@@ -45,11 +44,6 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 			"base_url": schema.StringAttribute{
 				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com`.",
 				Optional:            true,
-			},
-			"api_key": schema.StringAttribute{
-				MarkdownDescription: "API key for the OpenAI API.",
-				Optional:            true,
-				Sensitive:           true,
 			},
 			"session_key": schema.StringAttribute{
 				MarkdownDescription: "Session key for the OpenAI API.",
@@ -76,21 +70,6 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		baseUrl = "https://api.openai.com"
 	}
 
-	var apiKey string
-	if !data.ApiKey.IsNull() {
-		apiKey = data.ApiKey.ValueString()
-	} else if v := os.Getenv("OPENAI_API_KEY"); v != "" {
-		apiKey = v
-	}
-
-	if apiKey == "" {
-		resp.Diagnostics.AddError("api_key is required", "api_key is required")
-		return
-	} else if !strings.HasPrefix(apiKey, "sk-") {
-		resp.Diagnostics.AddError("api_key must start with 'sk-'", "api_key must start with 'sk-'")
-		return
-	}
-
 	var sessionKey string
 	if !data.SessionKey.IsNull() {
 		sessionKey = data.SessionKey.ValueString()
@@ -109,12 +88,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
 		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-			if strings.HasPrefix(req.URL.Path, "/v1") {
-				req.Header.Set("Authorization", "Bearer "+apiKey)
-			} else if strings.HasPrefix(req.URL.Path, "/dashboard") {
-				req.Header.Set("Authorization", "Bearer "+sessionKey)
-			}
-
+			req.Header.Set("Authorization", "Bearer "+sessionKey)
 			return nil
 		}),
 	)
