@@ -1,3 +1,3 @@
 provider "openai" {
-  # example configuration here
+  session_key = "sess-0000000000000000000000000000000000000000"
 }

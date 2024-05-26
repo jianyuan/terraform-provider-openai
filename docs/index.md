@@ -3,18 +3,21 @@
 page_title: "openai Provider"
 subcategory: ""
 description: |-
-  
+  The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.
+  Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the Authorization header of any requests to https://api.openai.com/dashboard/*. Log in to https://platform.openai.com, use Inspect Element to look for any requests to https://api.openai.com/dashboard/*, and grab the Authorization header value.
 ---
 
 # openai Provider
 
+The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.
 
+Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the `Authorization` header of any requests to `https://api.openai.com/dashboard/*`. Log in to https://platform.openai.com, use Inspect Element to look for any requests to `https://api.openai.com/dashboard/*`, and grab the `Authorization` header value.
 
 ## Example Usage
 
 ```terraform
 provider "openai" {
-  # example configuration here
+  session_key = "sess-0000000000000000000000000000000000000000"
 }
 ```
 
@@ -24,4 +27,4 @@ provider "openai" {
 ### Optional
 
 - `base_url` (String) Base URL for the OpenAI API. Defaults to `https://api.openai.com`.
-- `session_key` (String, Sensitive) Session key for the OpenAI API.
+- `session_key` (String, Sensitive) The OpenAI session key can be obtained by accessing the dashboard in your browser. This can also be set via the `OPENAI_SESSION_KEY` environment variable. Note that the session key must start with `sess-`.

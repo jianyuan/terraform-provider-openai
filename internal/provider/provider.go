@@ -40,13 +40,15 @@ func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequ
 
 func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.\n\n" +
+			"Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the `Authorization` header of any requests to `https://api.openai.com/dashboard/*`. Log in to https://platform.openai.com, use Inspect Element to look for any requests to `https://api.openai.com/dashboard/*`, and grab the `Authorization` header value.",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
 				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com`.",
 				Optional:            true,
 			},
 			"session_key": schema.StringAttribute{
-				MarkdownDescription: "Session key for the OpenAI API.",
+				MarkdownDescription: "The OpenAI session key can be obtained by accessing the dashboard in your browser. This can also be set via the `OPENAI_SESSION_KEY` environment variable. Note that the session key must start with `sess-`.",
 				Optional:            true,
 				Sensitive:           true,
 			},
