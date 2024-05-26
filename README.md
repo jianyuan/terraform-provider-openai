@@ -2,6 +2,12 @@
 
 Unofficial Terraform provider for OpenAI.
 
+## Support Development
+
+If you find this provider useful, please consider supporting me through GitHub Sponsorship or Ko-Fi to help with its development.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L3L71DQEL)
+
 ## Requirements
 
 - [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
