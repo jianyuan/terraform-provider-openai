@@ -24,11 +24,7 @@ paths:
     get:
       operationId: getOrganization
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
       responses:
         200:
           content:
@@ -41,11 +37,7 @@ paths:
     get:
       operationId: getOrganizationUsers
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
       responses:
         200:
           content:
@@ -77,15 +69,91 @@ paths:
                         $ref: "#/components/schemas/ObjectList"
         401:
           $ref: "#/components/responses/Unauthorized"
+  /dashboard/organizations/{organizationId}/api_keys:
+    get:
+      operationId: getOrganizationApiKeys
+      parameters:
+        - $ref: "#/components/parameters/OrganizationPath"
+        - name: exclude_project_api_keys
+          in: query
+          schema:
+            type: boolean
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - can_skip_phone_verification
+                  - data
+                  - object
+                properties:
+                  can_skip_phone_verification:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ApiKey"
+                  object:
+                    $ref: "#/components/schemas/ObjectList"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: updateOrganizationApiKey
+      parameters:
+        - $ref: "#/components/parameters/OrganizationPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - created_at
+                - redacted_key
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - update
+                created_at:
+                  type: integer
+                  x-go-type: int64
+                name:
+                  type: string
+                redacted_key:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - result
+                properties:
+                  result:
+                    type: string
+                    # enum:
+                    #   - success
+                  key:
+                    $ref: "#/components/schemas/ApiKey"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
   /dashboard/organizations/{organizationId}/projects:
     get:
       operationId: getOrganizationProjects
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
       responses:
         200:
           content:
@@ -107,11 +175,7 @@ paths:
     post:
       operationId: createOrganizationProject
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
       requestBody:
         required: true
         content:
@@ -138,16 +202,8 @@ paths:
     get:
       operationId: getOrganizationProject
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
+        - $ref: "#/components/parameters/ProjectPath"
       responses:
         200:
           content:
@@ -159,16 +215,8 @@ paths:
     post:
       operationId: updateOrganizationProject
       parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/OrganizationPath"
+        - $ref: "#/components/parameters/ProjectPath"
       requestBody:
         required: true
         content:
@@ -188,19 +236,240 @@ paths:
                 $ref: "#/components/schemas/Project"
         401:
           $ref: "#/components/responses/Unauthorized"
+  /dashboard/organizations/{organizationId}/projects/{projectId}/api_keys:
+    get:
+      operationId: getProjectApiKeys
+      parameters:
+        - $ref: "#/components/parameters/OrganizationPath"
+        - $ref: "#/components/parameters/ProjectPath"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - can_skip_phone_verification
+                  - data
+                  - object
+                properties:
+                  can_skip_phone_verification:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ApiKey"
+                  object:
+                    $ref: "#/components/schemas/ObjectList"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: updateProjectApiKey
+      parameters:
+        - $ref: "#/components/parameters/OrganizationPath"
+        - $ref: "#/components/parameters/ProjectPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - created_at
+                - redacted_key
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - update
+                created_at:
+                  type: integer
+                  x-go-type: int64
+                name:
+                  type: string
+                redacted_key:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - result
+                properties:
+                  result:
+                    type: string
+                    # enum:
+                    #   - success
+                  key:
+                    $ref: "#/components/schemas/ApiKey"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+  /dashboard/service_accounts:
+    post:
+      operationId: createServiceAccountKey
+      parameters:
+        - $ref: "#/components/parameters/OrganizationHeader"
+        - $ref: "#/components/parameters/ProjectHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - object
+                  - secret
+                properties:
+                  id:
+                    type: string
+                  object:
+                    type: string
+                    # enum:
+                    #   - service_account
+                  secret:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ApiKey"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  parameters:
+    ProjectHeader:
+      name: Openai-Project
+      in: header
+      schema:
+        type: string
+    ProjectPath:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: string
+    OrganizationHeader:
+      name: Openai-Organization
+      in: header
+      schema:
+        type: string
+    OrganizationPath:
+      name: organizationId
+      in: path
+      required: true
+      schema:
+        type: string
   responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
     Unauthorized:
-      description: Unauthorized
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
   schemas:
+    ApiKey:
+      type: object
+      required:
+        - created
+        - last_use
+        - name
+        - object
+        - organization
+        - project
+        - publishable
+        - scopes
+        - sensitive_id
+        - tracking_id
+        - user
+      properties:
+        created:
+          type: integer
+          x-go-type: int64
+        last_use:
+          type: integer
+          x-go-type: int64
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        object:
+          type: string
+          enum:
+            - api_key
+        organization:
+          type: object
+          required:
+            - id
+            - title
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+        project:
+          type: object
+          nullable: true
+          required:
+            - id
+            - title
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+        publishable:
+          type: boolean
+        scopes:
+          type: array
+          items:
+            type: string
+        sensitive_id:
+          type: string
+        tracking_id:
+          type: string
+        user:
+          type: object
+          required:
+            - id
+            - is_service_account
+            - name
+          properties:
+            id:
+              type: string
+            is_service_account:
+              type: boolean
+            name:
+              type: string
+              nullable: true
     Organization:
       type: object
       required:
@@ -216,7 +485,8 @@ components:
         - title
       properties:
         created:
-          type: number
+          type: integer
+          x-go-type: int64
         description:
           type: string
         id:
@@ -277,7 +547,8 @@ components:
         - user
       properties:
         created:
-          type: number
+          type: integer
+          x-go-type: int64
         id:
           type: string
         is_default:
@@ -303,7 +574,8 @@ components:
         - title
       properties:
         created:
-          type: number
+          type: integer
+          x-go-type: int64
         geography: {}
         id:
           type: string
@@ -366,12 +638,19 @@ components:
         - owner
     Error:
       type: object
+      required:
+        - code
+        - message
+        - param
+        - type
       properties:
+        code:
+          nullable: true
         message:
           type: string
+        param:
+          nullable: true
         type:
           type: string
-        param: {}
-        code: {}
 security:
   - bearerAuth: []
