@@ -16,7 +16,7 @@ func TestAccProjectDataSource(t *testing.T) {
 	projectTitle := acctest.RandomWithPrefix("tf-project")
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
+		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
