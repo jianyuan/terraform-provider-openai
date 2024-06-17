@@ -315,7 +315,7 @@ func (r *ProjectApiKeyResource) Read(ctx context.Context, req resource.ReadReque
 		data.OrganizationId.ValueString(),
 		data.ProjectId.ValueStringPointer(),
 		func(apiKey apiclient.ApiKey) bool {
-			return data.Created.IsNull() || data.Created.ValueInt64() == apiKey.Created && MatchStringWithMask(data.Id.ValueString(), apiKey.SensitiveId)
+			return (data.Created.IsNull() || data.Created.ValueInt64() == apiKey.Created) && MatchStringWithMask(data.Id.ValueString(), apiKey.SensitiveId)
 		},
 	)
 	if err != nil {
