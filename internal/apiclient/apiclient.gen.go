@@ -398,6 +398,9 @@ type ClientInterface interface {
 
 	CreateServiceAccountKey(ctx context.Context, params *CreateServiceAccountKeyParams, body CreateServiceAccountKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetApiKeyScopes request
+	GetApiKeyScopes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetOrganizations request
 	GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -566,6 +569,18 @@ func (c *Client) CreateServiceAccountKeyWithBody(ctx context.Context, params *Cr
 
 func (c *Client) CreateServiceAccountKey(ctx context.Context, params *CreateServiceAccountKeyParams, body CreateServiceAccountKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateServiceAccountKeyRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiKeyScopes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiKeyScopesRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1052,6 +1067,33 @@ func NewCreateServiceAccountKeyRequestWithBody(server string, params *CreateServ
 	return req, nil
 }
 
+// NewGetApiKeyScopesRequest generates requests for GetApiKeyScopes
+func NewGetApiKeyScopesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/dashboard/user/api_keys/scopes")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetOrganizationsRequest generates requests for GetOrganizations
 func NewGetOrganizationsRequest(server string) (*http.Request, error) {
 	var err error
@@ -1226,6 +1268,9 @@ type ClientWithResponsesInterface interface {
 	CreateServiceAccountKeyWithBodyWithResponse(ctx context.Context, params *CreateServiceAccountKeyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateServiceAccountKeyResponse, error)
 
 	CreateServiceAccountKeyWithResponse(ctx context.Context, params *CreateServiceAccountKeyParams, body CreateServiceAccountKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateServiceAccountKeyResponse, error)
+
+	// GetApiKeyScopesWithResponse request
+	GetApiKeyScopesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiKeyScopesResponse, error)
 
 	// GetOrganizationsWithResponse request
 	GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error)
@@ -1468,6 +1513,37 @@ func (r CreateServiceAccountKeyResponse) StatusCode() int {
 	return 0
 }
 
+type GetApiKeyScopesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]struct {
+		Description         string   `json:"description"`
+		Endpoints           []string `json:"endpoints"`
+		Name                string   `json:"name"`
+		PermissionsToScopes struct {
+			Read  *[]string `json:"read,omitempty"`
+			Write *[]string `json:"write,omitempty"`
+		} `json:"permissions_to_scopes"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiKeyScopesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiKeyScopesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetOrganizationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1665,6 +1741,15 @@ func (c *ClientWithResponses) CreateServiceAccountKeyWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseCreateServiceAccountKeyResponse(rsp)
+}
+
+// GetApiKeyScopesWithResponse request returning *GetApiKeyScopesResponse
+func (c *ClientWithResponses) GetApiKeyScopesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiKeyScopesResponse, error) {
+	rsp, err := c.GetApiKeyScopes(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiKeyScopesResponse(rsp)
 }
 
 // GetOrganizationsWithResponse request returning *GetOrganizationsResponse
@@ -2020,6 +2105,47 @@ func ParseCreateServiceAccountKeyResponse(rsp *http.Response) (*CreateServiceAcc
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiKeyScopesResponse parses an HTTP response from a GetApiKeyScopesWithResponse call
+func ParseGetApiKeyScopesResponse(rsp *http.Response) (*GetApiKeyScopesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiKeyScopesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []struct {
+			Description         string   `json:"description"`
+			Endpoints           []string `json:"endpoints"`
+			Name                string   `json:"name"`
+			PermissionsToScopes struct {
+				Read  *[]string `json:"read,omitempty"`
+				Write *[]string `json:"write,omitempty"`
+			} `json:"permissions_to_scopes"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
