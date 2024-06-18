@@ -2,10 +2,16 @@ package provider
 
 import (
 	"context"
+	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -13,9 +19,81 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/iancoleman/orderedmap"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/must"
 )
+
+//go:embed scopes.json
+var rawApiKeyPermissions []byte
+
+var apiKeyReadOnlyScope = "api.all.read"
+var apiKeyPermissionAttributes map[string]schema.Attribute
+var apiKeyPermissionScopes map[string]map[string][]string
+
+func init() {
+	type Permission struct {
+		Name                string                `json:"name"`
+		Description         string                `json:"description"`
+		PermissionsToScopes orderedmap.OrderedMap `json:"permissions_to_scopes"`
+		Endpoints           []string              `json:"endpoints"`
+	}
+
+	var permissions []Permission
+	must.Do(json.Unmarshal(rawApiKeyPermissions, &permissions))
+
+	apiKeyPermissionAttributes = make(map[string]schema.Attribute, len(permissions))
+	apiKeyPermissionScopes = make(map[string]map[string][]string, len(permissions))
+
+	for _, permission := range permissions {
+		attribute := strings.ToLower(permission.Name)
+		attribute = strings.ReplaceAll(attribute, " ", "_")
+		attribute = strings.ReplaceAll(attribute, "-", "_")
+
+		permissionKeys := make([]string, 0, len(permission.PermissionsToScopes.Keys()))
+		permissionQuoted := make([]string, 0, len(permission.PermissionsToScopes.Keys()))
+		apiKeyPermissionScopes[attribute] = make(map[string][]string, len(permission.PermissionsToScopes.Keys()))
+		for _, key := range permission.PermissionsToScopes.Keys() {
+			permissionKeys = append(permissionKeys, key)
+			permissionQuoted = append(permissionQuoted, fmt.Sprintf("`%s`", key))
+
+			scopesInterface, _ := permission.PermissionsToScopes.Get(key)
+			scopes, _ := scopesInterface.([]interface{})
+			for _, scopeInterface := range scopes {
+				scope, _ := scopeInterface.(string)
+				apiKeyPermissionScopes[attribute][key] = append(apiKeyPermissionScopes[attribute][key], scope)
+			}
+		}
+
+		endpointQuoted := make([]string, 0, len(permission.Endpoints))
+		for _, endpoint := range permission.Endpoints {
+			endpointQuoted = append(endpointQuoted, fmt.Sprintf("`%s`", endpoint))
+		}
+
+		var valueNoun string
+		if len(permissionKeys) == 1 {
+			valueNoun = "value"
+		} else {
+			valueNoun = "values"
+		}
+
+		apiKeyPermissionAttributes[attribute] = schema.StringAttribute{
+			MarkdownDescription: fmt.Sprintf(
+				"%s. %s. Valid %s: %s. If omitted, the API key will not have access.",
+				permission.Description,
+				strings.Join(endpointQuoted, ", "),
+				valueNoun,
+				strings.Join(permissionQuoted, ", "),
+			),
+			Optional: true,
+			Validators: []validator.String{
+				stringvalidator.OneOf(permissionKeys...),
+			},
+		}
+	}
+}
 
 var _ resource.Resource = &ProjectApiKeyResource{}
 var _ resource.ResourceWithImportState = &ProjectApiKeyResource{}
@@ -30,14 +108,94 @@ type ProjectApiKeyResource struct {
 
 // ProjectApiKeyResourceModel describes the resource data model.
 type ProjectApiKeyResourceModel struct {
-	Id               types.String `tfsdk:"id"`
-	OrganizationId   types.String `tfsdk:"organization_id"`
-	ProjectId        types.String `tfsdk:"project_id"`
-	ServiceAccountId types.String `tfsdk:"service_account_id"`
-	Name             types.String `tfsdk:"name"`
-	Scopes           types.Set    `tfsdk:"scopes"`
-	Created          types.Int64  `tfsdk:"created"`
-	RedactedKey      types.String `tfsdk:"redacted_key"`
+	Id               types.String                  `tfsdk:"id"`
+	OrganizationId   types.String                  `tfsdk:"organization_id"`
+	ProjectId        types.String                  `tfsdk:"project_id"`
+	ServiceAccountId types.String                  `tfsdk:"service_account_id"`
+	Name             types.String                  `tfsdk:"name"`
+	ReadOnly         types.Bool                    `tfsdk:"read_only"`
+	Permissions      *ProjectApiKeyPermissionModel `tfsdk:"permissions"`
+	Scopes           types.Set                     `tfsdk:"scopes"`
+	Created          types.Int64                   `tfsdk:"created"`
+	RedactedKey      types.String                  `tfsdk:"redacted_key"`
+}
+
+type ProjectApiKeyPermissionModel struct {
+	Models            types.String `tfsdk:"models"`
+	ModelCapabilities types.String `tfsdk:"model_capabilities"`
+	Assistants        types.String `tfsdk:"assistants"`
+	Threads           types.String `tfsdk:"threads"`
+	FineTuning        types.String `tfsdk:"fine_tuning"`
+	Files             types.String `tfsdk:"files"`
+}
+
+func (m *ProjectApiKeyPermissionModel) Fill(apiKey apiclient.ApiKey) {
+	m.Models = types.StringNull()
+	m.ModelCapabilities = types.StringNull()
+	m.Assistants = types.StringNull()
+	m.Threads = types.StringNull()
+	m.FineTuning = types.StringNull()
+	m.Files = types.StringNull()
+
+	for key, permissions := range apiKeyPermissionScopes {
+		for permission, scopes := range permissions {
+			found := 0
+			for _, scope := range scopes {
+				for _, apiKeyScope := range apiKey.Scopes {
+					if apiKeyScope == scope {
+						found += 1
+						break
+					}
+				}
+			}
+
+			if found == len(scopes) {
+				switch key {
+				case "models":
+					m.Models = types.StringValue(permission)
+				case "model_capabilities":
+					m.ModelCapabilities = types.StringValue(permission)
+				case "assistants":
+					m.Assistants = types.StringValue(permission)
+				case "threads":
+					m.Threads = types.StringValue(permission)
+				case "fine_tuning":
+					m.FineTuning = types.StringValue(permission)
+				case "files":
+					m.Files = types.StringValue(permission)
+				}
+				break
+			}
+		}
+	}
+}
+
+func (m *ProjectApiKeyPermissionModel) Equal(other *ProjectApiKeyPermissionModel) bool {
+	return (m != nil && other != nil) &&
+		m.Models.Equal(other.Models) &&
+		m.ModelCapabilities.Equal(other.ModelCapabilities) &&
+		m.Assistants.Equal(other.Assistants) &&
+		m.Threads.Equal(other.Threads) &&
+		m.FineTuning.Equal(other.FineTuning) &&
+		m.Files.Equal(other.Files)
+}
+
+func (m *ProjectApiKeyPermissionModel) Scopes() []string {
+	getScopes := func(key string, attr types.String) []string {
+		if attr.IsNull() {
+			return []string{}
+		}
+		return apiKeyPermissionScopes[key][attr.ValueString()]
+	}
+
+	var scopes []string
+	scopes = append(scopes, getScopes("models", m.Models)...)
+	scopes = append(scopes, getScopes("model_capabilities", m.ModelCapabilities)...)
+	scopes = append(scopes, getScopes("assistants", m.Assistants)...)
+	scopes = append(scopes, getScopes("threads", m.Threads)...)
+	scopes = append(scopes, getScopes("fine_tuning", m.FineTuning)...)
+	scopes = append(scopes, getScopes("files", m.Files)...)
+	return scopes
 }
 
 func (m *ProjectApiKeyResourceModel) PartialFill(apiKey apiclient.ApiKey) {
@@ -64,6 +222,20 @@ func (m *ProjectApiKeyResourceModel) PartialFill(apiKey apiclient.ApiKey) {
 			scopeElements[i] = types.StringValue(scope)
 		}
 		m.Scopes = types.SetValueMust(types.StringType, scopeElements)
+	}
+
+	if len(apiKey.Scopes) == 0 {
+		m.ReadOnly = types.BoolNull()
+		m.Permissions = nil
+	} else {
+		if len(apiKey.Scopes) == 1 && apiKey.Scopes[0] == apiKeyReadOnlyScope {
+			m.ReadOnly = types.BoolValue(true)
+			m.Permissions = nil
+		} else {
+			m.ReadOnly = types.BoolNull()
+			m.Permissions = &ProjectApiKeyPermissionModel{}
+			m.Permissions.Fill(apiKey)
+		}
 	}
 
 	m.Created = types.Int64Value(apiKey.Created)
@@ -112,9 +284,16 @@ func (r *ProjectApiKeyResource) Schema(ctx context.Context, req resource.SchemaR
 				MarkdownDescription: "The name of the API key.",
 				Optional:            true,
 			},
-			"scopes": schema.SetAttribute{
-				MarkdownDescription: "The scopes of the API key. If not set, all scopes will be used.",
+			"read_only": schema.BoolAttribute{
+				MarkdownDescription: "Whether the API key is read-only. If omitted, the API key will have full permissions.",
 				Optional:            true,
+				Validators: []validator.Bool{
+					boolvalidator.ConflictsWith(path.MatchRoot("permissions")),
+				},
+			},
+			"scopes": schema.SetAttribute{
+				MarkdownDescription: "The scopes of the API key.",
+				Computed:            true,
 				ElementType:         types.StringType,
 			},
 			"created": schema.Int64Attribute{
@@ -130,6 +309,16 @@ func (r *ProjectApiKeyResource) Schema(ctx context.Context, req resource.SchemaR
 				Sensitive:           true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+		},
+
+		Blocks: map[string]schema.Block{
+			"permissions": schema.SingleNestedBlock{
+				MarkdownDescription: "The permission of the API key. If omitted, the API key will have full permissions.",
+				Attributes:          apiKeyPermissionAttributes,
+				Validators: []validator.Object{
+					objectvalidator.ConflictsWith(path.MatchRoot("read_only")),
 				},
 			},
 		},
@@ -194,16 +383,15 @@ func (r *ProjectApiKeyResource) Create(ctx context.Context, req resource.CreateR
 	data.RedactedKey = types.StringValue(apiKey.SensitiveId)
 
 	// Update the name and scopes if they are set
-	if !data.Name.IsNull() || !data.Scopes.IsNull() {
+	if !data.Name.IsNull() || !data.ReadOnly.IsNull() || data.Permissions != nil {
 		var scopes []string
-
-		if data.Scopes.IsNull() {
-			scopes = []string{}
+		if !data.ReadOnly.IsNull() && data.ReadOnly.ValueBool() {
+			scopes = []string{apiKeyReadOnlyScope}
 		} else {
-			resp.Diagnostics.Append(data.Scopes.ElementsAs(ctx, &scopes, false)...)
-
-			if resp.Diagnostics.HasError() {
-				return
+			if data.Permissions == nil {
+				scopes = []string{}
+			} else {
+				scopes = data.Permissions.Scopes()
 			}
 		}
 
@@ -339,15 +527,15 @@ func (r *ProjectApiKeyResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	if !plan.Name.Equal(state.Name) || !plan.Scopes.Equal(state.Scopes) {
+	if !plan.Name.Equal(state.Name) || !plan.ReadOnly.Equal(state.ReadOnly) || !plan.Permissions.Equal(state.Permissions) {
 		var scopes []string
-
-		if plan.Scopes.IsNull() {
-			scopes = []string{}
+		if !plan.ReadOnly.IsNull() && plan.ReadOnly.ValueBool() {
+			scopes = []string{apiKeyReadOnlyScope}
 		} else {
-			resp.Diagnostics.Append(plan.Scopes.ElementsAs(ctx, &scopes, false)...)
-			if resp.Diagnostics.HasError() {
-				return
+			if plan.Permissions == nil {
+				scopes = []string{}
+			} else {
+				scopes = plan.Permissions.Scopes()
 			}
 		}
 

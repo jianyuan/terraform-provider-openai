@@ -1,4 +1,4 @@
-openapi: "3.1.0"
+openapi: "3.0.3"
 info:
   title: OpenAI API
 servers:
@@ -354,6 +354,44 @@ paths:
                       $ref: "#/components/schemas/ApiKey"
         400:
           $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+  /dashboard/user/api_keys/scopes:
+    get:
+      operationId: getApiKeyScopes
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - description
+                    - name
+                    - permissions_to_scopes
+                    - endpoints
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    permissions_to_scopes:
+                      type: object
+                      properties:
+                        read:
+                          type: array
+                          items:
+                            type: string
+                        write:
+                          type: array
+                          items:
+                            type: string
+                    endpoints:
+                      type: array
+                      items:
+                        type: string
         401:
           $ref: "#/components/responses/Unauthorized"
 components:
