@@ -59,9 +59,11 @@ func init() {
 			permissionKeys = append(permissionKeys, key)
 			permissionQuoted = append(permissionQuoted, fmt.Sprintf("`%s`", key))
 
-			scopes, _ := permission.PermissionsToScopes.Get(key)
-			for _, scope := range scopes.([]interface{}) {
-				apiKeyPermissionScopes[attribute][key] = append(apiKeyPermissionScopes[attribute][key], scope.(string))
+			scopesInterface, _ := permission.PermissionsToScopes.Get(key)
+			scopes, _ := scopesInterface.([]interface{})
+			for _, scopeInterface := range scopes {
+				scope, _ := scopeInterface.(string)
+				apiKeyPermissionScopes[attribute][key] = append(apiKeyPermissionScopes[attribute][key], scope)
 			}
 		}
 
