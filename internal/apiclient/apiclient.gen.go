@@ -14,15 +14,33 @@ import (
 	"strings"
 
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 const (
-	BearerAuthScopes = "bearerAuth.Scopes"
+	ApiKeyScopes     = "apiKey.Scopes"
+	SessionKeyScopes = "sessionKey.Scopes"
 )
 
 // Defines values for ApiKeyObject.
 const (
 	ApiKeyObjectApiKey ApiKeyObject = "api_key"
+)
+
+// Defines values for FileObject.
+const (
+	FileObjectFile FileObject = "file"
+)
+
+// Defines values for FilePurpose.
+const (
+	FilePurposeAssistants       FilePurpose = "assistants"
+	FilePurposeAssistantsOutput FilePurpose = "assistants_output"
+	FilePurposeBatch            FilePurpose = "batch"
+	FilePurposeBatchOutput      FilePurpose = "batch_output"
+	FilePurposeFineTune         FilePurpose = "fine-tune"
+	FilePurposeFineTuneResults  FilePurpose = "fine-tune-results"
+	FilePurposeVision           FilePurpose = "vision"
 )
 
 // Defines values for ObjectList.
@@ -81,6 +99,14 @@ const (
 	UpdateProjectApiKeyJSONBodyActionUpdate UpdateProjectApiKeyJSONBodyAction = "update"
 )
 
+// Defines values for UploadFileMultipartBodyPurpose.
+const (
+	UploadFileMultipartBodyPurposeAssistants UploadFileMultipartBodyPurpose = "assistants"
+	UploadFileMultipartBodyPurposeBatch      UploadFileMultipartBodyPurpose = "batch"
+	UploadFileMultipartBodyPurposeFineTune   UploadFileMultipartBodyPurpose = "fine-tune"
+	UploadFileMultipartBodyPurposeVision     UploadFileMultipartBodyPurpose = "vision"
+)
+
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
 	Created      int64        `json:"created"`
@@ -116,6 +142,22 @@ type Error struct {
 	Param   *interface{} `json:"param"`
 	Type    string       `json:"type"`
 }
+
+// File defines model for File.
+type File struct {
+	Bytes     *int64       `json:"bytes,omitempty"`
+	CreatedAt *int64       `json:"created_at,omitempty"`
+	Filename  *string      `json:"filename,omitempty"`
+	Id        string       `json:"id"`
+	Object    *FileObject  `json:"object,omitempty"`
+	Purpose   *FilePurpose `json:"purpose,omitempty"`
+}
+
+// FileObject defines model for File.Object.
+type FileObject string
+
+// FilePurpose defines model for File.Purpose.
+type FilePurpose string
 
 // InvitedUser defines model for InvitedUser.
 type InvitedUser struct {
@@ -273,6 +315,15 @@ type CreateServiceAccountKeyParams struct {
 	OpenaiProject      *ProjectHeader      `json:"Openai-Project,omitempty"`
 }
 
+// UploadFileMultipartBody defines parameters for UploadFile.
+type UploadFileMultipartBody struct {
+	File    openapi_types.File             `json:"file"`
+	Purpose UploadFileMultipartBodyPurpose `json:"purpose"`
+}
+
+// UploadFileMultipartBodyPurpose defines parameters for UploadFile.
+type UploadFileMultipartBodyPurpose string
+
 // UpdateOrganizationApiKeyJSONRequestBody defines body for UpdateOrganizationApiKey for application/json ContentType.
 type UpdateOrganizationApiKeyJSONRequestBody UpdateOrganizationApiKeyJSONBody
 
@@ -287,6 +338,9 @@ type UpdateProjectApiKeyJSONRequestBody UpdateProjectApiKeyJSONBody
 
 // CreateServiceAccountKeyJSONRequestBody defines body for CreateServiceAccountKey for application/json ContentType.
 type CreateServiceAccountKeyJSONRequestBody CreateServiceAccountKeyJSONBody
+
+// UploadFileMultipartRequestBody defines body for UploadFile for multipart/form-data ContentType.
+type UploadFileMultipartRequestBody UploadFileMultipartBody
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -400,6 +454,9 @@ type ClientInterface interface {
 
 	// GetApiKeyScopes request
 	GetApiKeyScopes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadFileWithBody request with any body
+	UploadFileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOrganizations request
 	GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -581,6 +638,18 @@ func (c *Client) CreateServiceAccountKey(ctx context.Context, params *CreateServ
 
 func (c *Client) GetApiKeyScopes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetApiKeyScopesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadFileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadFileRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1094,6 +1163,35 @@ func NewGetApiKeyScopesRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewUploadFileRequestWithBody generates requests for UploadFile with any type of body
+func NewUploadFileRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/files")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetOrganizationsRequest generates requests for GetOrganizations
 func NewGetOrganizationsRequest(server string) (*http.Request, error) {
 	var err error
@@ -1271,6 +1369,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetApiKeyScopesWithResponse request
 	GetApiKeyScopesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiKeyScopesResponse, error)
+
+	// UploadFileWithBodyWithResponse request with any body
+	UploadFileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadFileResponse, error)
 
 	// GetOrganizationsWithResponse request
 	GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error)
@@ -1544,6 +1645,29 @@ func (r GetApiKeyScopesResponse) StatusCode() int {
 	return 0
 }
 
+type UploadFileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *File
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadFileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadFileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetOrganizationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1750,6 +1874,15 @@ func (c *ClientWithResponses) GetApiKeyScopesWithResponse(ctx context.Context, r
 		return nil, err
 	}
 	return ParseGetApiKeyScopesResponse(rsp)
+}
+
+// UploadFileWithBodyWithResponse request with arbitrary body returning *UploadFileResponse
+func (c *ClientWithResponses) UploadFileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadFileResponse, error) {
+	rsp, err := c.UploadFileWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadFileResponse(rsp)
 }
 
 // GetOrganizationsWithResponse request returning *GetOrganizationsResponse
@@ -2142,6 +2275,39 @@ func ParseGetApiKeyScopesResponse(rsp *http.Response) (*GetApiKeyScopesResponse,
 				Write *[]string `json:"write,omitempty"`
 			} `json:"permissions_to_scopes"`
 		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadFileResponse parses an HTTP response from a UploadFileWithResponse call
+func ParseUploadFileResponse(rsp *http.Response) (*UploadFileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadFileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest File
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

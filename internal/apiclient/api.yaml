@@ -7,6 +7,8 @@ paths:
   /v1/organizations:
     get:
       operationId: getOrganizations
+      security:
+        - sessionKey: []
       responses:
         200:
           content:
@@ -23,6 +25,8 @@ paths:
   /v1/organizations/{organizationId}:
     get:
       operationId: getOrganization
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
       responses:
@@ -36,6 +40,8 @@ paths:
   /v1/organizations/{organizationId}/users:
     get:
       operationId: getOrganizationUsers
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
       responses:
@@ -69,9 +75,45 @@ paths:
                         $ref: "#/components/schemas/ObjectList"
         401:
           $ref: "#/components/responses/Unauthorized"
+  /v1/files:
+    post:
+      operationId: uploadFile
+      security:
+        - apiKey: []
+        - sessionKey: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - purpose
+              properties:
+                file:
+                  type: string
+                  format: binary
+                purpose:
+                  type: string
+                  enum:
+                    - assistants
+                    - batch
+                    - fine-tune
+                    - vision
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/File"
+        401:
+          $ref: "#/components/responses/Unauthorized"
   /dashboard/organizations/{organizationId}/api_keys:
     get:
       operationId: getOrganizationApiKeys
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
         - name: exclude_project_api_keys
@@ -101,6 +143,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     post:
       operationId: updateOrganizationApiKey
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
       requestBody:
@@ -152,6 +196,8 @@ paths:
   /dashboard/organizations/{organizationId}/projects:
     get:
       operationId: getOrganizationProjects
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
       responses:
@@ -174,6 +220,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     post:
       operationId: createOrganizationProject
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
       requestBody:
@@ -201,6 +249,8 @@ paths:
   /dashboard/organizations/{organizationId}/projects/{projectId}:
     get:
       operationId: getOrganizationProject
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
         - $ref: "#/components/parameters/ProjectPath"
@@ -214,6 +264,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     post:
       operationId: updateOrganizationProject
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
         - $ref: "#/components/parameters/ProjectPath"
@@ -239,6 +291,8 @@ paths:
   /dashboard/organizations/{organizationId}/projects/{projectId}/api_keys:
     get:
       operationId: getProjectApiKeys
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
         - $ref: "#/components/parameters/ProjectPath"
@@ -265,6 +319,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     post:
       operationId: updateProjectApiKey
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationPath"
         - $ref: "#/components/parameters/ProjectPath"
@@ -317,6 +373,8 @@ paths:
   /dashboard/service_accounts:
     post:
       operationId: createServiceAccountKey
+      security:
+        - sessionKey: []
       parameters:
         - $ref: "#/components/parameters/OrganizationHeader"
         - $ref: "#/components/parameters/ProjectHeader"
@@ -359,6 +417,8 @@ paths:
   /dashboard/user/api_keys/scopes:
     get:
       operationId: getApiKeyScopes
+      security:
+        - sessionKey: []
       responses:
         200:
           content:
@@ -396,7 +456,10 @@ paths:
           $ref: "#/components/responses/Unauthorized"
 components:
   securitySchemes:
-    bearerAuth:
+    sessionKey:
+      type: http
+      scheme: bearer
+    apiKey:
       type: http
       scheme: bearer
   parameters:
@@ -508,6 +571,35 @@ components:
             name:
               type: string
               nullable: true
+    File:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        bytes:
+          type: integer
+          x-go-type: int64
+        created_at:
+          type: integer
+          x-go-type: int64
+        filename:
+          type: string
+        object:
+          type: string
+          enum:
+            - file
+        purpose:
+          type: string
+          enum:
+            - assistants
+            - assistants_output
+            - batch
+            - batch_output
+            - fine-tune
+            - fine-tune-results
+            - vision
     Organization:
       type: object
       required:
@@ -690,5 +782,3 @@ components:
           nullable: true
         type:
           type: string
-security:
-  - bearerAuth: []
