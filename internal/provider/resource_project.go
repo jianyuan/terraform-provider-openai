@@ -14,18 +14,6 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
-var _ resource.Resource = &ProjectResource{}
-var _ resource.ResourceWithImportState = &ProjectResource{}
-
-func NewProjectResource() resource.Resource {
-	return &ProjectResource{}
-}
-
-type ProjectResource struct {
-	baseResource
-}
-
-// ProjectResourceModel describes the resource data model.
 type ProjectResourceModel struct {
 	Id        types.String `tfsdk:"id"`
 	Name      types.String `tfsdk:"name"`
@@ -37,6 +25,17 @@ func (m *ProjectResourceModel) Fill(p apiclient.Project) error {
 	m.Name = types.StringValue(p.Name)
 	m.CreatedAt = types.Int64Value(int64(p.CreatedAt))
 	return nil
+}
+
+var _ resource.Resource = &ProjectResource{}
+var _ resource.ResourceWithImportState = &ProjectResource{}
+
+func NewProjectResource() resource.Resource {
+	return &ProjectResource{}
+}
+
+type ProjectResource struct {
+	baseResource
 }
 
 func (r *ProjectResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -84,7 +83,7 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 	)
 
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
 	}
 
@@ -161,7 +160,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
@@ -194,5 +193,5 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 }
 
 func (r *ProjectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

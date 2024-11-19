@@ -14,7 +14,7 @@ Project resource.
 
 ```terraform
 resource "openai_project" "example" {
-  title = "Example Project"
+  name = "Example Project"
 }
 ```
 
@@ -36,8 +36,8 @@ Import is supported using the following syntax:
 
 ```shell
 # Import an existing project
-terraform import openai_project.example organisation-id/project-id
+terraform import openai_project.example project-id
 
 # Example
-terraform import openai_project.example org-000000000000000000000000/proj_000000000000000000000000
+terraform import openai_project.example proj_000000000000000000000000
 ```

@@ -3,6 +3,10 @@
 #@overlay/match by=overlay.all
 ---
 paths:
+  /organization/invites:
+    post:
+      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      responses:
   /organization/projects:
     post:
       #@overlay/replace via=lambda left, right: {"201": left["200"]}

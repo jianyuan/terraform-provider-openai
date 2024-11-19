@@ -3887,7 +3887,7 @@ paths:
             schema:
               $ref: '#/components/schemas/InviteRequest'
       responses:
-        "200":
+        "201":
           description: User invited successfully.
           content:
             application/json:

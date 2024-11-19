@@ -19310,7 +19310,7 @@ func (r ListInvitesResp) StatusCode() int {
 type InviteUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Invite
+	JSON201      *Invite
 }
 
 // Status returns HTTPResponse.Status
@@ -22696,12 +22696,12 @@ func ParseInviteUserResp(rsp *http.Response) (*InviteUserResp, error) {
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest Invite
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON200 = &dest
+		response.JSON201 = &dest
 
 	}
 

@@ -109,12 +109,14 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewInviteResource,
 		NewProjectResource,
 	}
 }
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewInviteDataSource,
 		NewInvitesDataSource,
 		NewProjectDataSource,
 		NewProjectsDataSource,
