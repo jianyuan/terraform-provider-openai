@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -86,8 +87,12 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 10
+
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
+		apiclient.WithHTTPClient(retryClient.StandardClient()),
 		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
 			req.Header.Set("Authorization", "Bearer "+adminKey)
 			return nil
