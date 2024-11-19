@@ -4867,18 +4867,12 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectUserCreateRequest'
       responses:
-        "200":
+        "201":
           description: User added to project successfully.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectUser'
-        "400":
-          description: Error response for various conditions.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
         name: Create project user
         group: administration

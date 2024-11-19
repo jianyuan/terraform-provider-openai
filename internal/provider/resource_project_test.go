@@ -51,7 +51,7 @@ func TestAccProjectResource(t *testing.T) {
 func testAccProjectResourceConfig(name string) string {
 	return fmt.Sprintf(`
 resource "openai_project" "test" {
-  name = %[1]q
+	name = %[1]q
 }
 `, name)
 }

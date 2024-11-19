@@ -11,3 +11,7 @@ paths:
     post:
       #@overlay/replace via=lambda left, right: {"201": left["200"]}
       responses:
+  /organization/projects/{project_id}/users:
+    post:
+      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      responses:

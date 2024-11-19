@@ -19712,8 +19712,7 @@ func (r ListProjectUsersResp) StatusCode() int {
 type CreateProjectUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *ProjectUser
-	JSON400      *ErrorResponse
+	JSON201      *ProjectUser
 }
 
 // Status returns HTTPResponse.Status
@@ -23206,19 +23205,12 @@ func ParseCreateProjectUserResp(rsp *http.Response) (*CreateProjectUserResp, err
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest ProjectUser
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest ErrorResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
+		response.JSON201 = &dest
 
 	}
 
