@@ -23,10 +23,11 @@ resource "openai_project" "example" {
 
 ### Required
 
-- `title` (String) Human-friendly label for the project, shown in user interfaces.
+- `name` (String) The friendly name of the project, this name appears in reports.
 
 ### Read-Only
 
+- `created_at` (Number) The Unix timestamp (in seconds) of when the project was created.
 - `id` (String) The ID of the project.
 
 ## Import

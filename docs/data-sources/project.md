@@ -27,4 +27,7 @@ data "openai_project" "example" {
 
 ### Read-Only
 
-- `title` (String) Human-friendly label for the project, shown in user interfaces.
+- `archived_at` (Number) The Unix timestamp (in seconds) of when the project was archived or `null`.
+- `created_at` (Number) The Unix timestamp (in seconds) of when the project was created.
+- `name` (String) The name of the project. This appears in reporting.
+- `status` (String) Status `active` or `archived`.
