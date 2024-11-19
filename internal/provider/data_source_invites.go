@@ -11,11 +11,11 @@ import (
 )
 
 type InvitesDataSourceModel struct {
-	Invites []InviteDataSourceModel `tfsdk:"invites"`
+	Invites []InviteModel `tfsdk:"invites"`
 }
 
 func (m *InvitesDataSourceModel) Fill(invites []apiclient.Invite) error {
-	m.Invites = make([]InviteDataSourceModel, len(invites))
+	m.Invites = make([]InviteModel, len(invites))
 	for i, invite := range invites {
 		if err := m.Invites[i].Fill(invite); err != nil {
 			return err

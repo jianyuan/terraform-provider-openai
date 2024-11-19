@@ -22,12 +22,12 @@ type ProjectsDataSource struct {
 }
 
 type ProjectsDataSourceModel struct {
-	IncludeArchived types.Bool               `tfsdk:"include_archived"`
-	Projects        []ProjectDataSourceModel `tfsdk:"projects"`
+	IncludeArchived types.Bool     `tfsdk:"include_archived"`
+	Projects        []ProjectModel `tfsdk:"projects"`
 }
 
 func (m *ProjectsDataSourceModel) Fill(projects []apiclient.Project) error {
-	m.Projects = make([]ProjectDataSourceModel, len(projects))
+	m.Projects = make([]ProjectModel, len(projects))
 	for i, project := range projects {
 		if err := m.Projects[i].Fill(project); err != nil {
 			return err

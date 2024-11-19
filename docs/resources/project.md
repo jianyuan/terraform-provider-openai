@@ -27,8 +27,10 @@ resource "openai_project" "example" {
 
 ### Read-Only
 
+- `archived_at` (Number) The Unix timestamp (in seconds) of when the project was archived or `null`.
 - `created_at` (Number) The Unix timestamp (in seconds) of when the project was created.
 - `id` (String) The ID of the project.
+- `status` (String) Status `active` or `archived`.
 
 ## Import
 

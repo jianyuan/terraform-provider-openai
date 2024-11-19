@@ -10,22 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
-
-type ProjectResourceModel struct {
-	Id        types.String `tfsdk:"id"`
-	Name      types.String `tfsdk:"name"`
-	CreatedAt types.Int64  `tfsdk:"created_at"`
-}
-
-func (m *ProjectResourceModel) Fill(p apiclient.Project) error {
-	m.Id = types.StringValue(p.Id)
-	m.Name = types.StringValue(p.Name)
-	m.CreatedAt = types.Int64Value(int64(p.CreatedAt))
-	return nil
-}
 
 var _ resource.Resource = &ProjectResource{}
 var _ resource.ResourceWithImportState = &ProjectResource{}
@@ -58,8 +44,16 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "The friendly name of the project, this name appears in reports.",
 				Required:            true,
 			},
+			"status": schema.StringAttribute{
+				MarkdownDescription: "Status `active` or `archived`.",
+				Computed:            true,
+			},
 			"created_at": schema.Int64Attribute{
 				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
+				Computed:            true,
+			},
+			"archived_at": schema.Int64Attribute{
+				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was archived or `null`.",
 				Computed:            true,
 			},
 		},
@@ -67,7 +61,7 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 }
 
 func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data ProjectResourceModel
+	var data ProjectModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -101,7 +95,7 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 }
 
 func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data ProjectResourceModel
+	var data ProjectModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
@@ -133,7 +127,7 @@ func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, re
 }
 
 func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data ProjectResourceModel
+	var data ProjectModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -168,7 +162,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 }
 
 func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data ProjectResourceModel
+	var data ProjectModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 

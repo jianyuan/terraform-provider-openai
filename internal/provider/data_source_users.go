@@ -7,33 +7,15 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
-type UserDataSourceModel struct {
-	Id      types.String `tfsdk:"id"`
-	Email   types.String `tfsdk:"email"`
-	Name    types.String `tfsdk:"name"`
-	Role    types.String `tfsdk:"role"`
-	AddedAt types.Int64  `tfsdk:"added_at"`
-}
-
-func (m *UserDataSourceModel) Fill(u apiclient.User) error {
-	m.Id = types.StringValue(u.Id)
-	m.Email = types.StringValue(u.Email)
-	m.Name = types.StringValue(u.Name)
-	m.Role = types.StringValue(string(u.Role))
-	m.AddedAt = types.Int64Value(int64(u.AddedAt))
-	return nil
-}
-
 type UsersDataSourceModel struct {
-	Users []UserDataSourceModel `tfsdk:"users"`
+	Users []UserModel `tfsdk:"users"`
 }
 
 func (m *UsersDataSourceModel) Fill(users []apiclient.User) error {
-	m.Users = make([]UserDataSourceModel, len(users))
+	m.Users = make([]UserModel, len(users))
 	for i, u := range users {
 		if err := m.Users[i].Fill(u); err != nil {
 			return err
@@ -67,7 +49,7 @@ func (d *UsersDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
-							MarkdownDescription: "User identifier.",
+							MarkdownDescription: "User ID.",
 							Computed:            true,
 						},
 						"email": schema.StringAttribute{

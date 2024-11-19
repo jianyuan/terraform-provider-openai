@@ -12,34 +12,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
-
-type InviteResourceModel struct {
-	Id         types.String `tfsdk:"id"`
-	Email      types.String `tfsdk:"email"`
-	Role       types.String `tfsdk:"role"`
-	Status     types.String `tfsdk:"status"`
-	InvitedAt  types.Int64  `tfsdk:"invited_at"`
-	ExpiresAt  types.Int64  `tfsdk:"expires_at"`
-	AcceptedAt types.Int64  `tfsdk:"accepted_at"`
-}
-
-func (m *InviteResourceModel) Fill(i apiclient.Invite) error {
-	m.Id = types.StringValue(i.Id)
-	m.Email = types.StringValue(i.Email)
-	m.Role = types.StringValue(string(i.Role))
-	m.Status = types.StringValue(string(i.Status))
-	m.InvitedAt = types.Int64Value(int64(i.InvitedAt))
-	m.ExpiresAt = types.Int64Value(int64(i.ExpiresAt))
-	if i.AcceptedAt == nil {
-		m.AcceptedAt = types.Int64Null()
-	} else {
-		m.AcceptedAt = types.Int64Value(int64(*i.AcceptedAt))
-	}
-	return nil
-}
 
 var _ resource.Resource = &InviteResource{}
 var _ resource.ResourceWithImportState = &InviteResource{}
@@ -106,7 +80,7 @@ func (r *InviteResource) Schema(ctx context.Context, req resource.SchemaRequest,
 }
 
 func (r *InviteResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data InviteResourceModel
+	var data InviteModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -146,7 +120,7 @@ func (r *InviteResource) Create(ctx context.Context, req resource.CreateRequest,
 }
 
 func (r *InviteResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data InviteResourceModel
+	var data InviteModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
@@ -187,7 +161,7 @@ func (r *InviteResource) Update(ctx context.Context, req resource.UpdateRequest,
 }
 
 func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data InviteResourceModel
+	var data InviteModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
