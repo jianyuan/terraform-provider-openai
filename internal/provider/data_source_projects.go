@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/ptr"
 )
 
 var _ datasource.DataSource = &ProjectsDataSource{}
@@ -92,6 +93,7 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	var projects []apiclient.Project
 	params := &apiclient.ListProjectsParams{
+		Limit:           ptr.Ptr(100),
 		IncludeArchived: data.IncludeArchived.ValueBoolPointer(),
 	}
 

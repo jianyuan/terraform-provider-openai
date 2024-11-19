@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/ptr"
 )
 
 type UsersDataSourceModel struct {
@@ -85,7 +86,9 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	var users []apiclient.User
-	params := &apiclient.ListUsersParams{}
+	params := &apiclient.ListUsersParams{
+		Limit: ptr.Ptr(100),
+	}
 
 	for {
 		httpResp, err := d.client.ListUsersWithResponse(

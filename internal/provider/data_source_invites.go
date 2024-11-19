@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/ptr"
 )
 
 type InvitesDataSourceModel struct {
@@ -93,7 +94,9 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 
 	var invites []apiclient.Invite
-	params := &apiclient.ListInvitesParams{}
+	params := &apiclient.ListInvitesParams{
+		Limit: ptr.Ptr(100),
+	}
 
 	for {
 		httpResp, err := d.client.ListInvitesWithResponse(
