@@ -24,7 +24,6 @@ func TestAccProjectApiKeyResource_defaultProject(t *testing.T) {
 				Config: testAccProjectApiKeyResourceConfig_defaultProject(serviceAccountId, `name = "tf-api-key"`),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.Null()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact("tf-api-key")),
@@ -36,7 +35,6 @@ func TestAccProjectApiKeyResource_defaultProject(t *testing.T) {
 				Config: testAccProjectApiKeyResourceConfig_defaultProject(serviceAccountId, ""),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.Null()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.Null()),
@@ -45,24 +43,14 @@ func TestAccProjectApiKeyResource_defaultProject(t *testing.T) {
 				},
 			},
 			{
-				ResourceName: rn,
-				ImportState:  true,
-				ImportStateIdFunc: func(s *terraform.State) (string, error) {
-					rs, ok := s.RootModule().Resources[rn]
-					if !ok {
-						return "", fmt.Errorf("not found: %s", rn)
-					}
-					organizationId := rs.Primary.Attributes["organization_id"]
-					id := rs.Primary.ID
-					return BuildTwoPartId(organizationId, id), nil
-				},
+				ResourceName:      rn,
+				ImportState:       true,
 				ImportStateVerify: true,
 			},
 			{
 				Config: testAccProjectApiKeyResourceConfig_defaultProject(serviceAccountId, `name = "tf-api-key-updated"`),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.Null()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact("tf-api-key-updated")),
@@ -87,7 +75,6 @@ func TestAccProjectApiKeyResource_namedProject(t *testing.T) {
 				Config: testAccProjectApiKeyResourceConfig_namedProject(projectTitle, serviceAccountId, `name = "tf-api-key"`),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact("tf-api-key")),
@@ -99,7 +86,6 @@ func TestAccProjectApiKeyResource_namedProject(t *testing.T) {
 				Config: testAccProjectApiKeyResourceConfig_namedProject(projectTitle, serviceAccountId, ""),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.Null()),
@@ -115,10 +101,9 @@ func TestAccProjectApiKeyResource_namedProject(t *testing.T) {
 					if !ok {
 						return "", fmt.Errorf("not found: %s", rn)
 					}
-					organizationId := rs.Primary.Attributes["organization_id"]
 					projectId := rs.Primary.Attributes["project_id"]
 					id := rs.Primary.ID
-					return BuildThreePartId(organizationId, projectId, id), nil
+					return BuildTwoPartId(projectId, id), nil
 				},
 				ImportStateVerify: true,
 			},
@@ -126,7 +111,6 @@ func TestAccProjectApiKeyResource_namedProject(t *testing.T) {
 				Config: testAccProjectApiKeyResourceConfig_namedProject(projectTitle, serviceAccountId, `name = "tf-api-key-updated"`),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("service_account_id"), knownvalue.StringExact(serviceAccountId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact("tf-api-key-updated")),
@@ -251,17 +235,8 @@ func TestAccProjectApiKeyResource_defaultProject_permissions(t *testing.T) {
 				},
 			},
 			{
-				ResourceName: rn,
-				ImportState:  true,
-				ImportStateIdFunc: func(s *terraform.State) (string, error) {
-					rs, ok := s.RootModule().Resources[rn]
-					if !ok {
-						return "", fmt.Errorf("not found: %s", rn)
-					}
-					organizationId := rs.Primary.Attributes["organization_id"]
-					id := rs.Primary.ID
-					return BuildTwoPartId(organizationId, id), nil
-				},
+				ResourceName:      rn,
+				ImportState:       true,
 				ImportStateVerify: true,
 			},
 		},
@@ -407,9 +382,8 @@ func TestAccProjectApiKeyResource_namedProject_removeNameAndScopes(t *testing.T)
 }
 
 func testAccProjectApiKeyResourceConfig_defaultProject(serviceAccountId, extras string) string {
-	return testAccOrganizationDataSourceConfig + fmt.Sprintf(`
+	return fmt.Sprintf(`
 resource "openai_project_api_key" "test" {
-  organization_id    = data.openai_organization.test.id
   service_account_id = %[1]q
   %[2]s
 }
@@ -417,14 +391,12 @@ resource "openai_project_api_key" "test" {
 }
 
 func testAccProjectApiKeyResourceConfig_namedProject(projectTitle, serviceAccountId, extras string) string {
-	return testAccOrganizationDataSourceConfig + fmt.Sprintf(`
+	return fmt.Sprintf(`
 resource "openai_project" "test" {
-  organization_id = data.openai_organization.test.id
-  title           = %[1]q
+  title = %[1]q
 }
 
 resource "openai_project_api_key" "test" {
-  organization_id    = openai_project.test.organization_id
   project_id         = openai_project.test.id
   service_account_id = %[2]q
   %[3]s

@@ -60,7 +60,6 @@ func (m *OrganizationUserDataSourceModel) Fill(u apiclient.OrganizationUser) err
 }
 
 type MembersDataSourceModel struct {
-	OrganizationId types.String                      `tfsdk:"organization_id"`
 	InvitedMembers []InvitedMembersDataSourceModel   `tfsdk:"invited_members"`
 	Members        []OrganizationUserDataSourceModel `tfsdk:"members"`
 }
@@ -92,10 +91,6 @@ func (d *MembersDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 		MarkdownDescription: "List all users in an organization, including invited users and members.",
 
 		Attributes: map[string]schema.Attribute{
-			"organization_id": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier for the organization.",
-				Required:            true,
-			},
 			"invited_members": schema.SetNestedAttribute{
 				MarkdownDescription: "List of invited users.",
 				Computed:            true,
@@ -171,7 +166,7 @@ func (d *MembersDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	httpResp, err := d.client.GetOrganizationUsersWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))

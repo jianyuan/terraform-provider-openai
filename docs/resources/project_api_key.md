@@ -15,27 +15,23 @@ Project API key resource.
 ```terraform
 # Create an API key for the default project
 resource "openai_project_api_key" "example" {
-  organization_id    = "org-000000000000000000000000"
   service_account_id = "my-service-account"
 }
 
 # Create an API key for a specific project
 resource "openai_project_api_key" "example" {
-  organization_id    = "org-000000000000000000000000"
   project_id         = "proj_000000000000000000000000"
   service_account_id = "my-service-account"
 }
 
 # Create a read-only API key
 resource "openai_project_api_key" "example" {
-  organization_id    = "org-000000000000000000000000"
   service_account_id = "my-service-account"
   read_only          = true
 }
 
 # Create an API key with specific permissions
 resource "openai_project_api_key" "example" {
-  organization_id    = "org-000000000000000000000000"
   service_account_id = "my-service-account"
   permissions {
     models             = "read"
@@ -49,7 +45,6 @@ resource "openai_project_api_key" "example" {
 
 ### Required
 
-- `organization_id` (String) The ID of the organization to which the project belongs.
 - `service_account_id` (String) The ID of the service account to which the API key belongs. IDs can include letters, numbers, and hyphens.
 
 ### Optional

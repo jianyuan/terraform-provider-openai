@@ -6,16 +6,11 @@ import (
 )
 
 var (
-	TestAdminKey       = os.Getenv("OPENAI_ADMIN_KEY")
-	TestOrganizationId = os.Getenv("OPENAI_TEST_ORGANIZATION_ID")
+	TestAdminKey = os.Getenv("OPENAI_ADMIN_KEY")
 )
 
 func PreCheck(t *testing.T) {
 	if TestAdminKey == "" {
 		t.Fatal("OPENAI_ADMIN_KEY must be set for acceptance tests")
-	}
-
-	if TestOrganizationId == "" {
-		t.Fatal("OPENAI_TEST_ORGANIZATION_ID must be set for acceptance tests")
 	}
 }

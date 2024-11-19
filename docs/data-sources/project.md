@@ -14,8 +14,7 @@ Retrieve a project by ID.
 
 ```terraform
 data "openai_project" "example" {
-  id              = "proj_000000000000000000000000"
-  organization_id = "org-000000000000000000000000"
+  id = "proj_000000000000000000000000"
 }
 ```
 
@@ -25,7 +24,6 @@ data "openai_project" "example" {
 ### Required
 
 - `id` (String) Project ID.
-- `organization_id` (String) Organization ID.
 
 ### Read-Only
 

@@ -82,6 +82,5 @@ jobs:
       - env:
           TF_ACC: "1"
           OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
-          OPENAI_TEST_ORGANIZATION_ID: ${{ secrets.OPENAI_TEST_ORGANIZATION_ID }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10

@@ -20,7 +20,6 @@ func TestAccMembersDataSource(t *testing.T) {
 			{
 				Config: testAccMembersDataSourceConfig,
 				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("invited_members"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("members"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
@@ -39,8 +38,7 @@ func TestAccMembersDataSource(t *testing.T) {
 	})
 }
 
-var testAccMembersDataSourceConfig = testAccOrganizationDataSourceConfig + `
+var testAccMembersDataSourceConfig = `
 data "openai_members" "test" {
-  organization_id = data.openai_organization.test.id
 }
 `

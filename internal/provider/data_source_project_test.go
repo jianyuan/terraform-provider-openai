@@ -23,7 +23,6 @@ func TestAccProjectDataSource(t *testing.T) {
 				Config: testAccProjectDataSourceConfig(projectTitle),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("organization_id"), knownvalue.StringExact(acctest.TestOrganizationId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("title"), knownvalue.StringExact(projectTitle)),
 				},
 			},
@@ -32,15 +31,13 @@ func TestAccProjectDataSource(t *testing.T) {
 }
 
 func testAccProjectDataSourceConfig(title string) string {
-	return testAccOrganizationDataSourceConfig + fmt.Sprintf(`
+	return fmt.Sprintf(`
 resource "openai_project" "test" {
-  organization_id = data.openai_organization.test.id
-  title           = %[1]q
+  title = %[1]q
 }
 
 data "openai_project" "test" {
-  id              = openai_project.test.id
-  organization_id = openai_project.test.organization_id
+  id = openai_project.test.id
 }
 `, title)
 }

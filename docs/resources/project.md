@@ -14,8 +14,7 @@ Project resource.
 
 ```terraform
 resource "openai_project" "example" {
-  organization_id = "org-000000000000000000000000"
-  title           = "Example Project"
+  title = "Example Project"
 }
 ```
 
@@ -24,7 +23,6 @@ resource "openai_project" "example" {
 
 ### Required
 
-- `organization_id` (String) The ID of the organization to which the project belongs.
 - `title` (String) Human-friendly label for the project, shown in user interfaces.
 
 ### Read-Only

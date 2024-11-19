@@ -33,8 +33,7 @@ func (m *ProjectsDataSourceModel_Project) Fill(project apiclient.Project) error 
 }
 
 type ProjectsDataSourceModel struct {
-	OrganizationId types.String                      `tfsdk:"organization_id"`
-	Projects       []ProjectsDataSourceModel_Project `tfsdk:"projects"`
+	Projects []ProjectsDataSourceModel_Project `tfsdk:"projects"`
 }
 
 func (m *ProjectsDataSourceModel) Fill(projects []apiclient.Project) error {
@@ -56,10 +55,6 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 		MarkdownDescription: "List all projects in an organization.",
 
 		Attributes: map[string]schema.Attribute{
-			"organization_id": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier for the organization.",
-				Required:            true,
-			},
 			"projects": schema.SetNestedAttribute{
 				MarkdownDescription: "List of projects.",
 				Computed:            true,
@@ -91,7 +86,7 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	httpResp, err := d.client.GetOrganizationProjectsWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))

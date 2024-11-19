@@ -27,14 +27,12 @@ type ProjectResource struct {
 
 // ProjectResourceModel describes the resource data model.
 type ProjectResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	OrganizationId types.String `tfsdk:"organization_id"`
-	Title          types.String `tfsdk:"title"`
+	Id    types.String `tfsdk:"id"`
+	Title types.String `tfsdk:"title"`
 }
 
 func (m *ProjectResourceModel) Fill(p apiclient.Project) error {
 	m.Id = types.StringValue(p.Id)
-	m.OrganizationId = types.StringValue(p.OrganizationId)
 	m.Title = types.StringValue(p.Title)
 	return nil
 }
@@ -55,10 +53,6 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"organization_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the organization to which the project belongs.",
-				Required:            true,
-			},
 			"title": schema.StringAttribute{
 				MarkdownDescription: "Human-friendly label for the project, shown in user interfaces.",
 				Required:            true,
@@ -78,7 +72,7 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 
 	httpResp, err := r.client.CreateOrganizationProjectWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		apiclient.CreateOrganizationProjectJSONRequestBody{
 			Geography: "",
 			Title:     data.Title.ValueString(),
@@ -114,7 +108,7 @@ func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	httpResp, err := r.client.GetOrganizationProjectWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.Id.ValueString(),
 	)
 
@@ -147,7 +141,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	httpResp, err := r.client.UpdateOrganizationProjectWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.Id.ValueString(),
 		apiclient.UpdateOrganizationProjectJSONRequestBody{
 			Title: data.Title.ValueStringPointer(),
@@ -183,7 +177,7 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	httpResp, err := r.client.UpdateOrganizationProjectWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.Id.ValueString(),
 		apiclient.UpdateOrganizationProjectJSONRequestBody{
 			Archive: Pointer(true),
@@ -202,12 +196,5 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 }
 
 func (r *ProjectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	organizationId, id, err := SplitTwoPartId(req.ID, "organization-id", "id")
-	if err != nil {
-		resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
-		return
-	}
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("organization_id"), organizationId)...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 }

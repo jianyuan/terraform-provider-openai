@@ -22,14 +22,12 @@ type ProjectDataSource struct {
 }
 
 type ProjectDataSourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	OrganizationId types.String `tfsdk:"organization_id"`
-	Title          types.String `tfsdk:"title"`
+	Id    types.String `tfsdk:"id"`
+	Title types.String `tfsdk:"title"`
 }
 
 func (m *ProjectDataSourceModel) Fill(project apiclient.Project) error {
 	m.Id = types.StringValue(project.Id)
-	m.OrganizationId = types.StringValue(project.OrganizationId)
 	m.Title = types.StringValue(project.Title)
 	return nil
 }
@@ -45,10 +43,6 @@ func (d *ProjectDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Project ID.",
-				Required:            true,
-			},
-			"organization_id": schema.StringAttribute{
-				MarkdownDescription: "Organization ID.",
 				Required:            true,
 			},
 			"title": schema.StringAttribute{
@@ -70,7 +64,7 @@ func (d *ProjectDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	httpResp, err := d.client.GetOrganizationProjectWithResponse(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.Id.ValueString(),
 	)
 	if err != nil {

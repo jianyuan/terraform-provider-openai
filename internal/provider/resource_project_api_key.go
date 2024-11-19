@@ -109,7 +109,6 @@ type ProjectApiKeyResource struct {
 // ProjectApiKeyResourceModel describes the resource data model.
 type ProjectApiKeyResourceModel struct {
 	Id               types.String                  `tfsdk:"id"`
-	OrganizationId   types.String                  `tfsdk:"organization_id"`
 	ProjectId        types.String                  `tfsdk:"project_id"`
 	ServiceAccountId types.String                  `tfsdk:"service_account_id"`
 	Name             types.String                  `tfsdk:"name"`
@@ -199,8 +198,6 @@ func (m *ProjectApiKeyPermissionModel) Scopes() []string {
 }
 
 func (m *ProjectApiKeyResourceModel) PartialFill(apiKey apiclient.ApiKey) {
-	m.OrganizationId = types.StringValue(apiKey.Organization.Id)
-
 	if apiKey.Project == nil {
 		m.ProjectId = types.StringNull()
 	} else {
@@ -257,13 +254,6 @@ func (r *ProjectApiKeyResource) Schema(ctx context.Context, req resource.SchemaR
 				Sensitive:           true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"organization_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the organization to which the project belongs.",
-				Required:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"project_id": schema.StringAttribute{
@@ -339,8 +329,7 @@ func (r *ProjectApiKeyResource) Create(ctx context.Context, req resource.CreateR
 		httpResp, err := r.client.CreateServiceAccountKeyWithResponse(
 			ctx,
 			&apiclient.CreateServiceAccountKeyParams{
-				OpenaiOrganization: data.OrganizationId.ValueStringPointer(),
-				OpenaiProject:      data.ProjectId.ValueStringPointer(),
+				OpenaiProject: data.ProjectId.ValueStringPointer(),
 			},
 			apiclient.CreateServiceAccountKeyJSONRequestBody{
 				Id: data.ServiceAccountId.ValueString(),
@@ -369,7 +358,7 @@ func (r *ProjectApiKeyResource) Create(ctx context.Context, req resource.CreateR
 	// Get the redacted key
 	apiKey, err := r.readKey(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.ProjectId.ValueStringPointer(),
 		func(apiKey apiclient.ApiKey) bool {
 			return data.Created.ValueInt64() == apiKey.Created && MatchStringWithMask(data.Id.ValueString(), apiKey.SensitiveId)
@@ -400,7 +389,7 @@ func (r *ProjectApiKeyResource) Create(ctx context.Context, req resource.CreateR
 		if data.ProjectId.IsNull() {
 			httpResp, err := r.client.UpdateOrganizationApiKeyWithResponse(
 				ctx,
-				data.OrganizationId.ValueString(),
+				"TODO",
 				apiclient.UpdateOrganizationApiKeyJSONRequestBody{
 					Action:      "update",
 					CreatedAt:   data.Created.ValueInt64(),
@@ -419,7 +408,7 @@ func (r *ProjectApiKeyResource) Create(ctx context.Context, req resource.CreateR
 		} else {
 			httpResp, err := r.client.UpdateProjectApiKeyWithResponse(
 				ctx,
-				data.OrganizationId.ValueString(),
+				"TODO",
 				data.ProjectId.ValueString(),
 				apiclient.UpdateProjectApiKeyJSONRequestBody{
 					Action:      "update",
@@ -500,7 +489,7 @@ func (r *ProjectApiKeyResource) Read(ctx context.Context, req resource.ReadReque
 
 	found, err := r.readKey(
 		ctx,
-		data.OrganizationId.ValueString(),
+		"TODO",
 		data.ProjectId.ValueStringPointer(),
 		func(apiKey apiclient.ApiKey) bool {
 			return (data.Created.IsNull() || data.Created.ValueInt64() == apiKey.Created) && MatchStringWithMask(data.Id.ValueString(), apiKey.SensitiveId)
@@ -545,7 +534,7 @@ func (r *ProjectApiKeyResource) Update(ctx context.Context, req resource.UpdateR
 		if plan.ProjectId.IsNull() {
 			httpResp, err := r.client.UpdateOrganizationApiKeyWithResponse(
 				ctx,
-				plan.OrganizationId.ValueString(),
+				"TODO",
 				apiclient.UpdateOrganizationApiKeyJSONRequestBody{
 					Action:      "update",
 					CreatedAt:   plan.Created.ValueInt64(),
@@ -567,7 +556,7 @@ func (r *ProjectApiKeyResource) Update(ctx context.Context, req resource.UpdateR
 		} else {
 			httpResp, err := r.client.UpdateProjectApiKeyWithResponse(
 				ctx,
-				plan.OrganizationId.ValueString(),
+				"TODO",
 				plan.ProjectId.ValueString(),
 				apiclient.UpdateProjectApiKeyJSONRequestBody{
 					Action:      "update",
@@ -607,7 +596,7 @@ func (r *ProjectApiKeyResource) Delete(ctx context.Context, req resource.DeleteR
 	if data.ProjectId.IsNull() {
 		httpResp, err := r.client.UpdateOrganizationApiKeyWithResponse(
 			ctx,
-			data.OrganizationId.ValueString(),
+			"TODO",
 			apiclient.UpdateOrganizationApiKeyJSONRequestBody{
 				Action:      "delete",
 				CreatedAt:   data.Created.ValueInt64(),
@@ -625,7 +614,7 @@ func (r *ProjectApiKeyResource) Delete(ctx context.Context, req resource.DeleteR
 	} else {
 		httpResp, err := r.client.UpdateProjectApiKeyWithResponse(
 			ctx,
-			data.OrganizationId.ValueString(),
+			"TODO",
 			data.ProjectId.ValueString(),
 			apiclient.UpdateProjectApiKeyJSONRequestBody{
 				Action:      "delete",
@@ -645,21 +634,12 @@ func (r *ProjectApiKeyResource) Delete(ctx context.Context, req resource.DeleteR
 }
 
 func (r *ProjectApiKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	organizationId, projectId, id, err := SplitThreePartId(req.ID, "organization-id", "project-id", "id")
-	if err == nil {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("organization_id"), organizationId)...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("project_id"), projectId)...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
-		return
-
-	}
-
-	organizationId, id, err = SplitTwoPartId(req.ID, "organization-id", "id")
-	if err == nil {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("organization_id"), organizationId)...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
+	projectId, id, err := SplitTwoPartId(req.ID, "project-id", "id")
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
 		return
 	}
 
-	resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("project_id"), projectId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
 }
