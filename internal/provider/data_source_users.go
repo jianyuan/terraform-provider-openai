@@ -11,16 +11,6 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
-var _ datasource.DataSource = &UsersDataSource{}
-
-func NewUsersDataSource() datasource.DataSource {
-	return &UsersDataSource{}
-}
-
-type UsersDataSource struct {
-	baseDataSource
-}
-
 type UserDataSourceModel struct {
 	Id      types.String `tfsdk:"id"`
 	Email   types.String `tfsdk:"email"`
@@ -35,7 +25,6 @@ func (m *UserDataSourceModel) Fill(u apiclient.User) error {
 	m.Name = types.StringValue(u.Name)
 	m.Role = types.StringValue(string(u.Role))
 	m.AddedAt = types.Int64Value(int64(u.AddedAt))
-
 	return nil
 }
 
@@ -50,8 +39,17 @@ func (m *UsersDataSourceModel) Fill(users []apiclient.User) error {
 			return err
 		}
 	}
-
 	return nil
+}
+
+var _ datasource.DataSource = &UsersDataSource{}
+
+func NewUsersDataSource() datasource.DataSource {
+	return &UsersDataSource{}
+}
+
+type UsersDataSource struct {
+	baseDataSource
 }
 
 func (d *UsersDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -118,7 +116,7 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		}
 
 		if httpResp.StatusCode() != http.StatusOK {
-			resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 			return
 		}
 
@@ -132,7 +130,7 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	if err := data.Fill(users); err != nil {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
