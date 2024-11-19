@@ -27,13 +27,15 @@ type ProjectResource struct {
 
 // ProjectResourceModel describes the resource data model.
 type ProjectResourceModel struct {
-	Id    types.String `tfsdk:"id"`
-	Title types.String `tfsdk:"title"`
+	Id        types.String `tfsdk:"id"`
+	Name      types.String `tfsdk:"name"`
+	CreatedAt types.Int64  `tfsdk:"created_at"`
 }
 
 func (m *ProjectResourceModel) Fill(p apiclient.Project) error {
 	m.Id = types.StringValue(p.Id)
-	m.Title = types.StringValue(p.Title)
+	m.Name = types.StringValue(p.Name)
+	m.CreatedAt = types.Int64Value(int64(p.CreatedAt))
 	return nil
 }
 
@@ -53,9 +55,13 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"title": schema.StringAttribute{
-				MarkdownDescription: "Human-friendly label for the project, shown in user interfaces.",
+			"name": schema.StringAttribute{
+				MarkdownDescription: "The friendly name of the project, this name appears in reports.",
 				Required:            true,
+			},
+			"created_at": schema.Int64Attribute{
+				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
+				Computed:            true,
 			},
 		},
 	}
@@ -70,12 +76,10 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	httpResp, err := r.client.CreateOrganizationProjectWithResponse(
+	httpResp, err := r.client.CreateProjectWithResponse(
 		ctx,
-		"TODO",
-		apiclient.CreateOrganizationProjectJSONRequestBody{
-			Geography: "",
-			Title:     data.Title.ValueString(),
+		apiclient.CreateProjectJSONRequestBody{
+			Name: data.Name.ValueString(),
 		},
 	)
 
@@ -84,12 +88,12 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	if httpResp.StatusCode() != http.StatusOK {
+	if httpResp.StatusCode() != http.StatusCreated {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
+	if err := data.Fill(*httpResp.JSON201); err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
 		return
 	}
@@ -106,9 +110,8 @@ func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	httpResp, err := r.client.GetOrganizationProjectWithResponse(
+	httpResp, err := r.client.RetrieveProjectWithResponse(
 		ctx,
-		"TODO",
 		data.Id.ValueString(),
 	)
 
@@ -139,12 +142,11 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	httpResp, err := r.client.UpdateOrganizationProjectWithResponse(
+	httpResp, err := r.client.ModifyProjectWithResponse(
 		ctx,
-		"TODO",
 		data.Id.ValueString(),
-		apiclient.UpdateOrganizationProjectJSONRequestBody{
-			Title: data.Title.ValueStringPointer(),
+		apiclient.ModifyProjectJSONRequestBody{
+			Name: data.Name.ValueString(),
 		},
 	)
 
@@ -175,13 +177,9 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
-	httpResp, err := r.client.UpdateOrganizationProjectWithResponse(
+	httpResp, err := r.client.ArchiveProjectWithResponse(
 		ctx,
-		"TODO",
 		data.Id.ValueString(),
-		apiclient.UpdateOrganizationProjectJSONRequestBody{
-			Archive: Pointer(true),
-		},
 	)
 
 	if err != nil {

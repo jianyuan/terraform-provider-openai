@@ -10,23 +10,23 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
 )
 
-func TestAccProjectsDataSource(t *testing.T) {
-	rn := "data.openai_projects.test"
+func TestAccUsersDataSource(t *testing.T) {
+	rn := "data.openai_users.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccProjectsDataSourceConfig,
+				Config: testAccUsersDataSourceConfig,
 				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("projects"), knownvalue.SetPartial([]knownvalue.Check{
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("users"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":          knownvalue.NotNull(),
-							"name":        knownvalue.StringExact("Default project"),
-							"status":      knownvalue.StringExact("active"),
-							"created_at":  knownvalue.NotNull(),
-							"archived_at": knownvalue.Null(),
+							"id":       knownvalue.NotNull(),
+							"email":    knownvalue.NotNull(),
+							"name":     knownvalue.NotNull(),
+							"role":     knownvalue.StringExact("owner"),
+							"added_at": knownvalue.NotNull(),
 						}),
 					})),
 				},
@@ -35,7 +35,7 @@ func TestAccProjectsDataSource(t *testing.T) {
 	})
 }
 
-var testAccProjectsDataSourceConfig = `
-data "openai_projects" "test" {
+var testAccUsersDataSourceConfig = `
+data "openai_users" "test" {
 }
 `

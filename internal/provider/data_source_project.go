@@ -22,13 +22,24 @@ type ProjectDataSource struct {
 }
 
 type ProjectDataSourceModel struct {
-	Id    types.String `tfsdk:"id"`
-	Title types.String `tfsdk:"title"`
+	Id         types.String `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	Status     types.String `tfsdk:"status"`
+	CreatedAt  types.Int64  `tfsdk:"created_at"`
+	ArchivedAt types.Int64  `tfsdk:"archived_at"`
 }
 
 func (m *ProjectDataSourceModel) Fill(project apiclient.Project) error {
 	m.Id = types.StringValue(project.Id)
-	m.Title = types.StringValue(project.Title)
+	m.Name = types.StringValue(project.Name)
+	m.Status = types.StringValue(string(project.Status))
+	m.CreatedAt = types.Int64Value(int64(project.CreatedAt))
+	if project.ArchivedAt == nil {
+		m.ArchivedAt = types.Int64Null()
+	} else {
+		m.ArchivedAt = types.Int64Value(int64(*project.ArchivedAt))
+
+	}
 	return nil
 }
 
@@ -45,8 +56,20 @@ func (d *ProjectDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 				MarkdownDescription: "Project ID.",
 				Required:            true,
 			},
-			"title": schema.StringAttribute{
-				MarkdownDescription: "Human-friendly label for the project, shown in user interfaces.",
+			"name": schema.StringAttribute{
+				MarkdownDescription: "The name of the project. This appears in reporting.",
+				Computed:            true,
+			},
+			"status": schema.StringAttribute{
+				MarkdownDescription: "Status `active` or `archived`.",
+				Computed:            true,
+			},
+			"created_at": schema.Int64Attribute{
+				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
+				Computed:            true,
+			},
+			"archived_at": schema.Int64Attribute{
+				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was archived or `null`.",
 				Computed:            true,
 			},
 		},
@@ -62,9 +85,8 @@ func (d *ProjectDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	httpResp, err := d.client.GetOrganizationProjectWithResponse(
+	httpResp, err := d.client.RetrieveProjectWithResponse(
 		ctx,
-		"TODO",
 		data.Id.ValueString(),
 	)
 	if err != nil {

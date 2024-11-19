@@ -68,7 +68,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if !data.BaseUrl.IsNull() {
 		baseUrl = data.BaseUrl.ValueString()
 	} else {
-		baseUrl = "https://api.openai.com"
+		baseUrl = "https://api.openai.com/v1"
 	}
 
 	var adminKey string
@@ -104,16 +104,15 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewProjectApiKeyResource,
 		NewProjectResource,
 	}
 }
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewMembersDataSource,
 		NewProjectDataSource,
 		NewProjectsDataSource,
+		NewUsersDataSource,
 	}
 }
 

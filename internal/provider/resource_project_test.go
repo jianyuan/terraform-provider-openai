@@ -13,17 +13,18 @@ import (
 
 func TestAccProjectResource(t *testing.T) {
 	rn := "openai_project.test"
-	projectTitle := acctest.RandomWithPrefix("tf-project")
+	projectName := acctest.RandomWithPrefix("tf-project")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccProjectResourceConfig(projectTitle),
+				Config: testAccProjectResourceConfig(projectName),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("title"), knownvalue.StringExact(projectTitle)),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName)),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
 				},
 			},
 			{
@@ -32,20 +33,21 @@ func TestAccProjectResource(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: testAccProjectResourceConfig(projectTitle + "-updated"),
+				Config: testAccProjectResourceConfig(projectName + "-updated"),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("title"), knownvalue.StringExact(projectTitle+"-updated")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName+"-updated")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
 				},
 			},
 		},
 	})
 }
 
-func testAccProjectResourceConfig(title string) string {
+func testAccProjectResourceConfig(name string) string {
 	return fmt.Sprintf(`
 resource "openai_project" "test" {
-  title = %[1]q
+  name = %[1]q
 }
-`, title)
+`, name)
 }

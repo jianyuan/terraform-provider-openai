@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
@@ -21,23 +20,12 @@ type ProjectsDataSource struct {
 	baseDataSource
 }
 
-type ProjectsDataSourceModel_Project struct {
-	Id    types.String `tfsdk:"id"`
-	Title types.String `tfsdk:"title"`
-}
-
-func (m *ProjectsDataSourceModel_Project) Fill(project apiclient.Project) error {
-	m.Id = types.StringValue(project.Id)
-	m.Title = types.StringValue(project.Title)
-	return nil
-}
-
 type ProjectsDataSourceModel struct {
-	Projects []ProjectsDataSourceModel_Project `tfsdk:"projects"`
+	Projects []ProjectDataSourceModel `tfsdk:"projects"`
 }
 
 func (m *ProjectsDataSourceModel) Fill(projects []apiclient.Project) error {
-	m.Projects = make([]ProjectsDataSourceModel_Project, len(projects))
+	m.Projects = make([]ProjectDataSourceModel, len(projects))
 	for i, project := range projects {
 		if err := m.Projects[i].Fill(project); err != nil {
 			return err
@@ -64,8 +52,20 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 							MarkdownDescription: "Project ID.",
 							Computed:            true,
 						},
-						"title": schema.StringAttribute{
-							MarkdownDescription: "Human-friendly label for the project, shown in user interfaces.",
+						"name": schema.StringAttribute{
+							MarkdownDescription: "The name of the project. This appears in reporting.",
+							Computed:            true,
+						},
+						"status": schema.StringAttribute{
+							MarkdownDescription: "Status `active` or `archived`.",
+							Computed:            true,
+						},
+						"created_at": schema.Int64Attribute{
+							MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
+							Computed:            true,
+						},
+						"archived_at": schema.Int64Attribute{
+							MarkdownDescription: "The Unix timestamp (in seconds) of when the project was archived or `null`.",
 							Computed:            true,
 						},
 					},
@@ -84,21 +84,34 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
-	httpResp, err := d.client.GetOrganizationProjectsWithResponse(
-		ctx,
-		"TODO",
-	)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-		return
+	var projects []apiclient.Project
+	params := &apiclient.ListProjectsParams{}
+
+	for {
+		httpResp, err := d.client.ListProjectsWithResponse(
+			ctx,
+			params,
+		)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+			return
+		}
+
+		if httpResp.StatusCode() != http.StatusOK {
+			resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+
+		projects = append(projects, httpResp.JSON200.Data...)
+
+		if !httpResp.JSON200.HasMore {
+			break
+		}
+
+		params.After = &httpResp.JSON200.LastId
 	}
 
-	if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if err := data.Fill(httpResp.JSON200.Data); err != nil {
+	if err := data.Fill(projects); err != nil {
 		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
 		return
 	}

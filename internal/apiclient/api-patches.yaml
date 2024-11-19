@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.all
+---
+paths:
+  /organization/projects:
+    post:
+      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      responses:
