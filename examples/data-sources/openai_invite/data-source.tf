@@ -1,3 +1,3 @@
 data "openai_invite" "example" {
-  id = "invite-abc"
+  id = "invite-000000000000000000000000"
 }
