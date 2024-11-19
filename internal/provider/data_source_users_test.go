@@ -22,10 +22,10 @@ func TestAccUsersDataSource(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("users"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":       knownvalue.NotNull(),
+							"id":       knownvalue.StringExact(acctest.TestUserId),
 							"email":    knownvalue.NotNull(),
 							"name":     knownvalue.NotNull(),
-							"role":     knownvalue.StringExact("owner"),
+							"role":     knownvalue.NotNull(),
 							"added_at": knownvalue.NotNull(),
 						}),
 					})),

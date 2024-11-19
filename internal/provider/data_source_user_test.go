@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -31,11 +32,8 @@ func TestAccUserDataSource(t *testing.T) {
 	})
 }
 
-var testAccUserDataSourceConfig = `
-data "openai_users" "test" {
-}
-
+var testAccUserDataSourceConfig = fmt.Sprintf(`
 data "openai_user" "test" {
-	id = tolist(data.openai_users.test.users)[0].id
+	id = %[1]q
 }
-`
+`, acctest.TestUserId)
