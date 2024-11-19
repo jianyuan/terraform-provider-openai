@@ -3,21 +3,18 @@
 page_title: "openai Provider"
 subcategory: ""
 description: |-
-  The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.
-  Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the Authorization header of any requests to https://api.openai.com/dashboard/*. Log in to https://platform.openai.com, use Inspect Element to look for any requests to https://api.openai.com/dashboard/*, and grab the Authorization header value.
+  The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official Administration API https://platform.openai.com/docs/api-reference/administration to interact with the OpenAI platform.
 ---
 
 # openai Provider
 
-The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.
-
-Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the `Authorization` header of any requests to `https://api.openai.com/dashboard/*`. Log in to https://platform.openai.com, use Inspect Element to look for any requests to `https://api.openai.com/dashboard/*`, and grab the `Authorization` header value.
+The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official [Administration API](https://platform.openai.com/docs/api-reference/administration) to interact with the OpenAI platform.
 
 ## Example Usage
 
 ```terraform
 provider "openai" {
-  session_key = "sess-0000000000000000000000000000000000000000"
+  admin_key = "sk-admin-0000000000000000000000000000000000000000"
 }
 ```
 
@@ -26,5 +23,5 @@ provider "openai" {
 
 ### Optional
 
+- `admin_key` (String, Sensitive) The OpenAI admin key can be obtained through the [API Platform Organization](https://platform.openai.com/settings/organization/admin-keys) overview page. It can also be set using the `OPENAI_ADMIN_KEY` environment variable. Note that the admin key must begin with `sk-admin-`.
 - `base_url` (String) Base URL for the OpenAI API. Defaults to `https://api.openai.com`.
-- `session_key` (String, Sensitive) The OpenAI session key can be obtained by accessing the dashboard in your browser. This can also be set via the `OPENAI_SESSION_KEY` environment variable. Note that the session key must start with `sess-`.

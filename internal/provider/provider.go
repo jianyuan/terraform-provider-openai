@@ -29,8 +29,8 @@ type OpenAIProvider struct {
 
 // OpenAIProviderModel describes the provider data model.
 type OpenAIProviderModel struct {
-	BaseUrl    types.String `tfsdk:"base_url"`
-	SessionKey types.String `tfsdk:"session_key"`
+	BaseUrl  types.String `tfsdk:"base_url"`
+	AdminKey types.String `tfsdk:"admin_key"`
 }
 
 func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -40,15 +40,14 @@ func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequ
 
 func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "The OpenAI provider allows you to configure resources and data sources for your OpenAI organization. It uses internal APIs, so breaking changes are expected.\n\n" +
-			"Unfortunately, OpenAI's API keys do not allow some functionalities. Therefore, we need to obtain an OpenAI session key from the `Authorization` header of any requests to `https://api.openai.com/dashboard/*`. Log in to https://platform.openai.com, use Inspect Element to look for any requests to `https://api.openai.com/dashboard/*`, and grab the `Authorization` header value.",
+		MarkdownDescription: "The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official [Administration API](https://platform.openai.com/docs/api-reference/administration) to interact with the OpenAI platform.",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
 				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com`.",
 				Optional:            true,
 			},
-			"session_key": schema.StringAttribute{
-				MarkdownDescription: "The OpenAI session key can be obtained by accessing the dashboard in your browser. This can also be set via the `OPENAI_SESSION_KEY` environment variable. Note that the session key must start with `sess-`.",
+			"admin_key": schema.StringAttribute{
+				MarkdownDescription: "The OpenAI admin key can be obtained through the [API Platform Organization](https://platform.openai.com/settings/organization/admin-keys) overview page. It can also be set using the `OPENAI_ADMIN_KEY` environment variable. Note that the admin key must begin with `sk-admin-`.",
 				Optional:            true,
 				Sensitive:           true,
 			},
@@ -72,25 +71,25 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		baseUrl = "https://api.openai.com"
 	}
 
-	var sessionKey string
-	if !data.SessionKey.IsNull() {
-		sessionKey = data.SessionKey.ValueString()
-	} else if v := os.Getenv("OPENAI_SESSION_KEY"); v != "" {
-		sessionKey = v
+	var adminKey string
+	if !data.AdminKey.IsNull() {
+		adminKey = data.AdminKey.ValueString()
+	} else if v := os.Getenv("OPENAI_ADMIN_KEY"); v != "" {
+		adminKey = v
 	}
 
-	if sessionKey == "" {
-		resp.Diagnostics.AddError("session_key is required", "session_key is required")
+	if adminKey == "" {
+		resp.Diagnostics.AddError("admin_key is required", "admin_key is required")
 		return
-	} else if !strings.HasPrefix(sessionKey, "sess-") {
-		resp.Diagnostics.AddError("session_key must start with 'sess-'", "session_key must start with 'sess-'")
+	} else if !strings.HasPrefix(adminKey, "sk-admin-") {
+		resp.Diagnostics.AddError("admin_key must start with 'sk-admin-'", "admin_key must start with 'sk-admin-'")
 		return
 	}
 
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
 		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-			req.Header.Set("Authorization", "Bearer "+sessionKey)
+			req.Header.Set("Authorization", "Bearer "+adminKey)
 			return nil
 		}),
 	)
