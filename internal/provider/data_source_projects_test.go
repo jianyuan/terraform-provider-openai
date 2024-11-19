@@ -35,7 +35,38 @@ func TestAccProjectsDataSource(t *testing.T) {
 	})
 }
 
+func TestAccProjectsDataSource_includeArchived(t *testing.T) {
+	rn := "data.openai_projects.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccProjectsDataSourceConfig_includeArchived,
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("projects"), knownvalue.SetPartial([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"id":          knownvalue.NotNull(),
+							"name":        knownvalue.StringExact("Default project"),
+							"status":      knownvalue.StringExact("archived"),
+							"created_at":  knownvalue.NotNull(),
+							"archived_at": knownvalue.NotNull(),
+						}),
+					})),
+				},
+			},
+		},
+	})
+}
+
 var testAccProjectsDataSourceConfig = `
 data "openai_projects" "test" {
+}
+`
+
+var testAccProjectsDataSourceConfig_includeArchived = `
+data "openai_projects" "test" {
+  include_archived = true
 }
 `

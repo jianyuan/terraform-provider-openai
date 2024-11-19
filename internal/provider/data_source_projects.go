@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
@@ -21,7 +22,8 @@ type ProjectsDataSource struct {
 }
 
 type ProjectsDataSourceModel struct {
-	Projects []ProjectDataSourceModel `tfsdk:"projects"`
+	IncludeArchived types.Bool               `tfsdk:"include_archived"`
+	Projects        []ProjectDataSourceModel `tfsdk:"projects"`
 }
 
 func (m *ProjectsDataSourceModel) Fill(projects []apiclient.Project) error {
@@ -43,6 +45,10 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 		MarkdownDescription: "List all projects in an organization.",
 
 		Attributes: map[string]schema.Attribute{
+			"include_archived": schema.BoolAttribute{
+				MarkdownDescription: "Include archived projects. Default is `false`.",
+				Optional:            true,
+			},
 			"projects": schema.SetNestedAttribute{
 				MarkdownDescription: "List of projects.",
 				Computed:            true,
@@ -85,7 +91,9 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 	}
 
 	var projects []apiclient.Project
-	params := &apiclient.ListProjectsParams{}
+	params := &apiclient.ListProjectsParams{
+		IncludeArchived: data.IncludeArchived.ValueBoolPointer(),
+	}
 
 	for {
 		httpResp, err := d.client.ListProjectsWithResponse(
