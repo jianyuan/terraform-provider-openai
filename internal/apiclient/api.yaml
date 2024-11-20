@@ -4644,18 +4644,12 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectServiceAccountCreateRequest'
       responses:
-        "200":
+        "201":
           description: Project service account created successfully.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectServiceAccountCreateResponse'
-        "400":
-          description: Error response when project is archived.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
         name: Create project service account
         group: administration
