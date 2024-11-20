@@ -122,7 +122,7 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 	}
 
 	if err := data.Fill(projects); err != nil {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 

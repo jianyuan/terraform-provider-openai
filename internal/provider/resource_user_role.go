@@ -84,7 +84,7 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
@@ -116,7 +116,7 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
@@ -141,17 +141,17 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 	)
 
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
 	}
 
 	if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 

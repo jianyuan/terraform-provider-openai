@@ -140,7 +140,7 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 	}
 
 	if err := data.FillFromCreate(*httpResp.JSON201); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
@@ -173,7 +173,7 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 

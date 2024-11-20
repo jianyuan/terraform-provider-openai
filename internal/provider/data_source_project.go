@@ -76,7 +76,7 @@ func (d *ProjectDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 
 	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to unmarshal response: %s", err))
+		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to fill data: %s", err))
 		return
 	}
 
