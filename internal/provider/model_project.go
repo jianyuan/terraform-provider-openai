@@ -13,15 +13,15 @@ type ProjectModel struct {
 	ArchivedAt types.Int64  `tfsdk:"archived_at"`
 }
 
-func (m *ProjectModel) Fill(project apiclient.Project) error {
-	m.Id = types.StringValue(project.Id)
-	m.Name = types.StringValue(project.Name)
-	m.Status = types.StringValue(string(project.Status))
-	m.CreatedAt = types.Int64Value(int64(project.CreatedAt))
-	if project.ArchivedAt == nil {
+func (m *ProjectModel) Fill(p apiclient.Project) error {
+	m.Id = types.StringValue(p.Id)
+	m.Name = types.StringValue(p.Name)
+	m.Status = types.StringValue(string(p.Status))
+	m.CreatedAt = types.Int64Value(int64(p.CreatedAt))
+	if p.ArchivedAt == nil {
 		m.ArchivedAt = types.Int64Null()
 	} else {
-		m.ArchivedAt = types.Int64Value(int64(*project.ArchivedAt))
+		m.ArchivedAt = types.Int64Value(int64(*p.ArchivedAt))
 
 	}
 	return nil

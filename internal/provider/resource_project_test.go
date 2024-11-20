@@ -1,7 +1,11 @@
 package provider
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -9,7 +13,64 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
+	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/ptr"
 )
+
+func init() {
+	resource.AddTestSweepers("openai_project", &resource.Sweeper{
+		Name: "openai_project",
+		F: func(r string) error {
+			ctx := context.Background()
+
+			params := &apiclient.ListProjectsParams{
+				Limit: ptr.Ptr(100),
+			}
+
+			for {
+				httpResp, err := acctest.SharedClient.ListProjectsWithResponse(
+					ctx,
+					params,
+				)
+				if err != nil {
+					return fmt.Errorf("Unable to read, got error: %s", err)
+				}
+
+				if httpResp.StatusCode() != http.StatusOK {
+					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
+				}
+
+				for _, project := range httpResp.JSON200.Data {
+					if !strings.HasPrefix(project.Name, "tf-") {
+						continue
+					}
+
+					log.Printf("[INFO] Destroying project %s", project.Id)
+
+					_, err := acctest.SharedClient.ArchiveProjectWithResponse(
+						ctx,
+						project.Id,
+					)
+
+					if err != nil {
+						log.Printf("[ERROR] Unable to archive project %s: %s", project.Id, err)
+						continue
+					}
+
+					log.Printf("[INFO] Archived project %s", project.Id)
+				}
+
+				if !httpResp.JSON200.HasMore {
+					break
+				}
+
+				params.After = &httpResp.JSON200.LastId
+			}
+
+			return nil
+		},
+	})
+}
 
 func TestAccProjectResource(t *testing.T) {
 	rn := "openai_project.test"
