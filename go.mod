@@ -1,8 +1,6 @@
 module github.com/jianyuan/terraform-provider-openai
 
-go 1.23.2
-
-toolchain go1.23.3
+go 1.23.3
 
 require (
 	carvel.dev/ytt v0.51.0
@@ -15,6 +13,8 @@ require (
 	github.com/oapi-codegen/oapi-codegen/v2 v2.4.1
 	github.com/oapi-codegen/runtime v1.1.1
 )
+
+require github.com/jianyuan/go-utils v0.0.0-20241124123843-bffc107339ec
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
