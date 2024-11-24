@@ -13,9 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
+	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
-	"github.com/jianyuan/terraform-provider-openai/internal/ptr"
 )
 
 func init() {

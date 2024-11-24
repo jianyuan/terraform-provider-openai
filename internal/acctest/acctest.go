@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/jianyuan/go-utils/must"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
-	"github.com/jianyuan/terraform-provider-openai/internal/must"
 )
 
 var (
