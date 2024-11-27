@@ -141,8 +141,8 @@ github.com/hashicorp/terraform-exec v0.21.0 h1:uNkLAe95ey5Uux6KJdua6+cv8asgILFVW
 github.com/hashicorp/terraform-exec v0.21.0/go.mod h1:1PPeMYou+KDUSSeRE9szMZ/oHf4fYUmB923Wzbq1ICg=
 github.com/hashicorp/terraform-json v0.23.0 h1:sniCkExU4iKtTADReHzACkk8fnpQXrdD2xoR+lppBkI=
 github.com/hashicorp/terraform-json v0.23.0/go.mod h1:MHdXbBAbSg0GvzuWazEGKAn/cyNfIB7mN6y7KJN6y2c=
-github.com/hashicorp/terraform-plugin-docs v0.20.0 h1:ox7rm1FN0dVZaJBUzkVVh10R1r3+FeMQWL0QopQ9d7o=
-github.com/hashicorp/terraform-plugin-docs v0.20.0/go.mod h1:A/+4SVMdAkQYtIBtaxV0H7AU862TxVZk/hhKaMDQB6Y=
+github.com/hashicorp/terraform-plugin-docs v0.20.1 h1:Fq7E/HrU8kuZu3hNliZGwloFWSYfWEOWnylFhYQIoys=
+github.com/hashicorp/terraform-plugin-docs v0.20.1/go.mod h1:Yz6HoK7/EgzSrHPB9J/lWFzwl9/xep2OPnc5jaJDV90=
 github.com/hashicorp/terraform-plugin-framework v1.13.0 h1:8OTG4+oZUfKgnfTdPTJwZ532Bh2BobF4H+yBiYJ/scw=
 github.com/hashicorp/terraform-plugin-framework v1.13.0/go.mod h1:j64rwMGpgM3NYXTKuxrCnyubQb/4VKldEKlcG8cvmjU=
 github.com/hashicorp/terraform-plugin-framework-validators v0.15.0 h1:RXMmu7JgpFjnI1a5QjMCBb11usrW2OtAG+iOTIj5c9Y=
@@ -177,8 +177,6 @@ github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 h1:BQSFePA1RWJOl
 github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99/go.mod h1:1lJo3i6rXxKeerYnT8Nvf0QmHCRC1n8sfWVwXF2Frvo=
 github.com/jhump/protoreflect v1.15.1 h1:HUMERORf3I3ZdX05WaQ6MIpd/NJ434hTp5YiKgfCL6c=
 github.com/jhump/protoreflect v1.15.1/go.mod h1:jD/2GMKKE6OqX8qTjhADU1e6DShO+gavG9e0Q693nKo=
-github.com/jianyuan/go-utils v0.0.0-20241124123843-bffc107339ec h1:S/beNIYmeADvT4J59f37yLs0zFk8T/TV/6asxbBmP18=
-github.com/jianyuan/go-utils v0.0.0-20241124123843-bffc107339ec/go.mod h1:D1O+WiG+p0g3LExvWtPEn6+UDTKJoUxTfJxyM6Ya6+k=
 github.com/jianyuan/go-utils v0.0.0-20241124212807-9e88ec4ee96c h1:y96j6Fs9sx5jAXbtxOcgzCArF2k/xQkO7lNbzzHMA98=
 github.com/jianyuan/go-utils v0.0.0-20241124212807-9e88ec4ee96c/go.mod h1:D1O+WiG+p0g3LExvWtPEn6+UDTKJoUxTfJxyM6Ya6+k=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
