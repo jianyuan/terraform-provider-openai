@@ -219,6 +219,11 @@ const (
 	ChatCompletionToolChoiceOption0Required ChatCompletionToolChoiceOption0 = "required"
 )
 
+// Defines values for CostsResultObject.
+const (
+	OrganizationCostsResult CostsResultObject = "organization.costs.result"
+)
+
 // Defines values for CreateAssistantRequestModel1.
 const (
 	CreateAssistantRequestModel1Gpt35Turbo        CreateAssistantRequestModel1 = "gpt-3.5-turbo"
@@ -242,6 +247,7 @@ const (
 	CreateAssistantRequestModel1Gpt4o             CreateAssistantRequestModel1 = "gpt-4o"
 	CreateAssistantRequestModel1Gpt4o20240513     CreateAssistantRequestModel1 = "gpt-4o-2024-05-13"
 	CreateAssistantRequestModel1Gpt4o20240806     CreateAssistantRequestModel1 = "gpt-4o-2024-08-06"
+	CreateAssistantRequestModel1Gpt4o20241120     CreateAssistantRequestModel1 = "gpt-4o-2024-11-20"
 	CreateAssistantRequestModel1Gpt4oMini         CreateAssistantRequestModel1 = "gpt-4o-mini"
 	CreateAssistantRequestModel1Gpt4oMini20240718 CreateAssistantRequestModel1 = "gpt-4o-mini-2024-07-18"
 )
@@ -308,6 +314,7 @@ const (
 	CreateChatCompletionRequestModel1Gpt4o                        CreateChatCompletionRequestModel1 = "gpt-4o"
 	CreateChatCompletionRequestModel1Gpt4o20240513                CreateChatCompletionRequestModel1 = "gpt-4o-2024-05-13"
 	CreateChatCompletionRequestModel1Gpt4o20240806                CreateChatCompletionRequestModel1 = "gpt-4o-2024-08-06"
+	CreateChatCompletionRequestModel1Gpt4o20241120                CreateChatCompletionRequestModel1 = "gpt-4o-2024-11-20"
 	CreateChatCompletionRequestModel1Gpt4oAudioPreview            CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview"
 	CreateChatCompletionRequestModel1Gpt4oAudioPreview20241001    CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview-2024-10-01"
 	CreateChatCompletionRequestModel1Gpt4oMini                    CreateChatCompletionRequestModel1 = "gpt-4o-mini"
@@ -483,9 +490,9 @@ const (
 
 // Defines values for CreateImageVariationRequestSize.
 const (
-	N1024x1024 CreateImageVariationRequestSize = "1024x1024"
-	N256x256   CreateImageVariationRequestSize = "256x256"
-	N512x512   CreateImageVariationRequestSize = "512x512"
+	CreateImageVariationRequestSizeN1024x1024 CreateImageVariationRequestSize = "1024x1024"
+	CreateImageVariationRequestSizeN256x256   CreateImageVariationRequestSize = "256x256"
+	CreateImageVariationRequestSizeN512x512   CreateImageVariationRequestSize = "512x512"
 )
 
 // Defines values for CreateMessageRequestRole.
@@ -606,6 +613,7 @@ const (
 	CreateRunRequestModel1Gpt4o             CreateRunRequestModel1 = "gpt-4o"
 	CreateRunRequestModel1Gpt4o20240513     CreateRunRequestModel1 = "gpt-4o-2024-05-13"
 	CreateRunRequestModel1Gpt4o20240806     CreateRunRequestModel1 = "gpt-4o-2024-08-06"
+	CreateRunRequestModel1Gpt4o20241120     CreateRunRequestModel1 = "gpt-4o-2024-11-20"
 	CreateRunRequestModel1Gpt4oMini         CreateRunRequestModel1 = "gpt-4o-mini"
 	CreateRunRequestModel1Gpt4oMini20240718 CreateRunRequestModel1 = "gpt-4o-mini-2024-07-18"
 )
@@ -659,6 +667,7 @@ const (
 	CreateThreadAndRunRequestModel1Gpt4o             CreateThreadAndRunRequestModel1 = "gpt-4o"
 	CreateThreadAndRunRequestModel1Gpt4o20240513     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-05-13"
 	CreateThreadAndRunRequestModel1Gpt4o20240806     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-08-06"
+	CreateThreadAndRunRequestModel1Gpt4o20241120     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-11-20"
 	CreateThreadAndRunRequestModel1Gpt4oMini         CreateThreadAndRunRequestModel1 = "gpt-4o-mini"
 	CreateThreadAndRunRequestModel1Gpt4oMini20240718 CreateThreadAndRunRequestModel1 = "gpt-4o-mini-2024-07-18"
 )
@@ -1235,6 +1244,56 @@ const (
 	UploadPartObjectUploadPart UploadPartObject = "upload.part"
 )
 
+// Defines values for UsageAudioSpeechesResultObject.
+const (
+	OrganizationUsageAudioSpeechesResult UsageAudioSpeechesResultObject = "organization.usage.audio_speeches.result"
+)
+
+// Defines values for UsageAudioTranscriptionsResultObject.
+const (
+	OrganizationUsageAudioTranscriptionsResult UsageAudioTranscriptionsResultObject = "organization.usage.audio_transcriptions.result"
+)
+
+// Defines values for UsageCodeInterpreterSessionsResultObject.
+const (
+	OrganizationUsageCodeInterpreterSessionsResult UsageCodeInterpreterSessionsResultObject = "organization.usage.code_interpreter_sessions.result"
+)
+
+// Defines values for UsageCompletionsResultObject.
+const (
+	OrganizationUsageCompletionsResult UsageCompletionsResultObject = "organization.usage.completions.result"
+)
+
+// Defines values for UsageEmbeddingsResultObject.
+const (
+	OrganizationUsageEmbeddingsResult UsageEmbeddingsResultObject = "organization.usage.embeddings.result"
+)
+
+// Defines values for UsageImagesResultObject.
+const (
+	OrganizationUsageImagesResult UsageImagesResultObject = "organization.usage.images.result"
+)
+
+// Defines values for UsageModerationsResultObject.
+const (
+	OrganizationUsageModerationsResult UsageModerationsResultObject = "organization.usage.moderations.result"
+)
+
+// Defines values for UsageResponseObject.
+const (
+	Page UsageResponseObject = "page"
+)
+
+// Defines values for UsageTimeBucketObject.
+const (
+	Bucket UsageTimeBucketObject = "bucket"
+)
+
+// Defines values for UsageVectorStoresResultObject.
+const (
+	OrganizationUsageVectorStoresResult UsageVectorStoresResultObject = "organization.usage.vector_stores.result"
+)
+
 // Defines values for UserObject.
 const (
 	OrganizationUser UserObject = "organization.user"
@@ -1334,6 +1393,150 @@ const (
 const (
 	ListFilesParamsOrderAsc  ListFilesParamsOrder = "asc"
 	ListFilesParamsOrderDesc ListFilesParamsOrder = "desc"
+)
+
+// Defines values for UsageCostsParamsBucketWidth.
+const (
+	UsageCostsParamsBucketWidthN1d UsageCostsParamsBucketWidth = "1d"
+)
+
+// Defines values for UsageCostsParamsGroupBy.
+const (
+	UsageCostsParamsGroupByLineItem  UsageCostsParamsGroupBy = "line_item"
+	UsageCostsParamsGroupByProjectId UsageCostsParamsGroupBy = "project_id"
+)
+
+// Defines values for UsageAudioSpeechesParamsBucketWidth.
+const (
+	UsageAudioSpeechesParamsBucketWidthN1d UsageAudioSpeechesParamsBucketWidth = "1d"
+	UsageAudioSpeechesParamsBucketWidthN1h UsageAudioSpeechesParamsBucketWidth = "1h"
+	UsageAudioSpeechesParamsBucketWidthN1m UsageAudioSpeechesParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageAudioSpeechesParamsGroupBy.
+const (
+	UsageAudioSpeechesParamsGroupByApiKeyId  UsageAudioSpeechesParamsGroupBy = "api_key_id"
+	UsageAudioSpeechesParamsGroupByModel     UsageAudioSpeechesParamsGroupBy = "model"
+	UsageAudioSpeechesParamsGroupByProjectId UsageAudioSpeechesParamsGroupBy = "project_id"
+	UsageAudioSpeechesParamsGroupByUserId    UsageAudioSpeechesParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageAudioTranscriptionsParamsBucketWidth.
+const (
+	UsageAudioTranscriptionsParamsBucketWidthN1d UsageAudioTranscriptionsParamsBucketWidth = "1d"
+	UsageAudioTranscriptionsParamsBucketWidthN1h UsageAudioTranscriptionsParamsBucketWidth = "1h"
+	UsageAudioTranscriptionsParamsBucketWidthN1m UsageAudioTranscriptionsParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageAudioTranscriptionsParamsGroupBy.
+const (
+	UsageAudioTranscriptionsParamsGroupByApiKeyId  UsageAudioTranscriptionsParamsGroupBy = "api_key_id"
+	UsageAudioTranscriptionsParamsGroupByModel     UsageAudioTranscriptionsParamsGroupBy = "model"
+	UsageAudioTranscriptionsParamsGroupByProjectId UsageAudioTranscriptionsParamsGroupBy = "project_id"
+	UsageAudioTranscriptionsParamsGroupByUserId    UsageAudioTranscriptionsParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageCodeInterpreterSessionsParamsBucketWidth.
+const (
+	UsageCodeInterpreterSessionsParamsBucketWidthN1d UsageCodeInterpreterSessionsParamsBucketWidth = "1d"
+	UsageCodeInterpreterSessionsParamsBucketWidthN1h UsageCodeInterpreterSessionsParamsBucketWidth = "1h"
+	UsageCodeInterpreterSessionsParamsBucketWidthN1m UsageCodeInterpreterSessionsParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageCodeInterpreterSessionsParamsGroupBy.
+const (
+	UsageCodeInterpreterSessionsParamsGroupByProjectId UsageCodeInterpreterSessionsParamsGroupBy = "project_id"
+)
+
+// Defines values for UsageCompletionsParamsBucketWidth.
+const (
+	UsageCompletionsParamsBucketWidthN1d UsageCompletionsParamsBucketWidth = "1d"
+	UsageCompletionsParamsBucketWidthN1h UsageCompletionsParamsBucketWidth = "1h"
+	UsageCompletionsParamsBucketWidthN1m UsageCompletionsParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageCompletionsParamsGroupBy.
+const (
+	UsageCompletionsParamsGroupByApiKeyId  UsageCompletionsParamsGroupBy = "api_key_id"
+	UsageCompletionsParamsGroupByBatch     UsageCompletionsParamsGroupBy = "batch"
+	UsageCompletionsParamsGroupByModel     UsageCompletionsParamsGroupBy = "model"
+	UsageCompletionsParamsGroupByProjectId UsageCompletionsParamsGroupBy = "project_id"
+	UsageCompletionsParamsGroupByUserId    UsageCompletionsParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageEmbeddingsParamsBucketWidth.
+const (
+	UsageEmbeddingsParamsBucketWidthN1d UsageEmbeddingsParamsBucketWidth = "1d"
+	UsageEmbeddingsParamsBucketWidthN1h UsageEmbeddingsParamsBucketWidth = "1h"
+	UsageEmbeddingsParamsBucketWidthN1m UsageEmbeddingsParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageEmbeddingsParamsGroupBy.
+const (
+	UsageEmbeddingsParamsGroupByApiKeyId  UsageEmbeddingsParamsGroupBy = "api_key_id"
+	UsageEmbeddingsParamsGroupByModel     UsageEmbeddingsParamsGroupBy = "model"
+	UsageEmbeddingsParamsGroupByProjectId UsageEmbeddingsParamsGroupBy = "project_id"
+	UsageEmbeddingsParamsGroupByUserId    UsageEmbeddingsParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageImagesParamsBucketWidth.
+const (
+	UsageImagesParamsBucketWidthN1d UsageImagesParamsBucketWidth = "1d"
+	UsageImagesParamsBucketWidthN1h UsageImagesParamsBucketWidth = "1h"
+	UsageImagesParamsBucketWidthN1m UsageImagesParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageImagesParamsSources.
+const (
+	ImageEdit       UsageImagesParamsSources = "image.edit"
+	ImageGeneration UsageImagesParamsSources = "image.generation"
+	ImageVariation  UsageImagesParamsSources = "image.variation"
+)
+
+// Defines values for UsageImagesParamsSizes.
+const (
+	UsageImagesParamsSizesN1024x1024 UsageImagesParamsSizes = "1024x1024"
+	UsageImagesParamsSizesN1024x1792 UsageImagesParamsSizes = "1024x1792"
+	UsageImagesParamsSizesN1792x1792 UsageImagesParamsSizes = "1792x1792"
+	UsageImagesParamsSizesN256x256   UsageImagesParamsSizes = "256x256"
+	UsageImagesParamsSizesN512x512   UsageImagesParamsSizes = "512x512"
+)
+
+// Defines values for UsageImagesParamsGroupBy.
+const (
+	UsageImagesParamsGroupByApiKeyId  UsageImagesParamsGroupBy = "api_key_id"
+	UsageImagesParamsGroupByModel     UsageImagesParamsGroupBy = "model"
+	UsageImagesParamsGroupByProjectId UsageImagesParamsGroupBy = "project_id"
+	UsageImagesParamsGroupBySize      UsageImagesParamsGroupBy = "size"
+	UsageImagesParamsGroupBySource    UsageImagesParamsGroupBy = "source"
+	UsageImagesParamsGroupByUserId    UsageImagesParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageModerationsParamsBucketWidth.
+const (
+	UsageModerationsParamsBucketWidthN1d UsageModerationsParamsBucketWidth = "1d"
+	UsageModerationsParamsBucketWidthN1h UsageModerationsParamsBucketWidth = "1h"
+	UsageModerationsParamsBucketWidthN1m UsageModerationsParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageModerationsParamsGroupBy.
+const (
+	UsageModerationsParamsGroupByApiKeyId  UsageModerationsParamsGroupBy = "api_key_id"
+	UsageModerationsParamsGroupByModel     UsageModerationsParamsGroupBy = "model"
+	UsageModerationsParamsGroupByProjectId UsageModerationsParamsGroupBy = "project_id"
+	UsageModerationsParamsGroupByUserId    UsageModerationsParamsGroupBy = "user_id"
+)
+
+// Defines values for UsageVectorStoresParamsBucketWidth.
+const (
+	N1d UsageVectorStoresParamsBucketWidth = "1d"
+	N1h UsageVectorStoresParamsBucketWidth = "1h"
+	N1m UsageVectorStoresParamsBucketWidth = "1m"
+)
+
+// Defines values for UsageVectorStoresParamsGroupBy.
+const (
+	UsageVectorStoresParamsGroupByProjectId UsageVectorStoresParamsGroupBy = "project_id"
 )
 
 // Defines values for ListMessagesParamsOrder.
@@ -2438,6 +2641,28 @@ type CompletionUsage struct {
 	TotalTokens int `json:"total_tokens"`
 }
 
+// CostsResult The aggregated costs details of the specific time bucket.
+type CostsResult struct {
+	// Amount The monetary value in its associated currency.
+	Amount *struct {
+		// Currency Lowercase ISO-4217 currency e.g. "usd"
+		Currency *string `json:"currency,omitempty"`
+
+		// Value The numeric value of the cost.
+		Value *float32 `json:"value,omitempty"`
+	} `json:"amount,omitempty"`
+
+	// LineItem When `group_by=line_item`, this field provides the line item of the grouped costs result.
+	LineItem *string           `json:"line_item"`
+	Object   CostsResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+	ProjectId *string `json:"project_id"`
+}
+
+// CostsResultObject defines model for CostsResult.Object.
+type CostsResultObject string
+
 // CreateAssistantRequest defines model for CreateAssistantRequest.
 type CreateAssistantRequest struct {
 	// Description The description of the assistant. The maximum length is 512 characters.
@@ -2568,8 +2793,7 @@ type CreateChatCompletionRequest struct {
 		// `opus`, or `pcm16`.
 		Format CreateChatCompletionRequestAudioFormat `json:"format"`
 
-		// Voice The voice the model uses to respond. Supported voices are `alloy`,
-		// `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, and `verse`.
+		// Voice The voice the model uses to respond. Supported voices are `ash`, `ballad`, `coral`, `sage`, and `verse` (also supported but not recommended are `alloy`, `echo`, and `shimmer`; these voices are less expressive).
 		Voice CreateChatCompletionRequestAudioVoice `json:"voice"`
 	} `json:"audio"`
 
@@ -2723,8 +2947,7 @@ type CreateChatCompletionRequest struct {
 // `opus`, or `pcm16`.
 type CreateChatCompletionRequestAudioFormat string
 
-// CreateChatCompletionRequestAudioVoice The voice the model uses to respond. Supported voices are `alloy`,
-// `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, and `verse`.
+// CreateChatCompletionRequestAudioVoice The voice the model uses to respond. Supported voices are `ash`, `ballad`, `coral`, `sage`, and `verse` (also supported but not recommended are `alloy`, `echo`, and `shimmer`; these voices are less expressive).
 type CreateChatCompletionRequestAudioVoice string
 
 // CreateChatCompletionRequestFunctionCall0 `none` means the model will not call a function and instead generates a message. `auto` means the model can pick between generating a message or calling a function.
@@ -6036,6 +6259,226 @@ type UploadPart struct {
 // UploadPartObject The object type, which is always `upload.part`.
 type UploadPartObject string
 
+// UsageAudioSpeechesResult The aggregated audio speeches usage details of the specific time bucket.
+type UsageAudioSpeechesResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// Characters The number of characters processed.
+	Characters int `json:"characters"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                            `json:"num_model_requests"`
+	Object           UsageAudioSpeechesResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageAudioSpeechesResultObject defines model for UsageAudioSpeechesResult.Object.
+type UsageAudioSpeechesResultObject string
+
+// UsageAudioTranscriptionsResult The aggregated audio transcriptions usage details of the specific time bucket.
+type UsageAudioTranscriptionsResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                                  `json:"num_model_requests"`
+	Object           UsageAudioTranscriptionsResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// Seconds The number of seconds processed.
+	Seconds int `json:"seconds"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageAudioTranscriptionsResultObject defines model for UsageAudioTranscriptionsResult.Object.
+type UsageAudioTranscriptionsResultObject string
+
+// UsageCodeInterpreterSessionsResult The aggregated code interpreter sessions usage details of the specific time bucket.
+type UsageCodeInterpreterSessionsResult struct {
+	Object UsageCodeInterpreterSessionsResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// Sessions The number of code interpreter sessions.
+	Sessions int `json:"sessions"`
+}
+
+// UsageCodeInterpreterSessionsResultObject defines model for UsageCodeInterpreterSessionsResult.Object.
+type UsageCodeInterpreterSessionsResultObject string
+
+// UsageCompletionsResult The aggregated completions usage details of the specific time bucket.
+type UsageCompletionsResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// Batch When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+	Batch *bool `json:"batch"`
+
+	// InputCachedTokens The aggregated number of input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+	InputCachedTokens *int `json:"input_cached_tokens,omitempty"`
+
+	// InputTokens The aggregated number of input tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+	InputTokens int `json:"input_tokens"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                          `json:"num_model_requests"`
+	Object           UsageCompletionsResultObject `json:"object"`
+
+	// OutputTokens The aggregated number of output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+	OutputTokens int `json:"output_tokens"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageCompletionsResultObject defines model for UsageCompletionsResult.Object.
+type UsageCompletionsResultObject string
+
+// UsageEmbeddingsResult The aggregated embeddings usage details of the specific time bucket.
+type UsageEmbeddingsResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// InputTokens The aggregated number of input tokens used.
+	InputTokens int `json:"input_tokens"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                         `json:"num_model_requests"`
+	Object           UsageEmbeddingsResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageEmbeddingsResultObject defines model for UsageEmbeddingsResult.Object.
+type UsageEmbeddingsResultObject string
+
+// UsageImagesResult The aggregated images usage details of the specific time bucket.
+type UsageImagesResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// Images The number of images processed.
+	Images int `json:"images"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                     `json:"num_model_requests"`
+	Object           UsageImagesResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// Size When `group_by=size`, this field provides the image size of the grouped usage result.
+	Size *string `json:"size"`
+
+	// Source When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+	Source *string `json:"source"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageImagesResultObject defines model for UsageImagesResult.Object.
+type UsageImagesResultObject string
+
+// UsageModerationsResult The aggregated moderations usage details of the specific time bucket.
+type UsageModerationsResult struct {
+	// ApiKeyId When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+	ApiKeyId *string `json:"api_key_id"`
+
+	// InputTokens The aggregated number of input tokens used.
+	InputTokens int `json:"input_tokens"`
+
+	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
+	Model *string `json:"model"`
+
+	// NumModelRequests The count of requests made to the model.
+	NumModelRequests int                          `json:"num_model_requests"`
+	Object           UsageModerationsResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+	UserId *string `json:"user_id"`
+}
+
+// UsageModerationsResultObject defines model for UsageModerationsResult.Object.
+type UsageModerationsResultObject string
+
+// UsageResponse defines model for UsageResponse.
+type UsageResponse struct {
+	Data     []UsageTimeBucket   `json:"data"`
+	HasMore  bool                `json:"has_more"`
+	NextPage string              `json:"next_page"`
+	Object   UsageResponseObject `json:"object"`
+}
+
+// UsageResponseObject defines model for UsageResponse.Object.
+type UsageResponseObject string
+
+// UsageTimeBucket defines model for UsageTimeBucket.
+type UsageTimeBucket struct {
+	EndTime   int                           `json:"end_time"`
+	Object    UsageTimeBucketObject         `json:"object"`
+	Result    []UsageTimeBucket_Result_Item `json:"result"`
+	StartTime int                           `json:"start_time"`
+}
+
+// UsageTimeBucketObject defines model for UsageTimeBucket.Object.
+type UsageTimeBucketObject string
+
+// UsageTimeBucket_Result_Item defines model for UsageTimeBucket.result.Item.
+type UsageTimeBucket_Result_Item struct {
+	union json.RawMessage
+}
+
+// UsageVectorStoresResult The aggregated vector stores usage details of the specific time bucket.
+type UsageVectorStoresResult struct {
+	Object UsageVectorStoresResultObject `json:"object"`
+
+	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+	ProjectId *string `json:"project_id"`
+
+	// UsageBytes The vector stores usage in bytes.
+	UsageBytes int `json:"usage_bytes"`
+}
+
+// UsageVectorStoresResultObject defines model for UsageVectorStoresResult.Object.
+type UsageVectorStoresResultObject string
+
 // User Represents an individual `user` within an organization.
 type User struct {
 	// AddedAt The Unix timestamp (in seconds) of when the user was added.
@@ -6387,6 +6830,36 @@ type ListAuditLogsParams struct {
 	Before *string `form:"before,omitempty" json:"before,omitempty"`
 }
 
+// UsageCostsParams defines parameters for UsageCosts.
+type UsageCostsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently only `1d` is supported, default to `1d`.
+	BucketWidth *UsageCostsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only costs for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// GroupBy Group the costs by the specified fields. Support fields include `project_id`, `line_item` and any combination of them.
+	GroupBy *[]UsageCostsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit A limit on the number of buckets to be returned. Limit can range between 1 and 180, and the default is 7.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageCostsParamsBucketWidth defines parameters for UsageCosts.
+type UsageCostsParamsBucketWidth string
+
+// UsageCostsParamsGroupBy defines parameters for UsageCosts.
+type UsageCostsParamsGroupBy string
+
 // ListInvitesParams defines parameters for ListInvites.
 type ListInvitesParams struct {
 	// Limit A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -6446,6 +6919,339 @@ type ListProjectUsersParams struct {
 	// After A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 	After *string `form:"after,omitempty" json:"after,omitempty"`
 }
+
+// UsageAudioSpeechesParams defines parameters for UsageAudioSpeeches.
+type UsageAudioSpeechesParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageAudioSpeechesParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them.
+	GroupBy *[]UsageAudioSpeechesParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageAudioSpeechesParamsBucketWidth defines parameters for UsageAudioSpeeches.
+type UsageAudioSpeechesParamsBucketWidth string
+
+// UsageAudioSpeechesParamsGroupBy defines parameters for UsageAudioSpeeches.
+type UsageAudioSpeechesParamsGroupBy string
+
+// UsageAudioTranscriptionsParams defines parameters for UsageAudioTranscriptions.
+type UsageAudioTranscriptionsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageAudioTranscriptionsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them.
+	GroupBy *[]UsageAudioTranscriptionsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageAudioTranscriptionsParamsBucketWidth defines parameters for UsageAudioTranscriptions.
+type UsageAudioTranscriptionsParamsBucketWidth string
+
+// UsageAudioTranscriptionsParamsGroupBy defines parameters for UsageAudioTranscriptions.
+type UsageAudioTranscriptionsParamsGroupBy string
+
+// UsageCodeInterpreterSessionsParams defines parameters for UsageCodeInterpreterSessions.
+type UsageCodeInterpreterSessionsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageCodeInterpreterSessionsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`.
+	GroupBy *[]UsageCodeInterpreterSessionsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageCodeInterpreterSessionsParamsBucketWidth defines parameters for UsageCodeInterpreterSessions.
+type UsageCodeInterpreterSessionsParamsBucketWidth string
+
+// UsageCodeInterpreterSessionsParamsGroupBy defines parameters for UsageCodeInterpreterSessions.
+type UsageCodeInterpreterSessionsParamsGroupBy string
+
+// UsageCompletionsParams defines parameters for UsageCompletions.
+type UsageCompletionsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageCompletionsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// Batch If `true`, return batch jobs only. If `false`, return non-batch jobs only. By default, return both.
+	Batch *bool `form:"batch,omitempty" json:"batch,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `batch` or any combination of them.
+	GroupBy *[]UsageCompletionsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageCompletionsParamsBucketWidth defines parameters for UsageCompletions.
+type UsageCompletionsParamsBucketWidth string
+
+// UsageCompletionsParamsGroupBy defines parameters for UsageCompletions.
+type UsageCompletionsParamsGroupBy string
+
+// UsageEmbeddingsParams defines parameters for UsageEmbeddings.
+type UsageEmbeddingsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageEmbeddingsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them.
+	GroupBy *[]UsageEmbeddingsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageEmbeddingsParamsBucketWidth defines parameters for UsageEmbeddings.
+type UsageEmbeddingsParamsBucketWidth string
+
+// UsageEmbeddingsParamsGroupBy defines parameters for UsageEmbeddings.
+type UsageEmbeddingsParamsGroupBy string
+
+// UsageImagesParams defines parameters for UsageImages.
+type UsageImagesParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageImagesParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// Sources Return only usages for these sources. Possible values are `image.generation`, `image.edit`, `image.variation` or any combination of them.
+	Sources *[]UsageImagesParamsSources `form:"sources,omitempty" json:"sources,omitempty"`
+
+	// Sizes Return only usages for these image sizes. Possible values are `256x256`, `512x512`, `1024x1024`, `1792x1792`, `1024x1792` or any combination of them.
+	Sizes *[]UsageImagesParamsSizes `form:"sizes,omitempty" json:"sizes,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `size`, `source` or any combination of them.
+	GroupBy *[]UsageImagesParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageImagesParamsBucketWidth defines parameters for UsageImages.
+type UsageImagesParamsBucketWidth string
+
+// UsageImagesParamsSources defines parameters for UsageImages.
+type UsageImagesParamsSources string
+
+// UsageImagesParamsSizes defines parameters for UsageImages.
+type UsageImagesParamsSizes string
+
+// UsageImagesParamsGroupBy defines parameters for UsageImages.
+type UsageImagesParamsGroupBy string
+
+// UsageModerationsParams defines parameters for UsageModerations.
+type UsageModerationsParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageModerationsParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// UserIds Return only usage for these users.
+	UserIds *[]string `form:"user_ids,omitempty" json:"user_ids,omitempty"`
+
+	// ApiKeyIds Return only usage for these API keys.
+	ApiKeyIds *[]string `form:"api_key_ids,omitempty" json:"api_key_ids,omitempty"`
+
+	// Models Return only usage for these models.
+	Models *[]string `form:"models,omitempty" json:"models,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them.
+	GroupBy *[]UsageModerationsParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageModerationsParamsBucketWidth defines parameters for UsageModerations.
+type UsageModerationsParamsBucketWidth string
+
+// UsageModerationsParamsGroupBy defines parameters for UsageModerations.
+type UsageModerationsParamsGroupBy string
+
+// UsageVectorStoresParams defines parameters for UsageVectorStores.
+type UsageVectorStoresParams struct {
+	// StartTime Start time (Unix seconds) of the query time range, inclusive.
+	StartTime int `form:"start_time" json:"start_time"`
+
+	// EndTime End time (Unix seconds) of the query time range, exclusive.
+	EndTime *int `form:"end_time,omitempty" json:"end_time,omitempty"`
+
+	// BucketWidth Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`.
+	BucketWidth *UsageVectorStoresParamsBucketWidth `form:"bucket_width,omitempty" json:"bucket_width,omitempty"`
+
+	// ProjectIds Return only usage for these projects.
+	ProjectIds *[]string `form:"project_ids,omitempty" json:"project_ids,omitempty"`
+
+	// GroupBy Group the usage data by the specified fields. Support fields include `project_id`.
+	GroupBy *[]UsageVectorStoresParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Limit Specifies the number of buckets to return.
+	// - `bucket_width=1d`: default: 7, max: 31
+	// - `bucket_width=1h`: default: 24, max: 168
+	// - `bucket_width=1m`: default: 60, max: 1440
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Page A cursor for use in pagination. Corresponding to the `next_page` field from the previous response.
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UsageVectorStoresParamsBucketWidth defines parameters for UsageVectorStores.
+type UsageVectorStoresParamsBucketWidth string
+
+// UsageVectorStoresParamsGroupBy defines parameters for UsageVectorStores.
+type UsageVectorStoresParamsGroupBy string
 
 // ListUsersParams defines parameters for ListUsers.
 type ListUsersParams struct {
@@ -11203,6 +12009,250 @@ func (t *RunStepObject_StepDetails) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsUsageCompletionsResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageCompletionsResult
+func (t UsageTimeBucket_Result_Item) AsUsageCompletionsResult() (UsageCompletionsResult, error) {
+	var body UsageCompletionsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageCompletionsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageCompletionsResult
+func (t *UsageTimeBucket_Result_Item) FromUsageCompletionsResult(v UsageCompletionsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageCompletionsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageCompletionsResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageCompletionsResult(v UsageCompletionsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageEmbeddingsResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageEmbeddingsResult
+func (t UsageTimeBucket_Result_Item) AsUsageEmbeddingsResult() (UsageEmbeddingsResult, error) {
+	var body UsageEmbeddingsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageEmbeddingsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageEmbeddingsResult
+func (t *UsageTimeBucket_Result_Item) FromUsageEmbeddingsResult(v UsageEmbeddingsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageEmbeddingsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageEmbeddingsResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageEmbeddingsResult(v UsageEmbeddingsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageModerationsResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageModerationsResult
+func (t UsageTimeBucket_Result_Item) AsUsageModerationsResult() (UsageModerationsResult, error) {
+	var body UsageModerationsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageModerationsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageModerationsResult
+func (t *UsageTimeBucket_Result_Item) FromUsageModerationsResult(v UsageModerationsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageModerationsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageModerationsResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageModerationsResult(v UsageModerationsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageImagesResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageImagesResult
+func (t UsageTimeBucket_Result_Item) AsUsageImagesResult() (UsageImagesResult, error) {
+	var body UsageImagesResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageImagesResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageImagesResult
+func (t *UsageTimeBucket_Result_Item) FromUsageImagesResult(v UsageImagesResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageImagesResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageImagesResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageImagesResult(v UsageImagesResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageAudioSpeechesResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageAudioSpeechesResult
+func (t UsageTimeBucket_Result_Item) AsUsageAudioSpeechesResult() (UsageAudioSpeechesResult, error) {
+	var body UsageAudioSpeechesResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageAudioSpeechesResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageAudioSpeechesResult
+func (t *UsageTimeBucket_Result_Item) FromUsageAudioSpeechesResult(v UsageAudioSpeechesResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageAudioSpeechesResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageAudioSpeechesResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageAudioSpeechesResult(v UsageAudioSpeechesResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageAudioTranscriptionsResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageAudioTranscriptionsResult
+func (t UsageTimeBucket_Result_Item) AsUsageAudioTranscriptionsResult() (UsageAudioTranscriptionsResult, error) {
+	var body UsageAudioTranscriptionsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageAudioTranscriptionsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageAudioTranscriptionsResult
+func (t *UsageTimeBucket_Result_Item) FromUsageAudioTranscriptionsResult(v UsageAudioTranscriptionsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageAudioTranscriptionsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageAudioTranscriptionsResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageAudioTranscriptionsResult(v UsageAudioTranscriptionsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageVectorStoresResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageVectorStoresResult
+func (t UsageTimeBucket_Result_Item) AsUsageVectorStoresResult() (UsageVectorStoresResult, error) {
+	var body UsageVectorStoresResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageVectorStoresResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageVectorStoresResult
+func (t *UsageTimeBucket_Result_Item) FromUsageVectorStoresResult(v UsageVectorStoresResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageVectorStoresResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageVectorStoresResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageVectorStoresResult(v UsageVectorStoresResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUsageCodeInterpreterSessionsResult returns the union data inside the UsageTimeBucket_Result_Item as a UsageCodeInterpreterSessionsResult
+func (t UsageTimeBucket_Result_Item) AsUsageCodeInterpreterSessionsResult() (UsageCodeInterpreterSessionsResult, error) {
+	var body UsageCodeInterpreterSessionsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUsageCodeInterpreterSessionsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided UsageCodeInterpreterSessionsResult
+func (t *UsageTimeBucket_Result_Item) FromUsageCodeInterpreterSessionsResult(v UsageCodeInterpreterSessionsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUsageCodeInterpreterSessionsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided UsageCodeInterpreterSessionsResult
+func (t *UsageTimeBucket_Result_Item) MergeUsageCodeInterpreterSessionsResult(v UsageCodeInterpreterSessionsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCostsResult returns the union data inside the UsageTimeBucket_Result_Item as a CostsResult
+func (t UsageTimeBucket_Result_Item) AsCostsResult() (CostsResult, error) {
+	var body CostsResult
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCostsResult overwrites any union data inside the UsageTimeBucket_Result_Item as the provided CostsResult
+func (t *UsageTimeBucket_Result_Item) FromCostsResult(v CostsResult) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCostsResult performs a merge with any union data inside the UsageTimeBucket_Result_Item, using the provided CostsResult
+func (t *UsageTimeBucket_Result_Item) MergeCostsResult(v CostsResult) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UsageTimeBucket_Result_Item) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UsageTimeBucket_Result_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsStaticChunkingStrategyResponseParam returns the union data inside the VectorStoreFileObject_ChunkingStrategy as a StaticChunkingStrategyResponseParam
 func (t VectorStoreFileObject_ChunkingStrategy) AsStaticChunkingStrategyResponseParam() (StaticChunkingStrategyResponseParam, error) {
 	var body StaticChunkingStrategyResponseParam
@@ -11460,6 +12510,9 @@ type ClientInterface interface {
 	// ListAuditLogs request
 	ListAuditLogs(ctx context.Context, params *ListAuditLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UsageCosts request
+	UsageCosts(ctx context.Context, params *UsageCostsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListInvites request
 	ListInvites(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -11542,6 +12595,30 @@ type ClientInterface interface {
 	ModifyProjectUserWithBody(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	ModifyProjectUser(ctx context.Context, projectId string, userId string, body ModifyProjectUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageAudioSpeeches request
+	UsageAudioSpeeches(ctx context.Context, params *UsageAudioSpeechesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageAudioTranscriptions request
+	UsageAudioTranscriptions(ctx context.Context, params *UsageAudioTranscriptionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageCodeInterpreterSessions request
+	UsageCodeInterpreterSessions(ctx context.Context, params *UsageCodeInterpreterSessionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageCompletions request
+	UsageCompletions(ctx context.Context, params *UsageCompletionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageEmbeddings request
+	UsageEmbeddings(ctx context.Context, params *UsageEmbeddingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageImages request
+	UsageImages(ctx context.Context, params *UsageImagesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageModerations request
+	UsageModerations(ctx context.Context, params *UsageModerationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsageVectorStores request
+	UsageVectorStores(ctx context.Context, params *UsageVectorStoresParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListUsers request
 	ListUsers(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12219,6 +13296,18 @@ func (c *Client) ListAuditLogs(ctx context.Context, params *ListAuditLogsParams,
 	return c.Client.Do(req)
 }
 
+func (c *Client) UsageCosts(ctx context.Context, params *UsageCostsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageCostsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListInvites(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListInvitesRequest(c.Server, params)
 	if err != nil {
@@ -12569,6 +13658,102 @@ func (c *Client) ModifyProjectUserWithBody(ctx context.Context, projectId string
 
 func (c *Client) ModifyProjectUser(ctx context.Context, projectId string, userId string, body ModifyProjectUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewModifyProjectUserRequest(c.Server, projectId, userId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageAudioSpeeches(ctx context.Context, params *UsageAudioSpeechesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageAudioSpeechesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageAudioTranscriptions(ctx context.Context, params *UsageAudioTranscriptionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageAudioTranscriptionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageCodeInterpreterSessions(ctx context.Context, params *UsageCodeInterpreterSessionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageCodeInterpreterSessionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageCompletions(ctx context.Context, params *UsageCompletionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageCompletionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageEmbeddings(ctx context.Context, params *UsageEmbeddingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageEmbeddingsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageImages(ctx context.Context, params *UsageImagesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageImagesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageModerations(ctx context.Context, params *UsageModerationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageModerationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsageVectorStores(ctx context.Context, params *UsageVectorStoresParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsageVectorStoresRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -14825,6 +16010,147 @@ func NewListAuditLogsRequest(server string, params *ListAuditLogsParams) (*http.
 	return req, nil
 }
 
+// NewUsageCostsRequest generates requests for UsageCosts
+func NewUsageCostsRequest(server string, params *UsageCostsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/costs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListInvitesRequest generates requests for ListInvites
 func NewListInvitesRequest(server string, params *ListInvitesParams) (*http.Request, error) {
 	var err error
@@ -15982,6 +17308,1470 @@ func NewModifyProjectUserRequestWithBody(server string, projectId string, userId
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUsageAudioSpeechesRequest generates requests for UsageAudioSpeeches
+func NewUsageAudioSpeechesRequest(server string, params *UsageAudioSpeechesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/audio_speeches")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageAudioTranscriptionsRequest generates requests for UsageAudioTranscriptions
+func NewUsageAudioTranscriptionsRequest(server string, params *UsageAudioTranscriptionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/audio_transcriptions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageCodeInterpreterSessionsRequest generates requests for UsageCodeInterpreterSessions
+func NewUsageCodeInterpreterSessionsRequest(server string, params *UsageCodeInterpreterSessionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/code_interpreter_sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageCompletionsRequest generates requests for UsageCompletions
+func NewUsageCompletionsRequest(server string, params *UsageCompletionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/completions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Batch != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "batch", runtime.ParamLocationQuery, *params.Batch); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageEmbeddingsRequest generates requests for UsageEmbeddings
+func NewUsageEmbeddingsRequest(server string, params *UsageEmbeddingsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/embeddings")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageImagesRequest generates requests for UsageImages
+func NewUsageImagesRequest(server string, params *UsageImagesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/images")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Sources != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sources", runtime.ParamLocationQuery, *params.Sources); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Sizes != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sizes", runtime.ParamLocationQuery, *params.Sizes); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageModerationsRequest generates requests for UsageModerations
+func NewUsageModerationsRequest(server string, params *UsageModerationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/moderations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UserIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_ids", runtime.ParamLocationQuery, *params.UserIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ApiKeyIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "api_key_ids", runtime.ParamLocationQuery, *params.ApiKeyIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Models != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "models", runtime.ParamLocationQuery, *params.Models); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUsageVectorStoresRequest generates requests for UsageVectorStores
+func NewUsageVectorStoresRequest(server string, params *UsageVectorStoresParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/usage/vector_stores")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start_time", runtime.ParamLocationQuery, params.StartTime); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end_time", runtime.ParamLocationQuery, *params.EndTime); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BucketWidth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_width", runtime.ParamLocationQuery, *params.BucketWidth); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProjectIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "project_ids", runtime.ParamLocationQuery, *params.ProjectIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "group_by", runtime.ParamLocationQuery, *params.GroupBy); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -18303,6 +21093,9 @@ type ClientWithResponsesInterface interface {
 	// ListAuditLogsWithResponse request
 	ListAuditLogsWithResponse(ctx context.Context, params *ListAuditLogsParams, reqEditors ...RequestEditorFn) (*ListAuditLogsResp, error)
 
+	// UsageCostsWithResponse request
+	UsageCostsWithResponse(ctx context.Context, params *UsageCostsParams, reqEditors ...RequestEditorFn) (*UsageCostsResp, error)
+
 	// ListInvitesWithResponse request
 	ListInvitesWithResponse(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*ListInvitesResp, error)
 
@@ -18385,6 +21178,30 @@ type ClientWithResponsesInterface interface {
 	ModifyProjectUserWithBodyWithResponse(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyProjectUserResp, error)
 
 	ModifyProjectUserWithResponse(ctx context.Context, projectId string, userId string, body ModifyProjectUserJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyProjectUserResp, error)
+
+	// UsageAudioSpeechesWithResponse request
+	UsageAudioSpeechesWithResponse(ctx context.Context, params *UsageAudioSpeechesParams, reqEditors ...RequestEditorFn) (*UsageAudioSpeechesResp, error)
+
+	// UsageAudioTranscriptionsWithResponse request
+	UsageAudioTranscriptionsWithResponse(ctx context.Context, params *UsageAudioTranscriptionsParams, reqEditors ...RequestEditorFn) (*UsageAudioTranscriptionsResp, error)
+
+	// UsageCodeInterpreterSessionsWithResponse request
+	UsageCodeInterpreterSessionsWithResponse(ctx context.Context, params *UsageCodeInterpreterSessionsParams, reqEditors ...RequestEditorFn) (*UsageCodeInterpreterSessionsResp, error)
+
+	// UsageCompletionsWithResponse request
+	UsageCompletionsWithResponse(ctx context.Context, params *UsageCompletionsParams, reqEditors ...RequestEditorFn) (*UsageCompletionsResp, error)
+
+	// UsageEmbeddingsWithResponse request
+	UsageEmbeddingsWithResponse(ctx context.Context, params *UsageEmbeddingsParams, reqEditors ...RequestEditorFn) (*UsageEmbeddingsResp, error)
+
+	// UsageImagesWithResponse request
+	UsageImagesWithResponse(ctx context.Context, params *UsageImagesParams, reqEditors ...RequestEditorFn) (*UsageImagesResp, error)
+
+	// UsageModerationsWithResponse request
+	UsageModerationsWithResponse(ctx context.Context, params *UsageModerationsParams, reqEditors ...RequestEditorFn) (*UsageModerationsResp, error)
+
+	// UsageVectorStoresWithResponse request
+	UsageVectorStoresWithResponse(ctx context.Context, params *UsageVectorStoresParams, reqEditors ...RequestEditorFn) (*UsageVectorStoresResp, error)
 
 	// ListUsersWithResponse request
 	ListUsersWithResponse(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*ListUsersResp, error)
@@ -19285,6 +22102,28 @@ func (r ListAuditLogsResp) StatusCode() int {
 	return 0
 }
 
+type UsageCostsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageCostsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageCostsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListInvitesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -19792,6 +22631,182 @@ func (r ModifyProjectUserResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ModifyProjectUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageAudioSpeechesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageAudioSpeechesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageAudioSpeechesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageAudioTranscriptionsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageAudioTranscriptionsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageAudioTranscriptionsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageCodeInterpreterSessionsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageCodeInterpreterSessionsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageCodeInterpreterSessionsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageCompletionsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageCompletionsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageCompletionsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageEmbeddingsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageEmbeddingsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageEmbeddingsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageImagesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageImagesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageImagesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageModerationsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageModerationsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageModerationsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsageVectorStoresResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UsageVectorStoresResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsageVectorStoresResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -21042,6 +24057,15 @@ func (c *ClientWithResponses) ListAuditLogsWithResponse(ctx context.Context, par
 	return ParseListAuditLogsResp(rsp)
 }
 
+// UsageCostsWithResponse request returning *UsageCostsResp
+func (c *ClientWithResponses) UsageCostsWithResponse(ctx context.Context, params *UsageCostsParams, reqEditors ...RequestEditorFn) (*UsageCostsResp, error) {
+	rsp, err := c.UsageCosts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageCostsResp(rsp)
+}
+
 // ListInvitesWithResponse request returning *ListInvitesResp
 func (c *ClientWithResponses) ListInvitesWithResponse(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*ListInvitesResp, error) {
 	rsp, err := c.ListInvites(ctx, params, reqEditors...)
@@ -21303,6 +24327,78 @@ func (c *ClientWithResponses) ModifyProjectUserWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseModifyProjectUserResp(rsp)
+}
+
+// UsageAudioSpeechesWithResponse request returning *UsageAudioSpeechesResp
+func (c *ClientWithResponses) UsageAudioSpeechesWithResponse(ctx context.Context, params *UsageAudioSpeechesParams, reqEditors ...RequestEditorFn) (*UsageAudioSpeechesResp, error) {
+	rsp, err := c.UsageAudioSpeeches(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageAudioSpeechesResp(rsp)
+}
+
+// UsageAudioTranscriptionsWithResponse request returning *UsageAudioTranscriptionsResp
+func (c *ClientWithResponses) UsageAudioTranscriptionsWithResponse(ctx context.Context, params *UsageAudioTranscriptionsParams, reqEditors ...RequestEditorFn) (*UsageAudioTranscriptionsResp, error) {
+	rsp, err := c.UsageAudioTranscriptions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageAudioTranscriptionsResp(rsp)
+}
+
+// UsageCodeInterpreterSessionsWithResponse request returning *UsageCodeInterpreterSessionsResp
+func (c *ClientWithResponses) UsageCodeInterpreterSessionsWithResponse(ctx context.Context, params *UsageCodeInterpreterSessionsParams, reqEditors ...RequestEditorFn) (*UsageCodeInterpreterSessionsResp, error) {
+	rsp, err := c.UsageCodeInterpreterSessions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageCodeInterpreterSessionsResp(rsp)
+}
+
+// UsageCompletionsWithResponse request returning *UsageCompletionsResp
+func (c *ClientWithResponses) UsageCompletionsWithResponse(ctx context.Context, params *UsageCompletionsParams, reqEditors ...RequestEditorFn) (*UsageCompletionsResp, error) {
+	rsp, err := c.UsageCompletions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageCompletionsResp(rsp)
+}
+
+// UsageEmbeddingsWithResponse request returning *UsageEmbeddingsResp
+func (c *ClientWithResponses) UsageEmbeddingsWithResponse(ctx context.Context, params *UsageEmbeddingsParams, reqEditors ...RequestEditorFn) (*UsageEmbeddingsResp, error) {
+	rsp, err := c.UsageEmbeddings(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageEmbeddingsResp(rsp)
+}
+
+// UsageImagesWithResponse request returning *UsageImagesResp
+func (c *ClientWithResponses) UsageImagesWithResponse(ctx context.Context, params *UsageImagesParams, reqEditors ...RequestEditorFn) (*UsageImagesResp, error) {
+	rsp, err := c.UsageImages(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageImagesResp(rsp)
+}
+
+// UsageModerationsWithResponse request returning *UsageModerationsResp
+func (c *ClientWithResponses) UsageModerationsWithResponse(ctx context.Context, params *UsageModerationsParams, reqEditors ...RequestEditorFn) (*UsageModerationsResp, error) {
+	rsp, err := c.UsageModerations(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageModerationsResp(rsp)
+}
+
+// UsageVectorStoresWithResponse request returning *UsageVectorStoresResp
+func (c *ClientWithResponses) UsageVectorStoresWithResponse(ctx context.Context, params *UsageVectorStoresParams, reqEditors ...RequestEditorFn) (*UsageVectorStoresResp, error) {
+	rsp, err := c.UsageVectorStores(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsageVectorStoresResp(rsp)
 }
 
 // ListUsersWithResponse request returning *ListUsersResp
@@ -22654,6 +25750,32 @@ func ParseListAuditLogsResp(rsp *http.Response) (*ListAuditLogsResp, error) {
 	return response, nil
 }
 
+// ParseUsageCostsResp parses an HTTP response from a UsageCostsWithResponse call
+func ParseUsageCostsResp(rsp *http.Response) (*UsageCostsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageCostsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListInvitesResp parses an HTTP response from a ListInvitesWithResponse call
 func ParseListInvitesResp(rsp *http.Response) (*ListInvitesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -23295,6 +26417,214 @@ func ParseModifyProjectUserResp(rsp *http.Response) (*ModifyProjectUserResp, err
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageAudioSpeechesResp parses an HTTP response from a UsageAudioSpeechesWithResponse call
+func ParseUsageAudioSpeechesResp(rsp *http.Response) (*UsageAudioSpeechesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageAudioSpeechesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageAudioTranscriptionsResp parses an HTTP response from a UsageAudioTranscriptionsWithResponse call
+func ParseUsageAudioTranscriptionsResp(rsp *http.Response) (*UsageAudioTranscriptionsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageAudioTranscriptionsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageCodeInterpreterSessionsResp parses an HTTP response from a UsageCodeInterpreterSessionsWithResponse call
+func ParseUsageCodeInterpreterSessionsResp(rsp *http.Response) (*UsageCodeInterpreterSessionsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageCodeInterpreterSessionsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageCompletionsResp parses an HTTP response from a UsageCompletionsWithResponse call
+func ParseUsageCompletionsResp(rsp *http.Response) (*UsageCompletionsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageCompletionsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageEmbeddingsResp parses an HTTP response from a UsageEmbeddingsWithResponse call
+func ParseUsageEmbeddingsResp(rsp *http.Response) (*UsageEmbeddingsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageEmbeddingsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageImagesResp parses an HTTP response from a UsageImagesWithResponse call
+func ParseUsageImagesResp(rsp *http.Response) (*UsageImagesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageImagesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageModerationsResp parses an HTTP response from a UsageModerationsWithResponse call
+func ParseUsageModerationsResp(rsp *http.Response) (*UsageModerationsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageModerationsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsageVectorStoresResp parses an HTTP response from a UsageVectorStoresWithResponse call
+func ParseUsageVectorStoresResp(rsp *http.Response) (*UsageVectorStoresResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsageVectorStoresResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 
