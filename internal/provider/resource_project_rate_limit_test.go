@@ -21,21 +21,21 @@ func TestAccProjectRateLimitResource(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 3, 150000),
+				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 3, 3),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.CompareValuePairs("openai_project.test", tfjsonpath.New("id"), rn, tfjsonpath.New("project_id"), compare.ValuesSame()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("model"), knownvalue.StringExact("text-embedding-3-small")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_requests_per_1_minute"), knownvalue.Int64Exact(3)),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(150000)),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(3)),
 				},
 			},
 			{
-				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 2, 75000),
+				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 2, 2),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.CompareValuePairs("openai_project.test", tfjsonpath.New("id"), rn, tfjsonpath.New("project_id"), compare.ValuesSame()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("model"), knownvalue.StringExact("text-embedding-3-small")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_requests_per_1_minute"), knownvalue.Int64Exact(2)),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(75000)),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(2)),
 				},
 			},
 		},

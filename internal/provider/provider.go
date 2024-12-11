@@ -88,6 +88,8 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	retryClient := retryablehttp.NewClient()
+	retryClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
+	retryClient.Logger = nil
 	retryClient.RetryMax = 10
 
 	client, err := apiclient.NewClientWithResponses(
