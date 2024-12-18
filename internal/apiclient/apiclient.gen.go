@@ -149,6 +149,11 @@ const (
 	ChatCompletionRequestAssistantMessageRoleAssistant ChatCompletionRequestAssistantMessageRole = "assistant"
 )
 
+// Defines values for ChatCompletionRequestDeveloperMessageRole.
+const (
+	Developer ChatCompletionRequestDeveloperMessageRole = "developer"
+)
+
 // Defines values for ChatCompletionRequestFunctionMessageRole.
 const (
 	ChatCompletionRequestFunctionMessageRoleFunction ChatCompletionRequestFunctionMessageRole = "function"
@@ -291,40 +296,50 @@ const (
 
 // Defines values for CreateChatCompletionRequestModel1.
 const (
-	CreateChatCompletionRequestModel1Chatgpt4oLatest              CreateChatCompletionRequestModel1 = "chatgpt-4o-latest"
-	CreateChatCompletionRequestModel1Gpt35Turbo                   CreateChatCompletionRequestModel1 = "gpt-3.5-turbo"
-	CreateChatCompletionRequestModel1Gpt35Turbo0125               CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0125"
-	CreateChatCompletionRequestModel1Gpt35Turbo0301               CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0301"
-	CreateChatCompletionRequestModel1Gpt35Turbo0613               CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0613"
-	CreateChatCompletionRequestModel1Gpt35Turbo1106               CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-1106"
-	CreateChatCompletionRequestModel1Gpt35Turbo16k                CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-16k"
-	CreateChatCompletionRequestModel1Gpt35Turbo16k0613            CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-16k-0613"
-	CreateChatCompletionRequestModel1Gpt4                         CreateChatCompletionRequestModel1 = "gpt-4"
-	CreateChatCompletionRequestModel1Gpt40125Preview              CreateChatCompletionRequestModel1 = "gpt-4-0125-preview"
-	CreateChatCompletionRequestModel1Gpt40314                     CreateChatCompletionRequestModel1 = "gpt-4-0314"
-	CreateChatCompletionRequestModel1Gpt40613                     CreateChatCompletionRequestModel1 = "gpt-4-0613"
-	CreateChatCompletionRequestModel1Gpt41106Preview              CreateChatCompletionRequestModel1 = "gpt-4-1106-preview"
-	CreateChatCompletionRequestModel1Gpt432k                      CreateChatCompletionRequestModel1 = "gpt-4-32k"
-	CreateChatCompletionRequestModel1Gpt432k0314                  CreateChatCompletionRequestModel1 = "gpt-4-32k-0314"
-	CreateChatCompletionRequestModel1Gpt432k0613                  CreateChatCompletionRequestModel1 = "gpt-4-32k-0613"
-	CreateChatCompletionRequestModel1Gpt4Turbo                    CreateChatCompletionRequestModel1 = "gpt-4-turbo"
-	CreateChatCompletionRequestModel1Gpt4Turbo20240409            CreateChatCompletionRequestModel1 = "gpt-4-turbo-2024-04-09"
-	CreateChatCompletionRequestModel1Gpt4TurboPreview             CreateChatCompletionRequestModel1 = "gpt-4-turbo-preview"
-	CreateChatCompletionRequestModel1Gpt4VisionPreview            CreateChatCompletionRequestModel1 = "gpt-4-vision-preview"
-	CreateChatCompletionRequestModel1Gpt4o                        CreateChatCompletionRequestModel1 = "gpt-4o"
-	CreateChatCompletionRequestModel1Gpt4o20240513                CreateChatCompletionRequestModel1 = "gpt-4o-2024-05-13"
-	CreateChatCompletionRequestModel1Gpt4o20240806                CreateChatCompletionRequestModel1 = "gpt-4o-2024-08-06"
-	CreateChatCompletionRequestModel1Gpt4o20241120                CreateChatCompletionRequestModel1 = "gpt-4o-2024-11-20"
-	CreateChatCompletionRequestModel1Gpt4oAudioPreview            CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview"
-	CreateChatCompletionRequestModel1Gpt4oAudioPreview20241001    CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview-2024-10-01"
-	CreateChatCompletionRequestModel1Gpt4oMini                    CreateChatCompletionRequestModel1 = "gpt-4o-mini"
-	CreateChatCompletionRequestModel1Gpt4oMini20240718            CreateChatCompletionRequestModel1 = "gpt-4o-mini-2024-07-18"
-	CreateChatCompletionRequestModel1Gpt4oRealtimePreview         CreateChatCompletionRequestModel1 = "gpt-4o-realtime-preview"
-	CreateChatCompletionRequestModel1Gpt4oRealtimePreview20241001 CreateChatCompletionRequestModel1 = "gpt-4o-realtime-preview-2024-10-01"
-	CreateChatCompletionRequestModel1O1Mini                       CreateChatCompletionRequestModel1 = "o1-mini"
-	CreateChatCompletionRequestModel1O1Mini20240912               CreateChatCompletionRequestModel1 = "o1-mini-2024-09-12"
-	CreateChatCompletionRequestModel1O1Preview                    CreateChatCompletionRequestModel1 = "o1-preview"
-	CreateChatCompletionRequestModel1O1Preview20240912            CreateChatCompletionRequestModel1 = "o1-preview-2024-09-12"
+	CreateChatCompletionRequestModel1Chatgpt4oLatest               CreateChatCompletionRequestModel1 = "chatgpt-4o-latest"
+	CreateChatCompletionRequestModel1Gpt35Turbo                    CreateChatCompletionRequestModel1 = "gpt-3.5-turbo"
+	CreateChatCompletionRequestModel1Gpt35Turbo0125                CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0125"
+	CreateChatCompletionRequestModel1Gpt35Turbo0301                CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0301"
+	CreateChatCompletionRequestModel1Gpt35Turbo0613                CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-0613"
+	CreateChatCompletionRequestModel1Gpt35Turbo1106                CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-1106"
+	CreateChatCompletionRequestModel1Gpt35Turbo16k                 CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-16k"
+	CreateChatCompletionRequestModel1Gpt35Turbo16k0613             CreateChatCompletionRequestModel1 = "gpt-3.5-turbo-16k-0613"
+	CreateChatCompletionRequestModel1Gpt4                          CreateChatCompletionRequestModel1 = "gpt-4"
+	CreateChatCompletionRequestModel1Gpt40125Preview               CreateChatCompletionRequestModel1 = "gpt-4-0125-preview"
+	CreateChatCompletionRequestModel1Gpt40314                      CreateChatCompletionRequestModel1 = "gpt-4-0314"
+	CreateChatCompletionRequestModel1Gpt40613                      CreateChatCompletionRequestModel1 = "gpt-4-0613"
+	CreateChatCompletionRequestModel1Gpt41106Preview               CreateChatCompletionRequestModel1 = "gpt-4-1106-preview"
+	CreateChatCompletionRequestModel1Gpt432k                       CreateChatCompletionRequestModel1 = "gpt-4-32k"
+	CreateChatCompletionRequestModel1Gpt432k0314                   CreateChatCompletionRequestModel1 = "gpt-4-32k-0314"
+	CreateChatCompletionRequestModel1Gpt432k0613                   CreateChatCompletionRequestModel1 = "gpt-4-32k-0613"
+	CreateChatCompletionRequestModel1Gpt4Turbo                     CreateChatCompletionRequestModel1 = "gpt-4-turbo"
+	CreateChatCompletionRequestModel1Gpt4Turbo20240409             CreateChatCompletionRequestModel1 = "gpt-4-turbo-2024-04-09"
+	CreateChatCompletionRequestModel1Gpt4TurboPreview              CreateChatCompletionRequestModel1 = "gpt-4-turbo-preview"
+	CreateChatCompletionRequestModel1Gpt4VisionPreview             CreateChatCompletionRequestModel1 = "gpt-4-vision-preview"
+	CreateChatCompletionRequestModel1Gpt4o                         CreateChatCompletionRequestModel1 = "gpt-4o"
+	CreateChatCompletionRequestModel1Gpt4o20240513                 CreateChatCompletionRequestModel1 = "gpt-4o-2024-05-13"
+	CreateChatCompletionRequestModel1Gpt4o20240806                 CreateChatCompletionRequestModel1 = "gpt-4o-2024-08-06"
+	CreateChatCompletionRequestModel1Gpt4o20241120                 CreateChatCompletionRequestModel1 = "gpt-4o-2024-11-20"
+	CreateChatCompletionRequestModel1Gpt4oAudioPreview             CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview"
+	CreateChatCompletionRequestModel1Gpt4oAudioPreview20241001     CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview-2024-10-01"
+	CreateChatCompletionRequestModel1Gpt4oAudioPreview20241217     CreateChatCompletionRequestModel1 = "gpt-4o-audio-preview-2024-12-17"
+	CreateChatCompletionRequestModel1Gpt4oMini                     CreateChatCompletionRequestModel1 = "gpt-4o-mini"
+	CreateChatCompletionRequestModel1Gpt4oMini20240718             CreateChatCompletionRequestModel1 = "gpt-4o-mini-2024-07-18"
+	CreateChatCompletionRequestModel1Gpt4oMiniAudioPreview         CreateChatCompletionRequestModel1 = "gpt-4o-mini-audio-preview"
+	CreateChatCompletionRequestModel1Gpt4oMiniAudioPreview20241217 CreateChatCompletionRequestModel1 = "gpt-4o-mini-audio-preview-2024-12-17"
+	CreateChatCompletionRequestModel1O1                            CreateChatCompletionRequestModel1 = "o1"
+	CreateChatCompletionRequestModel1O120241217                    CreateChatCompletionRequestModel1 = "o1-2024-12-17"
+	CreateChatCompletionRequestModel1O1Mini                        CreateChatCompletionRequestModel1 = "o1-mini"
+	CreateChatCompletionRequestModel1O1Mini20240912                CreateChatCompletionRequestModel1 = "o1-mini-2024-09-12"
+	CreateChatCompletionRequestModel1O1Preview                     CreateChatCompletionRequestModel1 = "o1-preview"
+	CreateChatCompletionRequestModel1O1Preview20240912             CreateChatCompletionRequestModel1 = "o1-preview-2024-09-12"
+)
+
+// Defines values for CreateChatCompletionRequestReasoningEffort.
+const (
+	CreateChatCompletionRequestReasoningEffortHigh   CreateChatCompletionRequestReasoningEffort = "high"
+	CreateChatCompletionRequestReasoningEffortLow    CreateChatCompletionRequestReasoningEffort = "low"
+	CreateChatCompletionRequestReasoningEffortMedium CreateChatCompletionRequestReasoningEffort = "medium"
 )
 
 // Defines values for CreateChatCompletionRequestServiceTier.
@@ -747,9 +762,60 @@ const (
 	FileSearchRankingOptionsRankerDefault20240821 FileSearchRankingOptionsRanker = "default_2024_08_21"
 )
 
+// Defines values for FineTuneDPOMethodHyperparametersBatchSize0.
+const (
+	FineTuneDPOMethodHyperparametersBatchSize0Auto FineTuneDPOMethodHyperparametersBatchSize0 = "auto"
+)
+
+// Defines values for FineTuneDPOMethodHyperparametersBeta0.
+const (
+	FineTuneDPOMethodHyperparametersBeta0Auto FineTuneDPOMethodHyperparametersBeta0 = "auto"
+)
+
+// Defines values for FineTuneDPOMethodHyperparametersLearningRateMultiplier0.
+const (
+	FineTuneDPOMethodHyperparametersLearningRateMultiplier0Auto FineTuneDPOMethodHyperparametersLearningRateMultiplier0 = "auto"
+)
+
+// Defines values for FineTuneDPOMethodHyperparametersNEpochs0.
+const (
+	FineTuneDPOMethodHyperparametersNEpochs0Auto FineTuneDPOMethodHyperparametersNEpochs0 = "auto"
+)
+
+// Defines values for FineTuneMethodType.
+const (
+	Dpo        FineTuneMethodType = "dpo"
+	Supervised FineTuneMethodType = "supervised"
+)
+
+// Defines values for FineTuneSupervisedMethodHyperparametersBatchSize0.
+const (
+	FineTuneSupervisedMethodHyperparametersBatchSize0Auto FineTuneSupervisedMethodHyperparametersBatchSize0 = "auto"
+)
+
+// Defines values for FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0.
+const (
+	FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0Auto FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 = "auto"
+)
+
+// Defines values for FineTuneSupervisedMethodHyperparametersNEpochs0.
+const (
+	FineTuneSupervisedMethodHyperparametersNEpochs0Auto FineTuneSupervisedMethodHyperparametersNEpochs0 = "auto"
+)
+
 // Defines values for FineTuningIntegrationType.
 const (
 	FineTuningIntegrationTypeWandb FineTuningIntegrationType = "wandb"
+)
+
+// Defines values for FineTuningJobHyperparametersBatchSize0.
+const (
+	FineTuningJobHyperparametersBatchSize0Auto FineTuningJobHyperparametersBatchSize0 = "auto"
+)
+
+// Defines values for FineTuningJobHyperparametersLearningRateMultiplier0.
+const (
+	FineTuningJobHyperparametersLearningRateMultiplier0Auto FineTuningJobHyperparametersLearningRateMultiplier0 = "auto"
 )
 
 // Defines values for FineTuningJobHyperparametersNEpochs0.
@@ -787,6 +853,12 @@ const (
 // Defines values for FineTuningJobEventObject.
 const (
 	FineTuningJobEventObjectFineTuningJobEvent FineTuningJobEventObject = "fine_tuning.job.event"
+)
+
+// Defines values for FineTuningJobEventType.
+const (
+	Message FineTuningJobEventType = "message"
+	Metrics FineTuningJobEventType = "metrics"
 )
 
 // Defines values for InviteObject.
@@ -1076,6 +1148,73 @@ const (
 const (
 	ProjectUserUpdateRequestRoleMember ProjectUserUpdateRequestRole = "member"
 	ProjectUserUpdateRequestRoleOwner  ProjectUserUpdateRequestRole = "owner"
+)
+
+// Defines values for RealtimeSessionCreateRequestInputAudioFormat.
+const (
+	RealtimeSessionCreateRequestInputAudioFormatG711Alaw RealtimeSessionCreateRequestInputAudioFormat = "g711_alaw"
+	RealtimeSessionCreateRequestInputAudioFormatG711Ulaw RealtimeSessionCreateRequestInputAudioFormat = "g711_ulaw"
+	RealtimeSessionCreateRequestInputAudioFormatPcm16    RealtimeSessionCreateRequestInputAudioFormat = "pcm16"
+)
+
+// Defines values for RealtimeSessionCreateRequestMaxResponseOutputTokens1.
+const (
+	RealtimeSessionCreateRequestMaxResponseOutputTokens1Inf RealtimeSessionCreateRequestMaxResponseOutputTokens1 = "inf"
+)
+
+// Defines values for RealtimeSessionCreateRequestModel.
+const (
+	Gpt4oMiniRealtimePreview         RealtimeSessionCreateRequestModel = "gpt-4o-mini-realtime-preview"
+	Gpt4oMiniRealtimePreview20241217 RealtimeSessionCreateRequestModel = "gpt-4o-mini-realtime-preview-2024-12-17"
+	Gpt4oRealtimePreview             RealtimeSessionCreateRequestModel = "gpt-4o-realtime-preview"
+	Gpt4oRealtimePreview20241001     RealtimeSessionCreateRequestModel = "gpt-4o-realtime-preview-2024-10-01"
+	Gpt4oRealtimePreview20241217     RealtimeSessionCreateRequestModel = "gpt-4o-realtime-preview-2024-12-17"
+)
+
+// Defines values for RealtimeSessionCreateRequestOutputAudioFormat.
+const (
+	RealtimeSessionCreateRequestOutputAudioFormatG711Alaw RealtimeSessionCreateRequestOutputAudioFormat = "g711_alaw"
+	RealtimeSessionCreateRequestOutputAudioFormatG711Ulaw RealtimeSessionCreateRequestOutputAudioFormat = "g711_ulaw"
+	RealtimeSessionCreateRequestOutputAudioFormatPcm16    RealtimeSessionCreateRequestOutputAudioFormat = "pcm16"
+)
+
+// Defines values for RealtimeSessionCreateRequestToolsType.
+const (
+	RealtimeSessionCreateRequestToolsTypeFunction RealtimeSessionCreateRequestToolsType = "function"
+)
+
+// Defines values for RealtimeSessionCreateRequestVoice.
+const (
+	RealtimeSessionCreateRequestVoiceAlloy   RealtimeSessionCreateRequestVoice = "alloy"
+	RealtimeSessionCreateRequestVoiceAsh     RealtimeSessionCreateRequestVoice = "ash"
+	RealtimeSessionCreateRequestVoiceBallad  RealtimeSessionCreateRequestVoice = "ballad"
+	RealtimeSessionCreateRequestVoiceCoral   RealtimeSessionCreateRequestVoice = "coral"
+	RealtimeSessionCreateRequestVoiceEcho    RealtimeSessionCreateRequestVoice = "echo"
+	RealtimeSessionCreateRequestVoiceSage    RealtimeSessionCreateRequestVoice = "sage"
+	RealtimeSessionCreateRequestVoiceShimmer RealtimeSessionCreateRequestVoice = "shimmer"
+	RealtimeSessionCreateRequestVoiceVerse   RealtimeSessionCreateRequestVoice = "verse"
+)
+
+// Defines values for RealtimeSessionCreateResponseMaxResponseOutputTokens1.
+const (
+	RealtimeSessionCreateResponseMaxResponseOutputTokens1Inf RealtimeSessionCreateResponseMaxResponseOutputTokens1 = "inf"
+)
+
+// Defines values for RealtimeSessionCreateResponseToolsType.
+const (
+	RealtimeSessionCreateResponseToolsTypeFunction RealtimeSessionCreateResponseToolsType = "function"
+)
+
+// Defines values for RealtimeSessionCreateResponseVoice.
+const (
+	RealtimeSessionCreateResponseVoiceAlloy   RealtimeSessionCreateResponseVoice = "alloy"
+	RealtimeSessionCreateResponseVoiceAsh     RealtimeSessionCreateResponseVoice = "ash"
+	RealtimeSessionCreateResponseVoiceBallad  RealtimeSessionCreateResponseVoice = "ballad"
+	RealtimeSessionCreateResponseVoiceCoral   RealtimeSessionCreateResponseVoice = "coral"
+	RealtimeSessionCreateResponseVoiceEcho    RealtimeSessionCreateResponseVoice = "echo"
+	RealtimeSessionCreateResponseVoiceSage    RealtimeSessionCreateResponseVoice = "sage"
+	RealtimeSessionCreateResponseVoiceShimmer RealtimeSessionCreateResponseVoice = "shimmer"
+	RealtimeSessionCreateResponseVoiceVerse   RealtimeSessionCreateResponseVoice = "verse"
 )
 
 // Defines values for ResponseFormatJsonObjectType.
@@ -2253,7 +2392,7 @@ type ChatCompletionNamedToolChoice struct {
 // ChatCompletionNamedToolChoiceType The type of the tool. Currently, only `function` is supported.
 type ChatCompletionNamedToolChoiceType string
 
-// ChatCompletionRequestAssistantMessage defines model for ChatCompletionRequestAssistantMessage.
+// ChatCompletionRequestAssistantMessage Messages sent by the model in response to user messages.
 type ChatCompletionRequestAssistantMessage struct {
 	// Audio Data about a previous audio response from the model.
 	// [Learn more](/docs/guides/audio).
@@ -2306,6 +2445,34 @@ type ChatCompletionRequestAssistantMessageRole string
 type ChatCompletionRequestAssistantMessageContentPart struct {
 	union json.RawMessage
 }
+
+// ChatCompletionRequestDeveloperMessage Developer-provided instructions that the model should follow, regardless of
+// messages sent by the user. With o1 models and newer, `developer` messages
+// replace the previous `system` messages.
+type ChatCompletionRequestDeveloperMessage struct {
+	// Content The contents of the developer message.
+	Content ChatCompletionRequestDeveloperMessage_Content `json:"content"`
+
+	// Name An optional name for the participant. Provides the model information to differentiate between participants of the same role.
+	Name *string `json:"name,omitempty"`
+
+	// Role The role of the messages author, in this case `developer`.
+	Role ChatCompletionRequestDeveloperMessageRole `json:"role"`
+}
+
+// ChatCompletionRequestDeveloperMessageContent0 The contents of the developer message.
+type ChatCompletionRequestDeveloperMessageContent0 = string
+
+// ChatCompletionRequestDeveloperMessageContent1 An array of content parts with a defined type. For developer messages, only type `text` is supported.
+type ChatCompletionRequestDeveloperMessageContent1 = []ChatCompletionRequestMessageContentPartText
+
+// ChatCompletionRequestDeveloperMessage_Content The contents of the developer message.
+type ChatCompletionRequestDeveloperMessage_Content struct {
+	union json.RawMessage
+}
+
+// ChatCompletionRequestDeveloperMessageRole The role of the messages author, in this case `developer`.
+type ChatCompletionRequestDeveloperMessageRole string
 
 // ChatCompletionRequestFunctionMessage defines model for ChatCompletionRequestFunctionMessage.
 type ChatCompletionRequestFunctionMessage struct {
@@ -2391,7 +2558,9 @@ type ChatCompletionRequestMessageContentPartText struct {
 // ChatCompletionRequestMessageContentPartTextType The type of the content part.
 type ChatCompletionRequestMessageContentPartTextType string
 
-// ChatCompletionRequestSystemMessage defines model for ChatCompletionRequestSystemMessage.
+// ChatCompletionRequestSystemMessage Developer-provided instructions that the model should follow, regardless of
+// messages sent by the user. With o1 models and newer, use `developer` messages
+// for this purpose instead.
 type ChatCompletionRequestSystemMessage struct {
 	// Content The contents of the system message.
 	Content ChatCompletionRequestSystemMessage_Content `json:"content"`
@@ -2453,7 +2622,8 @@ type ChatCompletionRequestToolMessageContentPart struct {
 	union json.RawMessage
 }
 
-// ChatCompletionRequestUserMessage defines model for ChatCompletionRequestUserMessage.
+// ChatCompletionRequestUserMessage Messages sent by an end user, containing prompts or additional context
+// information.
 type ChatCompletionRequestUserMessage struct {
 	// Content The contents of the user message.
 	Content ChatCompletionRequestUserMessage_Content `json:"content"`
@@ -2800,19 +2970,26 @@ type CreateChatCompletionRequest struct {
 	// False How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs.
 	False *int `json:"false"`
 
-	// FrequencyPenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-	//
-	// [See more information about frequency and presence penalties.](/docs/guides/text-generation)
+	// FrequencyPenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on
+	// their existing frequency in the text so far, decreasing the model's
+	// likelihood to repeat the same line verbatim.
 	FrequencyPenalty *float32 `json:"frequency_penalty"`
 
 	// FunctionCall Deprecated in favor of `tool_choice`.
 	//
 	// Controls which (if any) function is called by the model.
-	// `none` means the model will not call a function and instead generates a message.
-	// `auto` means the model can pick between generating a message or calling a function.
-	// Specifying a particular function via `{"name": "my_function"}` forces the model to call that function.
 	//
-	// `none` is the default when no functions are present. `auto` is the default if functions are present.
+	// `none` means the model will not call a function and instead generates a
+	// message.
+	//
+	// `auto` means the model can pick between generating a message or calling a
+	// function.
+	//
+	// Specifying a particular function via `{"name": "my_function"}` forces the
+	// model to call that function.
+	//
+	// `none` is the default when no functions are present. `auto` is the default
+	// if functions are present.
 	// Deprecated:
 	FunctionCall *CreateChatCompletionRequest_FunctionCall `json:"function_call,omitempty"`
 
@@ -2824,18 +3001,28 @@ type CreateChatCompletionRequest struct {
 
 	// LogitBias Modify the likelihood of specified tokens appearing in the completion.
 	//
-	// Accepts a JSON object that maps tokens (specified by their token ID in the tokenizer) to an associated bias value from -100 to 100. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token.
+	// Accepts a JSON object that maps tokens (specified by their token ID in the
+	// tokenizer) to an associated bias value from -100 to 100. Mathematically,
+	// the bias is added to the logits generated by the model prior to sampling.
+	// The exact effect will vary per model, but values between -1 and 1 should
+	// decrease or increase likelihood of selection; values like -100 or 100
+	// should result in a ban or exclusive selection of the relevant token.
 	LogitBias *map[string]int `json:"logit_bias"`
 
-	// Logprobs Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the `content` of `message`.
+	// Logprobs Whether to return log probabilities of the output tokens or not. If true,
+	// returns the log probabilities of each output token returned in the
+	// `content` of `message`.
 	Logprobs *bool `json:"logprobs"`
 
 	// MaxCompletionTokens An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
 	MaxCompletionTokens *int `json:"max_completion_tokens"`
 
-	// MaxTokens The maximum number of [tokens](/tokenizer) that can be generated in the chat completion. This value can be used to control [costs](https://openai.com/api/pricing/) for text generated via API.
+	// MaxTokens The maximum number of [tokens](/tokenizer) that can be generated in the
+	// chat completion. This value can be used to control
+	// [costs](https://openai.com/api/pricing/) for text generated via API.
 	//
-	// This value is now deprecated in favor of `max_completion_tokens`, and is not compatible with [o1 series models](/docs/guides/reasoning).
+	// This value is now deprecated in favor of `max_completion_tokens`, and is
+	// not compatible with [o1 series models](/docs/guides/reasoning).
 	// Deprecated:
 	MaxTokens *int `json:"max_tokens"`
 
@@ -2873,18 +3060,37 @@ type CreateChatCompletionRequest struct {
 	// regenerating a file with only minor changes to most of the content.
 	Prediction *CreateChatCompletionRequest_Prediction `json:"prediction"`
 
-	// PresencePenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-	//
-	// [See more information about frequency and presence penalties.](/docs/guides/text-generation)
+	// PresencePenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on
+	// whether they appear in the text so far, increasing the model's likelihood
+	// to talk about new topics.
 	PresencePenalty *float32 `json:"presence_penalty"`
 
-	// ResponseFormat An object specifying the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4o mini](/docs/models#gpt-4o-mini), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4) and all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
+	// ReasoningEffort **o1 models only**
 	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+	// Constrains effort on reasoning for
+	// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+	// Currently supported values are `low`, `medium`, and `high`. Reducing
+	// reasoning effort can result in faster responses and fewer tokens used
+	// on reasoning in a response.
+	ReasoningEffort *CreateChatCompletionRequestReasoningEffort `json:"reasoning_effort,omitempty"`
+
+	// ResponseFormat An object specifying the format that the model must output.
 	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
+	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
+	// Structured Outputs which ensures the model will match your supplied JSON
+	// schema. Learn more in the [Structured Outputs
+	// guide](/docs/guides/structured-outputs).
 	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
+	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures
+	// the message the model generates is valid JSON.
+	//
+	// **Important:** when using JSON mode, you **must** also instruct the model
+	// to produce JSON yourself via a system or user message. Without this, the
+	// model may generate an unending stream of whitespace until the generation
+	// reaches the token limit, resulting in a long-running and seemingly "stuck"
+	// request. Also note that the message content may be partially cut off if
+	// `finish_reason="length"`, which indicates the generation exceeded
+	// `max_tokens` or the conversation exceeded the max context length.
 	ResponseFormat *CreateChatCompletionRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Seed This feature is in Beta.
@@ -2904,8 +3110,9 @@ type CreateChatCompletionRequest struct {
 	// Stop Up to 4 sequences where the API will stop generating further tokens.
 	Stop *CreateChatCompletionRequest_Stop `json:"stop,omitempty"`
 
-	// Store Whether or not to store the output of this chat completion request
-	// for use in our [model distillation](/docs/guides/distillation) or [evals](/docs/guides/evals) products.
+	// Store Whether or not to store the output of this chat completion request for
+	// use in our [model distillation](/docs/guides/distillation) or
+	// [evals](/docs/guides/evals) products.
 	Store *bool `json:"store"`
 
 	// Stream If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format) as they become available, with the stream terminated by a `data: [DONE]` message. [Example Python code](https://cookbook.openai.com/examples/how_to_stream_completions).
@@ -2915,7 +3122,6 @@ type CreateChatCompletionRequest struct {
 	StreamOptions *ChatCompletionStreamOptions `json:"stream_options"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-	//
 	// We generally recommend altering this or `top_p` but not both.
 	Temperature *float32 `json:"temperature"`
 
@@ -2931,10 +3137,15 @@ type CreateChatCompletionRequest struct {
 	// Tools A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported.
 	Tools *[]ChatCompletionTool `json:"tools,omitempty"`
 
-	// TopLogprobs An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. `logprobs` must be set to `true` if this parameter is used.
+	// TopLogprobs An integer between 0 and 20 specifying the number of most likely tokens to
+	// return at each token position, each with an associated log probability.
+	// `logprobs` must be set to `true` if this parameter is used.
 	TopLogprobs *int `json:"top_logprobs"`
 
-	// TopP An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+	// TopP An alternative to sampling with temperature, called nucleus sampling,
+	// where the model considers the results of the tokens with top_p probability
+	// mass. So 0.1 means only the tokens comprising the top 10% probability mass
+	// are considered.
 	//
 	// We generally recommend altering this or `temperature` but not both.
 	TopP *float32 `json:"top_p"`
@@ -2956,11 +3167,18 @@ type CreateChatCompletionRequestFunctionCall0 string
 // CreateChatCompletionRequest_FunctionCall Deprecated in favor of `tool_choice`.
 //
 // Controls which (if any) function is called by the model.
-// `none` means the model will not call a function and instead generates a message.
-// `auto` means the model can pick between generating a message or calling a function.
-// Specifying a particular function via `{"name": "my_function"}` forces the model to call that function.
 //
-// `none` is the default when no functions are present. `auto` is the default if functions are present.
+// `none` means the model will not call a function and instead generates a
+// message.
+//
+// `auto` means the model can pick between generating a message or calling a
+// function.
+//
+// Specifying a particular function via `{"name": "my_function"}` forces the
+// model to call that function.
+//
+// `none` is the default when no functions are present. `auto` is the default
+// if functions are present.
 type CreateChatCompletionRequest_FunctionCall struct {
 	union json.RawMessage
 }
@@ -2984,13 +3202,32 @@ type CreateChatCompletionRequest_Prediction struct {
 	union json.RawMessage
 }
 
-// CreateChatCompletionRequest_ResponseFormat An object specifying the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4o mini](/docs/models#gpt-4o-mini), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4) and all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
+// CreateChatCompletionRequestReasoningEffort **o1 models only**
 //
-// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+// Constrains effort on reasoning for
+// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+// Currently supported values are `low`, `medium`, and `high`. Reducing
+// reasoning effort can result in faster responses and fewer tokens used
+// on reasoning in a response.
+type CreateChatCompletionRequestReasoningEffort string
+
+// CreateChatCompletionRequest_ResponseFormat An object specifying the format that the model must output.
 //
-// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
+// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
+// Structured Outputs which ensures the model will match your supplied JSON
+// schema. Learn more in the [Structured Outputs
+// guide](/docs/guides/structured-outputs).
 //
-// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
+// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures
+// the message the model generates is valid JSON.
+//
+// **Important:** when using JSON mode, you **must** also instruct the model
+// to produce JSON yourself via a system or user message. Without this, the
+// model may generate an unending stream of whitespace until the generation
+// reaches the token limit, resulting in a long-running and seemingly "stuck"
+// request. Also note that the message content may be partially cut off if
+// `finish_reason="length"`, which indicates the generation exceeded
+// `max_tokens` or the conversation exceeded the max context length.
 type CreateChatCompletionRequest_ResponseFormat struct {
 	union json.RawMessage
 }
@@ -3346,6 +3583,8 @@ type CreateFileRequestPurpose string
 // CreateFineTuningJobRequest defines model for CreateFineTuningJobRequest.
 type CreateFineTuningJobRequest struct {
 	// Hyperparameters The hyperparameters used for the fine-tuning job.
+	// This value is now deprecated in favor of `method`, and should be passed in under the `method` parameter.
+	// Deprecated:
 	Hyperparameters *struct {
 		// BatchSize Number of examples in each batch. A larger batch size means that model parameters
 		// are updated less frequently, but with lower variance.
@@ -3385,6 +3624,9 @@ type CreateFineTuningJobRequest struct {
 		} `json:"wandb"`
 	} `json:"integrations"`
 
+	// Method The method used for fine-tuning.
+	Method *FineTuneMethod `json:"method,omitempty"`
+
 	// Model The name of the model to fine-tune. You can select one of the
 	// [supported models](/docs/guides/fine-tuning#which-models-can-be-fine-tuned).
 	Model CreateFineTuningJobRequest_Model `json:"model"`
@@ -3404,7 +3646,7 @@ type CreateFineTuningJobRequest struct {
 	//
 	// Your dataset must be formatted as a JSONL file. Additionally, you must upload your file with the purpose `fine-tune`.
 	//
-	// The contents of the file should differ depending on if the model uses the [chat](/docs/api-reference/fine-tuning/chat-input) or [completions](/docs/api-reference/fine-tuning/completions-input) format.
+	// The contents of the file should differ depending on if the model uses the [chat](/docs/api-reference/fine-tuning/chat-input), [completions](/docs/api-reference/fine-tuning/completions-input) format, or if the fine-tuning method uses the [preference](/docs/api-reference/fine-tuning/preference-input) format.
 	//
 	// See the [fine-tuning guide](/docs/guides/fine-tuning) for more details.
 	TrainingFile string `json:"training_file"`
@@ -4470,6 +4712,131 @@ type FileSearchRankingOptions struct {
 // FileSearchRankingOptionsRanker The ranker to use for the file search. If not specified will use the `auto` ranker.
 type FileSearchRankingOptionsRanker string
 
+// FineTuneDPOMethod Configuration for the DPO fine-tuning method.
+type FineTuneDPOMethod struct {
+	// Hyperparameters The hyperparameters used for the fine-tuning job.
+	Hyperparameters *struct {
+		// BatchSize Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+		BatchSize *FineTuneDPOMethod_Hyperparameters_BatchSize `json:"batch_size,omitempty"`
+
+		// Beta The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
+		Beta *FineTuneDPOMethod_Hyperparameters_Beta `json:"beta,omitempty"`
+
+		// LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+		LearningRateMultiplier *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier `json:"learning_rate_multiplier,omitempty"`
+
+		// NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+		NEpochs *FineTuneDPOMethod_Hyperparameters_NEpochs `json:"n_epochs,omitempty"`
+	} `json:"hyperparameters,omitempty"`
+}
+
+// FineTuneDPOMethodHyperparametersBatchSize0 defines model for FineTuneDPOMethod.Hyperparameters.BatchSize.0.
+type FineTuneDPOMethodHyperparametersBatchSize0 string
+
+// FineTuneDPOMethodHyperparametersBatchSize1 defines model for .
+type FineTuneDPOMethodHyperparametersBatchSize1 = int
+
+// FineTuneDPOMethod_Hyperparameters_BatchSize Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+type FineTuneDPOMethod_Hyperparameters_BatchSize struct {
+	union json.RawMessage
+}
+
+// FineTuneDPOMethodHyperparametersBeta0 defines model for FineTuneDPOMethod.Hyperparameters.Beta.0.
+type FineTuneDPOMethodHyperparametersBeta0 string
+
+// FineTuneDPOMethodHyperparametersBeta1 defines model for .
+type FineTuneDPOMethodHyperparametersBeta1 = float32
+
+// FineTuneDPOMethod_Hyperparameters_Beta The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
+type FineTuneDPOMethod_Hyperparameters_Beta struct {
+	union json.RawMessage
+}
+
+// FineTuneDPOMethodHyperparametersLearningRateMultiplier0 defines model for FineTuneDPOMethod.Hyperparameters.LearningRateMultiplier.0.
+type FineTuneDPOMethodHyperparametersLearningRateMultiplier0 string
+
+// FineTuneDPOMethodHyperparametersLearningRateMultiplier1 defines model for .
+type FineTuneDPOMethodHyperparametersLearningRateMultiplier1 = float32
+
+// FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+type FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier struct {
+	union json.RawMessage
+}
+
+// FineTuneDPOMethodHyperparametersNEpochs0 defines model for FineTuneDPOMethod.Hyperparameters.NEpochs.0.
+type FineTuneDPOMethodHyperparametersNEpochs0 string
+
+// FineTuneDPOMethodHyperparametersNEpochs1 defines model for .
+type FineTuneDPOMethodHyperparametersNEpochs1 = int
+
+// FineTuneDPOMethod_Hyperparameters_NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+type FineTuneDPOMethod_Hyperparameters_NEpochs struct {
+	union json.RawMessage
+}
+
+// FineTuneMethod The method used for fine-tuning.
+type FineTuneMethod struct {
+	// Dpo Configuration for the DPO fine-tuning method.
+	Dpo *FineTuneDPOMethod `json:"dpo,omitempty"`
+
+	// Supervised Configuration for the supervised fine-tuning method.
+	Supervised *FineTuneSupervisedMethod `json:"supervised,omitempty"`
+
+	// Type The type of method. Is either `supervised` or `dpo`.
+	Type *FineTuneMethodType `json:"type,omitempty"`
+}
+
+// FineTuneMethodType The type of method. Is either `supervised` or `dpo`.
+type FineTuneMethodType string
+
+// FineTuneSupervisedMethod Configuration for the supervised fine-tuning method.
+type FineTuneSupervisedMethod struct {
+	// Hyperparameters The hyperparameters used for the fine-tuning job.
+	Hyperparameters *struct {
+		// BatchSize Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+		BatchSize *FineTuneSupervisedMethod_Hyperparameters_BatchSize `json:"batch_size,omitempty"`
+
+		// LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+		LearningRateMultiplier *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier `json:"learning_rate_multiplier,omitempty"`
+
+		// NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+		NEpochs *FineTuneSupervisedMethod_Hyperparameters_NEpochs `json:"n_epochs,omitempty"`
+	} `json:"hyperparameters,omitempty"`
+}
+
+// FineTuneSupervisedMethodHyperparametersBatchSize0 defines model for FineTuneSupervisedMethod.Hyperparameters.BatchSize.0.
+type FineTuneSupervisedMethodHyperparametersBatchSize0 string
+
+// FineTuneSupervisedMethodHyperparametersBatchSize1 defines model for .
+type FineTuneSupervisedMethodHyperparametersBatchSize1 = int
+
+// FineTuneSupervisedMethod_Hyperparameters_BatchSize Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+type FineTuneSupervisedMethod_Hyperparameters_BatchSize struct {
+	union json.RawMessage
+}
+
+// FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 defines model for FineTuneSupervisedMethod.Hyperparameters.LearningRateMultiplier.0.
+type FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 string
+
+// FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1 defines model for .
+type FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1 = float32
+
+// FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+type FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier struct {
+	union json.RawMessage
+}
+
+// FineTuneSupervisedMethodHyperparametersNEpochs0 defines model for FineTuneSupervisedMethod.Hyperparameters.NEpochs.0.
+type FineTuneSupervisedMethodHyperparametersNEpochs0 string
+
+// FineTuneSupervisedMethodHyperparametersNEpochs1 defines model for .
+type FineTuneSupervisedMethodHyperparametersNEpochs1 = int
+
+// FineTuneSupervisedMethod_Hyperparameters_NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+type FineTuneSupervisedMethod_Hyperparameters_NEpochs struct {
+	union json.RawMessage
+}
+
 // FineTuningIntegration defines model for FineTuningIntegration.
 type FineTuningIntegration struct {
 	// Type The type of the integration being enabled for the fine-tuning job
@@ -4524,11 +4891,19 @@ type FineTuningJob struct {
 	// FinishedAt The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 	FinishedAt *int `json:"finished_at"`
 
-	// Hyperparameters The hyperparameters used for the fine-tuning job. See the [fine-tuning guide](/docs/guides/fine-tuning) for more details.
+	// Hyperparameters The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 	Hyperparameters struct {
-		// NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-		// "auto" decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.
-		NEpochs FineTuningJob_Hyperparameters_NEpochs `json:"n_epochs"`
+		// BatchSize Number of examples in each batch. A larger batch size means that model parameters
+		// are updated less frequently, but with lower variance.
+		BatchSize *FineTuningJob_Hyperparameters_BatchSize `json:"batch_size,omitempty"`
+
+		// LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
+		// overfitting.
+		LearningRateMultiplier *FineTuningJob_Hyperparameters_LearningRateMultiplier `json:"learning_rate_multiplier,omitempty"`
+
+		// NEpochs The number of epochs to train the model for. An epoch refers to one full cycle
+		// through the training dataset.
+		NEpochs *FineTuningJob_Hyperparameters_NEpochs `json:"n_epochs,omitempty"`
 	} `json:"hyperparameters"`
 
 	// Id The object identifier, which can be referenced in the API endpoints.
@@ -4536,6 +4911,9 @@ type FineTuningJob struct {
 
 	// Integrations A list of integrations to enable for this fine-tuning job.
 	Integrations *[]FineTuningJob_Integrations_Item `json:"integrations"`
+
+	// Method The method used for fine-tuning.
+	Method *FineTuneMethod `json:"method,omitempty"`
 
 	// Model The base model that is being fine-tuned.
 	Model string `json:"model"`
@@ -4565,14 +4943,38 @@ type FineTuningJob struct {
 	ValidationFile *string `json:"validation_file"`
 }
 
+// FineTuningJobHyperparametersBatchSize0 defines model for FineTuningJob.Hyperparameters.BatchSize.0.
+type FineTuningJobHyperparametersBatchSize0 string
+
+// FineTuningJobHyperparametersBatchSize1 defines model for .
+type FineTuningJobHyperparametersBatchSize1 = int
+
+// FineTuningJob_Hyperparameters_BatchSize Number of examples in each batch. A larger batch size means that model parameters
+// are updated less frequently, but with lower variance.
+type FineTuningJob_Hyperparameters_BatchSize struct {
+	union json.RawMessage
+}
+
+// FineTuningJobHyperparametersLearningRateMultiplier0 defines model for FineTuningJob.Hyperparameters.LearningRateMultiplier.0.
+type FineTuningJobHyperparametersLearningRateMultiplier0 string
+
+// FineTuningJobHyperparametersLearningRateMultiplier1 defines model for .
+type FineTuningJobHyperparametersLearningRateMultiplier1 = float32
+
+// FineTuningJob_Hyperparameters_LearningRateMultiplier Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
+// overfitting.
+type FineTuningJob_Hyperparameters_LearningRateMultiplier struct {
+	union json.RawMessage
+}
+
 // FineTuningJobHyperparametersNEpochs0 defines model for FineTuningJob.Hyperparameters.NEpochs.0.
 type FineTuningJobHyperparametersNEpochs0 string
 
 // FineTuningJobHyperparametersNEpochs1 defines model for .
 type FineTuningJobHyperparametersNEpochs1 = int
 
-// FineTuningJob_Hyperparameters_NEpochs The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-// "auto" decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.
+// FineTuningJob_Hyperparameters_NEpochs The number of epochs to train the model for. An epoch refers to one full cycle
+// through the training dataset.
 type FineTuningJob_Hyperparameters_NEpochs struct {
 	union json.RawMessage
 }
@@ -4625,18 +5027,36 @@ type FineTuningJobCheckpointObject string
 
 // FineTuningJobEvent Fine-tuning job event object
 type FineTuningJobEvent struct {
-	CreatedAt int                      `json:"created_at"`
-	Id        string                   `json:"id"`
-	Level     FineTuningJobEventLevel  `json:"level"`
-	Message   string                   `json:"message"`
-	Object    FineTuningJobEventObject `json:"object"`
+	// CreatedAt The Unix timestamp (in seconds) for when the fine-tuning job was created.
+	CreatedAt int `json:"created_at"`
+
+	// Data The data associated with the event.
+	Data *map[string]interface{} `json:"data,omitempty"`
+
+	// Id The object identifier.
+	Id string `json:"id"`
+
+	// Level The log level of the event.
+	Level FineTuningJobEventLevel `json:"level"`
+
+	// Message The message of the event.
+	Message string `json:"message"`
+
+	// Object The object type, which is always "fine_tuning.job.event".
+	Object FineTuningJobEventObject `json:"object"`
+
+	// Type The type of event.
+	Type *FineTuningJobEventType `json:"type,omitempty"`
 }
 
-// FineTuningJobEventLevel defines model for FineTuningJobEvent.Level.
+// FineTuningJobEventLevel The log level of the event.
 type FineTuningJobEventLevel string
 
-// FineTuningJobEventObject defines model for FineTuningJobEvent.Object.
+// FineTuningJobEventObject The object type, which is always "fine_tuning.job.event".
 type FineTuningJobEventObject string
+
+// FineTuningJobEventType The type of event.
+type FineTuningJobEventType string
 
 // FunctionObject defines model for FunctionObject.
 type FunctionObject struct {
@@ -5599,6 +6019,273 @@ type ProjectUserUpdateRequest struct {
 // ProjectUserUpdateRequestRole `owner` or `member`
 type ProjectUserUpdateRequestRole string
 
+// RealtimeSessionCreateRequest Realtime session object configuration.
+type RealtimeSessionCreateRequest struct {
+	// InputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	InputAudioFormat *RealtimeSessionCreateRequestInputAudioFormat `json:"input_audio_format,omitempty"`
+
+	// InputAudioTranscription Configuration for input audio transcription, defaults to off and can be
+	// set to `null` to turn off once on. Input audio transcription is not native
+	// to the model, since the model consumes audio directly. Transcription runs
+	// asynchronously through Whisper and should be treated as rough guidance
+	// rather than the representation understood by the model.
+	InputAudioTranscription *struct {
+		// Model The model to use for transcription, `whisper-1` is the only currently
+		// supported model.
+		Model *string `json:"model,omitempty"`
+	} `json:"input_audio_transcription,omitempty"`
+
+	// Instructions The default system instructions (i.e. system message) prepended to model
+	// calls. This field allows the client to guide the model on desired
+	// responses. The model can be instructed on response content and format,
+	// (e.g. "be extremely succinct", "act friendly", "here are examples of good
+	// responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+	// into your voice", "laugh frequently"). The instructions are not guaranteed
+	// to be followed by the model, but they provide guidance to the model on the
+	// desired behavior.
+	//
+	// Note that the server sets default instructions which will be used if this
+	// field is not set and are visible in the `session.created` event at the
+	// start of the session.
+	Instructions *string `json:"instructions,omitempty"`
+
+	// MaxResponseOutputTokens Maximum number of output tokens for a single assistant response,
+	// inclusive of tool calls. Provide an integer between 1 and 4096 to
+	// limit output tokens, or `inf` for the maximum available tokens for a
+	// given model. Defaults to `inf`.
+	MaxResponseOutputTokens *RealtimeSessionCreateRequest_MaxResponseOutputTokens `json:"max_response_output_tokens,omitempty"`
+
+	// Modalities The set of modalities the model can respond with. To disable audio,
+	// set this to ["text"].
+	Modalities *interface{} `json:"modalities,omitempty"`
+
+	// Model The Realtime model used for this session.
+	Model RealtimeSessionCreateRequestModel `json:"model"`
+
+	// OutputAudioFormat The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	OutputAudioFormat *RealtimeSessionCreateRequestOutputAudioFormat `json:"output_audio_format,omitempty"`
+
+	// Temperature Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+	Temperature *float32 `json:"temperature,omitempty"`
+
+	// ToolChoice How the model chooses tools. Options are `auto`, `none`, `required`, or
+	// specify a function.
+	ToolChoice *string `json:"tool_choice,omitempty"`
+
+	// Tools Tools (functions) available to the model.
+	Tools *[]struct {
+		// Description The description of the function, including guidance on when and how
+		// to call it, and guidance about what to tell the user when calling
+		// (if anything).
+		Description *string `json:"description,omitempty"`
+
+		// Name The name of the function.
+		Name *string `json:"name,omitempty"`
+
+		// Parameters Parameters of the function in JSON Schema.
+		Parameters *map[string]interface{} `json:"parameters,omitempty"`
+
+		// Type The type of the tool, i.e. `function`.
+		Type *RealtimeSessionCreateRequestToolsType `json:"type,omitempty"`
+	} `json:"tools,omitempty"`
+
+	// TurnDetection Configuration for turn detection. Can be set to `null` to turn off. Server
+	// VAD means that the model will detect the start and end of speech based on
+	// audio volume and respond at the end of user speech.
+	TurnDetection *struct {
+		// CreateResponse Whether or not to automatically generate a response when VAD is
+		// enabled. `true` by default.
+		CreateResponse *bool `json:"create_response,omitempty"`
+
+		// PrefixPaddingMs Amount of audio to include before the VAD detected speech (in
+		// milliseconds). Defaults to 300ms.
+		PrefixPaddingMs *int `json:"prefix_padding_ms,omitempty"`
+
+		// SilenceDurationMs Duration of silence to detect speech stop (in milliseconds). Defaults
+		// to 500ms. With shorter values the model will respond more quickly,
+		// but may jump in on short pauses from the user.
+		SilenceDurationMs *int `json:"silence_duration_ms,omitempty"`
+
+		// Threshold Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
+		// higher threshold will require louder audio to activate the model, and
+		// thus might perform better in noisy environments.
+		Threshold *float32 `json:"threshold,omitempty"`
+
+		// Type Type of turn detection, only `server_vad` is currently supported.
+		Type *string `json:"type,omitempty"`
+	} `json:"turn_detection,omitempty"`
+
+	// Voice The voice the model uses to respond. Voice cannot be changed during the
+	// session once the model has responded with audio at least once. Current
+	// voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+	// `shimmer` and `verse`.
+	Voice *RealtimeSessionCreateRequestVoice `json:"voice,omitempty"`
+}
+
+// RealtimeSessionCreateRequestInputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+type RealtimeSessionCreateRequestInputAudioFormat string
+
+// RealtimeSessionCreateRequestMaxResponseOutputTokens0 defines model for .
+type RealtimeSessionCreateRequestMaxResponseOutputTokens0 = int
+
+// RealtimeSessionCreateRequestMaxResponseOutputTokens1 defines model for RealtimeSessionCreateRequest.MaxResponseOutputTokens.1.
+type RealtimeSessionCreateRequestMaxResponseOutputTokens1 string
+
+// RealtimeSessionCreateRequest_MaxResponseOutputTokens Maximum number of output tokens for a single assistant response,
+// inclusive of tool calls. Provide an integer between 1 and 4096 to
+// limit output tokens, or `inf` for the maximum available tokens for a
+// given model. Defaults to `inf`.
+type RealtimeSessionCreateRequest_MaxResponseOutputTokens struct {
+	union json.RawMessage
+}
+
+// RealtimeSessionCreateRequestModel The Realtime model used for this session.
+type RealtimeSessionCreateRequestModel string
+
+// RealtimeSessionCreateRequestOutputAudioFormat The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+type RealtimeSessionCreateRequestOutputAudioFormat string
+
+// RealtimeSessionCreateRequestToolsType The type of the tool, i.e. `function`.
+type RealtimeSessionCreateRequestToolsType string
+
+// RealtimeSessionCreateRequestVoice The voice the model uses to respond. Voice cannot be changed during the
+// session once the model has responded with audio at least once. Current
+// voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+// `shimmer` and `verse`.
+type RealtimeSessionCreateRequestVoice string
+
+// RealtimeSessionCreateResponse A new Realtime session configuration, with an ephermeral key. Default TTL
+// for keys is one minute.
+type RealtimeSessionCreateResponse struct {
+	// ClientSecret Ephemeral key returned by the API.
+	ClientSecret *struct {
+		// ExpiresAt Timestamp for when the token expires. Currently, all tokens expire
+		// after one minute.
+		ExpiresAt *int `json:"expires_at,omitempty"`
+
+		// Value Ephemeral key usable in client environments to authenticate connections
+		// to the Realtime API. Use this in client-side environments rather than
+		// a standard API token, which should only be used server-side.
+		Value *string `json:"value,omitempty"`
+	} `json:"client_secret,omitempty"`
+
+	// InputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	InputAudioFormat *string `json:"input_audio_format,omitempty"`
+
+	// InputAudioTranscription Configuration for input audio transcription, defaults to off and can be
+	// set to `null` to turn off once on. Input audio transcription is not native
+	// to the model, since the model consumes audio directly. Transcription runs
+	// asynchronously through Whisper and should be treated as rough guidance
+	// rather than the representation understood by the model.
+	InputAudioTranscription *struct {
+		// Model The model to use for transcription, `whisper-1` is the only currently
+		// supported model.
+		Model *string `json:"model,omitempty"`
+	} `json:"input_audio_transcription,omitempty"`
+
+	// Instructions The default system instructions (i.e. system message) prepended to model
+	// calls. This field allows the client to guide the model on desired
+	// responses. The model can be instructed on response content and format,
+	// (e.g. "be extremely succinct", "act friendly", "here are examples of good
+	// responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+	// into your voice", "laugh frequently"). The instructions are not guaranteed
+	// to be followed by the model, but they provide guidance to the model on the
+	// desired behavior.
+	//
+	// Note that the server sets default instructions which will be used if this
+	// field is not set and are visible in the `session.created` event at the
+	// start of the session.
+	Instructions *string `json:"instructions,omitempty"`
+
+	// MaxResponseOutputTokens Maximum number of output tokens for a single assistant response,
+	// inclusive of tool calls. Provide an integer between 1 and 4096 to
+	// limit output tokens, or `inf` for the maximum available tokens for a
+	// given model. Defaults to `inf`.
+	MaxResponseOutputTokens *RealtimeSessionCreateResponse_MaxResponseOutputTokens `json:"max_response_output_tokens,omitempty"`
+
+	// Modalities The set of modalities the model can respond with. To disable audio,
+	// set this to ["text"].
+	Modalities *interface{} `json:"modalities,omitempty"`
+
+	// OutputAudioFormat The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	OutputAudioFormat *string `json:"output_audio_format,omitempty"`
+
+	// Temperature Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+	Temperature *float32 `json:"temperature,omitempty"`
+
+	// ToolChoice How the model chooses tools. Options are `auto`, `none`, `required`, or
+	// specify a function.
+	ToolChoice *string `json:"tool_choice,omitempty"`
+
+	// Tools Tools (functions) available to the model.
+	Tools *[]struct {
+		// Description The description of the function, including guidance on when and how
+		// to call it, and guidance about what to tell the user when calling
+		// (if anything).
+		Description *string `json:"description,omitempty"`
+
+		// Name The name of the function.
+		Name *string `json:"name,omitempty"`
+
+		// Parameters Parameters of the function in JSON Schema.
+		Parameters *map[string]interface{} `json:"parameters,omitempty"`
+
+		// Type The type of the tool, i.e. `function`.
+		Type *RealtimeSessionCreateResponseToolsType `json:"type,omitempty"`
+	} `json:"tools,omitempty"`
+
+	// TurnDetection Configuration for turn detection. Can be set to `null` to turn off. Server
+	// VAD means that the model will detect the start and end of speech based on
+	// audio volume and respond at the end of user speech.
+	TurnDetection *struct {
+		// PrefixPaddingMs Amount of audio to include before the VAD detected speech (in
+		// milliseconds). Defaults to 300ms.
+		PrefixPaddingMs *int `json:"prefix_padding_ms,omitempty"`
+
+		// SilenceDurationMs Duration of silence to detect speech stop (in milliseconds). Defaults
+		// to 500ms. With shorter values the model will respond more quickly,
+		// but may jump in on short pauses from the user.
+		SilenceDurationMs *int `json:"silence_duration_ms,omitempty"`
+
+		// Threshold Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
+		// higher threshold will require louder audio to activate the model, and
+		// thus might perform better in noisy environments.
+		Threshold *float32 `json:"threshold,omitempty"`
+
+		// Type Type of turn detection, only `server_vad` is currently supported.
+		Type *string `json:"type,omitempty"`
+	} `json:"turn_detection,omitempty"`
+
+	// Voice The voice the model uses to respond. Voice cannot be changed during the
+	// session once the model has responded with audio at least once. Current
+	// voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+	// `shimmer` and `verse`.
+	Voice *RealtimeSessionCreateResponseVoice `json:"voice,omitempty"`
+}
+
+// RealtimeSessionCreateResponseMaxResponseOutputTokens0 defines model for .
+type RealtimeSessionCreateResponseMaxResponseOutputTokens0 = int
+
+// RealtimeSessionCreateResponseMaxResponseOutputTokens1 defines model for RealtimeSessionCreateResponse.MaxResponseOutputTokens.1.
+type RealtimeSessionCreateResponseMaxResponseOutputTokens1 string
+
+// RealtimeSessionCreateResponse_MaxResponseOutputTokens Maximum number of output tokens for a single assistant response,
+// inclusive of tool calls. Provide an integer between 1 and 4096 to
+// limit output tokens, or `inf` for the maximum available tokens for a
+// given model. Defaults to `inf`.
+type RealtimeSessionCreateResponse_MaxResponseOutputTokens struct {
+	union json.RawMessage
+}
+
+// RealtimeSessionCreateResponseToolsType The type of the tool, i.e. `function`.
+type RealtimeSessionCreateResponseToolsType string
+
+// RealtimeSessionCreateResponseVoice The voice the model uses to respond. Voice cannot be changed during the
+// session once the model has responded with audio at least once. Current
+// voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+// `shimmer` and `verse`.
+type RealtimeSessionCreateResponseVoice string
+
 // ResponseFormatJsonObject defines model for ResponseFormatJsonObject.
 type ResponseFormatJsonObject struct {
 	// Type The type of response format being defined: `json_object`
@@ -6331,10 +7018,13 @@ type UsageCompletionsResult struct {
 	// Batch When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
 	Batch *bool `json:"batch"`
 
-	// InputCachedTokens The aggregated number of input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+	// InputAudioTokens The aggregated number of audio input tokens used, including cached tokens.
+	InputAudioTokens *int `json:"input_audio_tokens,omitempty"`
+
+	// InputCachedTokens The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
 	InputCachedTokens *int `json:"input_cached_tokens,omitempty"`
 
-	// InputTokens The aggregated number of input tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+	// InputTokens The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
 	InputTokens int `json:"input_tokens"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
@@ -6344,7 +7034,10 @@ type UsageCompletionsResult struct {
 	NumModelRequests int                          `json:"num_model_requests"`
 	Object           UsageCompletionsResultObject `json:"object"`
 
-	// OutputTokens The aggregated number of output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+	// OutputAudioTokens The aggregated number of audio output tokens used.
+	OutputAudioTokens *int `json:"output_audio_tokens,omitempty"`
+
+	// OutputTokens The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
 	OutputTokens int `json:"output_tokens"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
@@ -7484,6 +8177,9 @@ type ModifyProjectUserJSONRequestBody = ProjectUserUpdateRequest
 // ModifyUserJSONRequestBody defines body for ModifyUser for application/json ContentType.
 type ModifyUserJSONRequestBody = UserRoleUpdateRequest
 
+// CreateRealtimeSessionJSONRequestBody defines body for CreateRealtimeSession for application/json ContentType.
+type CreateRealtimeSessionJSONRequestBody = RealtimeSessionCreateRequest
+
 // CreateThreadJSONRequestBody defines body for CreateThread for application/json ContentType.
 type CreateThreadJSONRequestBody = CreateThreadRequest
 
@@ -7914,6 +8610,94 @@ func (t ChatCompletionRequestAssistantMessageContentPart) MarshalJSON() ([]byte,
 
 func (t *ChatCompletionRequestAssistantMessageContentPart) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsChatCompletionRequestDeveloperMessageContent0 returns the union data inside the ChatCompletionRequestDeveloperMessage_Content as a ChatCompletionRequestDeveloperMessageContent0
+func (t ChatCompletionRequestDeveloperMessage_Content) AsChatCompletionRequestDeveloperMessageContent0() (ChatCompletionRequestDeveloperMessageContent0, error) {
+	var body ChatCompletionRequestDeveloperMessageContent0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromChatCompletionRequestDeveloperMessageContent0 overwrites any union data inside the ChatCompletionRequestDeveloperMessage_Content as the provided ChatCompletionRequestDeveloperMessageContent0
+func (t *ChatCompletionRequestDeveloperMessage_Content) FromChatCompletionRequestDeveloperMessageContent0(v ChatCompletionRequestDeveloperMessageContent0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeChatCompletionRequestDeveloperMessageContent0 performs a merge with any union data inside the ChatCompletionRequestDeveloperMessage_Content, using the provided ChatCompletionRequestDeveloperMessageContent0
+func (t *ChatCompletionRequestDeveloperMessage_Content) MergeChatCompletionRequestDeveloperMessageContent0(v ChatCompletionRequestDeveloperMessageContent0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsChatCompletionRequestDeveloperMessageContent1 returns the union data inside the ChatCompletionRequestDeveloperMessage_Content as a ChatCompletionRequestDeveloperMessageContent1
+func (t ChatCompletionRequestDeveloperMessage_Content) AsChatCompletionRequestDeveloperMessageContent1() (ChatCompletionRequestDeveloperMessageContent1, error) {
+	var body ChatCompletionRequestDeveloperMessageContent1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromChatCompletionRequestDeveloperMessageContent1 overwrites any union data inside the ChatCompletionRequestDeveloperMessage_Content as the provided ChatCompletionRequestDeveloperMessageContent1
+func (t *ChatCompletionRequestDeveloperMessage_Content) FromChatCompletionRequestDeveloperMessageContent1(v ChatCompletionRequestDeveloperMessageContent1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeChatCompletionRequestDeveloperMessageContent1 performs a merge with any union data inside the ChatCompletionRequestDeveloperMessage_Content, using the provided ChatCompletionRequestDeveloperMessageContent1
+func (t *ChatCompletionRequestDeveloperMessage_Content) MergeChatCompletionRequestDeveloperMessageContent1(v ChatCompletionRequestDeveloperMessageContent1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ChatCompletionRequestDeveloperMessage_Content) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ChatCompletionRequestDeveloperMessage_Content) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsChatCompletionRequestDeveloperMessage returns the union data inside the ChatCompletionRequestMessage as a ChatCompletionRequestDeveloperMessage
+func (t ChatCompletionRequestMessage) AsChatCompletionRequestDeveloperMessage() (ChatCompletionRequestDeveloperMessage, error) {
+	var body ChatCompletionRequestDeveloperMessage
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromChatCompletionRequestDeveloperMessage overwrites any union data inside the ChatCompletionRequestMessage as the provided ChatCompletionRequestDeveloperMessage
+func (t *ChatCompletionRequestMessage) FromChatCompletionRequestDeveloperMessage(v ChatCompletionRequestDeveloperMessage) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeChatCompletionRequestDeveloperMessage performs a merge with any union data inside the ChatCompletionRequestMessage, using the provided ChatCompletionRequestDeveloperMessage
+func (t *ChatCompletionRequestMessage) MergeChatCompletionRequestDeveloperMessage(v ChatCompletionRequestDeveloperMessage) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
 	return err
 }
 
@@ -11187,6 +11971,564 @@ func (t *CreateVectorStoreRequest_ChunkingStrategy) UnmarshalJSON(b []byte) erro
 	return err
 }
 
+// AsFineTuneDPOMethodHyperparametersBatchSize0 returns the union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize as a FineTuneDPOMethodHyperparametersBatchSize0
+func (t FineTuneDPOMethod_Hyperparameters_BatchSize) AsFineTuneDPOMethodHyperparametersBatchSize0() (FineTuneDPOMethodHyperparametersBatchSize0, error) {
+	var body FineTuneDPOMethodHyperparametersBatchSize0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersBatchSize0 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize as the provided FineTuneDPOMethodHyperparametersBatchSize0
+func (t *FineTuneDPOMethod_Hyperparameters_BatchSize) FromFineTuneDPOMethodHyperparametersBatchSize0(v FineTuneDPOMethodHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersBatchSize0 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize, using the provided FineTuneDPOMethodHyperparametersBatchSize0
+func (t *FineTuneDPOMethod_Hyperparameters_BatchSize) MergeFineTuneDPOMethodHyperparametersBatchSize0(v FineTuneDPOMethodHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersBatchSize1 returns the union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize as a FineTuneDPOMethodHyperparametersBatchSize1
+func (t FineTuneDPOMethod_Hyperparameters_BatchSize) AsFineTuneDPOMethodHyperparametersBatchSize1() (FineTuneDPOMethodHyperparametersBatchSize1, error) {
+	var body FineTuneDPOMethodHyperparametersBatchSize1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersBatchSize1 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize as the provided FineTuneDPOMethodHyperparametersBatchSize1
+func (t *FineTuneDPOMethod_Hyperparameters_BatchSize) FromFineTuneDPOMethodHyperparametersBatchSize1(v FineTuneDPOMethodHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersBatchSize1 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_BatchSize, using the provided FineTuneDPOMethodHyperparametersBatchSize1
+func (t *FineTuneDPOMethod_Hyperparameters_BatchSize) MergeFineTuneDPOMethodHyperparametersBatchSize1(v FineTuneDPOMethodHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneDPOMethod_Hyperparameters_BatchSize) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneDPOMethod_Hyperparameters_BatchSize) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersBeta0 returns the union data inside the FineTuneDPOMethod_Hyperparameters_Beta as a FineTuneDPOMethodHyperparametersBeta0
+func (t FineTuneDPOMethod_Hyperparameters_Beta) AsFineTuneDPOMethodHyperparametersBeta0() (FineTuneDPOMethodHyperparametersBeta0, error) {
+	var body FineTuneDPOMethodHyperparametersBeta0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersBeta0 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_Beta as the provided FineTuneDPOMethodHyperparametersBeta0
+func (t *FineTuneDPOMethod_Hyperparameters_Beta) FromFineTuneDPOMethodHyperparametersBeta0(v FineTuneDPOMethodHyperparametersBeta0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersBeta0 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_Beta, using the provided FineTuneDPOMethodHyperparametersBeta0
+func (t *FineTuneDPOMethod_Hyperparameters_Beta) MergeFineTuneDPOMethodHyperparametersBeta0(v FineTuneDPOMethodHyperparametersBeta0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersBeta1 returns the union data inside the FineTuneDPOMethod_Hyperparameters_Beta as a FineTuneDPOMethodHyperparametersBeta1
+func (t FineTuneDPOMethod_Hyperparameters_Beta) AsFineTuneDPOMethodHyperparametersBeta1() (FineTuneDPOMethodHyperparametersBeta1, error) {
+	var body FineTuneDPOMethodHyperparametersBeta1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersBeta1 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_Beta as the provided FineTuneDPOMethodHyperparametersBeta1
+func (t *FineTuneDPOMethod_Hyperparameters_Beta) FromFineTuneDPOMethodHyperparametersBeta1(v FineTuneDPOMethodHyperparametersBeta1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersBeta1 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_Beta, using the provided FineTuneDPOMethodHyperparametersBeta1
+func (t *FineTuneDPOMethod_Hyperparameters_Beta) MergeFineTuneDPOMethodHyperparametersBeta1(v FineTuneDPOMethodHyperparametersBeta1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneDPOMethod_Hyperparameters_Beta) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneDPOMethod_Hyperparameters_Beta) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersLearningRateMultiplier0 returns the union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier as a FineTuneDPOMethodHyperparametersLearningRateMultiplier0
+func (t FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) AsFineTuneDPOMethodHyperparametersLearningRateMultiplier0() (FineTuneDPOMethodHyperparametersLearningRateMultiplier0, error) {
+	var body FineTuneDPOMethodHyperparametersLearningRateMultiplier0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersLearningRateMultiplier0 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier as the provided FineTuneDPOMethodHyperparametersLearningRateMultiplier0
+func (t *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) FromFineTuneDPOMethodHyperparametersLearningRateMultiplier0(v FineTuneDPOMethodHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersLearningRateMultiplier0 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier, using the provided FineTuneDPOMethodHyperparametersLearningRateMultiplier0
+func (t *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) MergeFineTuneDPOMethodHyperparametersLearningRateMultiplier0(v FineTuneDPOMethodHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersLearningRateMultiplier1 returns the union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier as a FineTuneDPOMethodHyperparametersLearningRateMultiplier1
+func (t FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) AsFineTuneDPOMethodHyperparametersLearningRateMultiplier1() (FineTuneDPOMethodHyperparametersLearningRateMultiplier1, error) {
+	var body FineTuneDPOMethodHyperparametersLearningRateMultiplier1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersLearningRateMultiplier1 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier as the provided FineTuneDPOMethodHyperparametersLearningRateMultiplier1
+func (t *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) FromFineTuneDPOMethodHyperparametersLearningRateMultiplier1(v FineTuneDPOMethodHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersLearningRateMultiplier1 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier, using the provided FineTuneDPOMethodHyperparametersLearningRateMultiplier1
+func (t *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) MergeFineTuneDPOMethodHyperparametersLearningRateMultiplier1(v FineTuneDPOMethodHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneDPOMethod_Hyperparameters_LearningRateMultiplier) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersNEpochs0 returns the union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs as a FineTuneDPOMethodHyperparametersNEpochs0
+func (t FineTuneDPOMethod_Hyperparameters_NEpochs) AsFineTuneDPOMethodHyperparametersNEpochs0() (FineTuneDPOMethodHyperparametersNEpochs0, error) {
+	var body FineTuneDPOMethodHyperparametersNEpochs0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersNEpochs0 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs as the provided FineTuneDPOMethodHyperparametersNEpochs0
+func (t *FineTuneDPOMethod_Hyperparameters_NEpochs) FromFineTuneDPOMethodHyperparametersNEpochs0(v FineTuneDPOMethodHyperparametersNEpochs0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersNEpochs0 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs, using the provided FineTuneDPOMethodHyperparametersNEpochs0
+func (t *FineTuneDPOMethod_Hyperparameters_NEpochs) MergeFineTuneDPOMethodHyperparametersNEpochs0(v FineTuneDPOMethodHyperparametersNEpochs0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneDPOMethodHyperparametersNEpochs1 returns the union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs as a FineTuneDPOMethodHyperparametersNEpochs1
+func (t FineTuneDPOMethod_Hyperparameters_NEpochs) AsFineTuneDPOMethodHyperparametersNEpochs1() (FineTuneDPOMethodHyperparametersNEpochs1, error) {
+	var body FineTuneDPOMethodHyperparametersNEpochs1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneDPOMethodHyperparametersNEpochs1 overwrites any union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs as the provided FineTuneDPOMethodHyperparametersNEpochs1
+func (t *FineTuneDPOMethod_Hyperparameters_NEpochs) FromFineTuneDPOMethodHyperparametersNEpochs1(v FineTuneDPOMethodHyperparametersNEpochs1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneDPOMethodHyperparametersNEpochs1 performs a merge with any union data inside the FineTuneDPOMethod_Hyperparameters_NEpochs, using the provided FineTuneDPOMethodHyperparametersNEpochs1
+func (t *FineTuneDPOMethod_Hyperparameters_NEpochs) MergeFineTuneDPOMethodHyperparametersNEpochs1(v FineTuneDPOMethodHyperparametersNEpochs1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneDPOMethod_Hyperparameters_NEpochs) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneDPOMethod_Hyperparameters_NEpochs) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersBatchSize0 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize as a FineTuneSupervisedMethodHyperparametersBatchSize0
+func (t FineTuneSupervisedMethod_Hyperparameters_BatchSize) AsFineTuneSupervisedMethodHyperparametersBatchSize0() (FineTuneSupervisedMethodHyperparametersBatchSize0, error) {
+	var body FineTuneSupervisedMethodHyperparametersBatchSize0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersBatchSize0 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize as the provided FineTuneSupervisedMethodHyperparametersBatchSize0
+func (t *FineTuneSupervisedMethod_Hyperparameters_BatchSize) FromFineTuneSupervisedMethodHyperparametersBatchSize0(v FineTuneSupervisedMethodHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersBatchSize0 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize, using the provided FineTuneSupervisedMethodHyperparametersBatchSize0
+func (t *FineTuneSupervisedMethod_Hyperparameters_BatchSize) MergeFineTuneSupervisedMethodHyperparametersBatchSize0(v FineTuneSupervisedMethodHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersBatchSize1 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize as a FineTuneSupervisedMethodHyperparametersBatchSize1
+func (t FineTuneSupervisedMethod_Hyperparameters_BatchSize) AsFineTuneSupervisedMethodHyperparametersBatchSize1() (FineTuneSupervisedMethodHyperparametersBatchSize1, error) {
+	var body FineTuneSupervisedMethodHyperparametersBatchSize1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersBatchSize1 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize as the provided FineTuneSupervisedMethodHyperparametersBatchSize1
+func (t *FineTuneSupervisedMethod_Hyperparameters_BatchSize) FromFineTuneSupervisedMethodHyperparametersBatchSize1(v FineTuneSupervisedMethodHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersBatchSize1 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_BatchSize, using the provided FineTuneSupervisedMethodHyperparametersBatchSize1
+func (t *FineTuneSupervisedMethod_Hyperparameters_BatchSize) MergeFineTuneSupervisedMethodHyperparametersBatchSize1(v FineTuneSupervisedMethodHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneSupervisedMethod_Hyperparameters_BatchSize) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneSupervisedMethod_Hyperparameters_BatchSize) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier as a FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0
+func (t FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) AsFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0() (FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0, error) {
+	var body FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier as the provided FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0
+func (t *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) FromFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0(v FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier, using the provided FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0
+func (t *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) MergeFineTuneSupervisedMethodHyperparametersLearningRateMultiplier0(v FineTuneSupervisedMethodHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier as a FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1
+func (t FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) AsFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1() (FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1, error) {
+	var body FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier as the provided FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1
+func (t *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) FromFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1(v FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier, using the provided FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1
+func (t *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) MergeFineTuneSupervisedMethodHyperparametersLearningRateMultiplier1(v FineTuneSupervisedMethodHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneSupervisedMethod_Hyperparameters_LearningRateMultiplier) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersNEpochs0 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs as a FineTuneSupervisedMethodHyperparametersNEpochs0
+func (t FineTuneSupervisedMethod_Hyperparameters_NEpochs) AsFineTuneSupervisedMethodHyperparametersNEpochs0() (FineTuneSupervisedMethodHyperparametersNEpochs0, error) {
+	var body FineTuneSupervisedMethodHyperparametersNEpochs0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersNEpochs0 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs as the provided FineTuneSupervisedMethodHyperparametersNEpochs0
+func (t *FineTuneSupervisedMethod_Hyperparameters_NEpochs) FromFineTuneSupervisedMethodHyperparametersNEpochs0(v FineTuneSupervisedMethodHyperparametersNEpochs0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersNEpochs0 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs, using the provided FineTuneSupervisedMethodHyperparametersNEpochs0
+func (t *FineTuneSupervisedMethod_Hyperparameters_NEpochs) MergeFineTuneSupervisedMethodHyperparametersNEpochs0(v FineTuneSupervisedMethodHyperparametersNEpochs0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuneSupervisedMethodHyperparametersNEpochs1 returns the union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs as a FineTuneSupervisedMethodHyperparametersNEpochs1
+func (t FineTuneSupervisedMethod_Hyperparameters_NEpochs) AsFineTuneSupervisedMethodHyperparametersNEpochs1() (FineTuneSupervisedMethodHyperparametersNEpochs1, error) {
+	var body FineTuneSupervisedMethodHyperparametersNEpochs1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuneSupervisedMethodHyperparametersNEpochs1 overwrites any union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs as the provided FineTuneSupervisedMethodHyperparametersNEpochs1
+func (t *FineTuneSupervisedMethod_Hyperparameters_NEpochs) FromFineTuneSupervisedMethodHyperparametersNEpochs1(v FineTuneSupervisedMethodHyperparametersNEpochs1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuneSupervisedMethodHyperparametersNEpochs1 performs a merge with any union data inside the FineTuneSupervisedMethod_Hyperparameters_NEpochs, using the provided FineTuneSupervisedMethodHyperparametersNEpochs1
+func (t *FineTuneSupervisedMethod_Hyperparameters_NEpochs) MergeFineTuneSupervisedMethodHyperparametersNEpochs1(v FineTuneSupervisedMethodHyperparametersNEpochs1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuneSupervisedMethod_Hyperparameters_NEpochs) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuneSupervisedMethod_Hyperparameters_NEpochs) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuningJobHyperparametersBatchSize0 returns the union data inside the FineTuningJob_Hyperparameters_BatchSize as a FineTuningJobHyperparametersBatchSize0
+func (t FineTuningJob_Hyperparameters_BatchSize) AsFineTuningJobHyperparametersBatchSize0() (FineTuningJobHyperparametersBatchSize0, error) {
+	var body FineTuningJobHyperparametersBatchSize0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuningJobHyperparametersBatchSize0 overwrites any union data inside the FineTuningJob_Hyperparameters_BatchSize as the provided FineTuningJobHyperparametersBatchSize0
+func (t *FineTuningJob_Hyperparameters_BatchSize) FromFineTuningJobHyperparametersBatchSize0(v FineTuningJobHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuningJobHyperparametersBatchSize0 performs a merge with any union data inside the FineTuningJob_Hyperparameters_BatchSize, using the provided FineTuningJobHyperparametersBatchSize0
+func (t *FineTuningJob_Hyperparameters_BatchSize) MergeFineTuningJobHyperparametersBatchSize0(v FineTuningJobHyperparametersBatchSize0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuningJobHyperparametersBatchSize1 returns the union data inside the FineTuningJob_Hyperparameters_BatchSize as a FineTuningJobHyperparametersBatchSize1
+func (t FineTuningJob_Hyperparameters_BatchSize) AsFineTuningJobHyperparametersBatchSize1() (FineTuningJobHyperparametersBatchSize1, error) {
+	var body FineTuningJobHyperparametersBatchSize1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuningJobHyperparametersBatchSize1 overwrites any union data inside the FineTuningJob_Hyperparameters_BatchSize as the provided FineTuningJobHyperparametersBatchSize1
+func (t *FineTuningJob_Hyperparameters_BatchSize) FromFineTuningJobHyperparametersBatchSize1(v FineTuningJobHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuningJobHyperparametersBatchSize1 performs a merge with any union data inside the FineTuningJob_Hyperparameters_BatchSize, using the provided FineTuningJobHyperparametersBatchSize1
+func (t *FineTuningJob_Hyperparameters_BatchSize) MergeFineTuningJobHyperparametersBatchSize1(v FineTuningJobHyperparametersBatchSize1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuningJob_Hyperparameters_BatchSize) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuningJob_Hyperparameters_BatchSize) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsFineTuningJobHyperparametersLearningRateMultiplier0 returns the union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier as a FineTuningJobHyperparametersLearningRateMultiplier0
+func (t FineTuningJob_Hyperparameters_LearningRateMultiplier) AsFineTuningJobHyperparametersLearningRateMultiplier0() (FineTuningJobHyperparametersLearningRateMultiplier0, error) {
+	var body FineTuningJobHyperparametersLearningRateMultiplier0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuningJobHyperparametersLearningRateMultiplier0 overwrites any union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier as the provided FineTuningJobHyperparametersLearningRateMultiplier0
+func (t *FineTuningJob_Hyperparameters_LearningRateMultiplier) FromFineTuningJobHyperparametersLearningRateMultiplier0(v FineTuningJobHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuningJobHyperparametersLearningRateMultiplier0 performs a merge with any union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier, using the provided FineTuningJobHyperparametersLearningRateMultiplier0
+func (t *FineTuningJob_Hyperparameters_LearningRateMultiplier) MergeFineTuningJobHyperparametersLearningRateMultiplier0(v FineTuningJobHyperparametersLearningRateMultiplier0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFineTuningJobHyperparametersLearningRateMultiplier1 returns the union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier as a FineTuningJobHyperparametersLearningRateMultiplier1
+func (t FineTuningJob_Hyperparameters_LearningRateMultiplier) AsFineTuningJobHyperparametersLearningRateMultiplier1() (FineTuningJobHyperparametersLearningRateMultiplier1, error) {
+	var body FineTuningJobHyperparametersLearningRateMultiplier1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFineTuningJobHyperparametersLearningRateMultiplier1 overwrites any union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier as the provided FineTuningJobHyperparametersLearningRateMultiplier1
+func (t *FineTuningJob_Hyperparameters_LearningRateMultiplier) FromFineTuningJobHyperparametersLearningRateMultiplier1(v FineTuningJobHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFineTuningJobHyperparametersLearningRateMultiplier1 performs a merge with any union data inside the FineTuningJob_Hyperparameters_LearningRateMultiplier, using the provided FineTuningJobHyperparametersLearningRateMultiplier1
+func (t *FineTuningJob_Hyperparameters_LearningRateMultiplier) MergeFineTuningJobHyperparametersLearningRateMultiplier1(v FineTuningJobHyperparametersLearningRateMultiplier1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t FineTuningJob_Hyperparameters_LearningRateMultiplier) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *FineTuningJob_Hyperparameters_LearningRateMultiplier) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsFineTuningJobHyperparametersNEpochs0 returns the union data inside the FineTuningJob_Hyperparameters_NEpochs as a FineTuningJobHyperparametersNEpochs0
 func (t FineTuningJob_Hyperparameters_NEpochs) AsFineTuningJobHyperparametersNEpochs0() (FineTuningJobHyperparametersNEpochs0, error) {
 	var body FineTuningJobHyperparametersNEpochs0
@@ -11705,6 +13047,130 @@ func (t PredictionContent_Content) MarshalJSON() ([]byte, error) {
 }
 
 func (t *PredictionContent_Content) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsRealtimeSessionCreateRequestMaxResponseOutputTokens0 returns the union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens as a RealtimeSessionCreateRequestMaxResponseOutputTokens0
+func (t RealtimeSessionCreateRequest_MaxResponseOutputTokens) AsRealtimeSessionCreateRequestMaxResponseOutputTokens0() (RealtimeSessionCreateRequestMaxResponseOutputTokens0, error) {
+	var body RealtimeSessionCreateRequestMaxResponseOutputTokens0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeSessionCreateRequestMaxResponseOutputTokens0 overwrites any union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens as the provided RealtimeSessionCreateRequestMaxResponseOutputTokens0
+func (t *RealtimeSessionCreateRequest_MaxResponseOutputTokens) FromRealtimeSessionCreateRequestMaxResponseOutputTokens0(v RealtimeSessionCreateRequestMaxResponseOutputTokens0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeSessionCreateRequestMaxResponseOutputTokens0 performs a merge with any union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens, using the provided RealtimeSessionCreateRequestMaxResponseOutputTokens0
+func (t *RealtimeSessionCreateRequest_MaxResponseOutputTokens) MergeRealtimeSessionCreateRequestMaxResponseOutputTokens0(v RealtimeSessionCreateRequestMaxResponseOutputTokens0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeSessionCreateRequestMaxResponseOutputTokens1 returns the union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens as a RealtimeSessionCreateRequestMaxResponseOutputTokens1
+func (t RealtimeSessionCreateRequest_MaxResponseOutputTokens) AsRealtimeSessionCreateRequestMaxResponseOutputTokens1() (RealtimeSessionCreateRequestMaxResponseOutputTokens1, error) {
+	var body RealtimeSessionCreateRequestMaxResponseOutputTokens1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeSessionCreateRequestMaxResponseOutputTokens1 overwrites any union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens as the provided RealtimeSessionCreateRequestMaxResponseOutputTokens1
+func (t *RealtimeSessionCreateRequest_MaxResponseOutputTokens) FromRealtimeSessionCreateRequestMaxResponseOutputTokens1(v RealtimeSessionCreateRequestMaxResponseOutputTokens1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeSessionCreateRequestMaxResponseOutputTokens1 performs a merge with any union data inside the RealtimeSessionCreateRequest_MaxResponseOutputTokens, using the provided RealtimeSessionCreateRequestMaxResponseOutputTokens1
+func (t *RealtimeSessionCreateRequest_MaxResponseOutputTokens) MergeRealtimeSessionCreateRequestMaxResponseOutputTokens1(v RealtimeSessionCreateRequestMaxResponseOutputTokens1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RealtimeSessionCreateRequest_MaxResponseOutputTokens) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RealtimeSessionCreateRequest_MaxResponseOutputTokens) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsRealtimeSessionCreateResponseMaxResponseOutputTokens0 returns the union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens as a RealtimeSessionCreateResponseMaxResponseOutputTokens0
+func (t RealtimeSessionCreateResponse_MaxResponseOutputTokens) AsRealtimeSessionCreateResponseMaxResponseOutputTokens0() (RealtimeSessionCreateResponseMaxResponseOutputTokens0, error) {
+	var body RealtimeSessionCreateResponseMaxResponseOutputTokens0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeSessionCreateResponseMaxResponseOutputTokens0 overwrites any union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens as the provided RealtimeSessionCreateResponseMaxResponseOutputTokens0
+func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) FromRealtimeSessionCreateResponseMaxResponseOutputTokens0(v RealtimeSessionCreateResponseMaxResponseOutputTokens0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeSessionCreateResponseMaxResponseOutputTokens0 performs a merge with any union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens, using the provided RealtimeSessionCreateResponseMaxResponseOutputTokens0
+func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) MergeRealtimeSessionCreateResponseMaxResponseOutputTokens0(v RealtimeSessionCreateResponseMaxResponseOutputTokens0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeSessionCreateResponseMaxResponseOutputTokens1 returns the union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens as a RealtimeSessionCreateResponseMaxResponseOutputTokens1
+func (t RealtimeSessionCreateResponse_MaxResponseOutputTokens) AsRealtimeSessionCreateResponseMaxResponseOutputTokens1() (RealtimeSessionCreateResponseMaxResponseOutputTokens1, error) {
+	var body RealtimeSessionCreateResponseMaxResponseOutputTokens1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeSessionCreateResponseMaxResponseOutputTokens1 overwrites any union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens as the provided RealtimeSessionCreateResponseMaxResponseOutputTokens1
+func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) FromRealtimeSessionCreateResponseMaxResponseOutputTokens1(v RealtimeSessionCreateResponseMaxResponseOutputTokens1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeSessionCreateResponseMaxResponseOutputTokens1 performs a merge with any union data inside the RealtimeSessionCreateResponse_MaxResponseOutputTokens, using the provided RealtimeSessionCreateResponseMaxResponseOutputTokens1
+func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) MergeRealtimeSessionCreateResponseMaxResponseOutputTokens1(v RealtimeSessionCreateResponseMaxResponseOutputTokens1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RealtimeSessionCreateResponse_MaxResponseOutputTokens) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -12633,6 +14099,11 @@ type ClientInterface interface {
 	ModifyUserWithBody(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	ModifyUser(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateRealtimeSessionWithBody request with any body
+	CreateRealtimeSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateRealtimeSession(ctx context.Context, body CreateRealtimeSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateThreadWithBody request with any body
 	CreateThreadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -13814,6 +15285,30 @@ func (c *Client) ModifyUserWithBody(ctx context.Context, userId string, contentT
 
 func (c *Client) ModifyUser(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewModifyUserRequest(c.Server, userId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateRealtimeSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRealtimeSessionRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateRealtimeSession(ctx context.Context, body CreateRealtimeSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRealtimeSessionRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -18956,6 +20451,46 @@ func NewModifyUserRequestWithBody(server string, userId string, contentType stri
 	return req, nil
 }
 
+// NewCreateRealtimeSessionRequest calls the generic CreateRealtimeSession builder with application/json body
+func NewCreateRealtimeSessionRequest(server string, body CreateRealtimeSessionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateRealtimeSessionRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateRealtimeSessionRequestWithBody generates requests for CreateRealtimeSession with any type of body
+func NewCreateRealtimeSessionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/realtime/sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateThreadRequest calls the generic CreateThread builder with application/json body
 func NewCreateThreadRequest(server string, body CreateThreadJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -21217,6 +22752,11 @@ type ClientWithResponsesInterface interface {
 
 	ModifyUserWithResponse(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyUserResp, error)
 
+	// CreateRealtimeSessionWithBodyWithResponse request with any body
+	CreateRealtimeSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRealtimeSessionResp, error)
+
+	CreateRealtimeSessionWithResponse(ctx context.Context, body CreateRealtimeSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRealtimeSessionResp, error)
+
 	// CreateThreadWithBodyWithResponse request with any body
 	CreateThreadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateThreadResp, error)
 
@@ -22901,6 +24441,28 @@ func (r ModifyUserResp) StatusCode() int {
 	return 0
 }
 
+type CreateRealtimeSessionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RealtimeSessionCreateResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateRealtimeSessionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateRealtimeSessionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateThreadResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -24443,6 +26005,23 @@ func (c *ClientWithResponses) ModifyUserWithResponse(ctx context.Context, userId
 		return nil, err
 	}
 	return ParseModifyUserResp(rsp)
+}
+
+// CreateRealtimeSessionWithBodyWithResponse request with arbitrary body returning *CreateRealtimeSessionResp
+func (c *ClientWithResponses) CreateRealtimeSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRealtimeSessionResp, error) {
+	rsp, err := c.CreateRealtimeSessionWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRealtimeSessionResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateRealtimeSessionWithResponse(ctx context.Context, body CreateRealtimeSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRealtimeSessionResp, error) {
+	rsp, err := c.CreateRealtimeSession(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRealtimeSessionResp(rsp)
 }
 
 // CreateThreadWithBodyWithResponse request with arbitrary body returning *CreateThreadResp
@@ -26725,6 +28304,32 @@ func ParseModifyUserResp(rsp *http.Response) (*ModifyUserResp, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateRealtimeSessionResp parses an HTTP response from a CreateRealtimeSessionWithResponse call
+func ParseCreateRealtimeSessionResp(rsp *http.Response) (*CreateRealtimeSessionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateRealtimeSessionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RealtimeSessionCreateResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
