@@ -18,7 +18,9 @@ import (
 )
 
 const (
-	ApiKeyAuthScopes = "ApiKeyAuth.Scopes"
+	ApiKeyAuthScopes           = "ApiKeyAuth.Scopes"
+	Basic_identity_edgeScopes  = "basic_identity_edge.Scopes"
+	Bearer_identity_edgeScopes = "bearer_identity_edge.Scopes"
 )
 
 // Defines values for AssistantObjectObject.
@@ -866,6 +868,12 @@ const (
 	OrganizationInvite InviteObject = "organization.invite"
 )
 
+// Defines values for InviteProjectsRole.
+const (
+	InviteProjectsRoleMember InviteProjectsRole = "member"
+	InviteProjectsRoleOwner  InviteProjectsRole = "owner"
+)
+
 // Defines values for InviteRole.
 const (
 	InviteRoleOwner  InviteRole = "owner"
@@ -887,6 +895,12 @@ const (
 // Defines values for InviteListResponseObject.
 const (
 	InviteListResponseObjectList InviteListResponseObject = "list"
+)
+
+// Defines values for InviteRequestProjectsRole.
+const (
+	InviteRequestProjectsRoleMember InviteRequestProjectsRole = "member"
+	InviteRequestProjectsRoleOwner  InviteRequestProjectsRole = "owner"
 )
 
 // Defines values for InviteRequestRole.
@@ -1534,6 +1548,12 @@ const (
 	ListFilesParamsOrderDesc ListFilesParamsOrder = "desc"
 )
 
+// Defines values for AdminApiKeysListParamsOrder.
+const (
+	AdminApiKeysListParamsOrderAsc  AdminApiKeysListParamsOrder = "asc"
+	AdminApiKeysListParamsOrderDesc AdminApiKeysListParamsOrder = "desc"
+)
+
 // Defines values for UsageCostsParamsBucketWidth.
 const (
 	UsageCostsParamsBucketWidthN1d UsageCostsParamsBucketWidth = "1d"
@@ -1733,8 +1753,8 @@ const (
 
 // Defines values for ListVectorStoreFilesParamsOrder.
 const (
-	ListVectorStoreFilesParamsOrderAsc  ListVectorStoreFilesParamsOrder = "asc"
-	ListVectorStoreFilesParamsOrderDesc ListVectorStoreFilesParamsOrder = "desc"
+	Asc  ListVectorStoreFilesParamsOrder = "asc"
+	Desc ListVectorStoreFilesParamsOrder = "desc"
 )
 
 // Defines values for ListVectorStoreFilesParamsFilter.
@@ -1749,6 +1769,32 @@ const (
 type AddUploadPartRequest struct {
 	// Data The chunk of bytes for this Part.
 	Data openapi_types.File `json:"data"`
+}
+
+// AdminApiKey defines model for AdminApiKey.
+type AdminApiKey struct {
+	CreatedAt *int64  `json:"created_at,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	Object    *string `json:"object,omitempty"`
+	Owner     *struct {
+		CreatedAt *int64  `json:"created_at,omitempty"`
+		Id        *string `json:"id,omitempty"`
+		Name      *string `json:"name,omitempty"`
+		Role      *string `json:"role,omitempty"`
+		Type      *string `json:"type,omitempty"`
+	} `json:"owner,omitempty"`
+	RedactedValue *string `json:"redacted_value,omitempty"`
+	Value         *string `json:"value,omitempty"`
+}
+
+// ApiKeyList defines model for ApiKeyList.
+type ApiKeyList struct {
+	Data    *[]AdminApiKey `json:"data,omitempty"`
+	FirstId *string        `json:"first_id,omitempty"`
+	HasMore *bool          `json:"has_more,omitempty"`
+	LastId  *string        `json:"last_id,omitempty"`
+	Object  *string        `json:"object,omitempty"`
 }
 
 // AssistantObject Represents an `assistant` that can call the model and use tools.
@@ -5118,6 +5164,15 @@ type Invite struct {
 	// Object The object type, which is always `organization.invite`
 	Object InviteObject `json:"object"`
 
+	// Projects The projects that were granted membership upon acceptance of the invite.
+	Projects *[]struct {
+		// Id Project's public ID
+		Id *string `json:"id,omitempty"`
+
+		// Role Project membership role
+		Role *InviteProjectsRole `json:"role,omitempty"`
+	} `json:"projects,omitempty"`
+
 	// Role `owner` or `reader`
 	Role InviteRole `json:"role"`
 
@@ -5127,6 +5182,9 @@ type Invite struct {
 
 // InviteObject The object type, which is always `organization.invite`
 type InviteObject string
+
+// InviteProjectsRole Project membership role
+type InviteProjectsRole string
 
 // InviteRole `owner` or `reader`
 type InviteRole string
@@ -5171,9 +5229,21 @@ type InviteRequest struct {
 	// Email Send an email to this address
 	Email string `json:"email"`
 
+	// Projects An array of projects to which membership is granted at the same time the org invite is accepted. If omitted, the user will be invited to the default project for compatibility with legacy behavior.
+	Projects *[]struct {
+		// Id Project's public ID
+		Id string `json:"id"`
+
+		// Role Project membership role
+		Role InviteRequestProjectsRole `json:"role"`
+	} `json:"projects,omitempty"`
+
 	// Role `owner` or `reader`
 	Role InviteRequestRole `json:"role"`
 }
+
+// InviteRequestProjectsRole Project membership role
+type InviteRequestProjectsRole string
 
 // InviteRequestRole `owner` or `reader`
 type InviteRequestRole string
@@ -7481,6 +7551,21 @@ type ListFineTuningEventsParams struct {
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// AdminApiKeysListParams defines parameters for AdminApiKeysList.
+type AdminApiKeysListParams struct {
+	After *string                      `form:"after,omitempty" json:"after,omitempty"`
+	Order *AdminApiKeysListParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+	Limit *int                         `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// AdminApiKeysListParamsOrder defines parameters for AdminApiKeysList.
+type AdminApiKeysListParamsOrder string
+
+// AdminApiKeysCreateJSONBody defines parameters for AdminApiKeysCreate.
+type AdminApiKeysCreateJSONBody struct {
+	Name string `json:"name"`
+}
+
 // ListAuditLogsParams defines parameters for ListAuditLogs.
 type ListAuditLogsParams struct {
 	// EffectiveAt Return only events whose `effective_at` (Unix seconds) is in this range.
@@ -8152,6 +8237,9 @@ type CreateImageVariationMultipartRequestBody = CreateImageVariationRequest
 
 // CreateModerationJSONRequestBody defines body for CreateModeration for application/json ContentType.
 type CreateModerationJSONRequestBody = CreateModerationRequest
+
+// AdminApiKeysCreateJSONRequestBody defines body for AdminApiKeysCreate for application/json ContentType.
+type AdminApiKeysCreateJSONRequestBody AdminApiKeysCreateJSONBody
 
 // InviteUserJSONRequestBody defines body for InviteUser for application/json ContentType.
 type InviteUserJSONRequestBody = InviteRequest
@@ -13973,6 +14061,20 @@ type ClientInterface interface {
 
 	CreateModeration(ctx context.Context, body CreateModerationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AdminApiKeysList request
+	AdminApiKeysList(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdminApiKeysCreateWithBody request with any body
+	AdminApiKeysCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AdminApiKeysCreate(ctx context.Context, body AdminApiKeysCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdminApiKeysDelete request
+	AdminApiKeysDelete(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdminApiKeysGet request
+	AdminApiKeysGet(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListAuditLogs request
 	ListAuditLogs(ctx context.Context, params *ListAuditLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -14745,6 +14847,66 @@ func (c *Client) CreateModerationWithBody(ctx context.Context, contentType strin
 
 func (c *Client) CreateModeration(ctx context.Context, body CreateModerationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateModerationRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminApiKeysList(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminApiKeysListRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminApiKeysCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminApiKeysCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminApiKeysCreate(ctx context.Context, body AdminApiKeysCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminApiKeysCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminApiKeysDelete(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminApiKeysDeleteRequest(c.Server, keyId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdminApiKeysGet(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdminApiKeysGetRequest(c.Server, keyId)
 	if err != nil {
 		return nil, err
 	}
@@ -17324,6 +17486,195 @@ func NewCreateModerationRequestWithBody(server string, contentType string, body 
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAdminApiKeysListRequest generates requests for AdminApiKeysList
+func NewAdminApiKeysListRequest(server string, params *AdminApiKeysListParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/admin_api_keys")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAdminApiKeysCreateRequest calls the generic AdminApiKeysCreate builder with application/json body
+func NewAdminApiKeysCreateRequest(server string, body AdminApiKeysCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAdminApiKeysCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewAdminApiKeysCreateRequestWithBody generates requests for AdminApiKeysCreate with any type of body
+func NewAdminApiKeysCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/admin_api_keys")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAdminApiKeysDeleteRequest generates requests for AdminApiKeysDelete
+func NewAdminApiKeysDeleteRequest(server string, keyId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "key_id", runtime.ParamLocationPath, keyId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/admin_api_keys/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAdminApiKeysGetRequest generates requests for AdminApiKeysGet
+func NewAdminApiKeysGetRequest(server string, keyId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "key_id", runtime.ParamLocationPath, keyId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/admin_api_keys/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -22625,6 +22976,20 @@ type ClientWithResponsesInterface interface {
 
 	CreateModerationWithResponse(ctx context.Context, body CreateModerationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateModerationResp, error)
 
+	// AdminApiKeysListWithResponse request
+	AdminApiKeysListWithResponse(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*AdminApiKeysListResp, error)
+
+	// AdminApiKeysCreateWithBodyWithResponse request with any body
+	AdminApiKeysCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminApiKeysCreateResp, error)
+
+	AdminApiKeysCreateWithResponse(ctx context.Context, body AdminApiKeysCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminApiKeysCreateResp, error)
+
+	// AdminApiKeysDeleteWithResponse request
+	AdminApiKeysDeleteWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*AdminApiKeysDeleteResp, error)
+
+	// AdminApiKeysGetWithResponse request
+	AdminApiKeysGetWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*AdminApiKeysGetResp, error)
+
 	// ListAuditLogsWithResponse request
 	ListAuditLogsWithResponse(ctx context.Context, params *ListAuditLogsParams, reqEditors ...RequestEditorFn) (*ListAuditLogsResp, error)
 
@@ -23614,6 +23979,98 @@ func (r CreateModerationResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateModerationResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminApiKeysListResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ApiKeyList
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminApiKeysListResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminApiKeysListResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminApiKeysCreateResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AdminApiKey
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminApiKeysCreateResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminApiKeysCreateResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminApiKeysDeleteResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Deleted *bool   `json:"deleted,omitempty"`
+		Id      *string `json:"id,omitempty"`
+		Object  *string `json:"object,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminApiKeysDeleteResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminApiKeysDeleteResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AdminApiKeysGetResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AdminApiKey
+}
+
+// Status returns HTTPResponse.Status
+func (r AdminApiKeysGetResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdminApiKeysGetResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -25610,6 +26067,50 @@ func (c *ClientWithResponses) CreateModerationWithResponse(ctx context.Context, 
 	return ParseCreateModerationResp(rsp)
 }
 
+// AdminApiKeysListWithResponse request returning *AdminApiKeysListResp
+func (c *ClientWithResponses) AdminApiKeysListWithResponse(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*AdminApiKeysListResp, error) {
+	rsp, err := c.AdminApiKeysList(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminApiKeysListResp(rsp)
+}
+
+// AdminApiKeysCreateWithBodyWithResponse request with arbitrary body returning *AdminApiKeysCreateResp
+func (c *ClientWithResponses) AdminApiKeysCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdminApiKeysCreateResp, error) {
+	rsp, err := c.AdminApiKeysCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminApiKeysCreateResp(rsp)
+}
+
+func (c *ClientWithResponses) AdminApiKeysCreateWithResponse(ctx context.Context, body AdminApiKeysCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*AdminApiKeysCreateResp, error) {
+	rsp, err := c.AdminApiKeysCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminApiKeysCreateResp(rsp)
+}
+
+// AdminApiKeysDeleteWithResponse request returning *AdminApiKeysDeleteResp
+func (c *ClientWithResponses) AdminApiKeysDeleteWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*AdminApiKeysDeleteResp, error) {
+	rsp, err := c.AdminApiKeysDelete(ctx, keyId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminApiKeysDeleteResp(rsp)
+}
+
+// AdminApiKeysGetWithResponse request returning *AdminApiKeysGetResp
+func (c *ClientWithResponses) AdminApiKeysGetWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*AdminApiKeysGetResp, error) {
+	rsp, err := c.AdminApiKeysGet(ctx, keyId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdminApiKeysGetResp(rsp)
+}
+
 // ListAuditLogsWithResponse request returning *ListAuditLogsResp
 func (c *ClientWithResponses) ListAuditLogsWithResponse(ctx context.Context, params *ListAuditLogsParams, reqEditors ...RequestEditorFn) (*ListAuditLogsResp, error) {
 	rsp, err := c.ListAuditLogs(ctx, params, reqEditors...)
@@ -27293,6 +27794,114 @@ func ParseCreateModerationResp(rsp *http.Response) (*CreateModerationResp, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest CreateModerationResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminApiKeysListResp parses an HTTP response from a AdminApiKeysListWithResponse call
+func ParseAdminApiKeysListResp(rsp *http.Response) (*AdminApiKeysListResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminApiKeysListResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ApiKeyList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminApiKeysCreateResp parses an HTTP response from a AdminApiKeysCreateWithResponse call
+func ParseAdminApiKeysCreateResp(rsp *http.Response) (*AdminApiKeysCreateResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminApiKeysCreateResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdminApiKey
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminApiKeysDeleteResp parses an HTTP response from a AdminApiKeysDeleteWithResponse call
+func ParseAdminApiKeysDeleteResp(rsp *http.Response) (*AdminApiKeysDeleteResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminApiKeysDeleteResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Deleted *bool   `json:"deleted,omitempty"`
+			Id      *string `json:"id,omitempty"`
+			Object  *string `json:"object,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdminApiKeysGetResp parses an HTTP response from a AdminApiKeysGetWithResponse call
+func ParseAdminApiKeysGetResp(rsp *http.Response) (*AdminApiKeysGetResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdminApiKeysGetResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdminApiKey
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
