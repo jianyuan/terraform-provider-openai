@@ -61,7 +61,6 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 	var data UserRoleResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -77,9 +76,7 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
@@ -96,7 +93,6 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 	var data UserRoleResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -109,9 +105,7 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
@@ -128,7 +122,6 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 	var data UserRoleResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -144,9 +137,7 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}

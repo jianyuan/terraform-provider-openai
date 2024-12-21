@@ -111,7 +111,7 @@ func (r *AdminApiKeyResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 

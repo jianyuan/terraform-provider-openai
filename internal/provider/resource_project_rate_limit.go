@@ -102,7 +102,6 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -126,15 +125,8 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response")
 		return
 	}
 
@@ -150,7 +142,6 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -170,15 +161,8 @@ out:
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
-		}
-
-		if httpResp.StatusCode() != http.StatusOK {
+		} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-			return
-		}
-
-		if httpResp.JSON200 == nil {
-			resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response")
 			return
 		}
 
@@ -203,7 +187,6 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -227,15 +210,8 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response")
 		return
 	}
 

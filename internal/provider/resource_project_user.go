@@ -75,7 +75,6 @@ func (r *ProjectUserResource) Create(ctx context.Context, req resource.CreateReq
 	var data ProjectUserResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -92,9 +91,7 @@ func (r *ProjectUserResource) Create(ctx context.Context, req resource.CreateReq
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusCreated {
+	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
@@ -111,7 +108,6 @@ func (r *ProjectUserResource) Read(ctx context.Context, req resource.ReadRequest
 	var data ProjectUserResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -125,15 +121,8 @@ func (r *ProjectUserResource) Read(ctx context.Context, req resource.ReadRequest
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response")
 		return
 	}
 
@@ -149,7 +138,6 @@ func (r *ProjectUserResource) Update(ctx context.Context, req resource.UpdateReq
 	var data ProjectUserResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -166,15 +154,8 @@ func (r *ProjectUserResource) Update(ctx context.Context, req resource.UpdateReq
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response")
 		return
 	}
 
@@ -190,7 +171,6 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 	var data ProjectUserResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -204,9 +184,7 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}

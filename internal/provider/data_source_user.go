@@ -56,7 +56,6 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var data UserModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -68,15 +67,8 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	}
-
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response")
 		return
 	}
 
