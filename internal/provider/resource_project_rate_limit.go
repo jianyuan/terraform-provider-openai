@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -25,39 +26,15 @@ type ProjectRateLimitResourceModel struct {
 	Batch1DayMaxInputTokens     types.Int64  `tfsdk:"batch_1_day_max_input_tokens"`
 }
 
-func (m *ProjectRateLimitResourceModel) Fill(rl apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Model = types.StringValue(rl.Model)
-	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
-	m.MaxTokensPer1Minute = types.Int64Value(int64(rl.MaxTokensPer1Minute))
-	if !m.MaxImagesPer1Minute.IsNull() {
-		if rl.MaxImagesPer1Minute == nil {
-			m.MaxImagesPer1Minute = types.Int64Null()
-		} else {
-			m.MaxImagesPer1Minute = types.Int64Value(int64(*rl.MaxImagesPer1Minute))
-		}
-	}
-	if !m.MaxAudioMegabytesPer1Minute.IsNull() {
-		if rl.MaxAudioMegabytesPer1Minute == nil {
-			m.MaxAudioMegabytesPer1Minute = types.Int64Null()
-		} else {
-			m.MaxAudioMegabytesPer1Minute = types.Int64Value(int64(*rl.MaxAudioMegabytesPer1Minute))
-		}
-	}
-	if !m.MaxRequestsPer1Day.IsNull() {
-		if rl.MaxRequestsPer1Day == nil {
-			m.MaxRequestsPer1Day = types.Int64Null()
-		} else {
-			m.MaxRequestsPer1Day = types.Int64Value(int64(*rl.MaxRequestsPer1Day))
-		}
-	}
-	if !m.Batch1DayMaxInputTokens.IsNull() {
-		if rl.Batch1DayMaxInputTokens == nil {
-			m.Batch1DayMaxInputTokens = types.Int64Null()
-		} else {
-			m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
-		}
-	}
-	return nil
+	m.MaxRequestsPer1Minute = types.Int64Value(rl.MaxRequestsPer1Minute)
+	m.MaxTokensPer1Minute = types.Int64Value(rl.MaxTokensPer1Minute)
+	m.MaxImagesPer1Minute = types.Int64PointerValue(rl.MaxImagesPer1Minute)
+	m.MaxAudioMegabytesPer1Minute = types.Int64PointerValue(rl.MaxAudioMegabytesPer1Minute)
+	m.MaxRequestsPer1Day = types.Int64PointerValue(rl.MaxRequestsPer1Day)
+	m.Batch1DayMaxInputTokens = types.Int64PointerValue(rl.Batch1DayMaxInputTokens)
+	return
 }
 
 var _ resource.Resource = &ProjectRateLimitResource{}
@@ -96,26 +73,32 @@ func (r *ProjectRateLimitResource) Schema(ctx context.Context, req resource.Sche
 			"max_requests_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum requests per minute.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_tokens_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum tokens per minute.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_images_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum images per minute. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_audio_megabytes_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum audio megabytes per minute. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_requests_per_1_day": schema.Int64Attribute{
 				MarkdownDescription: "The maximum requests per day. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"batch_1_day_max_input_tokens": schema.Int64Attribute{
 				MarkdownDescription: "The maximum batch input tokens per day. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 		},
 	}
@@ -125,29 +108,28 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	body := apiclient.ProjectRateLimitUpdateRequest{}
-	if !data.MaxRequestsPer1Minute.IsNull() {
-		body.MaxRequestsPer1Minute = ptr.Ptr(int(data.MaxRequestsPer1Minute.ValueInt64()))
+	if !data.MaxRequestsPer1Minute.IsUnknown() {
+		body.MaxRequestsPer1Minute = data.MaxRequestsPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxTokensPer1Minute.IsNull() {
-		body.MaxTokensPer1Minute = ptr.Ptr(int(data.MaxTokensPer1Minute.ValueInt64()))
+	if !data.MaxTokensPer1Minute.IsUnknown() {
+		body.MaxTokensPer1Minute = data.MaxTokensPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxImagesPer1Minute.IsNull() {
-		body.MaxImagesPer1Minute = ptr.Ptr(int(data.MaxImagesPer1Minute.ValueInt64()))
+	if !data.MaxImagesPer1Minute.IsUnknown() {
+		body.MaxImagesPer1Minute = data.MaxImagesPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxAudioMegabytesPer1Minute.IsNull() {
-		body.MaxAudioMegabytesPer1Minute = ptr.Ptr(int(data.MaxAudioMegabytesPer1Minute.ValueInt64()))
+	if !data.MaxAudioMegabytesPer1Minute.IsUnknown() {
+		body.MaxAudioMegabytesPer1Minute = data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxRequestsPer1Day.IsNull() {
-		body.MaxRequestsPer1Day = ptr.Ptr(int(data.MaxRequestsPer1Day.ValueInt64()))
+	if !data.MaxRequestsPer1Day.IsUnknown() {
+		body.MaxRequestsPer1Day = data.MaxRequestsPer1Day.ValueInt64Pointer()
 	}
-	if !data.Batch1DayMaxInputTokens.IsNull() {
-		body.Batch1DayMaxInputTokens = ptr.Ptr(int(data.Batch1DayMaxInputTokens.ValueInt64()))
+	if !data.Batch1DayMaxInputTokens.IsUnknown() {
+		body.Batch1DayMaxInputTokens = data.Batch1DayMaxInputTokens.ValueInt64Pointer()
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(
@@ -160,20 +142,13 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response")
-		return
-	}
-
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -184,7 +159,6 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -204,15 +178,8 @@ out:
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
-		}
-
-		if httpResp.StatusCode() != http.StatusOK {
+		} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-			return
-		}
-
-		if httpResp.JSON200 == nil {
-			resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response")
 			return
 		}
 
@@ -221,8 +188,8 @@ out:
 				continue
 			}
 
-			if err := data.Fill(rl); err != nil {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+			resp.Diagnostics.Append(data.Fill(ctx, rl)...)
+			if resp.Diagnostics.HasError() {
 				return
 			}
 
@@ -237,29 +204,28 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 	var data ProjectRateLimitResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	body := apiclient.ProjectRateLimitUpdateRequest{}
-	if !data.MaxRequestsPer1Minute.IsNull() {
-		body.MaxRequestsPer1Minute = ptr.Ptr(int(data.MaxRequestsPer1Minute.ValueInt64()))
+	if !data.MaxRequestsPer1Minute.IsUnknown() {
+		body.MaxRequestsPer1Minute = data.MaxRequestsPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxTokensPer1Minute.IsNull() {
-		body.MaxTokensPer1Minute = ptr.Ptr(int(data.MaxTokensPer1Minute.ValueInt64()))
+	if !data.MaxTokensPer1Minute.IsUnknown() {
+		body.MaxTokensPer1Minute = data.MaxTokensPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxImagesPer1Minute.IsNull() {
-		body.MaxImagesPer1Minute = ptr.Ptr(int(data.MaxImagesPer1Minute.ValueInt64()))
+	if !data.MaxImagesPer1Minute.IsUnknown() {
+		body.MaxImagesPer1Minute = data.MaxImagesPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxAudioMegabytesPer1Minute.IsNull() {
-		body.MaxAudioMegabytesPer1Minute = ptr.Ptr(int(data.MaxAudioMegabytesPer1Minute.ValueInt64()))
+	if !data.MaxAudioMegabytesPer1Minute.IsUnknown() {
+		body.MaxAudioMegabytesPer1Minute = data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer()
 	}
-	if !data.MaxRequestsPer1Day.IsNull() {
-		body.MaxRequestsPer1Day = ptr.Ptr(int(data.MaxRequestsPer1Day.ValueInt64()))
+	if !data.MaxRequestsPer1Day.IsUnknown() {
+		body.MaxRequestsPer1Day = data.MaxRequestsPer1Day.ValueInt64Pointer()
 	}
-	if !data.Batch1DayMaxInputTokens.IsNull() {
-		body.Batch1DayMaxInputTokens = ptr.Ptr(int(data.Batch1DayMaxInputTokens.ValueInt64()))
+	if !data.Batch1DayMaxInputTokens.IsUnknown() {
+		body.Batch1DayMaxInputTokens = data.Batch1DayMaxInputTokens.ValueInt64Pointer()
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(
@@ -272,20 +238,13 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
-	if httpResp.JSON200 == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response")
-		return
-	}
-
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

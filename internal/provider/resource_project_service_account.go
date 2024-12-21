@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -24,22 +25,22 @@ type ProjectServiceAccountResourceModel struct {
 	ApiKey    types.String `tfsdk:"api_key"`
 }
 
-func (m *ProjectServiceAccountResourceModel) Fill(sa apiclient.ProjectServiceAccount) error {
+func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, sa apiclient.ProjectServiceAccount) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
-	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
-	return nil
+	m.CreatedAt = types.Int64Value(sa.CreatedAt)
+	return
 }
 
-func (m *ProjectServiceAccountResourceModel) FillFromCreate(sa apiclient.ProjectServiceAccountCreateResponse) error {
+func (m *ProjectServiceAccountResourceModel) FillFromCreate(ctx context.Context, sa apiclient.ProjectServiceAccountCreateResponse) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
-	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
+	m.CreatedAt = types.Int64Value(sa.CreatedAt)
 	m.ApiKeyId = types.StringValue(sa.ApiKey.Id)
 	m.ApiKey = types.StringValue(sa.ApiKey.Value)
-	return nil
+	return
 }
 
 var _ resource.Resource = &ProjectServiceAccountResource{}
@@ -116,7 +117,6 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 	var data ProjectServiceAccountResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -132,15 +132,13 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusCreated {
+	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
-	if err := data.FillFromCreate(*httpResp.JSON201); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON201)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -151,7 +149,6 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 	var data ProjectServiceAccountResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -165,15 +162,13 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d", httpResp.StatusCode()))
+	} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -188,7 +183,6 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 	var data ProjectServiceAccountResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -202,9 +196,7 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	}
-
-	if httpResp.StatusCode() != http.StatusOK {
+	} else if httpResp.StatusCode() != http.StatusOK {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -23,32 +24,16 @@ type ProjectRateLimitModel struct {
 	Batch1DayMaxInputTokens     types.Int64  `tfsdk:"batch_1_day_max_input_tokens"`
 }
 
-func (m *ProjectRateLimitModel) Fill(rl apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(rl.Id)
 	m.Model = types.StringValue(rl.Model)
-	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
-	m.MaxTokensPer1Minute = types.Int64Value(int64(rl.MaxTokensPer1Minute))
-	if rl.MaxImagesPer1Minute == nil {
-		m.MaxImagesPer1Minute = types.Int64Null()
-	} else {
-		m.MaxImagesPer1Minute = types.Int64Value(int64(*rl.MaxImagesPer1Minute))
-	}
-	if rl.MaxAudioMegabytesPer1Minute == nil {
-		m.MaxAudioMegabytesPer1Minute = types.Int64Null()
-	} else {
-		m.MaxAudioMegabytesPer1Minute = types.Int64Value(int64(*rl.MaxAudioMegabytesPer1Minute))
-	}
-	if rl.MaxRequestsPer1Day == nil {
-		m.MaxRequestsPer1Day = types.Int64Null()
-	} else {
-		m.MaxRequestsPer1Day = types.Int64Value(int64(*rl.MaxRequestsPer1Day))
-	}
-	if rl.Batch1DayMaxInputTokens == nil {
-		m.Batch1DayMaxInputTokens = types.Int64Null()
-	} else {
-		m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
-	}
-	return nil
+	m.MaxRequestsPer1Minute = types.Int64Value(rl.MaxRequestsPer1Minute)
+	m.MaxTokensPer1Minute = types.Int64Value(rl.MaxTokensPer1Minute)
+	m.MaxImagesPer1Minute = types.Int64PointerValue(rl.MaxImagesPer1Minute)
+	m.MaxAudioMegabytesPer1Minute = types.Int64PointerValue(rl.MaxAudioMegabytesPer1Minute)
+	m.MaxRequestsPer1Day = types.Int64PointerValue(rl.MaxRequestsPer1Day)
+	m.Batch1DayMaxInputTokens = types.Int64PointerValue(rl.Batch1DayMaxInputTokens)
+	return
 }
 
 type ProjectRateLimitsDataSourceModel struct {
@@ -56,14 +41,15 @@ type ProjectRateLimitsDataSourceModel struct {
 	RateLimits []ProjectRateLimitModel `tfsdk:"rate_limits"`
 }
 
-func (m *ProjectRateLimitsDataSourceModel) Fill(rateLimits []apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits []apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.RateLimits = make([]ProjectRateLimitModel, len(rateLimits))
 	for i, rl := range rateLimits {
-		if err := m.RateLimits[i].Fill(rl); err != nil {
-			return err
+		diags.Append(m.RateLimits[i].Fill(ctx, rl)...)
+		if diags.HasError() {
+			return
 		}
 	}
-	return nil
+	return
 }
 
 var _ datasource.DataSource = &ProjectRateLimitsDataSource{}
@@ -137,7 +123,6 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 	var data ProjectRateLimitsDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -156,9 +141,7 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
-		}
-
-		if httpResp.StatusCode() != http.StatusOK {
+		} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 			return
 		}
@@ -172,8 +155,8 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 		params.After = &httpResp.JSON200.LastId
 	}
 
-	if err := data.Fill(rateLimits); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, rateLimits)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -15,14 +16,15 @@ type InvitesDataSourceModel struct {
 	Invites []InviteModel `tfsdk:"invites"`
 }
 
-func (m *InvitesDataSourceModel) Fill(invites []apiclient.Invite) error {
+func (m *InvitesDataSourceModel) Fill(ctx context.Context, invites []apiclient.Invite) (diags diag.Diagnostics) {
 	m.Invites = make([]InviteModel, len(invites))
 	for i, invite := range invites {
-		if err := m.Invites[i].Fill(invite); err != nil {
-			return err
+		diags.Append(m.Invites[i].Fill(ctx, invite)...)
+		if diags.HasError() {
+			return
 		}
 	}
-	return nil
+	return
 }
 
 var _ datasource.DataSource = &InvitesDataSource{}
@@ -88,7 +90,6 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	var data InvitesDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -106,9 +107,7 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
-		}
-
-		if httpResp.StatusCode() != http.StatusOK {
+		} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 			return
 		}
@@ -122,8 +121,8 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		params.After = httpResp.JSON200.LastId
 	}
 
-	if err := data.Fill(invites); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, invites)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

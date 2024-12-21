@@ -4,11 +4,19 @@ page_title: "openai Provider"
 subcategory: ""
 description: |-
   The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official Administration API https://platform.openai.com/docs/api-reference/administration to interact with the OpenAI platform.
+  If you find this provider useful, please consider supporting me through GitHub Sponsorship or Ko-Fi to help with its development.
+  Github-sponsors https://github.com/sponsors/jianyuan
+  Ko-Fi https://ko-fi.com/L3L71DQEL
 ---
 
 # openai Provider
 
 The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official [Administration API](https://platform.openai.com/docs/api-reference/administration) to interact with the OpenAI platform.
+
+If you find this provider useful, please consider supporting me through GitHub Sponsorship or Ko-Fi to help with its development.
+
+[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jianyuan)
+[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/L3L71DQEL)
 
 ## Example Usage
 

@@ -3859,6 +3859,7 @@ paths:
               properties:
                 name:
                   type: string
+                  example: New Admin Key
                 type:
                   type: string
       responses:
@@ -5103,6 +5104,12 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectServiceAccountCreateRequest'
       responses:
+        "400":
+          description: Error response when project is archived.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "201":
           description: Project service account created successfully.
           content:
@@ -5320,6 +5327,12 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectUserCreateRequest'
       responses:
+        "400":
+          description: Error response for various conditions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "201":
           description: User added to project successfully.
           content:
@@ -16142,12 +16155,15 @@ components:
         invited_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the invite was sent.
+          format: int64
         expires_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the invite expires.
+          format: int64
         accepted_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the invite was accepted.
+          format: int64
         projects:
           type: array
           description: The projects that were granted membership upon acceptance of the invite.
@@ -17570,10 +17586,12 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the project was created.
+          format: int64
         archived_at:
           type: integer
           nullable: true
           description: The Unix timestamp (in seconds) of when the project was archived or `null`.
+          format: int64
         status:
           type: string
           enum:
@@ -17746,21 +17764,27 @@ components:
         max_requests_per_1_minute:
           type: integer
           description: The maximum requests per minute.
+          format: int64
         max_tokens_per_1_minute:
           type: integer
           description: The maximum tokens per minute.
+          format: int64
         max_images_per_1_minute:
           type: integer
           description: The maximum images per minute. Only present for relevant models.
+          format: int64
         max_audio_megabytes_per_1_minute:
           type: integer
           description: The maximum audio megabytes per minute. Only present for relevant models.
+          format: int64
         max_requests_per_1_day:
           type: integer
           description: The maximum requests per day. Only present for relevant models.
+          format: int64
         batch_1_day_max_input_tokens:
           type: integer
           description: The maximum batch input tokens per day. Only present for relevant models.
+          format: int64
       required:
       - object
       - id
@@ -17807,21 +17831,27 @@ components:
         max_requests_per_1_minute:
           type: integer
           description: The maximum requests per minute.
+          format: int64
         max_tokens_per_1_minute:
           type: integer
           description: The maximum tokens per minute.
+          format: int64
         max_images_per_1_minute:
           type: integer
           description: The maximum images per minute. Only relevant for certain models.
+          format: int64
         max_audio_megabytes_per_1_minute:
           type: integer
           description: The maximum audio megabytes per minute. Only relevant for certain models.
+          format: int64
         max_requests_per_1_day:
           type: integer
           description: The maximum requests per day. Only relevant for certain models.
+          format: int64
         batch_1_day_max_input_tokens:
           type: integer
           description: The maximum batch input tokens per day. Only relevant for certain models.
+          format: int64
     ProjectServiceAccount:
       type: object
       description: Represents an individual service account in a project.
@@ -17846,6 +17876,7 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the service account was created
+          format: int64
       required:
       - object
       - id
@@ -17910,6 +17941,7 @@ components:
           description: Service accounts can only have one role of type `member`
         created_at:
           type: integer
+          format: int64
         api_key:
           $ref: '#/components/schemas/ProjectServiceAccountApiKey'
       required:
@@ -22313,6 +22345,7 @@ components:
         added_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the user was added.
+          format: int64
       required:
       - object
       - id

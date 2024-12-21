@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -27,14 +28,15 @@ type ProjectsDataSourceModel struct {
 	Projects        []ProjectModel `tfsdk:"projects"`
 }
 
-func (m *ProjectsDataSourceModel) Fill(projects []apiclient.Project) error {
+func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []apiclient.Project) (diags diag.Diagnostics) {
 	m.Projects = make([]ProjectModel, len(projects))
 	for i, project := range projects {
-		if err := m.Projects[i].Fill(project); err != nil {
-			return err
+		diags.Append(m.Projects[i].Fill(ctx, project)...)
+		if diags.HasError() {
+			return
 		}
 	}
-	return nil
+	return
 }
 
 func (d *ProjectsDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -86,7 +88,6 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 	var data ProjectsDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -105,9 +106,7 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
-		}
-
-		if httpResp.StatusCode() != http.StatusOK {
+		} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
 			resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 			return
 		}
@@ -121,8 +120,8 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		params.After = &httpResp.JSON200.LastId
 	}
 
-	if err := data.Fill(projects); err != nil {
-		resp.Diagnostics.AddError("API Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, projects)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
