@@ -168,7 +168,7 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 	}
 
 	if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d", httpResp.StatusCode()))
 		return
 	}
 
