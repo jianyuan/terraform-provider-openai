@@ -80,8 +80,8 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

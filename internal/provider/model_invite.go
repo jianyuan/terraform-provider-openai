@@ -1,6 +1,9 @@
 package provider
 
 import (
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -15,7 +18,7 @@ type InviteModel struct {
 	AcceptedAt types.Int64  `tfsdk:"accepted_at"`
 }
 
-func (m *InviteModel) Fill(i apiclient.Invite) error {
+func (m *InviteModel) Fill(ctx context.Context, i apiclient.Invite) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(i.Id)
 	m.Email = types.StringValue(i.Email)
 	m.Role = types.StringValue(string(i.Role))
@@ -27,5 +30,5 @@ func (m *InviteModel) Fill(i apiclient.Invite) error {
 	} else {
 		m.AcceptedAt = types.Int64Value(int64(*i.AcceptedAt))
 	}
-	return nil
+	return
 }

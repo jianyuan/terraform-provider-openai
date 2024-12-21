@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -23,7 +24,7 @@ type ProjectRateLimitModel struct {
 	Batch1DayMaxInputTokens     types.Int64  `tfsdk:"batch_1_day_max_input_tokens"`
 }
 
-func (m *ProjectRateLimitModel) Fill(rl apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(rl.Id)
 	m.Model = types.StringValue(rl.Model)
 	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
@@ -48,7 +49,7 @@ func (m *ProjectRateLimitModel) Fill(rl apiclient.ProjectRateLimit) error {
 	} else {
 		m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
 	}
-	return nil
+	return
 }
 
 type ProjectRateLimitsDataSourceModel struct {
@@ -56,14 +57,15 @@ type ProjectRateLimitsDataSourceModel struct {
 	RateLimits []ProjectRateLimitModel `tfsdk:"rate_limits"`
 }
 
-func (m *ProjectRateLimitsDataSourceModel) Fill(rateLimits []apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits []apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.RateLimits = make([]ProjectRateLimitModel, len(rateLimits))
 	for i, rl := range rateLimits {
-		if err := m.RateLimits[i].Fill(rl); err != nil {
-			return err
+		diags.Append(m.RateLimits[i].Fill(ctx, rl)...)
+		if diags.HasError() {
+			return
 		}
 	}
-	return nil
+	return
 }
 
 var _ datasource.DataSource = &ProjectRateLimitsDataSource{}
@@ -172,8 +174,8 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 		params.After = &httpResp.JSON200.LastId
 	}
 
-	if err := data.Fill(rateLimits); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, rateLimits)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

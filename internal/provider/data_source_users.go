@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -15,14 +16,15 @@ type UsersDataSourceModel struct {
 	Users []UserModel `tfsdk:"users"`
 }
 
-func (m *UsersDataSourceModel) Fill(users []apiclient.User) error {
+func (m *UsersDataSourceModel) Fill(ctx context.Context, users []apiclient.User) (diags diag.Diagnostics) {
 	m.Users = make([]UserModel, len(users))
 	for i, u := range users {
-		if err := m.Users[i].Fill(u); err != nil {
-			return err
+		diags.Append(m.Users[i].Fill(ctx, u)...)
+		if diags.HasError() {
+			return
 		}
 	}
-	return nil
+	return
 }
 
 var _ datasource.DataSource = &UsersDataSource{}
@@ -114,8 +116,8 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		params.After = &httpResp.JSON200.LastId
 	}
 
-	if err := data.Fill(users); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, users)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

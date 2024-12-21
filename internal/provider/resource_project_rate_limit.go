@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -25,7 +26,7 @@ type ProjectRateLimitResourceModel struct {
 	Batch1DayMaxInputTokens     types.Int64  `tfsdk:"batch_1_day_max_input_tokens"`
 }
 
-func (m *ProjectRateLimitResourceModel) Fill(rl apiclient.ProjectRateLimit) error {
+func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Model = types.StringValue(rl.Model)
 	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
 	m.MaxTokensPer1Minute = types.Int64Value(int64(rl.MaxTokensPer1Minute))
@@ -57,7 +58,7 @@ func (m *ProjectRateLimitResourceModel) Fill(rl apiclient.ProjectRateLimit) erro
 			m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
 		}
 	}
-	return nil
+	return
 }
 
 var _ resource.Resource = &ProjectRateLimitResource{}
@@ -172,8 +173,8 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -221,8 +222,8 @@ out:
 				continue
 			}
 
-			if err := data.Fill(rl); err != nil {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+			resp.Diagnostics.Append(data.Fill(ctx, rl)...)
+			if resp.Diagnostics.HasError() {
 				return
 			}
 
@@ -284,8 +285,8 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

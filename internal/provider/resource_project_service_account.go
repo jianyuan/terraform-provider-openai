@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -24,22 +25,22 @@ type ProjectServiceAccountResourceModel struct {
 	ApiKey    types.String `tfsdk:"api_key"`
 }
 
-func (m *ProjectServiceAccountResourceModel) Fill(sa apiclient.ProjectServiceAccount) error {
+func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, sa apiclient.ProjectServiceAccount) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
 	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
-	return nil
+	return
 }
 
-func (m *ProjectServiceAccountResourceModel) FillFromCreate(sa apiclient.ProjectServiceAccountCreateResponse) error {
+func (m *ProjectServiceAccountResourceModel) FillFromCreate(ctx, sa apiclient.ProjectServiceAccountCreateResponse) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
 	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
 	m.ApiKeyId = types.StringValue(sa.ApiKey.Id)
 	m.ApiKey = types.StringValue(sa.ApiKey.Value)
-	return nil
+	return
 }
 
 var _ resource.Resource = &ProjectServiceAccountResource{}
@@ -139,8 +140,8 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	if err := data.FillFromCreate(*httpResp.JSON201); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON201)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -172,8 +173,8 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -18,10 +19,10 @@ type UserRoleResourceModel struct {
 	Role   types.String `tfsdk:"role"`
 }
 
-func (m *UserRoleResourceModel) Fill(u apiclient.User) error {
+func (m *UserRoleResourceModel) Fill(ctx context.Context, u apiclient.User) (diags diag.Diagnostics) {
 	m.UserId = types.StringValue(u.Id)
 	m.Role = types.StringValue(string(u.Role))
-	return nil
+	return
 }
 
 func NewUserRoleResource() resource.Resource {
@@ -83,8 +84,8 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -115,8 +116,8 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -150,8 +151,8 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	if err := data.Fill(*httpResp.JSON200); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to fill data: %s", err))
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
