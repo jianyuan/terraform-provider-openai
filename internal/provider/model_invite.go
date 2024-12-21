@@ -23,12 +23,8 @@ func (m *InviteModel) Fill(ctx context.Context, i apiclient.Invite) (diags diag.
 	m.Email = types.StringValue(i.Email)
 	m.Role = types.StringValue(string(i.Role))
 	m.Status = types.StringValue(string(i.Status))
-	m.InvitedAt = types.Int64Value(int64(i.InvitedAt))
-	m.ExpiresAt = types.Int64Value(int64(i.ExpiresAt))
-	if i.AcceptedAt == nil {
-		m.AcceptedAt = types.Int64Null()
-	} else {
-		m.AcceptedAt = types.Int64Value(int64(*i.AcceptedAt))
-	}
+	m.InvitedAt = types.Int64Value(i.InvitedAt)
+	m.ExpiresAt = types.Int64Value(i.ExpiresAt)
+	m.AcceptedAt = types.Int64PointerValue(i.AcceptedAt)
 	return
 }

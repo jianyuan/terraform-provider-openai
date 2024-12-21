@@ -27,28 +27,12 @@ type ProjectRateLimitModel struct {
 func (m *ProjectRateLimitModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(rl.Id)
 	m.Model = types.StringValue(rl.Model)
-	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
-	m.MaxTokensPer1Minute = types.Int64Value(int64(rl.MaxTokensPer1Minute))
-	if rl.MaxImagesPer1Minute == nil {
-		m.MaxImagesPer1Minute = types.Int64Null()
-	} else {
-		m.MaxImagesPer1Minute = types.Int64Value(int64(*rl.MaxImagesPer1Minute))
-	}
-	if rl.MaxAudioMegabytesPer1Minute == nil {
-		m.MaxAudioMegabytesPer1Minute = types.Int64Null()
-	} else {
-		m.MaxAudioMegabytesPer1Minute = types.Int64Value(int64(*rl.MaxAudioMegabytesPer1Minute))
-	}
-	if rl.MaxRequestsPer1Day == nil {
-		m.MaxRequestsPer1Day = types.Int64Null()
-	} else {
-		m.MaxRequestsPer1Day = types.Int64Value(int64(*rl.MaxRequestsPer1Day))
-	}
-	if rl.Batch1DayMaxInputTokens == nil {
-		m.Batch1DayMaxInputTokens = types.Int64Null()
-	} else {
-		m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
-	}
+	m.MaxRequestsPer1Minute = types.Int64Value(rl.MaxRequestsPer1Minute)
+	m.MaxTokensPer1Minute = types.Int64Value(rl.MaxTokensPer1Minute)
+	m.MaxImagesPer1Minute = types.Int64PointerValue(rl.MaxImagesPer1Minute)
+	m.MaxAudioMegabytesPer1Minute = types.Int64PointerValue(rl.MaxAudioMegabytesPer1Minute)
+	m.MaxRequestsPer1Day = types.Int64PointerValue(rl.MaxRequestsPer1Day)
+	m.Batch1DayMaxInputTokens = types.Int64PointerValue(rl.Batch1DayMaxInputTokens)
 	return
 }
 

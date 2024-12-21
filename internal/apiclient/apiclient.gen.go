@@ -5147,19 +5147,19 @@ type ImagesResponse struct {
 // Invite Represents an individual `invite` to the organization.
 type Invite struct {
 	// AcceptedAt The Unix timestamp (in seconds) of when the invite was accepted.
-	AcceptedAt *int `json:"accepted_at,omitempty"`
+	AcceptedAt *int64 `json:"accepted_at,omitempty"`
 
 	// Email The email address of the individual to whom the invite was sent
 	Email string `json:"email"`
 
 	// ExpiresAt The Unix timestamp (in seconds) of when the invite expires.
-	ExpiresAt int `json:"expires_at"`
+	ExpiresAt int64 `json:"expires_at"`
 
 	// Id The identifier, which can be referenced in API endpoints
 	Id string `json:"id"`
 
 	// InvitedAt The Unix timestamp (in seconds) of when the invite was sent.
-	InvitedAt int `json:"invited_at"`
+	InvitedAt int64 `json:"invited_at"`
 
 	// Object The object type, which is always `organization.invite`
 	Object InviteObject `json:"object"`
@@ -5768,10 +5768,10 @@ type PredictionContentType string
 // Project Represents an individual project.
 type Project struct {
 	// ArchivedAt The Unix timestamp (in seconds) of when the project was archived or `null`.
-	ArchivedAt *int `json:"archived_at"`
+	ArchivedAt *int64 `json:"archived_at"`
 
 	// CreatedAt The Unix timestamp (in seconds) of when the project was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints
 	Id string `json:"id"`
@@ -5869,25 +5869,25 @@ type ProjectListResponseObject string
 // ProjectRateLimit Represents a project rate limit config.
 type ProjectRateLimit struct {
 	// Batch1DayMaxInputTokens The maximum batch input tokens per day. Only present for relevant models.
-	Batch1DayMaxInputTokens *int `json:"batch_1_day_max_input_tokens,omitempty"`
+	Batch1DayMaxInputTokens *int64 `json:"batch_1_day_max_input_tokens,omitempty"`
 
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
 
 	// MaxAudioMegabytesPer1Minute The maximum audio megabytes per minute. Only present for relevant models.
-	MaxAudioMegabytesPer1Minute *int `json:"max_audio_megabytes_per_1_minute,omitempty"`
+	MaxAudioMegabytesPer1Minute *int64 `json:"max_audio_megabytes_per_1_minute,omitempty"`
 
 	// MaxImagesPer1Minute The maximum images per minute. Only present for relevant models.
-	MaxImagesPer1Minute *int `json:"max_images_per_1_minute,omitempty"`
+	MaxImagesPer1Minute *int64 `json:"max_images_per_1_minute,omitempty"`
 
 	// MaxRequestsPer1Day The maximum requests per day. Only present for relevant models.
-	MaxRequestsPer1Day *int `json:"max_requests_per_1_day,omitempty"`
+	MaxRequestsPer1Day *int64 `json:"max_requests_per_1_day,omitempty"`
 
 	// MaxRequestsPer1Minute The maximum requests per minute.
-	MaxRequestsPer1Minute int `json:"max_requests_per_1_minute"`
+	MaxRequestsPer1Minute int64 `json:"max_requests_per_1_minute"`
 
 	// MaxTokensPer1Minute The maximum tokens per minute.
-	MaxTokensPer1Minute int `json:"max_tokens_per_1_minute"`
+	MaxTokensPer1Minute int64 `json:"max_tokens_per_1_minute"`
 
 	// Model The model this rate limit applies to.
 	Model string `json:"model"`
@@ -5914,28 +5914,28 @@ type ProjectRateLimitListResponseObject string
 // ProjectRateLimitUpdateRequest defines model for ProjectRateLimitUpdateRequest.
 type ProjectRateLimitUpdateRequest struct {
 	// Batch1DayMaxInputTokens The maximum batch input tokens per day. Only relevant for certain models.
-	Batch1DayMaxInputTokens *int `json:"batch_1_day_max_input_tokens,omitempty"`
+	Batch1DayMaxInputTokens *int64 `json:"batch_1_day_max_input_tokens,omitempty"`
 
 	// MaxAudioMegabytesPer1Minute The maximum audio megabytes per minute. Only relevant for certain models.
-	MaxAudioMegabytesPer1Minute *int `json:"max_audio_megabytes_per_1_minute,omitempty"`
+	MaxAudioMegabytesPer1Minute *int64 `json:"max_audio_megabytes_per_1_minute,omitempty"`
 
 	// MaxImagesPer1Minute The maximum images per minute. Only relevant for certain models.
-	MaxImagesPer1Minute *int `json:"max_images_per_1_minute,omitempty"`
+	MaxImagesPer1Minute *int64 `json:"max_images_per_1_minute,omitempty"`
 
 	// MaxRequestsPer1Day The maximum requests per day. Only relevant for certain models.
-	MaxRequestsPer1Day *int `json:"max_requests_per_1_day,omitempty"`
+	MaxRequestsPer1Day *int64 `json:"max_requests_per_1_day,omitempty"`
 
 	// MaxRequestsPer1Minute The maximum requests per minute.
-	MaxRequestsPer1Minute *int `json:"max_requests_per_1_minute,omitempty"`
+	MaxRequestsPer1Minute *int64 `json:"max_requests_per_1_minute,omitempty"`
 
 	// MaxTokensPer1Minute The maximum tokens per minute.
-	MaxTokensPer1Minute *int `json:"max_tokens_per_1_minute,omitempty"`
+	MaxTokensPer1Minute *int64 `json:"max_tokens_per_1_minute,omitempty"`
 }
 
 // ProjectServiceAccount Represents an individual service account in a project.
 type ProjectServiceAccount struct {
 	// CreatedAt The Unix timestamp (in seconds) of when the service account was created
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints
 	Id string `json:"id"`
@@ -5979,7 +5979,7 @@ type ProjectServiceAccountCreateRequest struct {
 // ProjectServiceAccountCreateResponse defines model for ProjectServiceAccountCreateResponse.
 type ProjectServiceAccountCreateResponse struct {
 	ApiKey    ProjectServiceAccountApiKey               `json:"api_key"`
-	CreatedAt int                                       `json:"created_at"`
+	CreatedAt int64                                     `json:"created_at"`
 	Id        string                                    `json:"id"`
 	Name      string                                    `json:"name"`
 	Object    ProjectServiceAccountCreateResponseObject `json:"object"`
@@ -7245,7 +7245,7 @@ type UsageVectorStoresResultObject string
 // User Represents an individual `user` within an organization.
 type User struct {
 	// AddedAt The Unix timestamp (in seconds) of when the user was added.
-	AddedAt int `json:"added_at"`
+	AddedAt int64 `json:"added_at"`
 
 	// Email The email address of the user
 	Email string `json:"email"`
@@ -24460,6 +24460,7 @@ type CreateProjectServiceAccountResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *ProjectServiceAccountCreateResponse
+	JSON400      *ErrorResponse
 }
 
 // Status returns HTTPResponse.Status
@@ -24549,6 +24550,7 @@ type CreateProjectUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *ProjectUser
+	JSON400      *ErrorResponse
 }
 
 // Status returns HTTPResponse.Status
@@ -28404,6 +28406,13 @@ func ParseCreateProjectServiceAccountResp(rsp *http.Response) (*CreateProjectSer
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	}
 
 	return response, nil
@@ -28514,6 +28523,13 @@ func ParseCreateProjectUserResp(rsp *http.Response) (*CreateProjectUserResp, err
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	}
 

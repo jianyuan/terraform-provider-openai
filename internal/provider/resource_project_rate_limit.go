@@ -28,36 +28,12 @@ type ProjectRateLimitResourceModel struct {
 
 func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, rl apiclient.ProjectRateLimit) (diags diag.Diagnostics) {
 	m.Model = types.StringValue(rl.Model)
-	m.MaxRequestsPer1Minute = types.Int64Value(int64(rl.MaxRequestsPer1Minute))
-	m.MaxTokensPer1Minute = types.Int64Value(int64(rl.MaxTokensPer1Minute))
-	if !m.MaxImagesPer1Minute.IsNull() {
-		if rl.MaxImagesPer1Minute == nil {
-			m.MaxImagesPer1Minute = types.Int64Null()
-		} else {
-			m.MaxImagesPer1Minute = types.Int64Value(int64(*rl.MaxImagesPer1Minute))
-		}
-	}
-	if !m.MaxAudioMegabytesPer1Minute.IsNull() {
-		if rl.MaxAudioMegabytesPer1Minute == nil {
-			m.MaxAudioMegabytesPer1Minute = types.Int64Null()
-		} else {
-			m.MaxAudioMegabytesPer1Minute = types.Int64Value(int64(*rl.MaxAudioMegabytesPer1Minute))
-		}
-	}
-	if !m.MaxRequestsPer1Day.IsNull() {
-		if rl.MaxRequestsPer1Day == nil {
-			m.MaxRequestsPer1Day = types.Int64Null()
-		} else {
-			m.MaxRequestsPer1Day = types.Int64Value(int64(*rl.MaxRequestsPer1Day))
-		}
-	}
-	if !m.Batch1DayMaxInputTokens.IsNull() {
-		if rl.Batch1DayMaxInputTokens == nil {
-			m.Batch1DayMaxInputTokens = types.Int64Null()
-		} else {
-			m.Batch1DayMaxInputTokens = types.Int64Value(int64(*rl.Batch1DayMaxInputTokens))
-		}
-	}
+	m.MaxRequestsPer1Minute = types.Int64Value(rl.MaxRequestsPer1Minute)
+	m.MaxTokensPer1Minute = types.Int64Value(rl.MaxTokensPer1Minute)
+	m.MaxImagesPer1Minute = types.Int64PointerValue(rl.MaxImagesPer1Minute)
+	m.MaxAudioMegabytesPer1Minute = types.Int64PointerValue(rl.MaxAudioMegabytesPer1Minute)
+	m.MaxRequestsPer1Day = types.Int64PointerValue(rl.MaxRequestsPer1Day)
+	m.Batch1DayMaxInputTokens = types.Int64PointerValue(rl.Batch1DayMaxInputTokens)
 	return
 }
 
@@ -131,24 +107,13 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	body := apiclient.ProjectRateLimitUpdateRequest{}
-	if !data.MaxRequestsPer1Minute.IsNull() {
-		body.MaxRequestsPer1Minute = ptr.Ptr(int(data.MaxRequestsPer1Minute.ValueInt64()))
-	}
-	if !data.MaxTokensPer1Minute.IsNull() {
-		body.MaxTokensPer1Minute = ptr.Ptr(int(data.MaxTokensPer1Minute.ValueInt64()))
-	}
-	if !data.MaxImagesPer1Minute.IsNull() {
-		body.MaxImagesPer1Minute = ptr.Ptr(int(data.MaxImagesPer1Minute.ValueInt64()))
-	}
-	if !data.MaxAudioMegabytesPer1Minute.IsNull() {
-		body.MaxAudioMegabytesPer1Minute = ptr.Ptr(int(data.MaxAudioMegabytesPer1Minute.ValueInt64()))
-	}
-	if !data.MaxRequestsPer1Day.IsNull() {
-		body.MaxRequestsPer1Day = ptr.Ptr(int(data.MaxRequestsPer1Day.ValueInt64()))
-	}
-	if !data.Batch1DayMaxInputTokens.IsNull() {
-		body.Batch1DayMaxInputTokens = ptr.Ptr(int(data.Batch1DayMaxInputTokens.ValueInt64()))
+	body := apiclient.ProjectRateLimitUpdateRequest{
+		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.ValueInt64Pointer(),
+		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.ValueInt64Pointer(),
+		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.ValueInt64Pointer(),
+		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer(),
+		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.ValueInt64Pointer(),
+		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.ValueInt64Pointer(),
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(
@@ -243,24 +208,13 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	body := apiclient.ProjectRateLimitUpdateRequest{}
-	if !data.MaxRequestsPer1Minute.IsNull() {
-		body.MaxRequestsPer1Minute = ptr.Ptr(int(data.MaxRequestsPer1Minute.ValueInt64()))
-	}
-	if !data.MaxTokensPer1Minute.IsNull() {
-		body.MaxTokensPer1Minute = ptr.Ptr(int(data.MaxTokensPer1Minute.ValueInt64()))
-	}
-	if !data.MaxImagesPer1Minute.IsNull() {
-		body.MaxImagesPer1Minute = ptr.Ptr(int(data.MaxImagesPer1Minute.ValueInt64()))
-	}
-	if !data.MaxAudioMegabytesPer1Minute.IsNull() {
-		body.MaxAudioMegabytesPer1Minute = ptr.Ptr(int(data.MaxAudioMegabytesPer1Minute.ValueInt64()))
-	}
-	if !data.MaxRequestsPer1Day.IsNull() {
-		body.MaxRequestsPer1Day = ptr.Ptr(int(data.MaxRequestsPer1Day.ValueInt64()))
-	}
-	if !data.Batch1DayMaxInputTokens.IsNull() {
-		body.Batch1DayMaxInputTokens = ptr.Ptr(int(data.Batch1DayMaxInputTokens.ValueInt64()))
+	body := apiclient.ProjectRateLimitUpdateRequest{
+		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.ValueInt64Pointer(),
+		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.ValueInt64Pointer(),
+		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.ValueInt64Pointer(),
+		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer(),
+		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.ValueInt64Pointer(),
+		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.ValueInt64Pointer(),
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(

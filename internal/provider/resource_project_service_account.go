@@ -29,15 +29,15 @@ func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, sa apicli
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
-	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
+	m.CreatedAt = types.Int64Value(sa.CreatedAt)
 	return
 }
 
-func (m *ProjectServiceAccountResourceModel) FillFromCreate(ctx, sa apiclient.ProjectServiceAccountCreateResponse) (diags diag.Diagnostics) {
+func (m *ProjectServiceAccountResourceModel) FillFromCreate(ctx context.Context, sa apiclient.ProjectServiceAccountCreateResponse) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(sa.Id)
 	m.Name = types.StringValue(sa.Name)
 	m.Role = types.StringValue(string(sa.Role))
-	m.CreatedAt = types.Int64Value(int64(sa.CreatedAt))
+	m.CreatedAt = types.Int64Value(sa.CreatedAt)
 	m.ApiKeyId = types.StringValue(sa.ApiKey.Id)
 	m.ApiKey = types.StringValue(sa.ApiKey.Value)
 	return

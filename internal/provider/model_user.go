@@ -21,6 +21,6 @@ func (m *UserModel) Fill(ctx context.Context, u apiclient.User) (diags diag.Diag
 	m.Email = types.StringValue(u.Email)
 	m.Name = types.StringValue(u.Name)
 	m.Role = types.StringValue(string(u.Role))
-	m.AddedAt = types.Int64Value(int64(u.AddedAt))
+	m.AddedAt = types.Int64Value(u.AddedAt)
 	return
 }

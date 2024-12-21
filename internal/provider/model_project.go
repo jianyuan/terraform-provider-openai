@@ -20,12 +20,7 @@ func (m *ProjectModel) Fill(ctx context.Context, p apiclient.Project) (diags dia
 	m.Id = types.StringValue(p.Id)
 	m.Name = types.StringValue(p.Name)
 	m.Status = types.StringValue(string(p.Status))
-	m.CreatedAt = types.Int64Value(int64(p.CreatedAt))
-	if p.ArchivedAt == nil {
-		m.ArchivedAt = types.Int64Null()
-	} else {
-		m.ArchivedAt = types.Int64Value(int64(*p.ArchivedAt))
-
-	}
+	m.CreatedAt = types.Int64Value(p.CreatedAt)
+	m.ArchivedAt = types.Int64PointerValue(p.ArchivedAt)
 	return
 }

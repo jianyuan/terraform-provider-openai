@@ -2,36 +2,76 @@
 
 #@overlay/match by=overlay.all
 ---
+#@ def rename_property(m, old, new):
+#@   m = dict(m)
+#@   if old in m:
+#@     m[new] = m.pop(old)
+#@   end
+#@   return m
+#@ end
+
+#@ def fix_property(p):
+#@   p = dict(p)
+#@   if "type" in p and p["type"] == "integer":
+#@     p["format"] = "int64"
+#@   end
+#@   return p
+#@ end
+
+#@ def fix_properties(m):
+#@   m = dict(m)
+#@   return {k: fix_property(dict(v)) for k, v in m.items()}
+#@ end
+
 paths:
   /organization/admin_api_keys:
     post:
       requestBody:
         content:
           application/json:
-            #@overlay/replace
             schema:
-              type: object
               required:
-                - name
                 - type
               properties:
-                name:
-                  type: string
+                #@overlay/match missing_ok=True
                 type:
                   type: string
   /organization/invites:
     post:
-      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      #@overlay/replace via=lambda left, right: rename_property(left, "200", "201")
       responses:
   /organization/projects:
     post:
-      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      #@overlay/replace via=lambda left, right: rename_property(left, "200", "201")
       responses:
   /organization/projects/{project_id}/users:
     post:
-      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      #@overlay/replace via=lambda left, right: rename_property(left, "200", "201")
       responses:
   /organization/projects/{project_id}/service_accounts:
     post:
-      #@overlay/replace via=lambda left, right: {"201": left["200"]}
+      #@overlay/replace via=lambda left, right: rename_property(left, "200", "201")
       responses:
+components:
+  schemas:
+    Invite:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    Project:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    ProjectRateLimitUpdateRequest:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    ProjectRateLimit:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    ProjectServiceAccount:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    ProjectServiceAccountCreateResponse:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
+    User:
+      #@overlay/replace via=lambda left, right: fix_properties(dict(left))
+      properties:
