@@ -7564,6 +7564,7 @@ type AdminApiKeysListParamsOrder string
 // AdminApiKeysCreateJSONBody defines parameters for AdminApiKeysCreate.
 type AdminApiKeysCreateJSONBody struct {
 	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 // ListAuditLogsParams defines parameters for ListAuditLogs.
