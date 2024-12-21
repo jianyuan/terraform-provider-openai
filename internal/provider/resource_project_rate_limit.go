@@ -112,13 +112,24 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	body := apiclient.ProjectRateLimitUpdateRequest{
-		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.ValueInt64Pointer(),
-		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.ValueInt64Pointer(),
-		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.ValueInt64Pointer(),
-		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer(),
-		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.ValueInt64Pointer(),
-		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.ValueInt64Pointer(),
+	body := apiclient.ProjectRateLimitUpdateRequest{}
+	if !data.MaxRequestsPer1Minute.IsUnknown() {
+		body.MaxRequestsPer1Minute = data.MaxRequestsPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxTokensPer1Minute.IsUnknown() {
+		body.MaxTokensPer1Minute = data.MaxTokensPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxImagesPer1Minute.IsUnknown() {
+		body.MaxImagesPer1Minute = data.MaxImagesPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxAudioMegabytesPer1Minute.IsUnknown() {
+		body.MaxAudioMegabytesPer1Minute = data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxRequestsPer1Day.IsUnknown() {
+		body.MaxRequestsPer1Day = data.MaxRequestsPer1Day.ValueInt64Pointer()
+	}
+	if !data.Batch1DayMaxInputTokens.IsUnknown() {
+		body.Batch1DayMaxInputTokens = data.Batch1DayMaxInputTokens.ValueInt64Pointer()
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(
@@ -197,13 +208,24 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	body := apiclient.ProjectRateLimitUpdateRequest{
-		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.ValueInt64Pointer(),
-		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.ValueInt64Pointer(),
-		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.ValueInt64Pointer(),
-		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer(),
-		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.ValueInt64Pointer(),
-		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.ValueInt64Pointer(),
+	body := apiclient.ProjectRateLimitUpdateRequest{}
+	if !data.MaxRequestsPer1Minute.IsUnknown() {
+		body.MaxRequestsPer1Minute = data.MaxRequestsPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxTokensPer1Minute.IsUnknown() {
+		body.MaxTokensPer1Minute = data.MaxTokensPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxImagesPer1Minute.IsUnknown() {
+		body.MaxImagesPer1Minute = data.MaxImagesPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxAudioMegabytesPer1Minute.IsUnknown() {
+		body.MaxAudioMegabytesPer1Minute = data.MaxAudioMegabytesPer1Minute.ValueInt64Pointer()
+	}
+	if !data.MaxRequestsPer1Day.IsUnknown() {
+		body.MaxRequestsPer1Day = data.MaxRequestsPer1Day.ValueInt64Pointer()
+	}
+	if !data.Batch1DayMaxInputTokens.IsUnknown() {
+		body.Batch1DayMaxInputTokens = data.Batch1DayMaxInputTokens.ValueInt64Pointer()
 	}
 
 	httpResp, err := r.client.UpdateProjectRateLimitsWithResponse(
