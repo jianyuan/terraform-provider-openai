@@ -73,26 +73,32 @@ func (r *ProjectRateLimitResource) Schema(ctx context.Context, req resource.Sche
 			"max_requests_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum requests per minute.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_tokens_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum tokens per minute.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_images_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum images per minute. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_audio_megabytes_per_1_minute": schema.Int64Attribute{
 				MarkdownDescription: "The maximum audio megabytes per minute. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"max_requests_per_1_day": schema.Int64Attribute{
 				MarkdownDescription: "The maximum requests per day. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"batch_1_day_max_input_tokens": schema.Int64Attribute{
 				MarkdownDescription: "The maximum batch input tokens per day. Only present for relevant models.",
 				Optional:            true,
+				Computed:            true,
 			},
 		},
 	}
