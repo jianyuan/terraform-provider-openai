@@ -35,7 +35,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/jianyuan/sentry",
+		Address: "registry.terraform.io/jianyuan/openai",
 		Debug:   debug,
 	}
 
