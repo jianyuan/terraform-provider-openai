@@ -80,9 +80,8 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	if adminKey == "" {
-		resp.Diagnostics.AddError("admin_key is required", "admin_key is required")
-		return
-	} else if !strings.HasPrefix(adminKey, "sk-admin-") {
+		resp.Diagnostics.AddWarning("admin_key is required", "admin_key is required")
+	} else if adminKey != "" && !strings.HasPrefix(adminKey, "sk-admin-") {
 		resp.Diagnostics.AddError("admin_key must start with 'sk-admin-'", "admin_key must start with 'sk-admin-'")
 		return
 	}
