@@ -1,6 +1,6 @@
 module github.com/jianyuan/terraform-provider-openai
 
-go 1.23.3
+go 1.23.5
 
 require (
 	carvel.dev/ytt v0.51.1
