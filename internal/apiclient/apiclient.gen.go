@@ -141,6 +141,11 @@ const (
 	ChatCompletionMessageToolCallTypeFunction ChatCompletionMessageToolCallType = "function"
 )
 
+// Defines values for ChatCompletionMessageToolCallChunkType.
+const (
+	ChatCompletionMessageToolCallChunkTypeFunction ChatCompletionMessageToolCallChunkType = "function"
+)
+
 // Defines values for ChatCompletionNamedToolChoiceType.
 const (
 	ChatCompletionNamedToolChoiceTypeFunction ChatCompletionNamedToolChoiceType = "function"
@@ -196,7 +201,7 @@ const (
 
 // Defines values for ChatCompletionRequestSystemMessageRole.
 const (
-	System ChatCompletionRequestSystemMessageRole = "system"
+	ChatCompletionRequestSystemMessageRoleSystem ChatCompletionRequestSystemMessageRole = "system"
 )
 
 // Defines values for ChatCompletionRequestToolMessageRole.
@@ -212,6 +217,14 @@ const (
 // Defines values for ChatCompletionResponseMessageRole.
 const (
 	ChatCompletionResponseMessageRoleAssistant ChatCompletionResponseMessageRole = "assistant"
+)
+
+// Defines values for ChatCompletionStreamResponseDeltaRole.
+const (
+	ChatCompletionStreamResponseDeltaRoleAssistant ChatCompletionStreamResponseDeltaRole = "assistant"
+	ChatCompletionStreamResponseDeltaRoleSystem    ChatCompletionStreamResponseDeltaRole = "system"
+	ChatCompletionStreamResponseDeltaRoleTool      ChatCompletionStreamResponseDeltaRole = "tool"
+	ChatCompletionStreamResponseDeltaRoleUser      ChatCompletionStreamResponseDeltaRole = "user"
 )
 
 // Defines values for ChatCompletionToolType.
@@ -366,8 +379,28 @@ const (
 
 // Defines values for CreateChatCompletionResponseServiceTier.
 const (
-	Default CreateChatCompletionResponseServiceTier = "default"
-	Scale   CreateChatCompletionResponseServiceTier = "scale"
+	CreateChatCompletionResponseServiceTierDefault CreateChatCompletionResponseServiceTier = "default"
+	CreateChatCompletionResponseServiceTierScale   CreateChatCompletionResponseServiceTier = "scale"
+)
+
+// Defines values for CreateChatCompletionStreamResponseChoicesFinishReason.
+const (
+	CreateChatCompletionStreamResponseChoicesFinishReasonContentFilter CreateChatCompletionStreamResponseChoicesFinishReason = "content_filter"
+	CreateChatCompletionStreamResponseChoicesFinishReasonFunctionCall  CreateChatCompletionStreamResponseChoicesFinishReason = "function_call"
+	CreateChatCompletionStreamResponseChoicesFinishReasonLength        CreateChatCompletionStreamResponseChoicesFinishReason = "length"
+	CreateChatCompletionStreamResponseChoicesFinishReasonStop          CreateChatCompletionStreamResponseChoicesFinishReason = "stop"
+	CreateChatCompletionStreamResponseChoicesFinishReasonToolCalls     CreateChatCompletionStreamResponseChoicesFinishReason = "tool_calls"
+)
+
+// Defines values for CreateChatCompletionStreamResponseObject.
+const (
+	ChatCompletionChunk CreateChatCompletionStreamResponseObject = "chat.completion.chunk"
+)
+
+// Defines values for CreateChatCompletionStreamResponseServiceTier.
+const (
+	CreateChatCompletionStreamResponseServiceTierDefault CreateChatCompletionStreamResponseServiceTier = "default"
+	CreateChatCompletionStreamResponseServiceTierScale   CreateChatCompletionStreamResponseServiceTier = "scale"
 )
 
 // Defines values for CreateCompletionRequestModel1.
@@ -654,10 +687,13 @@ const (
 // Defines values for CreateSpeechRequestVoice.
 const (
 	CreateSpeechRequestVoiceAlloy   CreateSpeechRequestVoice = "alloy"
+	CreateSpeechRequestVoiceAsh     CreateSpeechRequestVoice = "ash"
+	CreateSpeechRequestVoiceCoral   CreateSpeechRequestVoice = "coral"
 	CreateSpeechRequestVoiceEcho    CreateSpeechRequestVoice = "echo"
 	CreateSpeechRequestVoiceFable   CreateSpeechRequestVoice = "fable"
 	CreateSpeechRequestVoiceNova    CreateSpeechRequestVoice = "nova"
 	CreateSpeechRequestVoiceOnyx    CreateSpeechRequestVoice = "onyx"
+	CreateSpeechRequestVoiceSage    CreateSpeechRequestVoice = "sage"
 	CreateSpeechRequestVoiceShimmer CreateSpeechRequestVoice = "shimmer"
 )
 
@@ -985,11 +1021,11 @@ const (
 
 // Defines values for MessageObjectIncompleteDetailsReason.
 const (
-	ContentFilter MessageObjectIncompleteDetailsReason = "content_filter"
-	MaxTokens     MessageObjectIncompleteDetailsReason = "max_tokens"
-	RunCancelled  MessageObjectIncompleteDetailsReason = "run_cancelled"
-	RunExpired    MessageObjectIncompleteDetailsReason = "run_expired"
-	RunFailed     MessageObjectIncompleteDetailsReason = "run_failed"
+	MessageObjectIncompleteDetailsReasonContentFilter MessageObjectIncompleteDetailsReason = "content_filter"
+	MessageObjectIncompleteDetailsReasonMaxTokens     MessageObjectIncompleteDetailsReason = "max_tokens"
+	MessageObjectIncompleteDetailsReasonRunCancelled  MessageObjectIncompleteDetailsReason = "run_cancelled"
+	MessageObjectIncompleteDetailsReasonRunExpired    MessageObjectIncompleteDetailsReason = "run_expired"
+	MessageObjectIncompleteDetailsReasonRunFailed     MessageObjectIncompleteDetailsReason = "run_failed"
 )
 
 // Defines values for MessageObjectObject.
@@ -1355,7 +1391,7 @@ const (
 
 // Defines values for RunToolCallObjectType.
 const (
-	Function RunToolCallObjectType = "function"
+	RunToolCallObjectTypeFunction RunToolCallObjectType = "function"
 )
 
 // Defines values for StaticChunkingStrategyRequestParamType.
@@ -2409,6 +2445,27 @@ type ChatCompletionMessageToolCall struct {
 // ChatCompletionMessageToolCallType The type of the tool. Currently, only `function` is supported.
 type ChatCompletionMessageToolCallType string
 
+// ChatCompletionMessageToolCallChunk defines model for ChatCompletionMessageToolCallChunk.
+type ChatCompletionMessageToolCallChunk struct {
+	Function *struct {
+		// Arguments The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.
+		Arguments *string `json:"arguments,omitempty"`
+
+		// Name The name of the function to call.
+		Name *string `json:"name,omitempty"`
+	} `json:"function,omitempty"`
+
+	// Id The ID of the tool call.
+	Id    *string `json:"id,omitempty"`
+	Index int     `json:"index"`
+
+	// Type The type of the tool. Currently, only `function` is supported.
+	Type *ChatCompletionMessageToolCallChunkType `json:"type,omitempty"`
+}
+
+// ChatCompletionMessageToolCallChunkType The type of the tool. Currently, only `function` is supported.
+type ChatCompletionMessageToolCallChunkType string
+
 // ChatCompletionMessageToolCalls The tool calls generated by the model, such as function calls.
 type ChatCompletionMessageToolCalls = []ChatCompletionMessageToolCall
 
@@ -2752,6 +2809,32 @@ type ChatCompletionStreamOptions struct {
 	// IncludeUsage If set, an additional chunk will be streamed before the `data: [DONE]` message. The `usage` field on this chunk shows the token usage statistics for the entire request, and the `choices` field will always be an empty array. All other chunks will also include a `usage` field, but with a null value.
 	IncludeUsage *bool `json:"include_usage,omitempty"`
 }
+
+// ChatCompletionStreamResponseDelta A chat completion delta generated by streamed model responses.
+type ChatCompletionStreamResponseDelta struct {
+	// Content The contents of the chunk message.
+	Content *string `json:"content"`
+
+	// FunctionCall Deprecated and replaced by `tool_calls`. The name and arguments of a function that should be called, as generated by the model.
+	// Deprecated:
+	FunctionCall *struct {
+		// Arguments The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.
+		Arguments *string `json:"arguments,omitempty"`
+
+		// Name The name of the function to call.
+		Name *string `json:"name,omitempty"`
+	} `json:"function_call,omitempty"`
+
+	// Refusal The refusal message generated by the model.
+	Refusal *string `json:"refusal"`
+
+	// Role The role of the author of this message.
+	Role      *ChatCompletionStreamResponseDeltaRole `json:"role,omitempty"`
+	ToolCalls *[]ChatCompletionMessageToolCallChunk  `json:"tool_calls,omitempty"`
+}
+
+// ChatCompletionStreamResponseDeltaRole The role of the author of this message.
+type ChatCompletionStreamResponseDeltaRole string
 
 // ChatCompletionTokenLogprob defines model for ChatCompletionTokenLogprob.
 type ChatCompletionTokenLogprob struct {
@@ -3142,15 +3225,13 @@ type CreateChatCompletionRequest struct {
 	// Seed This feature is in Beta.
 	// If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
 	// Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
-	Seed *int `json:"seed"`
+	Seed *int64 `json:"seed"`
 
 	// ServiceTier Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
 	//   - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
 	//   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
 	//   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
 	//   - When not set, the default behavior is 'auto'.
-	//
-	//   When this parameter is set, the response body will include the `service_tier` utilized.
 	ServiceTier *CreateChatCompletionRequestServiceTier `json:"service_tier"`
 
 	// Stop Up to 4 sequences where the API will stop generating further tokens.
@@ -3279,16 +3360,10 @@ type CreateChatCompletionRequest_ResponseFormat struct {
 }
 
 // CreateChatCompletionRequestServiceTier Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
-//
 //   - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
-//
 //   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-//
 //   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-//
 //   - When not set, the default behavior is 'auto'.
-//
-//     When this parameter is set, the response body will include the `service_tier` utilized.
 type CreateChatCompletionRequestServiceTier string
 
 // CreateChatCompletionRequestStop0 defines model for .
@@ -3340,7 +3415,7 @@ type CreateChatCompletionResponse struct {
 	// Object The object type, which is always `chat.completion`.
 	Object CreateChatCompletionResponseObject `json:"object"`
 
-	// ServiceTier The service tier used for processing the request. This field is only included if the `service_tier` parameter is specified in the request.
+	// ServiceTier The service tier used for processing the request.
 	ServiceTier *CreateChatCompletionResponseServiceTier `json:"service_tier"`
 
 	// SystemFingerprint This fingerprint represents the backend configuration that the model runs with.
@@ -3361,8 +3436,80 @@ type CreateChatCompletionResponseChoicesFinishReason string
 // CreateChatCompletionResponseObject The object type, which is always `chat.completion`.
 type CreateChatCompletionResponseObject string
 
-// CreateChatCompletionResponseServiceTier The service tier used for processing the request. This field is only included if the `service_tier` parameter is specified in the request.
+// CreateChatCompletionResponseServiceTier The service tier used for processing the request.
 type CreateChatCompletionResponseServiceTier string
+
+// CreateChatCompletionStreamResponse Represents a streamed chunk of a chat completion response returned by model, based on the provided input.
+type CreateChatCompletionStreamResponse struct {
+	// Choices A list of chat completion choices. Can contain more than one elements if `n` is greater than 1. Can also be empty for the
+	// last chunk if you set `stream_options: {"include_usage": true}`.
+	Choices []struct {
+		// Delta A chat completion delta generated by streamed model responses.
+		Delta ChatCompletionStreamResponseDelta `json:"delta"`
+
+		// FinishReason The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
+		// `length` if the maximum number of tokens specified in the request was reached,
+		// `content_filter` if content was omitted due to a flag from our content filters,
+		// `tool_calls` if the model called a tool, or `function_call` (deprecated) if the model called a function.
+		FinishReason *CreateChatCompletionStreamResponseChoicesFinishReason `json:"finish_reason"`
+
+		// Index The index of the choice in the list of choices.
+		Index int `json:"index"`
+
+		// Logprobs Log probability information for the choice.
+		Logprobs *struct {
+			// Content A list of message content tokens with log probability information.
+			Content *[]ChatCompletionTokenLogprob `json:"content"`
+
+			// Refusal A list of message refusal tokens with log probability information.
+			Refusal *[]ChatCompletionTokenLogprob `json:"refusal"`
+		} `json:"logprobs"`
+	} `json:"choices"`
+
+	// Created The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp.
+	Created int `json:"created"`
+
+	// Id A unique identifier for the chat completion. Each chunk has the same ID.
+	Id string `json:"id"`
+
+	// Model The model to generate the completion.
+	Model string `json:"model"`
+
+	// Object The object type, which is always `chat.completion.chunk`.
+	Object CreateChatCompletionStreamResponseObject `json:"object"`
+
+	// ServiceTier The service tier used for processing the request.
+	ServiceTier *CreateChatCompletionStreamResponseServiceTier `json:"service_tier"`
+
+	// SystemFingerprint This fingerprint represents the backend configuration that the model runs with.
+	// Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
+	SystemFingerprint *string `json:"system_fingerprint,omitempty"`
+
+	// Usage An optional field that will only be present when you set `stream_options: {"include_usage": true}` in your request.
+	// When present, it contains a null value except for the last chunk which contains the token usage statistics for the entire request.
+	Usage *struct {
+		// CompletionTokens Number of tokens in the generated completion.
+		CompletionTokens int `json:"completion_tokens"`
+
+		// PromptTokens Number of tokens in the prompt.
+		PromptTokens int `json:"prompt_tokens"`
+
+		// TotalTokens Total number of tokens used in the request (prompt + completion).
+		TotalTokens int `json:"total_tokens"`
+	} `json:"usage"`
+}
+
+// CreateChatCompletionStreamResponseChoicesFinishReason The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
+// `length` if the maximum number of tokens specified in the request was reached,
+// `content_filter` if content was omitted due to a flag from our content filters,
+// `tool_calls` if the model called a tool, or `function_call` (deprecated) if the model called a function.
+type CreateChatCompletionStreamResponseChoicesFinishReason string
+
+// CreateChatCompletionStreamResponseObject The object type, which is always `chat.completion.chunk`.
+type CreateChatCompletionStreamResponseObject string
+
+// CreateChatCompletionStreamResponseServiceTier The service tier used for processing the request.
+type CreateChatCompletionStreamResponseServiceTier string
 
 // CreateCompletionRequest defines model for CreateCompletionRequest.
 type CreateCompletionRequest struct {
@@ -3419,7 +3566,7 @@ type CreateCompletionRequest struct {
 	// Seed If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
 	//
 	// Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
-	Seed *int `json:"seed"`
+	Seed *int64 `json:"seed"`
 
 	// Stop Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
 	Stop *CreateCompletionRequest_Stop `json:"stop"`
@@ -3545,7 +3692,7 @@ type CreateEmbeddingRequest struct {
 	// EncodingFormat The format to return the embeddings in. Can be either `float` or [`base64`](https://pypi.org/project/pybase64/).
 	EncodingFormat *CreateEmbeddingRequestEncodingFormat `json:"encoding_format,omitempty"`
 
-	// Input Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
+	// Input Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. Some models may also impose a limit on total number of tokens summed across inputs.
 	Input CreateEmbeddingRequest_Input `json:"input"`
 
 	// Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
@@ -3570,7 +3717,7 @@ type CreateEmbeddingRequestInput2 = []int
 // CreateEmbeddingRequestInput3 The array of arrays containing integers that will be turned into an embedding.
 type CreateEmbeddingRequestInput3 = [][]int
 
-// CreateEmbeddingRequest_Input Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
+// CreateEmbeddingRequest_Input Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. Some models may also impose a limit on total number of tokens summed across inputs.
 type CreateEmbeddingRequest_Input struct {
 	union json.RawMessage
 }
@@ -4290,7 +4437,7 @@ type CreateSpeechRequest struct {
 	// Speed The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
 	Speed *float32 `json:"speed,omitempty"`
 
-	// Voice The voice to use when generating the audio. Supported voices are `alloy`, `echo`, `fable`, `onyx`, `nova`, and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech#voice-options).
+	// Voice The voice to use when generating the audio. Supported voices are `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage` and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech#voice-options).
 	Voice CreateSpeechRequestVoice `json:"voice"`
 }
 
@@ -4308,7 +4455,7 @@ type CreateSpeechRequest_Model struct {
 // CreateSpeechRequestResponseFormat The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`, `wav`, and `pcm`.
 type CreateSpeechRequestResponseFormat string
 
-// CreateSpeechRequestVoice The voice to use when generating the audio. Supported voices are `alloy`, `echo`, `fable`, `onyx`, `nova`, and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech#voice-options).
+// CreateSpeechRequestVoice The voice to use when generating the audio. Supported voices are `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage` and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech#voice-options).
 type CreateSpeechRequestVoice string
 
 // CreateThreadAndRunRequest defines model for CreateThreadAndRunRequest.
@@ -6092,6 +6239,8 @@ type ProjectUserUpdateRequestRole string
 // RealtimeSessionCreateRequest Realtime session object configuration.
 type RealtimeSessionCreateRequest struct {
 	// InputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	// For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
+	// single channel (mono), and little-endian byte order.
 	InputAudioFormat *RealtimeSessionCreateRequestInputAudioFormat `json:"input_audio_format,omitempty"`
 
 	// InputAudioTranscription Configuration for input audio transcription, defaults to off and can be
@@ -6130,9 +6279,10 @@ type RealtimeSessionCreateRequest struct {
 	Modalities *interface{} `json:"modalities,omitempty"`
 
 	// Model The Realtime model used for this session.
-	Model RealtimeSessionCreateRequestModel `json:"model"`
+	Model *RealtimeSessionCreateRequestModel `json:"model,omitempty"`
 
 	// OutputAudioFormat The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+	// For `pcm16`, output audio is sampled at a rate of 24kHz.
 	OutputAudioFormat *RealtimeSessionCreateRequestOutputAudioFormat `json:"output_audio_format,omitempty"`
 
 	// Temperature Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
@@ -6193,6 +6343,8 @@ type RealtimeSessionCreateRequest struct {
 }
 
 // RealtimeSessionCreateRequestInputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+// For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
+// single channel (mono), and little-endian byte order.
 type RealtimeSessionCreateRequestInputAudioFormat string
 
 // RealtimeSessionCreateRequestMaxResponseOutputTokens0 defines model for .
@@ -6213,6 +6365,7 @@ type RealtimeSessionCreateRequest_MaxResponseOutputTokens struct {
 type RealtimeSessionCreateRequestModel string
 
 // RealtimeSessionCreateRequestOutputAudioFormat The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+// For `pcm16`, output audio is sampled at a rate of 24kHz.
 type RealtimeSessionCreateRequestOutputAudioFormat string
 
 // RealtimeSessionCreateRequestToolsType The type of the tool, i.e. `function`.
@@ -27281,6 +27434,9 @@ func ParseCreateChatCompletionResp(rsp *http.Response) (*CreateChatCompletionRes
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case rsp.StatusCode == 200:
+		// Content-type (text/event-stream) unsupported
 
 	}
 
