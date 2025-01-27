@@ -18,9 +18,7 @@ import (
 )
 
 const (
-	ApiKeyAuthScopes           = "ApiKeyAuth.Scopes"
-	Basic_identity_edgeScopes  = "basic_identity_edge.Scopes"
-	Bearer_identity_edgeScopes = "bearer_identity_edge.Scopes"
+	ApiKeyAuthScopes = "ApiKeyAuth.Scopes"
 )
 
 // Defines values for AssistantObjectObject.
@@ -1836,7 +1834,7 @@ type ApiKeyList struct {
 // AssistantObject Represents an `assistant` that can call the model and use tools.
 type AssistantObject struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the assistant was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Description The description of the assistant. The maximum length is 512 characters.
 	Description *string `json:"description"`
@@ -1857,16 +1855,8 @@ type AssistantObject struct {
 	Name *string `json:"name"`
 
 	// Object The object type, which is always `assistant`.
-	Object AssistantObjectObject `json:"object"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat *AssistantsApiResponseFormatOption `json:"response_format,omitempty"`
+	Object         AssistantObjectObject           `json:"object"`
+	ResponseFormat *AssistantObject_ResponseFormat `json:"response_format,omitempty"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 	Temperature *float32 `json:"temperature"`
@@ -1894,6 +1884,14 @@ type AssistantObject struct {
 
 // AssistantObjectObject The object type, which is always `assistant`.
 type AssistantObjectObject string
+
+// AssistantObjectResponseFormat1 defines model for .
+type AssistantObjectResponseFormat1 = interface{}
+
+// AssistantObject_ResponseFormat defines model for AssistantObject.ResponseFormat.
+type AssistantObject_ResponseFormat struct {
+	union json.RawMessage
+}
 
 // AssistantObject_Tools_Item defines model for AssistantObject.tools.Item.
 type AssistantObject_Tools_Item struct {
@@ -2030,7 +2028,7 @@ type AuditLog struct {
 	} `json:"api_key.updated,omitempty"`
 
 	// EffectiveAt The Unix timestamp (in seconds) of the event.
-	EffectiveAt int `json:"effective_at"`
+	EffectiveAt int64 `json:"effective_at"`
 
 	// Id The ID of this log.
 	Id string `json:"id"`
@@ -2316,19 +2314,19 @@ type AutoChunkingStrategyRequestParamType string
 // Batch defines model for Batch.
 type Batch struct {
 	// CancelledAt The Unix timestamp (in seconds) for when the batch was cancelled.
-	CancelledAt *int `json:"cancelled_at,omitempty"`
+	CancelledAt *int64 `json:"cancelled_at,omitempty"`
 
 	// CancellingAt The Unix timestamp (in seconds) for when the batch started cancelling.
-	CancellingAt *int `json:"cancelling_at,omitempty"`
+	CancellingAt *int64 `json:"cancelling_at,omitempty"`
 
 	// CompletedAt The Unix timestamp (in seconds) for when the batch was completed.
-	CompletedAt *int `json:"completed_at,omitempty"`
+	CompletedAt *int64 `json:"completed_at,omitempty"`
 
 	// CompletionWindow The time frame within which the batch should be processed.
 	CompletionWindow string `json:"completion_window"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the batch was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Endpoint The OpenAI API endpoint used by the batch.
 	Endpoint string `json:"endpoint"`
@@ -2355,20 +2353,20 @@ type Batch struct {
 	} `json:"errors,omitempty"`
 
 	// ExpiredAt The Unix timestamp (in seconds) for when the batch expired.
-	ExpiredAt *int `json:"expired_at,omitempty"`
+	ExpiredAt *int64 `json:"expired_at,omitempty"`
 
 	// ExpiresAt The Unix timestamp (in seconds) for when the batch will expire.
-	ExpiresAt *int `json:"expires_at,omitempty"`
+	ExpiresAt *int64 `json:"expires_at,omitempty"`
 
 	// FailedAt The Unix timestamp (in seconds) for when the batch failed.
-	FailedAt *int `json:"failed_at,omitempty"`
+	FailedAt *int64 `json:"failed_at,omitempty"`
 
 	// FinalizingAt The Unix timestamp (in seconds) for when the batch started finalizing.
-	FinalizingAt *int   `json:"finalizing_at,omitempty"`
+	FinalizingAt *int64 `json:"finalizing_at,omitempty"`
 	Id           string `json:"id"`
 
 	// InProgressAt The Unix timestamp (in seconds) for when the batch started processing.
-	InProgressAt *int `json:"in_progress_at,omitempty"`
+	InProgressAt *int64 `json:"in_progress_at,omitempty"`
 
 	// InputFileId The ID of the input file for the batch.
 	InputFileId string `json:"input_file_id"`
@@ -2457,7 +2455,7 @@ type ChatCompletionMessageToolCallChunk struct {
 
 	// Id The ID of the tool call.
 	Id    *string `json:"id,omitempty"`
-	Index int     `json:"index"`
+	Index int64   `json:"index"`
 
 	// Type The type of the tool. Currently, only `function` is supported.
 	Type *ChatCompletionMessageToolCallChunkType `json:"type,omitempty"`
@@ -2902,7 +2900,7 @@ type CompleteUploadRequest struct {
 // CompletionUsage Usage statistics for the completion request.
 type CompletionUsage struct {
 	// CompletionTokens Number of tokens in the generated completion.
-	CompletionTokens int `json:"completion_tokens"`
+	CompletionTokens int64 `json:"completion_tokens"`
 
 	// CompletionTokensDetails Breakdown of tokens used in a completion.
 	CompletionTokensDetails *struct {
@@ -2925,7 +2923,7 @@ type CompletionUsage struct {
 	} `json:"completion_tokens_details,omitempty"`
 
 	// PromptTokens Number of tokens in the prompt.
-	PromptTokens int `json:"prompt_tokens"`
+	PromptTokens int64 `json:"prompt_tokens"`
 
 	// PromptTokensDetails Breakdown of tokens used in the prompt.
 	PromptTokensDetails *struct {
@@ -2937,7 +2935,7 @@ type CompletionUsage struct {
 	} `json:"prompt_tokens_details,omitempty"`
 
 	// TotalTokens Total number of tokens used in the request (prompt + completion).
-	TotalTokens int `json:"total_tokens"`
+	TotalTokens int64 `json:"total_tokens"`
 }
 
 // CostsResult The aggregated costs details of the specific time bucket.
@@ -2977,16 +2975,8 @@ type CreateAssistantRequest struct {
 	Model CreateAssistantRequest_Model `json:"model"`
 
 	// Name The name of the assistant. The maximum length is 256 characters.
-	Name *string `json:"name"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat *AssistantsApiResponseFormatOption `json:"response_format,omitempty"`
+	Name           *string                                `json:"name"`
+	ResponseFormat *CreateAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 	Temperature *float32 `json:"temperature"`
@@ -3017,6 +3007,14 @@ type CreateAssistantRequestModel1 string
 
 // CreateAssistantRequest_Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 type CreateAssistantRequest_Model struct {
+	union json.RawMessage
+}
+
+// CreateAssistantRequestResponseFormat1 defines model for .
+type CreateAssistantRequestResponseFormat1 = interface{}
+
+// CreateAssistantRequest_ResponseFormat defines model for CreateAssistantRequest.ResponseFormat.
+type CreateAssistantRequest_ResponseFormat struct {
 	union json.RawMessage
 }
 
@@ -3097,7 +3095,7 @@ type CreateChatCompletionRequest struct {
 	} `json:"audio"`
 
 	// False How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs.
-	False *int `json:"false"`
+	False *int64 `json:"false"`
 
 	// FrequencyPenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on
 	// their existing frequency in the text so far, decreasing the model's
@@ -3144,7 +3142,7 @@ type CreateChatCompletionRequest struct {
 	Logprobs *bool `json:"logprobs"`
 
 	// MaxCompletionTokens An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
-	MaxCompletionTokens *int `json:"max_completion_tokens"`
+	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 
 	// MaxTokens The maximum number of [tokens](/tokenizer) that can be generated in the
 	// chat completion. This value can be used to control
@@ -3153,7 +3151,7 @@ type CreateChatCompletionRequest struct {
 	// This value is now deprecated in favor of `max_completion_tokens`, and is
 	// not compatible with [o1 series models](/docs/guides/reasoning).
 	// Deprecated:
-	MaxTokens *int `json:"max_tokens"`
+	MaxTokens *int64 `json:"max_tokens"`
 
 	// Messages A list of messages comprising the conversation so far. Depending on the
 	// [model](/docs/models) you use, different message types (modalities) are
@@ -3267,7 +3265,7 @@ type CreateChatCompletionRequest struct {
 	// TopLogprobs An integer between 0 and 20 specifying the number of most likely tokens to
 	// return at each token position, each with an associated log probability.
 	// `logprobs` must be set to `true` if this parameter is used.
-	TopLogprobs *int `json:"top_logprobs"`
+	TopLogprobs *int64 `json:"top_logprobs"`
 
 	// TopP An alternative to sampling with temperature, called nucleus sampling,
 	// where the model considers the results of the tokens with top_p probability
@@ -3404,7 +3402,7 @@ type CreateChatCompletionResponse struct {
 	} `json:"choices"`
 
 	// Created The Unix timestamp (in seconds) of when the chat completion was created.
-	Created int `json:"created"`
+	Created int64 `json:"created"`
 
 	// Id A unique identifier for the chat completion.
 	Id string `json:"id"`
@@ -3467,7 +3465,7 @@ type CreateChatCompletionStreamResponse struct {
 	} `json:"choices"`
 
 	// Created The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp.
-	Created int `json:"created"`
+	Created int64 `json:"created"`
 
 	// Id A unique identifier for the chat completion. Each chunk has the same ID.
 	Id string `json:"id"`
@@ -3518,7 +3516,7 @@ type CreateCompletionRequest struct {
 	// When used with `n`, `best_of` controls the number of candidate completions and `n` specifies how many to return – `best_of` must be greater than `n`.
 	//
 	// **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
-	BestOf *int `json:"best_of"`
+	BestOf *int64 `json:"best_of"`
 
 	// Echo Echo back the prompt in addition to the completion
 	Echo *bool `json:"echo"`
@@ -3526,7 +3524,7 @@ type CreateCompletionRequest struct {
 	// False How many completions to generate for each prompt.
 	//
 	// **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
-	False *int `json:"false"`
+	False *int64 `json:"false"`
 
 	// FrequencyPenalty Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
 	//
@@ -3543,12 +3541,12 @@ type CreateCompletionRequest struct {
 	// Logprobs Include the log probabilities on the `logprobs` most likely output tokens, as well the chosen tokens. For example, if `logprobs` is 5, the API will return a list of the 5 most likely tokens. The API will always return the `logprob` of the sampled token, so there may be up to `logprobs+1` elements in the response.
 	//
 	// The maximum value for `logprobs` is 5.
-	Logprobs *int `json:"logprobs"`
+	Logprobs *int64 `json:"logprobs"`
 
 	// MaxTokens The maximum number of [tokens](/tokenizer) that can be generated in the completion.
 	//
 	// The token count of your prompt plus `max_tokens` cannot exceed the model's context length. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
-	MaxTokens *int `json:"max_tokens"`
+	MaxTokens *int64 `json:"max_tokens"`
 
 	// Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 	Model CreateCompletionRequest_Model `json:"model"`
@@ -3656,7 +3654,7 @@ type CreateCompletionResponse struct {
 	} `json:"choices"`
 
 	// Created The Unix timestamp (in seconds) of when the completion was created.
-	Created int `json:"created"`
+	Created int64 `json:"created"`
 
 	// Id A unique identifier for the completion.
 	Id string `json:"id"`
@@ -3687,7 +3685,7 @@ type CreateCompletionResponseObject string
 // CreateEmbeddingRequest defines model for CreateEmbeddingRequest.
 type CreateEmbeddingRequest struct {
 	// Dimensions The number of dimensions the resulting output embeddings should have. Only supported in `text-embedding-3` and later models.
-	Dimensions *int `json:"dimensions,omitempty"`
+	Dimensions *int64 `json:"dimensions,omitempty"`
 
 	// EncodingFormat The format to return the embeddings in. Can be either `float` or [`base64`](https://pypi.org/project/pybase64/).
 	EncodingFormat *CreateEmbeddingRequestEncodingFormat `json:"encoding_format,omitempty"`
@@ -3826,7 +3824,7 @@ type CreateFineTuningJobRequest struct {
 
 	// Seed The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases.
 	// If a seed is not specified, one will be generated for you.
-	Seed *int `json:"seed"`
+	Seed *int64 `json:"seed"`
 
 	// Suffix A string of up to 64 characters that will be added to your fine-tuned model name.
 	//
@@ -3916,7 +3914,7 @@ type CreateFineTuningJobRequest_Model struct {
 // CreateImageEditRequest defines model for CreateImageEditRequest.
 type CreateImageEditRequest struct {
 	// False The number of images to generate. Must be between 1 and 10.
-	False *int `json:"false"`
+	False *int64 `json:"false"`
 
 	// Image The image to edit. Must be a valid PNG file, less than 4MB, and square. If mask is not provided, image must have transparency, which will be used as the mask.
 	Image openapi_types.File `json:"image"`
@@ -3960,7 +3958,7 @@ type CreateImageEditRequestSize string
 // CreateImageRequest defines model for CreateImageRequest.
 type CreateImageRequest struct {
 	// False The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
-	False *int `json:"false"`
+	False *int64 `json:"false"`
 
 	// Model The model to use for image generation.
 	Model *CreateImageRequest_Model `json:"model"`
@@ -4010,7 +4008,7 @@ type CreateImageRequestStyle string
 // CreateImageVariationRequest defines model for CreateImageVariationRequest.
 type CreateImageVariationRequest struct {
 	// False The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
-	False *int `json:"false"`
+	False *int64 `json:"false"`
 
 	// Image The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
 	Image openapi_types.File `json:"image"`
@@ -4359,10 +4357,10 @@ type CreateRunRequest struct {
 	Instructions *string `json:"instructions"`
 
 	// MaxCompletionTokens The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
-	MaxCompletionTokens *int `json:"max_completion_tokens"`
+	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 
 	// MaxPromptTokens The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
-	MaxPromptTokens *int `json:"max_prompt_tokens"`
+	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
 	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
 	Metadata *map[string]interface{} `json:"metadata"`
@@ -4371,29 +4369,15 @@ type CreateRunRequest struct {
 	Model *CreateRunRequest_Model `json:"model"`
 
 	// ParallelToolCalls Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
-	ParallelToolCalls *ParallelToolCalls `json:"parallel_tool_calls,omitempty"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat *AssistantsApiResponseFormatOption `json:"response_format,omitempty"`
+	ParallelToolCalls *ParallelToolCalls               `json:"parallel_tool_calls,omitempty"`
+	ResponseFormat    *CreateRunRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Stream If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
 	Stream *bool `json:"stream"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-	Temperature *float32 `json:"temperature"`
-
-	// ToolChoice Controls which (if any) tool is called by the model.
-	// `none` means the model will not call any tools and instead generates a message.
-	// `auto` is the default value and means the model can pick between generating a message or calling one or more tools.
-	// `required` means the model must call one or more tools before responding to the user.
-	// Specifying a particular tool like `{"type": "file_search"}` or `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.
-	ToolChoice *AssistantsApiToolChoiceOption `json:"tool_choice,omitempty"`
+	Temperature *float32                     `json:"temperature"`
+	ToolChoice  *CreateRunRequest_ToolChoice `json:"tool_choice,omitempty"`
 
 	// Tools Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis.
 	Tools *[]CreateRunRequest_Tools_Item `json:"tools"`
@@ -4401,10 +4385,8 @@ type CreateRunRequest struct {
 	// TopP An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 	//
 	// We generally recommend altering this or temperature but not both.
-	TopP *float32 `json:"top_p"`
-
-	// TruncationStrategy Controls for how a thread will be truncated prior to the run. Use this to control the intial context window of the run.
-	TruncationStrategy *TruncationObject `json:"truncation_strategy,omitempty"`
+	TopP               *float32                             `json:"top_p"`
+	TruncationStrategy *CreateRunRequest_TruncationStrategy `json:"truncation_strategy,omitempty"`
 }
 
 // CreateRunRequestModel0 defines model for .
@@ -4418,8 +4400,32 @@ type CreateRunRequest_Model struct {
 	union json.RawMessage
 }
 
+// CreateRunRequestResponseFormat1 defines model for .
+type CreateRunRequestResponseFormat1 = interface{}
+
+// CreateRunRequest_ResponseFormat defines model for CreateRunRequest.ResponseFormat.
+type CreateRunRequest_ResponseFormat struct {
+	union json.RawMessage
+}
+
+// CreateRunRequestToolChoice1 defines model for .
+type CreateRunRequestToolChoice1 = interface{}
+
+// CreateRunRequest_ToolChoice defines model for CreateRunRequest.ToolChoice.
+type CreateRunRequest_ToolChoice struct {
+	union json.RawMessage
+}
+
 // CreateRunRequest_Tools_Item defines model for CreateRunRequest.tools.Item.
 type CreateRunRequest_Tools_Item struct {
+	union json.RawMessage
+}
+
+// CreateRunRequestTruncationStrategy1 defines model for .
+type CreateRunRequestTruncationStrategy1 = interface{}
+
+// CreateRunRequest_TruncationStrategy defines model for CreateRunRequest.TruncationStrategy.
+type CreateRunRequest_TruncationStrategy struct {
 	union json.RawMessage
 }
 
@@ -4467,10 +4473,10 @@ type CreateThreadAndRunRequest struct {
 	Instructions *string `json:"instructions"`
 
 	// MaxCompletionTokens The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
-	MaxCompletionTokens *int `json:"max_completion_tokens"`
+	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 
 	// MaxPromptTokens The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
-	MaxPromptTokens *int `json:"max_prompt_tokens"`
+	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
 	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
 	Metadata *map[string]interface{} `json:"metadata"`
@@ -4479,30 +4485,19 @@ type CreateThreadAndRunRequest struct {
 	Model *CreateThreadAndRunRequest_Model `json:"model"`
 
 	// ParallelToolCalls Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
-	ParallelToolCalls *ParallelToolCalls `json:"parallel_tool_calls,omitempty"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat *AssistantsApiResponseFormatOption `json:"response_format,omitempty"`
+	ParallelToolCalls *ParallelToolCalls                        `json:"parallel_tool_calls,omitempty"`
+	ResponseFormat    *CreateThreadAndRunRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Stream If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
 	Stream *bool `json:"stream"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-	Temperature *float32             `json:"temperature"`
-	Thread      *CreateThreadRequest `json:"thread,omitempty"`
+	Temperature *float32 `json:"temperature"`
 
-	// ToolChoice Controls which (if any) tool is called by the model.
-	// `none` means the model will not call any tools and instead generates a message.
-	// `auto` is the default value and means the model can pick between generating a message or calling one or more tools.
-	// `required` means the model must call one or more tools before responding to the user.
-	// Specifying a particular tool like `{"type": "file_search"}` or `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.
-	ToolChoice *AssistantsApiToolChoiceOption `json:"tool_choice,omitempty"`
+	// Thread Options to create a new thread. If no thread is provided when running a
+	// request, an empty thread will be created.
+	Thread     *CreateThreadRequest                  `json:"thread,omitempty"`
+	ToolChoice *CreateThreadAndRunRequest_ToolChoice `json:"tool_choice,omitempty"`
 
 	// ToolResources A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 	ToolResources *struct {
@@ -4522,10 +4517,8 @@ type CreateThreadAndRunRequest struct {
 	// TopP An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 	//
 	// We generally recommend altering this or temperature but not both.
-	TopP *float32 `json:"top_p"`
-
-	// TruncationStrategy Controls for how a thread will be truncated prior to the run. Use this to control the intial context window of the run.
-	TruncationStrategy *TruncationObject `json:"truncation_strategy,omitempty"`
+	TopP               *float32                                      `json:"top_p"`
+	TruncationStrategy *CreateThreadAndRunRequest_TruncationStrategy `json:"truncation_strategy,omitempty"`
 }
 
 // CreateThreadAndRunRequestModel0 defines model for .
@@ -4539,12 +4532,37 @@ type CreateThreadAndRunRequest_Model struct {
 	union json.RawMessage
 }
 
+// CreateThreadAndRunRequestResponseFormat1 defines model for .
+type CreateThreadAndRunRequestResponseFormat1 = interface{}
+
+// CreateThreadAndRunRequest_ResponseFormat defines model for CreateThreadAndRunRequest.ResponseFormat.
+type CreateThreadAndRunRequest_ResponseFormat struct {
+	union json.RawMessage
+}
+
+// CreateThreadAndRunRequestToolChoice1 defines model for .
+type CreateThreadAndRunRequestToolChoice1 = interface{}
+
+// CreateThreadAndRunRequest_ToolChoice defines model for CreateThreadAndRunRequest.ToolChoice.
+type CreateThreadAndRunRequest_ToolChoice struct {
+	union json.RawMessage
+}
+
 // CreateThreadAndRunRequest_Tools_Item defines model for CreateThreadAndRunRequest.tools.Item.
 type CreateThreadAndRunRequest_Tools_Item struct {
 	union json.RawMessage
 }
 
-// CreateThreadRequest defines model for CreateThreadRequest.
+// CreateThreadAndRunRequestTruncationStrategy1 defines model for .
+type CreateThreadAndRunRequestTruncationStrategy1 = interface{}
+
+// CreateThreadAndRunRequest_TruncationStrategy defines model for CreateThreadAndRunRequest.TruncationStrategy.
+type CreateThreadAndRunRequest_TruncationStrategy struct {
+	union json.RawMessage
+}
+
+// CreateThreadRequest Options to create a new thread. If no thread is provided when running a
+// request, an empty thread will be created.
 type CreateThreadRequest struct {
 	// Messages A list of [messages](/docs/api-reference/messages) to start the thread with.
 	Messages *[]CreateMessageRequest `json:"messages,omitempty"`
@@ -4734,7 +4752,7 @@ type CreateTranslationResponseVerboseJson struct {
 // CreateUploadRequest defines model for CreateUploadRequest.
 type CreateUploadRequest struct {
 	// Bytes The number of bytes in the file you are uploading.
-	Bytes int `json:"bytes"`
+	Bytes int64 `json:"bytes"`
 
 	// Filename The name of the file to upload.
 	Filename string `json:"filename"`
@@ -4869,7 +4887,7 @@ type Embedding struct {
 	Embedding []float32 `json:"embedding"`
 
 	// Index The index of the embedding in the list of embeddings.
-	Index int `json:"index"`
+	Index int64 `json:"index"`
 
 	// Object The object type, which is always "embedding".
 	Object EmbeddingObject `json:"object"`
@@ -5061,7 +5079,7 @@ type FineTuningIntegrationType string
 // FineTuningJob The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
 type FineTuningJob struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the fine-tuning job was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Error For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 	Error *struct {
@@ -5076,13 +5094,13 @@ type FineTuningJob struct {
 	} `json:"error"`
 
 	// EstimatedFinish The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
-	EstimatedFinish *int `json:"estimated_finish"`
+	EstimatedFinish *int64 `json:"estimated_finish"`
 
 	// FineTunedModel The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 	FineTunedModel *string `json:"fine_tuned_model"`
 
 	// FinishedAt The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
-	FinishedAt *int `json:"finished_at"`
+	FinishedAt *int64 `json:"finished_at"`
 
 	// Hyperparameters The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 	Hyperparameters struct {
@@ -5121,13 +5139,13 @@ type FineTuningJob struct {
 	ResultFiles []string `json:"result_files"`
 
 	// Seed The seed used for the fine-tuning job.
-	Seed int `json:"seed"`
+	Seed int64 `json:"seed"`
 
 	// Status The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
 	Status FineTuningJobStatus `json:"status"`
 
 	// TrainedTokens The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
-	TrainedTokens *int `json:"trained_tokens"`
+	TrainedTokens *int64 `json:"trained_tokens"`
 
 	// TrainingFile The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 	TrainingFile string `json:"training_file"`
@@ -5186,7 +5204,7 @@ type FineTuningJobStatus string
 // FineTuningJobCheckpoint The `fine_tuning.job.checkpoint` object represents a model checkpoint for a fine-tuning job that is ready to use.
 type FineTuningJobCheckpoint struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the checkpoint was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// FineTunedModelCheckpoint The name of the fine-tuned checkpoint model that is created.
 	FineTunedModelCheckpoint string `json:"fine_tuned_model_checkpoint"`
@@ -5212,7 +5230,7 @@ type FineTuningJobCheckpoint struct {
 	Object FineTuningJobCheckpointObject `json:"object"`
 
 	// StepNumber The step number that the checkpoint was created at.
-	StepNumber int `json:"step_number"`
+	StepNumber int64 `json:"step_number"`
 }
 
 // FineTuningJobCheckpointObject The object type, which is always "fine_tuning.job.checkpoint".
@@ -5221,7 +5239,7 @@ type FineTuningJobCheckpointObject string
 // FineTuningJobEvent Fine-tuning job event object
 type FineTuningJobEvent struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the fine-tuning job was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Data The data associated with the event.
 	Data *map[string]interface{} `json:"data,omitempty"`
@@ -5287,7 +5305,7 @@ type Image struct {
 
 // ImagesResponse defines model for ImagesResponse.
 type ImagesResponse struct {
-	Created int     `json:"created"`
+	Created int64   `json:"created"`
 	Data    []Image `json:"data"`
 }
 
@@ -5575,12 +5593,12 @@ type MessageContentRefusalObjectType string
 
 // MessageContentTextAnnotationsFileCitationObject A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "file_search" tool to search files.
 type MessageContentTextAnnotationsFileCitationObject struct {
-	EndIndex     int `json:"end_index"`
+	EndIndex     int64 `json:"end_index"`
 	FileCitation struct {
 		// FileId The ID of the specific File the citation is from.
 		FileId string `json:"file_id"`
 	} `json:"file_citation"`
-	StartIndex int `json:"start_index"`
+	StartIndex int64 `json:"start_index"`
 
 	// Text The text in the message content that needs to be replaced.
 	Text string `json:"text"`
@@ -5594,12 +5612,12 @@ type MessageContentTextAnnotationsFileCitationObjectType string
 
 // MessageContentTextAnnotationsFilePathObject A URL for the file that's generated when the assistant used the `code_interpreter` tool to generate a file.
 type MessageContentTextAnnotationsFilePathObject struct {
-	EndIndex int `json:"end_index"`
+	EndIndex int64 `json:"end_index"`
 	FilePath struct {
 		// FileId The ID of the file that was generated.
 		FileId string `json:"file_id"`
 	} `json:"file_path"`
-	StartIndex int `json:"start_index"`
+	StartIndex int64 `json:"start_index"`
 
 	// Text The text in the message content that needs to be replaced.
 	Text string `json:"text"`
@@ -5647,19 +5665,19 @@ type MessageObject struct {
 	} `json:"attachments"`
 
 	// CompletedAt The Unix timestamp (in seconds) for when the message was completed.
-	CompletedAt *int `json:"completed_at"`
+	CompletedAt *int64 `json:"completed_at"`
 
 	// Content The content of the message in array of text and/or images.
 	Content []MessageObject_Content_Item `json:"content"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the message was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
 
 	// IncompleteAt The Unix timestamp (in seconds) for when the message was marked as incomplete.
-	IncompleteAt *int `json:"incomplete_at"`
+	IncompleteAt *int64 `json:"incomplete_at"`
 
 	// IncompleteDetails On an incomplete message, details about why the message is incomplete.
 	IncompleteDetails *struct {
@@ -5723,7 +5741,7 @@ type MessageRequestContentTextObjectType string
 // Model Describes an OpenAI model offering that can be used with the API.
 type Model struct {
 	// Created The Unix timestamp (in seconds) when the model was created.
-	Created int `json:"created"`
+	Created int64 `json:"created"`
 
 	// Id The model identifier, which can be referenced in the API endpoints.
 	Id string `json:"id"`
@@ -5753,16 +5771,8 @@ type ModifyAssistantRequest struct {
 	Model *ModifyAssistantRequest_Model `json:"model,omitempty"`
 
 	// Name The name of the assistant. The maximum length is 256 characters.
-	Name *string `json:"name"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat *AssistantsApiResponseFormatOption `json:"response_format,omitempty"`
+	Name           *string                                `json:"name"`
+	ResponseFormat *ModifyAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 	Temperature *float32 `json:"temperature"`
@@ -5793,6 +5803,14 @@ type ModifyAssistantRequestModel0 = string
 
 // ModifyAssistantRequest_Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 type ModifyAssistantRequest_Model struct {
+	union json.RawMessage
+}
+
+// ModifyAssistantRequestResponseFormat1 defines model for .
+type ModifyAssistantRequestResponseFormat1 = interface{}
+
+// ModifyAssistantRequest_ResponseFormat defines model for ModifyAssistantRequest.ResponseFormat.
+type ModifyAssistantRequest_ResponseFormat struct {
 	union json.RawMessage
 }
 
@@ -5834,10 +5852,10 @@ type ModifyThreadRequest struct {
 // OpenAIFile The `File` object represents a document that has been uploaded to OpenAI.
 type OpenAIFile struct {
 	// Bytes The size of the file, in bytes.
-	Bytes int `json:"bytes"`
+	Bytes int64 `json:"bytes"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the file was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Filename The name of the file.
 	Filename string `json:"filename"`
@@ -5942,7 +5960,7 @@ type ProjectStatus string
 // ProjectApiKey Represents an individual API key in a project.
 type ProjectApiKey struct {
 	// CreatedAt The Unix timestamp (in seconds) of when the API key was created
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints
 	Id string `json:"id"`
@@ -6105,7 +6123,7 @@ type ProjectServiceAccountRole string
 
 // ProjectServiceAccountApiKey defines model for ProjectServiceAccountApiKey.
 type ProjectServiceAccountApiKey struct {
-	CreatedAt int    `json:"created_at"`
+	CreatedAt int64  `json:"created_at"`
 	Id        string `json:"id"`
 	Name      string `json:"name"`
 
@@ -6172,7 +6190,7 @@ type ProjectUpdateRequest struct {
 // ProjectUser Represents an individual user in a project.
 type ProjectUser struct {
 	// AddedAt The Unix timestamp (in seconds) of when the project was added.
-	AddedAt int `json:"added_at"`
+	AddedAt int64 `json:"added_at"`
 
 	// Email The email address of the user
 	Email string `json:"email"`
@@ -6556,13 +6574,13 @@ type ResponseFormatTextType string
 // RunCompletionUsage Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 type RunCompletionUsage struct {
 	// CompletionTokens Number of completion tokens used over the course of the run.
-	CompletionTokens int `json:"completion_tokens"`
+	CompletionTokens int64 `json:"completion_tokens"`
 
 	// PromptTokens Number of prompt tokens used over the course of the run.
-	PromptTokens int `json:"prompt_tokens"`
+	PromptTokens int64 `json:"prompt_tokens"`
 
 	// TotalTokens Total number of tokens used (prompt + completion).
-	TotalTokens int `json:"total_tokens"`
+	TotalTokens int64 `json:"total_tokens"`
 }
 
 // RunObject Represents an execution run on a [thread](/docs/api-reference/threads).
@@ -6571,19 +6589,19 @@ type RunObject struct {
 	AssistantId string `json:"assistant_id"`
 
 	// CancelledAt The Unix timestamp (in seconds) for when the run was cancelled.
-	CancelledAt *int `json:"cancelled_at"`
+	CancelledAt *int64 `json:"cancelled_at"`
 
 	// CompletedAt The Unix timestamp (in seconds) for when the run was completed.
-	CompletedAt *int `json:"completed_at"`
+	CompletedAt *int64 `json:"completed_at"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the run was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// ExpiresAt The Unix timestamp (in seconds) for when the run will expire.
-	ExpiresAt *int `json:"expires_at"`
+	ExpiresAt *int64 `json:"expires_at"`
 
 	// FailedAt The Unix timestamp (in seconds) for when the run failed.
-	FailedAt *int `json:"failed_at"`
+	FailedAt *int64 `json:"failed_at"`
 
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
@@ -6607,10 +6625,10 @@ type RunObject struct {
 	} `json:"last_error"`
 
 	// MaxCompletionTokens The maximum number of completion tokens specified to have been used over the course of the run.
-	MaxCompletionTokens *int `json:"max_completion_tokens"`
+	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 
 	// MaxPromptTokens The maximum number of prompt tokens specified to have been used over the course of the run.
-	MaxPromptTokens *int `json:"max_prompt_tokens"`
+	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
 	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
 	Metadata *map[string]interface{} `json:"metadata"`
@@ -6635,18 +6653,10 @@ type RunObject struct {
 		// Type For now, this is always `submit_tool_outputs`.
 		Type RunObjectRequiredActionType `json:"type"`
 	} `json:"required_action"`
-
-	// ResponseFormat Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
-	//
-	// Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
-	//
-	// Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
-	//
-	// **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
-	ResponseFormat AssistantsApiResponseFormatOption `json:"response_format"`
+	ResponseFormat RunObject_ResponseFormat `json:"response_format"`
 
 	// StartedAt The Unix timestamp (in seconds) for when the run was started.
-	StartedAt *int `json:"started_at"`
+	StartedAt *int64 `json:"started_at"`
 
 	// Status The status of the run, which can be either `queued`, `in_progress`, `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`, `incomplete`, or `expired`.
 	Status RunObjectStatus `json:"status"`
@@ -6655,23 +6665,15 @@ type RunObject struct {
 	Temperature *float32 `json:"temperature"`
 
 	// ThreadId The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
-	ThreadId string `json:"thread_id"`
-
-	// ToolChoice Controls which (if any) tool is called by the model.
-	// `none` means the model will not call any tools and instead generates a message.
-	// `auto` is the default value and means the model can pick between generating a message or calling one or more tools.
-	// `required` means the model must call one or more tools before responding to the user.
-	// Specifying a particular tool like `{"type": "file_search"}` or `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.
-	ToolChoice AssistantsApiToolChoiceOption `json:"tool_choice"`
+	ThreadId   string               `json:"thread_id"`
+	ToolChoice RunObject_ToolChoice `json:"tool_choice"`
 
 	// Tools The list of tools that the [assistant](/docs/api-reference/assistants) used for this run.
 	Tools []RunObject_Tools_Item `json:"tools"`
 
 	// TopP The nucleus sampling value used for this run. If not set, defaults to 1.
-	TopP *float32 `json:"top_p"`
-
-	// TruncationStrategy Controls for how a thread will be truncated prior to the run. Use this to control the intial context window of the run.
-	TruncationStrategy TruncationObject `json:"truncation_strategy"`
+	TopP               *float32                     `json:"top_p"`
+	TruncationStrategy RunObject_TruncationStrategy `json:"truncation_strategy"`
 
 	// Usage Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 	Usage *RunCompletionUsage `json:"usage"`
@@ -6689,24 +6691,48 @@ type RunObjectObject string
 // RunObjectRequiredActionType For now, this is always `submit_tool_outputs`.
 type RunObjectRequiredActionType string
 
+// RunObjectResponseFormat1 defines model for .
+type RunObjectResponseFormat1 = interface{}
+
+// RunObject_ResponseFormat defines model for RunObject.ResponseFormat.
+type RunObject_ResponseFormat struct {
+	union json.RawMessage
+}
+
 // RunObjectStatus The status of the run, which can be either `queued`, `in_progress`, `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`, `incomplete`, or `expired`.
 type RunObjectStatus string
+
+// RunObjectToolChoice1 defines model for .
+type RunObjectToolChoice1 = interface{}
+
+// RunObject_ToolChoice defines model for RunObject.ToolChoice.
+type RunObject_ToolChoice struct {
+	union json.RawMessage
+}
 
 // RunObject_Tools_Item defines model for RunObject.tools.Item.
 type RunObject_Tools_Item struct {
 	union json.RawMessage
 }
 
+// RunObjectTruncationStrategy1 defines model for .
+type RunObjectTruncationStrategy1 = interface{}
+
+// RunObject_TruncationStrategy defines model for RunObject.TruncationStrategy.
+type RunObject_TruncationStrategy struct {
+	union json.RawMessage
+}
+
 // RunStepCompletionUsage Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 type RunStepCompletionUsage struct {
 	// CompletionTokens Number of completion tokens used over the course of the run step.
-	CompletionTokens int `json:"completion_tokens"`
+	CompletionTokens int64 `json:"completion_tokens"`
 
 	// PromptTokens Number of prompt tokens used over the course of the run step.
-	PromptTokens int `json:"prompt_tokens"`
+	PromptTokens int64 `json:"prompt_tokens"`
 
 	// TotalTokens Total number of tokens used (prompt + completion).
-	TotalTokens int `json:"total_tokens"`
+	TotalTokens int64 `json:"total_tokens"`
 }
 
 // RunStepDetailsMessageCreationObject Details of the message creation by the run step.
@@ -6879,19 +6905,19 @@ type RunStepObject struct {
 	AssistantId string `json:"assistant_id"`
 
 	// CancelledAt The Unix timestamp (in seconds) for when the run step was cancelled.
-	CancelledAt *int `json:"cancelled_at"`
+	CancelledAt *int64 `json:"cancelled_at"`
 
 	// CompletedAt The Unix timestamp (in seconds) for when the run step completed.
-	CompletedAt *int `json:"completed_at"`
+	CompletedAt *int64 `json:"completed_at"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the run step was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// ExpiredAt The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
-	ExpiredAt *int `json:"expired_at"`
+	ExpiredAt *int64 `json:"expired_at"`
 
 	// FailedAt The Unix timestamp (in seconds) for when the run step failed.
-	FailedAt *int `json:"failed_at"`
+	FailedAt *int64 `json:"failed_at"`
 
 	// Id The identifier of the run step, which can be referenced in API endpoints.
 	Id string `json:"id"`
@@ -6973,10 +6999,10 @@ type StaticChunkingStrategy struct {
 	// ChunkOverlapTokens The number of tokens that overlap between chunks. The default value is `400`.
 	//
 	// Note that the overlap must not exceed half of `max_chunk_size_tokens`.
-	ChunkOverlapTokens int `json:"chunk_overlap_tokens"`
+	ChunkOverlapTokens int64 `json:"chunk_overlap_tokens"`
 
 	// MaxChunkSizeTokens The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
-	MaxChunkSizeTokens int `json:"max_chunk_size_tokens"`
+	MaxChunkSizeTokens int64 `json:"max_chunk_size_tokens"`
 }
 
 // StaticChunkingStrategyRequestParam defines model for StaticChunkingStrategyRequestParam.
@@ -7019,7 +7045,7 @@ type SubmitToolOutputsRunRequest struct {
 // ThreadObject Represents a thread that contains [messages](/docs/api-reference/messages).
 type ThreadObject struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the thread was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
@@ -7058,13 +7084,13 @@ type TranscriptionSegment struct {
 	End float32 `json:"end"`
 
 	// Id Unique identifier of the segment.
-	Id int `json:"id"`
+	Id int64 `json:"id"`
 
 	// NoSpeechProb Probability of no speech in the segment. If the value is higher than 1.0 and the `avg_logprob` is below -1, consider this segment silent.
 	NoSpeechProb float32 `json:"no_speech_prob"`
 
 	// Seek Seek offset of the segment.
-	Seek int `json:"seek"`
+	Seek int64 `json:"seek"`
 
 	// Start Start time of the segment in seconds.
 	Start float32 `json:"start"`
@@ -7094,7 +7120,7 @@ type TranscriptionWord struct {
 // TruncationObject Controls for how a thread will be truncated prior to the run. Use this to control the intial context window of the run.
 type TruncationObject struct {
 	// LastMessages The number of most recent messages from the thread when constructing the context for the run.
-	LastMessages *int `json:"last_messages"`
+	LastMessages *int64 `json:"last_messages"`
 
 	// Type The truncation strategy to use for the thread. The default is `auto`. If set to `last_messages`, the thread will be truncated to the n most recent messages in the thread. When set to `auto`, messages in the middle of the thread will be dropped to fit the context length of the model, `max_prompt_tokens`.
 	Type TruncationObjectType `json:"type"`
@@ -7105,8 +7131,7 @@ type TruncationObjectType string
 
 // UpdateVectorStoreRequest defines model for UpdateVectorStoreRequest.
 type UpdateVectorStoreRequest struct {
-	// ExpiresAfter The expiration policy for a vector store.
-	ExpiresAfter *VectorStoreExpirationAfter `json:"expires_after,omitempty"`
+	ExpiresAfter *UpdateVectorStoreRequest_ExpiresAfter `json:"expires_after,omitempty"`
 
 	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
 	Metadata *map[string]interface{} `json:"metadata"`
@@ -7115,19 +7140,25 @@ type UpdateVectorStoreRequest struct {
 	Name *string `json:"name"`
 }
 
+// UpdateVectorStoreRequestExpiresAfter1 defines model for .
+type UpdateVectorStoreRequestExpiresAfter1 = interface{}
+
+// UpdateVectorStoreRequest_ExpiresAfter defines model for UpdateVectorStoreRequest.ExpiresAfter.
+type UpdateVectorStoreRequest_ExpiresAfter struct {
+	union json.RawMessage
+}
+
 // Upload The Upload object can accept byte chunks in the form of Parts.
 type Upload struct {
 	// Bytes The intended number of bytes to be uploaded.
-	Bytes int `json:"bytes"`
+	Bytes int64 `json:"bytes"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the Upload was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// ExpiresAt The Unix timestamp (in seconds) for when the Upload was created.
-	ExpiresAt int `json:"expires_at"`
-
-	// File The `File` object represents a document that has been uploaded to OpenAI.
-	File *OpenAIFile `json:"file,omitempty"`
+	ExpiresAt int64        `json:"expires_at"`
+	File      *Upload_File `json:"file,omitempty"`
 
 	// Filename The name of the file to be uploaded.
 	Filename string `json:"filename"`
@@ -7145,6 +7176,14 @@ type Upload struct {
 	Status UploadStatus `json:"status"`
 }
 
+// UploadFile1 The ready File object after the Upload is completed.
+type UploadFile1 = interface{}
+
+// Upload_File defines model for Upload.File.
+type Upload_File struct {
+	union json.RawMessage
+}
+
 // UploadObject The object type, which is always "upload".
 type UploadObject string
 
@@ -7154,7 +7193,7 @@ type UploadStatus string
 // UploadPart The upload Part represents a chunk of bytes we can add to an Upload object.
 type UploadPart struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the Part was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The upload Part unique identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
@@ -7175,13 +7214,13 @@ type UsageAudioSpeechesResult struct {
 	ApiKeyId *string `json:"api_key_id"`
 
 	// Characters The number of characters processed.
-	Characters int `json:"characters"`
+	Characters int64 `json:"characters"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                            `json:"num_model_requests"`
+	NumModelRequests int64                          `json:"num_model_requests"`
 	Object           UsageAudioSpeechesResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
@@ -7203,14 +7242,14 @@ type UsageAudioTranscriptionsResult struct {
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                                  `json:"num_model_requests"`
+	NumModelRequests int64                                `json:"num_model_requests"`
 	Object           UsageAudioTranscriptionsResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 	ProjectId *string `json:"project_id"`
 
 	// Seconds The number of seconds processed.
-	Seconds int `json:"seconds"`
+	Seconds int64 `json:"seconds"`
 
 	// UserId When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 	UserId *string `json:"user_id"`
@@ -7227,7 +7266,7 @@ type UsageCodeInterpreterSessionsResult struct {
 	ProjectId *string `json:"project_id"`
 
 	// Sessions The number of code interpreter sessions.
-	Sessions int `json:"sessions"`
+	Sessions int64 `json:"sessions"`
 }
 
 // UsageCodeInterpreterSessionsResultObject defines model for UsageCodeInterpreterSessionsResult.Object.
@@ -7242,26 +7281,26 @@ type UsageCompletionsResult struct {
 	Batch *bool `json:"batch"`
 
 	// InputAudioTokens The aggregated number of audio input tokens used, including cached tokens.
-	InputAudioTokens *int `json:"input_audio_tokens,omitempty"`
+	InputAudioTokens *int64 `json:"input_audio_tokens,omitempty"`
 
 	// InputCachedTokens The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
-	InputCachedTokens *int `json:"input_cached_tokens,omitempty"`
+	InputCachedTokens *int64 `json:"input_cached_tokens,omitempty"`
 
 	// InputTokens The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
-	InputTokens int `json:"input_tokens"`
+	InputTokens int64 `json:"input_tokens"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                          `json:"num_model_requests"`
+	NumModelRequests int64                        `json:"num_model_requests"`
 	Object           UsageCompletionsResultObject `json:"object"`
 
 	// OutputAudioTokens The aggregated number of audio output tokens used.
-	OutputAudioTokens *int `json:"output_audio_tokens,omitempty"`
+	OutputAudioTokens *int64 `json:"output_audio_tokens,omitempty"`
 
 	// OutputTokens The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
-	OutputTokens int `json:"output_tokens"`
+	OutputTokens int64 `json:"output_tokens"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 	ProjectId *string `json:"project_id"`
@@ -7279,13 +7318,13 @@ type UsageEmbeddingsResult struct {
 	ApiKeyId *string `json:"api_key_id"`
 
 	// InputTokens The aggregated number of input tokens used.
-	InputTokens int `json:"input_tokens"`
+	InputTokens int64 `json:"input_tokens"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                         `json:"num_model_requests"`
+	NumModelRequests int64                       `json:"num_model_requests"`
 	Object           UsageEmbeddingsResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
@@ -7304,13 +7343,13 @@ type UsageImagesResult struct {
 	ApiKeyId *string `json:"api_key_id"`
 
 	// Images The number of images processed.
-	Images int `json:"images"`
+	Images int64 `json:"images"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                     `json:"num_model_requests"`
+	NumModelRequests int64                   `json:"num_model_requests"`
 	Object           UsageImagesResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
@@ -7335,13 +7374,13 @@ type UsageModerationsResult struct {
 	ApiKeyId *string `json:"api_key_id"`
 
 	// InputTokens The aggregated number of input tokens used.
-	InputTokens int `json:"input_tokens"`
+	InputTokens int64 `json:"input_tokens"`
 
 	// Model When `group_by=model`, this field provides the model name of the grouped usage result.
 	Model *string `json:"model"`
 
 	// NumModelRequests The count of requests made to the model.
-	NumModelRequests int                          `json:"num_model_requests"`
+	NumModelRequests int64                        `json:"num_model_requests"`
 	Object           UsageModerationsResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
@@ -7367,10 +7406,10 @@ type UsageResponseObject string
 
 // UsageTimeBucket defines model for UsageTimeBucket.
 type UsageTimeBucket struct {
-	EndTime   int                           `json:"end_time"`
+	EndTime   int64                         `json:"end_time"`
 	Object    UsageTimeBucketObject         `json:"object"`
 	Result    []UsageTimeBucket_Result_Item `json:"result"`
-	StartTime int                           `json:"start_time"`
+	StartTime int64                         `json:"start_time"`
 }
 
 // UsageTimeBucketObject defines model for UsageTimeBucket.Object.
@@ -7389,7 +7428,7 @@ type UsageVectorStoresResult struct {
 	ProjectId *string `json:"project_id"`
 
 	// UsageBytes The vector stores usage in bytes.
-	UsageBytes int `json:"usage_bytes"`
+	UsageBytes int64 `json:"usage_bytes"`
 }
 
 // UsageVectorStoresResultObject defines model for UsageVectorStoresResult.Object.
@@ -7459,7 +7498,7 @@ type VectorStoreExpirationAfter struct {
 	Anchor VectorStoreExpirationAfterAnchor `json:"anchor"`
 
 	// Days The number of days after the anchor time that the vector store will expire.
-	Days int `json:"days"`
+	Days int64 `json:"days"`
 }
 
 // VectorStoreExpirationAfterAnchor Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`.
@@ -7468,7 +7507,7 @@ type VectorStoreExpirationAfterAnchor string
 // VectorStoreFileBatchObject A batch of files attached to a vector store.
 type VectorStoreFileBatchObject struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the vector store files batch was created.
-	CreatedAt  int `json:"created_at"`
+	CreatedAt  int64 `json:"created_at"`
 	FileCounts struct {
 		// Cancelled The number of files that where cancelled.
 		Cancelled int `json:"cancelled"`
@@ -7511,7 +7550,7 @@ type VectorStoreFileObject struct {
 	ChunkingStrategy *VectorStoreFileObject_ChunkingStrategy `json:"chunking_strategy,omitempty"`
 
 	// CreatedAt The Unix timestamp (in seconds) for when the vector store file was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
@@ -7532,7 +7571,7 @@ type VectorStoreFileObject struct {
 	Status VectorStoreFileObjectStatus `json:"status"`
 
 	// UsageBytes The total vector store usage in bytes. Note that this may be different from the original file size.
-	UsageBytes int `json:"usage_bytes"`
+	UsageBytes int64 `json:"usage_bytes"`
 
 	// VectorStoreId The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 	VectorStoreId string `json:"vector_store_id"`
@@ -7555,13 +7594,13 @@ type VectorStoreFileObjectStatus string
 // VectorStoreObject A vector store is a collection of processed files can be used by the `file_search` tool.
 type VectorStoreObject struct {
 	// CreatedAt The Unix timestamp (in seconds) for when the vector store was created.
-	CreatedAt int `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 
 	// ExpiresAfter The expiration policy for a vector store.
 	ExpiresAfter *VectorStoreExpirationAfter `json:"expires_after,omitempty"`
 
 	// ExpiresAt The Unix timestamp (in seconds) for when the vector store will expire.
-	ExpiresAt  *int `json:"expires_at"`
+	ExpiresAt  *int64 `json:"expires_at"`
 	FileCounts struct {
 		// Cancelled The number of files that were cancelled.
 		Cancelled int `json:"cancelled"`
@@ -7583,7 +7622,7 @@ type VectorStoreObject struct {
 	Id string `json:"id"`
 
 	// LastActiveAt The Unix timestamp (in seconds) for when the vector store was last active.
-	LastActiveAt *int `json:"last_active_at"`
+	LastActiveAt *int64 `json:"last_active_at"`
 
 	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
 	Metadata *map[string]interface{} `json:"metadata"`
@@ -7598,7 +7637,7 @@ type VectorStoreObject struct {
 	Status VectorStoreObjectStatus `json:"status"`
 
 	// UsageBytes The total number of bytes used by the files in the vector store.
-	UsageBytes int `json:"usage_bytes"`
+	UsageBytes int64 `json:"usage_bytes"`
 }
 
 // VectorStoreObjectObject The object type, which is always `vector_store`.
@@ -8466,6 +8505,68 @@ type CreateVectorStoreFileBatchJSONRequestBody = CreateVectorStoreFileBatchReque
 
 // CreateVectorStoreFileJSONRequestBody defines body for CreateVectorStoreFile for application/json ContentType.
 type CreateVectorStoreFileJSONRequestBody = CreateVectorStoreFileRequest
+
+// AsAssistantsApiResponseFormatOption returns the union data inside the AssistantObject_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t AssistantObject_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the AssistantObject_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *AssistantObject_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the AssistantObject_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *AssistantObject_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAssistantObjectResponseFormat1 returns the union data inside the AssistantObject_ResponseFormat as a AssistantObjectResponseFormat1
+func (t AssistantObject_ResponseFormat) AsAssistantObjectResponseFormat1() (AssistantObjectResponseFormat1, error) {
+	var body AssistantObjectResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantObjectResponseFormat1 overwrites any union data inside the AssistantObject_ResponseFormat as the provided AssistantObjectResponseFormat1
+func (t *AssistantObject_ResponseFormat) FromAssistantObjectResponseFormat1(v AssistantObjectResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantObjectResponseFormat1 performs a merge with any union data inside the AssistantObject_ResponseFormat, using the provided AssistantObjectResponseFormat1
+func (t *AssistantObject_ResponseFormat) MergeAssistantObjectResponseFormat1(v AssistantObjectResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AssistantObject_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AssistantObject_ResponseFormat) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // AsAssistantToolsCode returns the union data inside the AssistantObject_Tools_Item as a AssistantToolsCode
 func (t AssistantObject_Tools_Item) AsAssistantToolsCode() (AssistantToolsCode, error) {
@@ -9611,6 +9712,68 @@ func (t CreateAssistantRequest_Model) MarshalJSON() ([]byte, error) {
 }
 
 func (t *CreateAssistantRequest_Model) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAssistantsApiResponseFormatOption returns the union data inside the CreateAssistantRequest_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t CreateAssistantRequest_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the CreateAssistantRequest_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *CreateAssistantRequest_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the CreateAssistantRequest_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *CreateAssistantRequest_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateAssistantRequestResponseFormat1 returns the union data inside the CreateAssistantRequest_ResponseFormat as a CreateAssistantRequestResponseFormat1
+func (t CreateAssistantRequest_ResponseFormat) AsCreateAssistantRequestResponseFormat1() (CreateAssistantRequestResponseFormat1, error) {
+	var body CreateAssistantRequestResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateAssistantRequestResponseFormat1 overwrites any union data inside the CreateAssistantRequest_ResponseFormat as the provided CreateAssistantRequestResponseFormat1
+func (t *CreateAssistantRequest_ResponseFormat) FromCreateAssistantRequestResponseFormat1(v CreateAssistantRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateAssistantRequestResponseFormat1 performs a merge with any union data inside the CreateAssistantRequest_ResponseFormat, using the provided CreateAssistantRequestResponseFormat1
+func (t *CreateAssistantRequest_ResponseFormat) MergeCreateAssistantRequestResponseFormat1(v CreateAssistantRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateAssistantRequest_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateAssistantRequest_ResponseFormat) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -11555,6 +11718,130 @@ func (t *CreateRunRequest_Model) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsAssistantsApiResponseFormatOption returns the union data inside the CreateRunRequest_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t CreateRunRequest_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the CreateRunRequest_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *CreateRunRequest_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the CreateRunRequest_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *CreateRunRequest_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateRunRequestResponseFormat1 returns the union data inside the CreateRunRequest_ResponseFormat as a CreateRunRequestResponseFormat1
+func (t CreateRunRequest_ResponseFormat) AsCreateRunRequestResponseFormat1() (CreateRunRequestResponseFormat1, error) {
+	var body CreateRunRequestResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateRunRequestResponseFormat1 overwrites any union data inside the CreateRunRequest_ResponseFormat as the provided CreateRunRequestResponseFormat1
+func (t *CreateRunRequest_ResponseFormat) FromCreateRunRequestResponseFormat1(v CreateRunRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateRunRequestResponseFormat1 performs a merge with any union data inside the CreateRunRequest_ResponseFormat, using the provided CreateRunRequestResponseFormat1
+func (t *CreateRunRequest_ResponseFormat) MergeCreateRunRequestResponseFormat1(v CreateRunRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateRunRequest_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateRunRequest_ResponseFormat) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAssistantsApiToolChoiceOption returns the union data inside the CreateRunRequest_ToolChoice as a AssistantsApiToolChoiceOption
+func (t CreateRunRequest_ToolChoice) AsAssistantsApiToolChoiceOption() (AssistantsApiToolChoiceOption, error) {
+	var body AssistantsApiToolChoiceOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiToolChoiceOption overwrites any union data inside the CreateRunRequest_ToolChoice as the provided AssistantsApiToolChoiceOption
+func (t *CreateRunRequest_ToolChoice) FromAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiToolChoiceOption performs a merge with any union data inside the CreateRunRequest_ToolChoice, using the provided AssistantsApiToolChoiceOption
+func (t *CreateRunRequest_ToolChoice) MergeAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateRunRequestToolChoice1 returns the union data inside the CreateRunRequest_ToolChoice as a CreateRunRequestToolChoice1
+func (t CreateRunRequest_ToolChoice) AsCreateRunRequestToolChoice1() (CreateRunRequestToolChoice1, error) {
+	var body CreateRunRequestToolChoice1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateRunRequestToolChoice1 overwrites any union data inside the CreateRunRequest_ToolChoice as the provided CreateRunRequestToolChoice1
+func (t *CreateRunRequest_ToolChoice) FromCreateRunRequestToolChoice1(v CreateRunRequestToolChoice1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateRunRequestToolChoice1 performs a merge with any union data inside the CreateRunRequest_ToolChoice, using the provided CreateRunRequestToolChoice1
+func (t *CreateRunRequest_ToolChoice) MergeCreateRunRequestToolChoice1(v CreateRunRequestToolChoice1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateRunRequest_ToolChoice) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateRunRequest_ToolChoice) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsAssistantToolsCode returns the union data inside the CreateRunRequest_Tools_Item as a AssistantToolsCode
 func (t CreateRunRequest_Tools_Item) AsAssistantToolsCode() (AssistantToolsCode, error) {
 	var body AssistantToolsCode
@@ -11639,6 +11926,68 @@ func (t CreateRunRequest_Tools_Item) MarshalJSON() ([]byte, error) {
 }
 
 func (t *CreateRunRequest_Tools_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsTruncationObject returns the union data inside the CreateRunRequest_TruncationStrategy as a TruncationObject
+func (t CreateRunRequest_TruncationStrategy) AsTruncationObject() (TruncationObject, error) {
+	var body TruncationObject
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTruncationObject overwrites any union data inside the CreateRunRequest_TruncationStrategy as the provided TruncationObject
+func (t *CreateRunRequest_TruncationStrategy) FromTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTruncationObject performs a merge with any union data inside the CreateRunRequest_TruncationStrategy, using the provided TruncationObject
+func (t *CreateRunRequest_TruncationStrategy) MergeTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateRunRequestTruncationStrategy1 returns the union data inside the CreateRunRequest_TruncationStrategy as a CreateRunRequestTruncationStrategy1
+func (t CreateRunRequest_TruncationStrategy) AsCreateRunRequestTruncationStrategy1() (CreateRunRequestTruncationStrategy1, error) {
+	var body CreateRunRequestTruncationStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateRunRequestTruncationStrategy1 overwrites any union data inside the CreateRunRequest_TruncationStrategy as the provided CreateRunRequestTruncationStrategy1
+func (t *CreateRunRequest_TruncationStrategy) FromCreateRunRequestTruncationStrategy1(v CreateRunRequestTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateRunRequestTruncationStrategy1 performs a merge with any union data inside the CreateRunRequest_TruncationStrategy, using the provided CreateRunRequestTruncationStrategy1
+func (t *CreateRunRequest_TruncationStrategy) MergeCreateRunRequestTruncationStrategy1(v CreateRunRequestTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateRunRequest_TruncationStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateRunRequest_TruncationStrategy) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -11767,6 +12116,130 @@ func (t *CreateThreadAndRunRequest_Model) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsAssistantsApiResponseFormatOption returns the union data inside the CreateThreadAndRunRequest_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t CreateThreadAndRunRequest_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the CreateThreadAndRunRequest_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *CreateThreadAndRunRequest_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the CreateThreadAndRunRequest_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *CreateThreadAndRunRequest_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateThreadAndRunRequestResponseFormat1 returns the union data inside the CreateThreadAndRunRequest_ResponseFormat as a CreateThreadAndRunRequestResponseFormat1
+func (t CreateThreadAndRunRequest_ResponseFormat) AsCreateThreadAndRunRequestResponseFormat1() (CreateThreadAndRunRequestResponseFormat1, error) {
+	var body CreateThreadAndRunRequestResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateThreadAndRunRequestResponseFormat1 overwrites any union data inside the CreateThreadAndRunRequest_ResponseFormat as the provided CreateThreadAndRunRequestResponseFormat1
+func (t *CreateThreadAndRunRequest_ResponseFormat) FromCreateThreadAndRunRequestResponseFormat1(v CreateThreadAndRunRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateThreadAndRunRequestResponseFormat1 performs a merge with any union data inside the CreateThreadAndRunRequest_ResponseFormat, using the provided CreateThreadAndRunRequestResponseFormat1
+func (t *CreateThreadAndRunRequest_ResponseFormat) MergeCreateThreadAndRunRequestResponseFormat1(v CreateThreadAndRunRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateThreadAndRunRequest_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateThreadAndRunRequest_ResponseFormat) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAssistantsApiToolChoiceOption returns the union data inside the CreateThreadAndRunRequest_ToolChoice as a AssistantsApiToolChoiceOption
+func (t CreateThreadAndRunRequest_ToolChoice) AsAssistantsApiToolChoiceOption() (AssistantsApiToolChoiceOption, error) {
+	var body AssistantsApiToolChoiceOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiToolChoiceOption overwrites any union data inside the CreateThreadAndRunRequest_ToolChoice as the provided AssistantsApiToolChoiceOption
+func (t *CreateThreadAndRunRequest_ToolChoice) FromAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiToolChoiceOption performs a merge with any union data inside the CreateThreadAndRunRequest_ToolChoice, using the provided AssistantsApiToolChoiceOption
+func (t *CreateThreadAndRunRequest_ToolChoice) MergeAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateThreadAndRunRequestToolChoice1 returns the union data inside the CreateThreadAndRunRequest_ToolChoice as a CreateThreadAndRunRequestToolChoice1
+func (t CreateThreadAndRunRequest_ToolChoice) AsCreateThreadAndRunRequestToolChoice1() (CreateThreadAndRunRequestToolChoice1, error) {
+	var body CreateThreadAndRunRequestToolChoice1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateThreadAndRunRequestToolChoice1 overwrites any union data inside the CreateThreadAndRunRequest_ToolChoice as the provided CreateThreadAndRunRequestToolChoice1
+func (t *CreateThreadAndRunRequest_ToolChoice) FromCreateThreadAndRunRequestToolChoice1(v CreateThreadAndRunRequestToolChoice1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateThreadAndRunRequestToolChoice1 performs a merge with any union data inside the CreateThreadAndRunRequest_ToolChoice, using the provided CreateThreadAndRunRequestToolChoice1
+func (t *CreateThreadAndRunRequest_ToolChoice) MergeCreateThreadAndRunRequestToolChoice1(v CreateThreadAndRunRequestToolChoice1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateThreadAndRunRequest_ToolChoice) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateThreadAndRunRequest_ToolChoice) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsAssistantToolsCode returns the union data inside the CreateThreadAndRunRequest_Tools_Item as a AssistantToolsCode
 func (t CreateThreadAndRunRequest_Tools_Item) AsAssistantToolsCode() (AssistantToolsCode, error) {
 	var body AssistantToolsCode
@@ -11851,6 +12324,68 @@ func (t CreateThreadAndRunRequest_Tools_Item) MarshalJSON() ([]byte, error) {
 }
 
 func (t *CreateThreadAndRunRequest_Tools_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsTruncationObject returns the union data inside the CreateThreadAndRunRequest_TruncationStrategy as a TruncationObject
+func (t CreateThreadAndRunRequest_TruncationStrategy) AsTruncationObject() (TruncationObject, error) {
+	var body TruncationObject
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTruncationObject overwrites any union data inside the CreateThreadAndRunRequest_TruncationStrategy as the provided TruncationObject
+func (t *CreateThreadAndRunRequest_TruncationStrategy) FromTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTruncationObject performs a merge with any union data inside the CreateThreadAndRunRequest_TruncationStrategy, using the provided TruncationObject
+func (t *CreateThreadAndRunRequest_TruncationStrategy) MergeTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateThreadAndRunRequestTruncationStrategy1 returns the union data inside the CreateThreadAndRunRequest_TruncationStrategy as a CreateThreadAndRunRequestTruncationStrategy1
+func (t CreateThreadAndRunRequest_TruncationStrategy) AsCreateThreadAndRunRequestTruncationStrategy1() (CreateThreadAndRunRequestTruncationStrategy1, error) {
+	var body CreateThreadAndRunRequestTruncationStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateThreadAndRunRequestTruncationStrategy1 overwrites any union data inside the CreateThreadAndRunRequest_TruncationStrategy as the provided CreateThreadAndRunRequestTruncationStrategy1
+func (t *CreateThreadAndRunRequest_TruncationStrategy) FromCreateThreadAndRunRequestTruncationStrategy1(v CreateThreadAndRunRequestTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateThreadAndRunRequestTruncationStrategy1 performs a merge with any union data inside the CreateThreadAndRunRequest_TruncationStrategy, using the provided CreateThreadAndRunRequestTruncationStrategy1
+func (t *CreateThreadAndRunRequest_TruncationStrategy) MergeCreateThreadAndRunRequestTruncationStrategy1(v CreateThreadAndRunRequestTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateThreadAndRunRequest_TruncationStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateThreadAndRunRequest_TruncationStrategy) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -13143,6 +13678,68 @@ func (t *ModifyAssistantRequest_Model) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsAssistantsApiResponseFormatOption returns the union data inside the ModifyAssistantRequest_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t ModifyAssistantRequest_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the ModifyAssistantRequest_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *ModifyAssistantRequest_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the ModifyAssistantRequest_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *ModifyAssistantRequest_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsModifyAssistantRequestResponseFormat1 returns the union data inside the ModifyAssistantRequest_ResponseFormat as a ModifyAssistantRequestResponseFormat1
+func (t ModifyAssistantRequest_ResponseFormat) AsModifyAssistantRequestResponseFormat1() (ModifyAssistantRequestResponseFormat1, error) {
+	var body ModifyAssistantRequestResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromModifyAssistantRequestResponseFormat1 overwrites any union data inside the ModifyAssistantRequest_ResponseFormat as the provided ModifyAssistantRequestResponseFormat1
+func (t *ModifyAssistantRequest_ResponseFormat) FromModifyAssistantRequestResponseFormat1(v ModifyAssistantRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeModifyAssistantRequestResponseFormat1 performs a merge with any union data inside the ModifyAssistantRequest_ResponseFormat, using the provided ModifyAssistantRequestResponseFormat1
+func (t *ModifyAssistantRequest_ResponseFormat) MergeModifyAssistantRequestResponseFormat1(v ModifyAssistantRequestResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ModifyAssistantRequest_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ModifyAssistantRequest_ResponseFormat) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsAssistantToolsCode returns the union data inside the ModifyAssistantRequest_Tools_Item as a AssistantToolsCode
 func (t ModifyAssistantRequest_Tools_Item) AsAssistantToolsCode() (AssistantToolsCode, error) {
 	var body AssistantToolsCode
@@ -13417,6 +14014,130 @@ func (t *RealtimeSessionCreateResponse_MaxResponseOutputTokens) UnmarshalJSON(b 
 	return err
 }
 
+// AsAssistantsApiResponseFormatOption returns the union data inside the RunObject_ResponseFormat as a AssistantsApiResponseFormatOption
+func (t RunObject_ResponseFormat) AsAssistantsApiResponseFormatOption() (AssistantsApiResponseFormatOption, error) {
+	var body AssistantsApiResponseFormatOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiResponseFormatOption overwrites any union data inside the RunObject_ResponseFormat as the provided AssistantsApiResponseFormatOption
+func (t *RunObject_ResponseFormat) FromAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiResponseFormatOption performs a merge with any union data inside the RunObject_ResponseFormat, using the provided AssistantsApiResponseFormatOption
+func (t *RunObject_ResponseFormat) MergeAssistantsApiResponseFormatOption(v AssistantsApiResponseFormatOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRunObjectResponseFormat1 returns the union data inside the RunObject_ResponseFormat as a RunObjectResponseFormat1
+func (t RunObject_ResponseFormat) AsRunObjectResponseFormat1() (RunObjectResponseFormat1, error) {
+	var body RunObjectResponseFormat1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRunObjectResponseFormat1 overwrites any union data inside the RunObject_ResponseFormat as the provided RunObjectResponseFormat1
+func (t *RunObject_ResponseFormat) FromRunObjectResponseFormat1(v RunObjectResponseFormat1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRunObjectResponseFormat1 performs a merge with any union data inside the RunObject_ResponseFormat, using the provided RunObjectResponseFormat1
+func (t *RunObject_ResponseFormat) MergeRunObjectResponseFormat1(v RunObjectResponseFormat1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RunObject_ResponseFormat) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RunObject_ResponseFormat) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAssistantsApiToolChoiceOption returns the union data inside the RunObject_ToolChoice as a AssistantsApiToolChoiceOption
+func (t RunObject_ToolChoice) AsAssistantsApiToolChoiceOption() (AssistantsApiToolChoiceOption, error) {
+	var body AssistantsApiToolChoiceOption
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantsApiToolChoiceOption overwrites any union data inside the RunObject_ToolChoice as the provided AssistantsApiToolChoiceOption
+func (t *RunObject_ToolChoice) FromAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantsApiToolChoiceOption performs a merge with any union data inside the RunObject_ToolChoice, using the provided AssistantsApiToolChoiceOption
+func (t *RunObject_ToolChoice) MergeAssistantsApiToolChoiceOption(v AssistantsApiToolChoiceOption) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRunObjectToolChoice1 returns the union data inside the RunObject_ToolChoice as a RunObjectToolChoice1
+func (t RunObject_ToolChoice) AsRunObjectToolChoice1() (RunObjectToolChoice1, error) {
+	var body RunObjectToolChoice1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRunObjectToolChoice1 overwrites any union data inside the RunObject_ToolChoice as the provided RunObjectToolChoice1
+func (t *RunObject_ToolChoice) FromRunObjectToolChoice1(v RunObjectToolChoice1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRunObjectToolChoice1 performs a merge with any union data inside the RunObject_ToolChoice, using the provided RunObjectToolChoice1
+func (t *RunObject_ToolChoice) MergeRunObjectToolChoice1(v RunObjectToolChoice1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RunObject_ToolChoice) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RunObject_ToolChoice) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsAssistantToolsCode returns the union data inside the RunObject_Tools_Item as a AssistantToolsCode
 func (t RunObject_Tools_Item) AsAssistantToolsCode() (AssistantToolsCode, error) {
 	var body AssistantToolsCode
@@ -13501,6 +14222,68 @@ func (t RunObject_Tools_Item) MarshalJSON() ([]byte, error) {
 }
 
 func (t *RunObject_Tools_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsTruncationObject returns the union data inside the RunObject_TruncationStrategy as a TruncationObject
+func (t RunObject_TruncationStrategy) AsTruncationObject() (TruncationObject, error) {
+	var body TruncationObject
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTruncationObject overwrites any union data inside the RunObject_TruncationStrategy as the provided TruncationObject
+func (t *RunObject_TruncationStrategy) FromTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTruncationObject performs a merge with any union data inside the RunObject_TruncationStrategy, using the provided TruncationObject
+func (t *RunObject_TruncationStrategy) MergeTruncationObject(v TruncationObject) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRunObjectTruncationStrategy1 returns the union data inside the RunObject_TruncationStrategy as a RunObjectTruncationStrategy1
+func (t RunObject_TruncationStrategy) AsRunObjectTruncationStrategy1() (RunObjectTruncationStrategy1, error) {
+	var body RunObjectTruncationStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRunObjectTruncationStrategy1 overwrites any union data inside the RunObject_TruncationStrategy as the provided RunObjectTruncationStrategy1
+func (t *RunObject_TruncationStrategy) FromRunObjectTruncationStrategy1(v RunObjectTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRunObjectTruncationStrategy1 performs a merge with any union data inside the RunObject_TruncationStrategy, using the provided RunObjectTruncationStrategy1
+func (t *RunObject_TruncationStrategy) MergeRunObjectTruncationStrategy1(v RunObjectTruncationStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RunObject_TruncationStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RunObject_TruncationStrategy) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -13713,6 +14496,130 @@ func (t RunStepObject_StepDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (t *RunStepObject_StepDetails) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsVectorStoreExpirationAfter returns the union data inside the UpdateVectorStoreRequest_ExpiresAfter as a VectorStoreExpirationAfter
+func (t UpdateVectorStoreRequest_ExpiresAfter) AsVectorStoreExpirationAfter() (VectorStoreExpirationAfter, error) {
+	var body VectorStoreExpirationAfter
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromVectorStoreExpirationAfter overwrites any union data inside the UpdateVectorStoreRequest_ExpiresAfter as the provided VectorStoreExpirationAfter
+func (t *UpdateVectorStoreRequest_ExpiresAfter) FromVectorStoreExpirationAfter(v VectorStoreExpirationAfter) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeVectorStoreExpirationAfter performs a merge with any union data inside the UpdateVectorStoreRequest_ExpiresAfter, using the provided VectorStoreExpirationAfter
+func (t *UpdateVectorStoreRequest_ExpiresAfter) MergeVectorStoreExpirationAfter(v VectorStoreExpirationAfter) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUpdateVectorStoreRequestExpiresAfter1 returns the union data inside the UpdateVectorStoreRequest_ExpiresAfter as a UpdateVectorStoreRequestExpiresAfter1
+func (t UpdateVectorStoreRequest_ExpiresAfter) AsUpdateVectorStoreRequestExpiresAfter1() (UpdateVectorStoreRequestExpiresAfter1, error) {
+	var body UpdateVectorStoreRequestExpiresAfter1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUpdateVectorStoreRequestExpiresAfter1 overwrites any union data inside the UpdateVectorStoreRequest_ExpiresAfter as the provided UpdateVectorStoreRequestExpiresAfter1
+func (t *UpdateVectorStoreRequest_ExpiresAfter) FromUpdateVectorStoreRequestExpiresAfter1(v UpdateVectorStoreRequestExpiresAfter1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUpdateVectorStoreRequestExpiresAfter1 performs a merge with any union data inside the UpdateVectorStoreRequest_ExpiresAfter, using the provided UpdateVectorStoreRequestExpiresAfter1
+func (t *UpdateVectorStoreRequest_ExpiresAfter) MergeUpdateVectorStoreRequestExpiresAfter1(v UpdateVectorStoreRequestExpiresAfter1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UpdateVectorStoreRequest_ExpiresAfter) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UpdateVectorStoreRequest_ExpiresAfter) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsOpenAIFile returns the union data inside the Upload_File as a OpenAIFile
+func (t Upload_File) AsOpenAIFile() (OpenAIFile, error) {
+	var body OpenAIFile
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromOpenAIFile overwrites any union data inside the Upload_File as the provided OpenAIFile
+func (t *Upload_File) FromOpenAIFile(v OpenAIFile) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeOpenAIFile performs a merge with any union data inside the Upload_File, using the provided OpenAIFile
+func (t *Upload_File) MergeOpenAIFile(v OpenAIFile) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUploadFile1 returns the union data inside the Upload_File as a UploadFile1
+func (t Upload_File) AsUploadFile1() (UploadFile1, error) {
+	var body UploadFile1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUploadFile1 overwrites any union data inside the Upload_File as the provided UploadFile1
+func (t *Upload_File) FromUploadFile1(v UploadFile1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUploadFile1 performs a merge with any union data inside the Upload_File, using the provided UploadFile1
+func (t *Upload_File) MergeUploadFile1(v UploadFile1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Upload_File) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Upload_File) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }

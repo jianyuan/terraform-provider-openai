@@ -3813,11 +3813,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiKeyList'
-      security:
-      - bearer_identity_edge:
-        - key.secret
-        - api.management.read
-      - basic_identity_edge: []
       x-oaiMeta:
         name: List admin API keys
         group: administration
@@ -3878,11 +3873,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminApiKey'
-      security:
-      - bearer_identity_edge:
-        - key.secret
-        - api.management.write
-      - basic_identity_edge: []
       x-oaiMeta:
         name: Create admin API key
         group: administration
@@ -3932,11 +3922,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdminApiKey'
-      security:
-      - bearer_identity_edge:
-        - key.secret
-        - api.management.read
-      - basic_identity_edge: []
       x-oaiMeta:
         name: Retrieve admin API key
         group: administration
@@ -3991,11 +3976,6 @@ paths:
                   deleted:
                     type: boolean
                     example: true
-      security:
-      - bearer_identity_edge:
-        - key.secret
-        - api.management.write
-      - basic_identity_edge: []
       x-oaiMeta:
         name: Delete admin API key
         group: administration
@@ -10630,6 +10610,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the assistant was created.
           type: integer
+          format: int64
         name:
           description: |
             The name of the assistant. The maximum length is 256 characters.
@@ -10718,8 +10699,9 @@ components:
 
             We generally recommend altering this or temperature but not both.
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
       required:
       - id
       - object
@@ -10929,6 +10911,7 @@ components:
         effective_at:
           type: integer
           description: The Unix timestamp (in seconds) of the event.
+          format: int64
         project:
           type: object
           description: The project that the action was scoped to. Absent for actions not scoped to projects.
@@ -11245,10 +11228,8 @@ components:
           - session
           - api_key
         session:
-          type: object
           $ref: '#/components/schemas/AuditLogActorSession'
         api_key:
-          type: object
           $ref: '#/components/schemas/AuditLogActorApiKey'
     AuditLogActorApiKey:
       type: object
@@ -11400,30 +11381,39 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch was created.
+          format: int64
         in_progress_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch started processing.
+          format: int64
         expires_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch will expire.
+          format: int64
         finalizing_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch started finalizing.
+          format: int64
         completed_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch was completed.
+          format: int64
         failed_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch failed.
+          format: int64
         expired_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch expired.
+          format: int64
         cancelling_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch started cancelling.
+          format: int64
         cancelled_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the batch was cancelled.
+          format: int64
         request_counts:
           type: object
           properties:
@@ -11606,6 +11596,7 @@ components:
       properties:
         index:
           type: integer
+          format: int64
         id:
           type: string
           description: The ID of the tool call.
@@ -12237,12 +12228,15 @@ components:
         completion_tokens:
           type: integer
           description: Number of tokens in the generated completion.
+          format: int64
         prompt_tokens:
           type: integer
           description: Number of tokens in the prompt.
+          format: int64
         total_tokens:
           type: integer
           description: Total number of tokens used in the request (prompt + completion).
+          format: int64
         completion_tokens_details:
           type: object
           description: Breakdown of tokens used in a completion.
@@ -12516,8 +12510,9 @@ components:
 
             We generally recommend altering this or temperature but not both.
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
       required:
       - model
     CreateChatCompletionFunctionResponse:
@@ -12554,6 +12549,7 @@ components:
         created:
           type: integer
           description: The Unix timestamp (in seconds) of when the chat completion was created.
+          format: int64
         model:
           type: string
           description: The model used for the chat completion.
@@ -12773,6 +12769,7 @@ components:
           minimum: 0
           maximum: 20
           nullable: true
+          format: int64
         max_tokens:
           description: |
             The maximum number of [tokens](/tokenizer) that can be generated in the
@@ -12784,11 +12781,13 @@ components:
           type: integer
           nullable: true
           deprecated: true
+          format: int64
         max_completion_tokens:
           description: |
             An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
           type: integer
           nullable: true
+          format: int64
         false:
           type: integer
           minimum: 1
@@ -12797,6 +12796,7 @@ components:
           example: 1
           nullable: true
           description: How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs.
+          format: int64
         modalities:
           $ref: '#/components/schemas/ChatCompletionModalities'
         prediction:
@@ -13060,6 +13060,7 @@ components:
         created:
           type: integer
           description: The Unix timestamp (in seconds) of when the chat completion was created.
+          format: int64
         model:
           type: string
           description: The model used for the chat completion.
@@ -13188,6 +13189,7 @@ components:
         created:
           type: integer
           description: The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp.
+          format: int64
         model:
           type: string
           description: The model to generate the completion.
@@ -13302,6 +13304,7 @@ components:
             When used with `n`, `best_of` controls the number of candidate completions and `n` specifies how many to return – `best_of` must be greater than `n`.
 
             **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
+          format: int64
         echo:
           type: boolean
           default: false
@@ -13341,6 +13344,7 @@ components:
             Include the log probabilities on the `logprobs` most likely output tokens, as well the chosen tokens. For example, if `logprobs` is 5, the API will return a list of the 5 most likely tokens. The API will always return the `logprob` of the sampled token, so there may be up to `logprobs+1` elements in the response.
 
             The maximum value for `logprobs` is 5.
+          format: int64
         max_tokens:
           type: integer
           minimum: 0
@@ -13351,6 +13355,7 @@ components:
             The maximum number of [tokens](/tokenizer) that can be generated in the completion.
 
             The token count of your prompt plus `max_tokens` cannot exceed the model's context length. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
+          format: int64
         false:
           type: integer
           minimum: 1
@@ -13362,6 +13367,7 @@ components:
             How many completions to generate for each prompt.
 
             **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
+          format: int64
         presence_penalty:
           type: number
           default: 0
@@ -13502,6 +13508,7 @@ components:
         created:
           type: integer
           description: The Unix timestamp (in seconds) of when the completion was created.
+          format: int64
         model:
           type: string
           description: The model used for completion.
@@ -13616,6 +13623,7 @@ components:
             The number of dimensions the resulting output embeddings should have. Only supported in `text-embedding-3` and later models.
           type: integer
           minimum: 1
+          format: int64
         user:
           type: string
           example: user-1234
@@ -13843,6 +13851,7 @@ components:
           minimum: 0
           maximum: 2147483647
           example: 42
+          format: int64
         method:
           $ref: '#/components/schemas/FineTuneMethod'
       required:
@@ -13883,6 +13892,7 @@ components:
           example: 1
           nullable: true
           description: The number of images to generate. Must be between 1 and 10.
+          format: int64
         size:
           type: string
           enum:
@@ -13937,6 +13947,7 @@ components:
           example: 1
           nullable: true
           description: The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
+          format: int64
         quality:
           type: string
           enum:
@@ -14009,6 +14020,7 @@ components:
           example: 1
           nullable: true
           description: The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
+          format: int64
         response_format:
           type: string
           enum:
@@ -14631,23 +14643,28 @@ components:
           description: |
             The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
           minimum: 256
+          format: int64
         max_completion_tokens:
           type: integer
           nullable: true
           description: |
             The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
           minimum: 256
+          format: int64
         truncation_strategy:
-          $ref: '#/components/schemas/TruncationObject'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TruncationObject'
+          - nullable: true
         tool_choice:
-          $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
+          - nullable: true
         parallel_tool_calls:
           $ref: '#/components/schemas/ParallelToolCalls'
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
       required:
       - assistant_id
     CreateSpeechRequest:
@@ -14711,7 +14728,6 @@ components:
           type: string
         thread:
           $ref: '#/components/schemas/CreateThreadRequest'
-          description: If no thread is provided, an empty thread will be created.
         model:
           description: The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
           example: gpt-4o
@@ -14823,27 +14839,33 @@ components:
           description: |
             The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
           minimum: 256
+          format: int64
         max_completion_tokens:
           type: integer
           nullable: true
           description: |
             The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
           minimum: 256
+          format: int64
         truncation_strategy:
-          $ref: '#/components/schemas/TruncationObject'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TruncationObject'
+          - nullable: true
         tool_choice:
-          $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
+          - nullable: true
         parallel_tool_calls:
           $ref: '#/components/schemas/ParallelToolCalls'
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
       required:
       - assistant_id
     CreateThreadRequest:
       type: object
+      description: "Options to create a new thread. If no thread is provided when running a \nrequest, an empty thread will be created.\n"
       additionalProperties: false
       properties:
         messages:
@@ -15165,6 +15187,7 @@ components:
           description: |
             The number of bytes in the file you are uploading.
           type: integer
+          format: int64
         mime_type:
           description: |
             The MIME type of the file.
@@ -15235,6 +15258,7 @@ components:
       properties:
         code:
           type: integer
+          format: int64
         message:
           type: string
       required:
@@ -15376,6 +15400,7 @@ components:
         index:
           type: integer
           description: The index of the embedding in the list of embeddings.
+          format: int64
         embedding:
           type: array
           description: |
@@ -15641,10 +15666,8 @@ components:
           - supervised
           - dpo
         supervised:
-          type: object
           $ref: '#/components/schemas/FineTuneSupervisedMethod'
         dpo:
-          type: object
           $ref: '#/components/schemas/FineTuneDPOMethod'
     FineTunePreferenceRequestInput:
       type: object
@@ -15811,6 +15834,7 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+          format: int64
         error:
           type: object
           nullable: true
@@ -15838,6 +15862,7 @@ components:
           type: integer
           nullable: true
           description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+          format: int64
         hyperparameters:
           type: object
           description: The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
@@ -15913,6 +15938,7 @@ components:
           type: integer
           nullable: true
           description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
+          format: int64
         training_file:
           type: string
           description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
@@ -15932,10 +15958,12 @@ components:
         seed:
           type: integer
           description: The seed used for the fine-tuning job.
+          format: int64
         estimated_finish:
           type: integer
           nullable: true
           description: The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+          format: int64
         method:
           $ref: '#/components/schemas/FineTuneMethod'
       required:
@@ -16003,12 +16031,14 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the checkpoint was created.
+          format: int64
         fine_tuned_model_checkpoint:
           type: string
           description: The name of the fine-tuned checkpoint model that is created.
         step_number:
           type: integer
           description: The step number that the checkpoint was created at.
+          format: int64
         metrics:
           type: object
           description: Metrics at the step number during the fine-tuning job.
@@ -16080,6 +16110,7 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+          format: int64
         level:
           type: string
           description: The log level of the event.
@@ -16163,6 +16194,7 @@ components:
       properties:
         created:
           type: integer
+          format: int64
         data:
           type: array
           items:
@@ -16805,9 +16837,11 @@ components:
         start_index:
           type: integer
           minimum: 0
+          format: int64
         end_index:
           type: integer
           minimum: 0
+          format: int64
       required:
       - type
       - text
@@ -16839,9 +16873,11 @@ components:
         start_index:
           type: integer
           minimum: 0
+          format: int64
         end_index:
           type: integer
           minimum: 0
+          format: int64
       required:
       - type
       - text
@@ -16886,6 +16922,7 @@ components:
         index:
           type: integer
           description: The index of the content part in the message.
+          format: int64
         type:
           description: Always `image_file`.
           type: string
@@ -16917,6 +16954,7 @@ components:
         index:
           type: integer
           description: The index of the content part in the message.
+          format: int64
         type:
           description: Always `image_url`.
           type: string
@@ -16948,6 +16986,7 @@ components:
         index:
           type: integer
           description: The index of the refusal part in the message.
+          format: int64
         type:
           description: Always `refusal`.
           type: string
@@ -16967,6 +17006,7 @@ components:
         index:
           type: integer
           description: The index of the annotation in the text content part.
+          format: int64
         type:
           description: Always `file_citation`.
           type: string
@@ -16988,9 +17028,11 @@ components:
         start_index:
           type: integer
           minimum: 0
+          format: int64
         end_index:
           type: integer
           minimum: 0
+          format: int64
       required:
       - index
       - type
@@ -17002,6 +17044,7 @@ components:
         index:
           type: integer
           description: The index of the annotation in the text content part.
+          format: int64
         type:
           description: Always `file_path`.
           type: string
@@ -17020,9 +17063,11 @@ components:
         start_index:
           type: integer
           minimum: 0
+          format: int64
         end_index:
           type: integer
           minimum: 0
+          format: int64
       required:
       - index
       - type
@@ -17034,6 +17079,7 @@ components:
         index:
           type: integer
           description: The index of the content part in the message.
+          format: int64
         type:
           description: Always `text`.
           type: string
@@ -17129,6 +17175,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the message was created.
           type: integer
+          format: int64
         thread_id:
           description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
           type: string
@@ -17159,10 +17206,12 @@ components:
           description: The Unix timestamp (in seconds) for when the message was completed.
           type: integer
           nullable: true
+          format: int64
         incomplete_at:
           description: The Unix timestamp (in seconds) for when the message was marked as incomplete.
           type: integer
           nullable: true
+          format: int64
         role:
           description: The entity that produced the message. One of `user` or `assistant`.
           type: string
@@ -17354,6 +17403,7 @@ components:
         created:
           type: integer
           description: The Unix timestamp (in seconds) when the model was created.
+          format: int64
         object:
           type: string
           description: The object type, which is always "model".
@@ -17470,8 +17520,9 @@ components:
 
             We generally recommend altering this or temperature but not both.
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
     ModifyMessageRequest:
       type: object
       additionalProperties: false
@@ -17539,9 +17590,11 @@ components:
         bytes:
           type: integer
           description: The size of the file, in bytes.
+          format: int64
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the file was created.
+          format: int64
         filename:
           type: string
           description: The name of the file.
@@ -17714,6 +17767,7 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the API key was created
+          format: int64
         id:
           type: string
           description: The identifier, which can be referenced in API endpoints
@@ -17995,6 +18049,7 @@ components:
           type: string
         created_at:
           type: integer
+          format: int64
         id:
           type: string
       required:
@@ -18117,6 +18172,7 @@ components:
         added_at:
           type: integer
           description: The Unix timestamp (in seconds) of when the project was added.
+          format: int64
       required:
       - object
       - id
@@ -18286,9 +18342,11 @@ components:
         content_index:
           type: integer
           description: The index of the content part to truncate. Set this to 0.
+          format: int64
         audio_end_ms:
           type: integer
           description: "Inclusive duration up to which audio is truncated, in milliseconds. If \nthe audio_end_ms is greater than the actual audio duration, the server \nwill respond with an error.\n"
+          format: int64
       required:
       - type
       - item_id
@@ -18937,6 +18995,7 @@ components:
         content_index:
           type: integer
           description: The index of the content part containing the audio.
+          format: int64
         transcript:
           type: string
           description: The transcribed text.
@@ -18978,6 +19037,7 @@ components:
         content_index:
           type: integer
           description: The index of the content part containing the audio.
+          format: int64
         error:
           type: object
           description: Details of the transcription error.
@@ -19035,10 +19095,12 @@ components:
         content_index:
           type: integer
           description: The index of the content part that was truncated.
+          format: int64
         audio_end_ms:
           type: integer
           description: |
             The duration up to which the audio was truncated, in milliseconds.
+          format: int64
       required:
       - event_id
       - type
@@ -19190,6 +19252,7 @@ components:
         audio_start_ms:
           type: integer
           description: "Milliseconds from the start of all audio written to the buffer during the \nsession when speech was first detected. This will correspond to the \nbeginning of audio sent to the model, and thus includes the \n`prefix_padding_ms` configured in the Session.\n"
+          format: int64
         item_id:
           type: string
           description: |
@@ -19225,6 +19288,7 @@ components:
         audio_end_ms:
           type: integer
           description: "Milliseconds since the session started when speech stopped. This will \ncorrespond to the end of audio sent to the model, and thus includes the \n`min_silence_duration_ms` configured in the Session.\n"
+          format: int64
         item_id:
           type: string
           description: The ID of the user message item that will be created.
@@ -19326,9 +19390,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         delta:
           type: string
           description: Base64-encoded audio data delta.
@@ -19377,9 +19443,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
       required:
       - event_id
       - type
@@ -19422,9 +19490,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         delta:
           type: string
           description: The transcript delta.
@@ -19474,9 +19544,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         transcript:
           type: string
           description: The final transcript of the audio.
@@ -19525,9 +19597,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         part:
           type: object
           description: The content part that was added.
@@ -19595,9 +19669,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         part:
           type: object
           description: The content part that is done.
@@ -19768,6 +19844,7 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         call_id:
           type: string
           description: The ID of the function call.
@@ -19820,6 +19897,7 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         call_id:
           type: string
           description: The ID of the function call.
@@ -19866,6 +19944,7 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the Response.
+          format: int64
         item:
           $ref: '#/components/schemas/RealtimeConversationItem'
       required:
@@ -19911,6 +19990,7 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the Response.
+          format: int64
         item:
           $ref: '#/components/schemas/RealtimeConversationItem'
       required:
@@ -19964,9 +20044,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         delta:
           type: string
           description: The text delta.
@@ -20015,9 +20097,11 @@ components:
         output_index:
           type: integer
           description: The index of the output item in the response.
+          format: int64
         content_index:
           type: integer
           description: The index of the content part in the item's content array.
+          format: int64
         text:
           type: string
           description: The final text content.
@@ -20571,12 +20655,15 @@ components:
         completion_tokens:
           type: integer
           description: Number of completion tokens used over the course of the run.
+          format: int64
         prompt_tokens:
           type: integer
           description: Number of prompt tokens used over the course of the run.
+          format: int64
         total_tokens:
           type: integer
           description: Total number of tokens used (prompt + completion).
+          format: int64
       required:
       - prompt_tokens
       - completion_tokens
@@ -20599,6 +20686,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the run was created.
           type: integer
+          format: int64
         thread_id:
           description: The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
           type: string
@@ -20665,22 +20753,27 @@ components:
           description: The Unix timestamp (in seconds) for when the run will expire.
           type: integer
           nullable: true
+          format: int64
         started_at:
           description: The Unix timestamp (in seconds) for when the run was started.
           type: integer
           nullable: true
+          format: int64
         cancelled_at:
           description: The Unix timestamp (in seconds) for when the run was cancelled.
           type: integer
           nullable: true
+          format: int64
         failed_at:
           description: The Unix timestamp (in seconds) for when the run failed.
           type: integer
           nullable: true
+          format: int64
         completed_at:
           description: The Unix timestamp (in seconds) for when the run was completed.
           type: integer
           nullable: true
+          format: int64
         incomplete_details:
           description: Details on why the run is incomplete. Will be `null` if the run is not incomplete.
           type: object
@@ -20731,23 +20824,28 @@ components:
           description: |
             The maximum number of prompt tokens specified to have been used over the course of the run.
           minimum: 256
+          format: int64
         max_completion_tokens:
           type: integer
           nullable: true
           description: |
             The maximum number of completion tokens specified to have been used over the course of the run.
           minimum: 256
+          format: int64
         truncation_strategy:
-          $ref: '#/components/schemas/TruncationObject'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TruncationObject'
+          - nullable: true
         tool_choice:
-          $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiToolChoiceOption'
+          - nullable: true
         parallel_tool_calls:
           $ref: '#/components/schemas/ParallelToolCalls'
         response_format:
-          $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AssistantsApiResponseFormatOption'
+          - nullable: true
       required:
       - id
       - object
@@ -20820,12 +20918,15 @@ components:
         completion_tokens:
           type: integer
           description: Number of completion tokens used over the course of the run step.
+          format: int64
         prompt_tokens:
           type: integer
           description: Number of prompt tokens used over the course of the run step.
+          format: int64
         total_tokens:
           type: integer
           description: Total number of tokens used (prompt + completion).
+          format: int64
       required:
       - prompt_tokens
       - completion_tokens
@@ -20909,6 +21010,7 @@ components:
         index:
           type: integer
           description: The index of the tool call in the tool calls array.
+          format: int64
         id:
           type: string
           description: The ID of the tool call.
@@ -20944,6 +21046,7 @@ components:
         index:
           type: integer
           description: The index of the output in the outputs array.
+          format: int64
         type:
           description: Always `image`.
           type: string
@@ -20967,6 +21070,7 @@ components:
         index:
           type: integer
           description: The index of the output in the outputs array.
+          format: int64
         type:
           description: Always `logs`.
           type: string
@@ -20986,6 +21090,7 @@ components:
         index:
           type: integer
           description: The index of the tool call in the tool calls array.
+          format: int64
         id:
           type: string
           description: The ID of the tool call object.
@@ -21010,6 +21115,7 @@ components:
         index:
           type: integer
           description: The index of the tool call in the tool calls array.
+          format: int64
         id:
           type: string
           description: The ID of the tool call object.
@@ -21317,6 +21423,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the run step was created.
           type: integer
+          format: int64
         assistant_id:
           description: The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
           type: string
@@ -21369,18 +21476,22 @@ components:
           description: The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
           type: integer
           nullable: true
+          format: int64
         cancelled_at:
           description: The Unix timestamp (in seconds) for when the run step was cancelled.
           type: integer
           nullable: true
+          format: int64
         failed_at:
           description: The Unix timestamp (in seconds) for when the run step failed.
           type: integer
           nullable: true
+          format: int64
         completed_at:
           description: The Unix timestamp (in seconds) for when the run step completed.
           type: integer
           nullable: true
+          format: int64
         metadata:
           description: |
             Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
@@ -21734,12 +21845,14 @@ components:
           minimum: 100
           maximum: 4096
           description: The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+          format: int64
         chunk_overlap_tokens:
           type: integer
           description: |
             The number of tokens that overlap between chunks. The default value is `400`.
 
             Note that the overlap must not exceed half of `max_chunk_size_tokens`.
+          format: int64
       required:
       - max_chunk_size_tokens
       - chunk_overlap_tokens
@@ -21815,6 +21928,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the thread was created.
           type: integer
+          format: int64
         tool_resources:
           type: object
           description: |
@@ -21890,9 +22004,11 @@ components:
         id:
           type: integer
           description: Unique identifier of the segment.
+          format: int64
         seek:
           type: integer
           description: Seek offset of the segment.
+          format: int64
         start:
           type: number
           format: float
@@ -21970,6 +22086,7 @@ components:
           description: The number of most recent messages from the thread when constructing the context for the run.
           minimum: 1
           nullable: true
+          format: int64
       required:
       - type
     UpdateVectorStoreRequest:
@@ -21981,8 +22098,9 @@ components:
           type: string
           nullable: true
         expires_after:
-          $ref: '#/components/schemas/VectorStoreExpirationAfter'
-          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/VectorStoreExpirationAfter'
+          - nullable: true
         metadata:
           description: |
             Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
@@ -22001,12 +22119,14 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the Upload was created.
+          format: int64
         filename:
           type: string
           description: The name of the file to be uploaded.
         bytes:
           type: integer
           description: The intended number of bytes to be uploaded.
+          format: int64
         purpose:
           type: string
           description: The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
@@ -22021,6 +22141,7 @@ components:
         expires_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the Upload was created.
+          format: int64
         object:
           type: string
           description: The object type, which is always "upload".
@@ -22028,9 +22149,10 @@ components:
           - upload
           x-stainless-const: true
         file:
-          $ref: '#/components/schemas/OpenAIFile'
-          nullable: true
-          description: The ready File object after the Upload is completed.
+          oneOf:
+          - $ref: '#/components/schemas/OpenAIFile'
+          - nullable: true
+            description: The ready File object after the Upload is completed.
       required:
       - bytes
       - created_at
@@ -22072,6 +22194,7 @@ components:
         created_at:
           type: integer
           description: The Unix timestamp (in seconds) for when the Part was created.
+          format: int64
         upload_id:
           type: string
           description: The ID of the Upload object that this Part was added to.
@@ -22107,9 +22230,11 @@ components:
         characters:
           type: integer
           description: The number of characters processed.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22154,9 +22279,11 @@ components:
         seconds:
           type: integer
           description: The number of seconds processed.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22201,6 +22328,7 @@ components:
         sessions:
           type: integer
           description: The number of code interpreter sessions.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22228,21 +22356,27 @@ components:
         input_tokens:
           type: integer
           description: The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+          format: int64
         input_cached_tokens:
           type: integer
           description: The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+          format: int64
         output_tokens:
           type: integer
           description: The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+          format: int64
         input_audio_tokens:
           type: integer
           description: The aggregated number of audio input tokens used, including cached tokens.
+          format: int64
         output_audio_tokens:
           type: integer
           description: The aggregated number of audio output tokens used.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22297,9 +22431,11 @@ components:
         input_tokens:
           type: integer
           description: The aggregated number of input tokens used.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22344,9 +22480,11 @@ components:
         images:
           type: integer
           description: The number of images processed.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         source:
           type: string
           nullable: true
@@ -22401,9 +22539,11 @@ components:
         input_tokens:
           type: integer
           description: The aggregated number of input tokens used.
+          format: int64
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22467,8 +22607,10 @@ components:
           x-stainless-const: true
         start_time:
           type: integer
+          format: int64
         end_time:
           type: integer
+          format: int64
         result:
           type: array
           items:
@@ -22499,6 +22641,7 @@ components:
         usage_bytes:
           type: integer
           description: The vector stores usage in bytes.
+          format: int64
         project_id:
           type: string
           nullable: true
@@ -22628,6 +22771,7 @@ components:
           type: integer
           minimum: 1
           maximum: 365
+          format: int64
       required:
       - anchor
       - days
@@ -22648,6 +22792,7 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the vector store files batch was created.
           type: integer
+          format: int64
         vector_store_id:
           description: The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
           type: string
@@ -22725,9 +22870,11 @@ components:
         usage_bytes:
           description: The total vector store usage in bytes. Note that this may be different from the original file size.
           type: integer
+          format: int64
         created_at:
           description: The Unix timestamp (in seconds) for when the vector store file was created.
           type: integer
+          format: int64
         vector_store_id:
           description: The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
           type: string
@@ -22809,12 +22956,14 @@ components:
         created_at:
           description: The Unix timestamp (in seconds) for when the vector store was created.
           type: integer
+          format: int64
         name:
           description: The name of the vector store.
           type: string
         usage_bytes:
           description: The total number of bytes used by the files in the vector store.
           type: integer
+          format: int64
         file_counts:
           type: object
           properties:
@@ -22852,10 +23001,12 @@ components:
           description: The Unix timestamp (in seconds) for when the vector store will expire.
           type: integer
           nullable: true
+          format: int64
         last_active_at:
           description: The Unix timestamp (in seconds) for when the vector store was last active.
           type: integer
           nullable: true
+          format: int64
         metadata:
           description: |
             Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
