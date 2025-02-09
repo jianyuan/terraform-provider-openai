@@ -156,7 +156,7 @@ const (
 
 // Defines values for ChatCompletionRequestDeveloperMessageRole.
 const (
-	Developer ChatCompletionRequestDeveloperMessageRole = "developer"
+	ChatCompletionRequestDeveloperMessageRoleDeveloper ChatCompletionRequestDeveloperMessageRole = "developer"
 )
 
 // Defines values for ChatCompletionRequestFunctionMessageRole.
@@ -199,7 +199,7 @@ const (
 
 // Defines values for ChatCompletionRequestSystemMessageRole.
 const (
-	ChatCompletionRequestSystemMessageRoleSystem ChatCompletionRequestSystemMessageRole = "system"
+	System ChatCompletionRequestSystemMessageRole = "system"
 )
 
 // Defines values for ChatCompletionRequestToolMessageRole.
@@ -220,6 +220,7 @@ const (
 // Defines values for ChatCompletionStreamResponseDeltaRole.
 const (
 	ChatCompletionStreamResponseDeltaRoleAssistant ChatCompletionStreamResponseDeltaRole = "assistant"
+	ChatCompletionStreamResponseDeltaRoleDeveloper ChatCompletionStreamResponseDeltaRole = "developer"
 	ChatCompletionStreamResponseDeltaRoleSystem    ChatCompletionStreamResponseDeltaRole = "system"
 	ChatCompletionStreamResponseDeltaRoleTool      ChatCompletionStreamResponseDeltaRole = "tool"
 	ChatCompletionStreamResponseDeltaRoleUser      ChatCompletionStreamResponseDeltaRole = "user"
@@ -346,6 +347,8 @@ const (
 	CreateChatCompletionRequestModel1O1Mini20240912                CreateChatCompletionRequestModel1 = "o1-mini-2024-09-12"
 	CreateChatCompletionRequestModel1O1Preview                     CreateChatCompletionRequestModel1 = "o1-preview"
 	CreateChatCompletionRequestModel1O1Preview20240912             CreateChatCompletionRequestModel1 = "o1-preview-2024-09-12"
+	CreateChatCompletionRequestModel1O3Mini                        CreateChatCompletionRequestModel1 = "o3-mini"
+	CreateChatCompletionRequestModel1O3Mini20250131                CreateChatCompletionRequestModel1 = "o3-mini-2025-01-31"
 )
 
 // Defines values for CreateChatCompletionRequestReasoningEffort.
@@ -1845,8 +1848,13 @@ type AssistantObject struct {
 	// Instructions The system instructions that the assistant uses. The maximum length is 256,000 characters.
 	Instructions *string `json:"instructions"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 	Model string `json:"model"`
@@ -2371,8 +2379,13 @@ type Batch struct {
 	// InputFileId The ID of the input file for the batch.
 	InputFileId string `json:"input_file_id"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Object The object type, which is always `batch`.
 	Object BatchObject `json:"object"`
@@ -2968,8 +2981,13 @@ type CreateAssistantRequest struct {
 	// Instructions The system instructions that the assistant uses. The maximum length is 256,000 characters.
 	Instructions *string `json:"instructions"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 	Model CreateAssistantRequest_Model `json:"model"`
@@ -3070,8 +3088,13 @@ type CreateAssistantRequest_ToolResources_FileSearch struct {
 		// FileIds A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
 		FileIds *[]string `json:"file_ids,omitempty"`
 
-		// Metadata Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-		Metadata *map[string]interface{} `json:"metadata,omitempty"`
+		// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+		// useful for storing additional information about the object in a structured
+		// format, and querying for objects via API or the dashboard.
+		//
+		// Keys are strings with a maximum length of 64 characters. Values are strings
+		// with a maximum length of 512 characters.
+		Metadata *Metadata `json:"metadata"`
 	} `json:"vector_stores,omitempty"`
 	union json.RawMessage
 }
@@ -3159,9 +3182,13 @@ type CreateChatCompletionRequest struct {
 	// [images](/docs/guides/vision), and [audio](/docs/guides/audio).
 	Messages []ChatCompletionRequestMessage `json:"messages"`
 
-	// Metadata Developer-defined tags and values used for filtering completions
-	// in the [dashboard](https://platform.openai.com/chat-completions).
-	Metadata *map[string]string `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Modalities Output types that you would like the model to generate for this request.
 	// Most models are capable of generating text, which is the default:
@@ -3227,8 +3254,8 @@ type CreateChatCompletionRequest struct {
 
 	// ServiceTier Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
 	//   - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
-	//   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-	//   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
+	//   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+	//   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
 	//   - When not set, the default behavior is 'auto'.
 	ServiceTier *CreateChatCompletionRequestServiceTier `json:"service_tier"`
 
@@ -3359,8 +3386,8 @@ type CreateChatCompletionRequest_ResponseFormat struct {
 
 // CreateChatCompletionRequestServiceTier Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
 //   - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
-//   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-//   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
+//   - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+//   - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
 //   - When not set, the default behavior is 'auto'.
 type CreateChatCompletionRequestServiceTier string
 
@@ -4055,8 +4082,13 @@ type CreateMessageRequest struct {
 	} `json:"attachments"`
 	Content CreateMessageRequest_Content `json:"content"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Role The role of the entity that is creating the message. Allowed values include:
 	// - `user`: Indicates the message is sent by an actual user and should be used in most cases to represent user-generated messages.
@@ -4362,8 +4394,13 @@ type CreateRunRequest struct {
 	// MaxPromptTokens The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
 	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
 	Model *CreateRunRequest_Model `json:"model"`
@@ -4478,8 +4515,13 @@ type CreateThreadAndRunRequest struct {
 	// MaxPromptTokens The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
 	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
 	Model *CreateThreadAndRunRequest_Model `json:"model"`
@@ -4567,8 +4609,13 @@ type CreateThreadRequest struct {
 	// Messages A list of [messages](/docs/api-reference/messages) to start the thread with.
 	Messages *[]CreateMessageRequest `json:"messages,omitempty"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// ToolResources A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 	ToolResources *struct {
@@ -4632,8 +4679,13 @@ type CreateThreadRequest_ToolResources_FileSearch struct {
 		// FileIds A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
 		FileIds *[]string `json:"file_ids,omitempty"`
 
-		// Metadata Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-		Metadata *map[string]interface{} `json:"metadata,omitempty"`
+		// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+		// useful for storing additional information about the object in a structured
+		// format, and querying for objects via API or the dashboard.
+		//
+		// Keys are strings with a maximum length of 64 characters. Values are strings
+		// with a maximum length of 512 characters.
+		Metadata *Metadata `json:"metadata"`
 	} `json:"vector_stores,omitempty"`
 	union json.RawMessage
 }
@@ -4643,7 +4695,7 @@ type CreateTranscriptionRequest struct {
 	// File The audio file object (not file name) to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm.
 	File openapi_types.File `json:"file"`
 
-	// Language The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format will improve accuracy and latency.
+	// Language The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (e.g. `en`) format will improve accuracy and latency.
 	Language *string `json:"language,omitempty"`
 
 	// Model ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
@@ -4685,7 +4737,7 @@ type CreateTranscriptionResponseJson struct {
 // CreateTranscriptionResponseVerboseJson Represents a verbose json transcription response returned by model, based on the provided input.
 type CreateTranscriptionResponseVerboseJson struct {
 	// Duration The duration of the input audio.
-	Duration string `json:"duration"`
+	Duration float32 `json:"duration"`
 
 	// Language The language of the input audio.
 	Language string `json:"language"`
@@ -4737,7 +4789,7 @@ type CreateTranslationResponseJson struct {
 // CreateTranslationResponseVerboseJson defines model for CreateTranslationResponseVerboseJson.
 type CreateTranslationResponseVerboseJson struct {
 	// Duration The duration of the input audio.
-	Duration string `json:"duration"`
+	Duration float32 `json:"duration"`
 
 	// Language The language of the output translation (always `english`).
 	Language string `json:"language"`
@@ -4802,8 +4854,13 @@ type CreateVectorStoreRequest struct {
 	// FileIds A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
 	FileIds *[]string `json:"file_ids,omitempty"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Name The name of the vector store.
 	Name *string `json:"name,omitempty"`
@@ -5685,8 +5742,13 @@ type MessageObject struct {
 		Reason MessageObjectIncompleteDetailsReason `json:"reason"`
 	} `json:"incomplete_details"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Object The object type, which is always `thread.message`.
 	Object MessageObjectObject `json:"object"`
@@ -5738,6 +5800,14 @@ type MessageRequestContentTextObject struct {
 // MessageRequestContentTextObjectType Always `text`.
 type MessageRequestContentTextObjectType string
 
+// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+// useful for storing additional information about the object in a structured
+// format, and querying for objects via API or the dashboard.
+//
+// Keys are strings with a maximum length of 64 characters. Values are strings
+// with a maximum length of 512 characters.
+type Metadata map[string]string
+
 // Model Describes an OpenAI model offering that can be used with the API.
 type Model struct {
 	// Created The Unix timestamp (in seconds) when the model was created.
@@ -5764,8 +5834,13 @@ type ModifyAssistantRequest struct {
 	// Instructions The system instructions that the assistant uses. The maximum length is 256,000 characters.
 	Instructions *string `json:"instructions"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 	Model *ModifyAssistantRequest_Model `json:"model,omitempty"`
@@ -5821,20 +5896,35 @@ type ModifyAssistantRequest_Tools_Item struct {
 
 // ModifyMessageRequest defines model for ModifyMessageRequest.
 type ModifyMessageRequest struct {
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 }
 
 // ModifyRunRequest defines model for ModifyRunRequest.
 type ModifyRunRequest struct {
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 }
 
 // ModifyThreadRequest defines model for ModifyThreadRequest.
 type ModifyThreadRequest struct {
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// ToolResources A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 	ToolResources *struct {
@@ -6261,15 +6351,21 @@ type RealtimeSessionCreateRequest struct {
 	// single channel (mono), and little-endian byte order.
 	InputAudioFormat *RealtimeSessionCreateRequestInputAudioFormat `json:"input_audio_format,omitempty"`
 
-	// InputAudioTranscription Configuration for input audio transcription, defaults to off and can be
-	// set to `null` to turn off once on. Input audio transcription is not native
-	// to the model, since the model consumes audio directly. Transcription runs
-	// asynchronously through Whisper and should be treated as rough guidance
-	// rather than the representation understood by the model.
+	// InputAudioTranscription Configuration for input audio transcription, defaults to off and can be  set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs  asynchronously through [OpenAI Whisper transcription](https://platform.openai.com/docs/api-reference/audio/createTranscription) and should be treated as rough guidance rather than the representation understood by the model. The client can optionally set the language and prompt for transcription, these fields will be passed to the Whisper API.
 	InputAudioTranscription *struct {
+		// Language The language of the input audio. Supplying the input language in
+		// [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (e.g. `en`) format
+		// will improve accuracy and latency.
+		Language *string `json:"language,omitempty"`
+
 		// Model The model to use for transcription, `whisper-1` is the only currently
 		// supported model.
 		Model *string `json:"model,omitempty"`
+
+		// Prompt An optional text to guide the model's style or continue a previous audio
+		// segment. The [prompt](/docs/guides/speech-to-text#prompting) should match
+		// the audio language.
+		Prompt *string `json:"prompt,omitempty"`
 	} `json:"input_audio_transcription,omitempty"`
 
 	// Instructions The default system instructions (i.e. system message) prepended to model
@@ -6399,16 +6495,16 @@ type RealtimeSessionCreateRequestVoice string
 // for keys is one minute.
 type RealtimeSessionCreateResponse struct {
 	// ClientSecret Ephemeral key returned by the API.
-	ClientSecret *struct {
+	ClientSecret struct {
 		// ExpiresAt Timestamp for when the token expires. Currently, all tokens expire
 		// after one minute.
-		ExpiresAt *int `json:"expires_at,omitempty"`
+		ExpiresAt int `json:"expires_at"`
 
 		// Value Ephemeral key usable in client environments to authenticate connections
 		// to the Realtime API. Use this in client-side environments rather than
 		// a standard API token, which should only be used server-side.
-		Value *string `json:"value,omitempty"`
-	} `json:"client_secret,omitempty"`
+		Value string `json:"value"`
+	} `json:"client_secret"`
 
 	// InputAudioFormat The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
 	InputAudioFormat *string `json:"input_audio_format,omitempty"`
@@ -6630,8 +6726,13 @@ type RunObject struct {
 	// MaxPromptTokens The maximum number of prompt tokens specified to have been used over the course of the run.
 	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Model The model that the [assistant](/docs/api-reference/assistants) used for this run.
 	Model string `json:"model"`
@@ -6931,8 +7032,13 @@ type RunStepObject struct {
 		Message string `json:"message"`
 	} `json:"last_error"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Object The object type, which is always `thread.run.step`.
 	Object RunStepObjectObject `json:"object"`
@@ -7050,8 +7156,13 @@ type ThreadObject struct {
 	// Id The identifier, which can be referenced in API endpoints.
 	Id string `json:"id"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Object The object type, which is always `thread`.
 	Object ThreadObjectObject `json:"object"`
@@ -7133,8 +7244,13 @@ type TruncationObjectType string
 type UpdateVectorStoreRequest struct {
 	ExpiresAfter *UpdateVectorStoreRequest_ExpiresAfter `json:"expires_after,omitempty"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Name The name of the vector store.
 	Name *string `json:"name"`
@@ -7624,8 +7740,13 @@ type VectorStoreObject struct {
 	// LastActiveAt The Unix timestamp (in seconds) for when the vector store was last active.
 	LastActiveAt *int64 `json:"last_active_at"`
 
-	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-	Metadata *map[string]interface{} `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 
 	// Name The name of the vector store.
 	Name string `json:"name"`
@@ -7688,8 +7809,13 @@ type CreateBatchJSONBody struct {
 	// Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/request-input), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
 	InputFileId string `json:"input_file_id"`
 
-	// Metadata Optional custom metadata for the batch.
-	Metadata *map[string]string `json:"metadata"`
+	// Metadata Set of 16 key-value pairs that can be attached to an object. This can be
+	// useful for storing additional information about the object in a structured
+	// format, and querying for objects via API or the dashboard.
+	//
+	// Keys are strings with a maximum length of 64 characters. Values are strings
+	// with a maximum length of 512 characters.
+	Metadata *Metadata `json:"metadata"`
 }
 
 // CreateBatchJSONBodyCompletionWindow defines parameters for CreateBatch.
@@ -8231,6 +8357,9 @@ type ListUsersParams struct {
 
 	// After A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Emails Filter by the email address of users.
+	Emails *[]string `form:"emails,omitempty" json:"emails,omitempty"`
 }
 
 // ListMessagesParams defines parameters for ListMessages.
@@ -21724,6 +21853,22 @@ func NewListUsersRequest(server string, params *ListUsersParams) (*http.Request,
 		if params.After != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Emails != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "emails", runtime.ParamLocationQuery, *params.Emails); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
