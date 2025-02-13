@@ -26,6 +26,38 @@ const (
 	AssistantObjectObjectAssistant AssistantObjectObject = "assistant"
 )
 
+// Defines values for AssistantSupportedModels.
+const (
+	AssistantSupportedModelsGpt35Turbo        AssistantSupportedModels = "gpt-3.5-turbo"
+	AssistantSupportedModelsGpt35Turbo0125    AssistantSupportedModels = "gpt-3.5-turbo-0125"
+	AssistantSupportedModelsGpt35Turbo0613    AssistantSupportedModels = "gpt-3.5-turbo-0613"
+	AssistantSupportedModelsGpt35Turbo1106    AssistantSupportedModels = "gpt-3.5-turbo-1106"
+	AssistantSupportedModelsGpt35Turbo16k     AssistantSupportedModels = "gpt-3.5-turbo-16k"
+	AssistantSupportedModelsGpt35Turbo16k0613 AssistantSupportedModels = "gpt-3.5-turbo-16k-0613"
+	AssistantSupportedModelsGpt4              AssistantSupportedModels = "gpt-4"
+	AssistantSupportedModelsGpt40125Preview   AssistantSupportedModels = "gpt-4-0125-preview"
+	AssistantSupportedModelsGpt40314          AssistantSupportedModels = "gpt-4-0314"
+	AssistantSupportedModelsGpt40613          AssistantSupportedModels = "gpt-4-0613"
+	AssistantSupportedModelsGpt41106Preview   AssistantSupportedModels = "gpt-4-1106-preview"
+	AssistantSupportedModelsGpt432k           AssistantSupportedModels = "gpt-4-32k"
+	AssistantSupportedModelsGpt432k0314       AssistantSupportedModels = "gpt-4-32k-0314"
+	AssistantSupportedModelsGpt432k0613       AssistantSupportedModels = "gpt-4-32k-0613"
+	AssistantSupportedModelsGpt4Turbo         AssistantSupportedModels = "gpt-4-turbo"
+	AssistantSupportedModelsGpt4Turbo20240409 AssistantSupportedModels = "gpt-4-turbo-2024-04-09"
+	AssistantSupportedModelsGpt4TurboPreview  AssistantSupportedModels = "gpt-4-turbo-preview"
+	AssistantSupportedModelsGpt4VisionPreview AssistantSupportedModels = "gpt-4-vision-preview"
+	AssistantSupportedModelsGpt4o             AssistantSupportedModels = "gpt-4o"
+	AssistantSupportedModelsGpt4o20240513     AssistantSupportedModels = "gpt-4o-2024-05-13"
+	AssistantSupportedModelsGpt4o20240806     AssistantSupportedModels = "gpt-4o-2024-08-06"
+	AssistantSupportedModelsGpt4o20241120     AssistantSupportedModels = "gpt-4o-2024-11-20"
+	AssistantSupportedModelsGpt4oMini         AssistantSupportedModels = "gpt-4o-mini"
+	AssistantSupportedModelsGpt4oMini20240718 AssistantSupportedModels = "gpt-4o-mini-2024-07-18"
+	AssistantSupportedModelsO1                AssistantSupportedModels = "o1"
+	AssistantSupportedModelsO120241217        AssistantSupportedModels = "o1-2024-12-17"
+	AssistantSupportedModelsO3Mini            AssistantSupportedModels = "o3-mini"
+	AssistantSupportedModelsO3Mini20250131    AssistantSupportedModels = "o3-mini-2025-01-31"
+)
+
 // Defines values for AssistantToolsCodeType.
 const (
 	AssistantToolsCodeTypeCodeInterpreter AssistantToolsCodeType = "code_interpreter"
@@ -243,34 +275,6 @@ const (
 	OrganizationCostsResult CostsResultObject = "organization.costs.result"
 )
 
-// Defines values for CreateAssistantRequestModel1.
-const (
-	CreateAssistantRequestModel1Gpt35Turbo        CreateAssistantRequestModel1 = "gpt-3.5-turbo"
-	CreateAssistantRequestModel1Gpt35Turbo0125    CreateAssistantRequestModel1 = "gpt-3.5-turbo-0125"
-	CreateAssistantRequestModel1Gpt35Turbo0613    CreateAssistantRequestModel1 = "gpt-3.5-turbo-0613"
-	CreateAssistantRequestModel1Gpt35Turbo1106    CreateAssistantRequestModel1 = "gpt-3.5-turbo-1106"
-	CreateAssistantRequestModel1Gpt35Turbo16k     CreateAssistantRequestModel1 = "gpt-3.5-turbo-16k"
-	CreateAssistantRequestModel1Gpt35Turbo16k0613 CreateAssistantRequestModel1 = "gpt-3.5-turbo-16k-0613"
-	CreateAssistantRequestModel1Gpt4              CreateAssistantRequestModel1 = "gpt-4"
-	CreateAssistantRequestModel1Gpt40125Preview   CreateAssistantRequestModel1 = "gpt-4-0125-preview"
-	CreateAssistantRequestModel1Gpt40314          CreateAssistantRequestModel1 = "gpt-4-0314"
-	CreateAssistantRequestModel1Gpt40613          CreateAssistantRequestModel1 = "gpt-4-0613"
-	CreateAssistantRequestModel1Gpt41106Preview   CreateAssistantRequestModel1 = "gpt-4-1106-preview"
-	CreateAssistantRequestModel1Gpt432k           CreateAssistantRequestModel1 = "gpt-4-32k"
-	CreateAssistantRequestModel1Gpt432k0314       CreateAssistantRequestModel1 = "gpt-4-32k-0314"
-	CreateAssistantRequestModel1Gpt432k0613       CreateAssistantRequestModel1 = "gpt-4-32k-0613"
-	CreateAssistantRequestModel1Gpt4Turbo         CreateAssistantRequestModel1 = "gpt-4-turbo"
-	CreateAssistantRequestModel1Gpt4Turbo20240409 CreateAssistantRequestModel1 = "gpt-4-turbo-2024-04-09"
-	CreateAssistantRequestModel1Gpt4TurboPreview  CreateAssistantRequestModel1 = "gpt-4-turbo-preview"
-	CreateAssistantRequestModel1Gpt4VisionPreview CreateAssistantRequestModel1 = "gpt-4-vision-preview"
-	CreateAssistantRequestModel1Gpt4o             CreateAssistantRequestModel1 = "gpt-4o"
-	CreateAssistantRequestModel1Gpt4o20240513     CreateAssistantRequestModel1 = "gpt-4o-2024-05-13"
-	CreateAssistantRequestModel1Gpt4o20240806     CreateAssistantRequestModel1 = "gpt-4o-2024-08-06"
-	CreateAssistantRequestModel1Gpt4o20241120     CreateAssistantRequestModel1 = "gpt-4o-2024-11-20"
-	CreateAssistantRequestModel1Gpt4oMini         CreateAssistantRequestModel1 = "gpt-4o-mini"
-	CreateAssistantRequestModel1Gpt4oMini20240718 CreateAssistantRequestModel1 = "gpt-4o-mini-2024-07-18"
-)
-
 // Defines values for CreateAssistantRequestToolResourcesFileSearchVectorStoresChunkingStrategy0Type.
 const (
 	CreateAssistantRequestToolResourcesFileSearchVectorStoresChunkingStrategy0TypeAuto CreateAssistantRequestToolResourcesFileSearchVectorStoresChunkingStrategy0Type = "auto"
@@ -349,13 +353,6 @@ const (
 	CreateChatCompletionRequestModel1O1Preview20240912             CreateChatCompletionRequestModel1 = "o1-preview-2024-09-12"
 	CreateChatCompletionRequestModel1O3Mini                        CreateChatCompletionRequestModel1 = "o3-mini"
 	CreateChatCompletionRequestModel1O3Mini20250131                CreateChatCompletionRequestModel1 = "o3-mini-2025-01-31"
-)
-
-// Defines values for CreateChatCompletionRequestReasoningEffort.
-const (
-	CreateChatCompletionRequestReasoningEffortHigh   CreateChatCompletionRequestReasoningEffort = "high"
-	CreateChatCompletionRequestReasoningEffortLow    CreateChatCompletionRequestReasoningEffort = "low"
-	CreateChatCompletionRequestReasoningEffortMedium CreateChatCompletionRequestReasoningEffort = "medium"
 )
 
 // Defines values for CreateChatCompletionRequestServiceTier.
@@ -641,34 +638,6 @@ const (
 	CreateModerationResponseResultsCategoryAppliedInputTypesViolencegraphicText  CreateModerationResponseResultsCategoryAppliedInputTypesViolencegraphic = "text"
 )
 
-// Defines values for CreateRunRequestModel1.
-const (
-	CreateRunRequestModel1Gpt35Turbo        CreateRunRequestModel1 = "gpt-3.5-turbo"
-	CreateRunRequestModel1Gpt35Turbo0125    CreateRunRequestModel1 = "gpt-3.5-turbo-0125"
-	CreateRunRequestModel1Gpt35Turbo0613    CreateRunRequestModel1 = "gpt-3.5-turbo-0613"
-	CreateRunRequestModel1Gpt35Turbo1106    CreateRunRequestModel1 = "gpt-3.5-turbo-1106"
-	CreateRunRequestModel1Gpt35Turbo16k     CreateRunRequestModel1 = "gpt-3.5-turbo-16k"
-	CreateRunRequestModel1Gpt35Turbo16k0613 CreateRunRequestModel1 = "gpt-3.5-turbo-16k-0613"
-	CreateRunRequestModel1Gpt4              CreateRunRequestModel1 = "gpt-4"
-	CreateRunRequestModel1Gpt40125Preview   CreateRunRequestModel1 = "gpt-4-0125-preview"
-	CreateRunRequestModel1Gpt40314          CreateRunRequestModel1 = "gpt-4-0314"
-	CreateRunRequestModel1Gpt40613          CreateRunRequestModel1 = "gpt-4-0613"
-	CreateRunRequestModel1Gpt41106Preview   CreateRunRequestModel1 = "gpt-4-1106-preview"
-	CreateRunRequestModel1Gpt432k           CreateRunRequestModel1 = "gpt-4-32k"
-	CreateRunRequestModel1Gpt432k0314       CreateRunRequestModel1 = "gpt-4-32k-0314"
-	CreateRunRequestModel1Gpt432k0613       CreateRunRequestModel1 = "gpt-4-32k-0613"
-	CreateRunRequestModel1Gpt4Turbo         CreateRunRequestModel1 = "gpt-4-turbo"
-	CreateRunRequestModel1Gpt4Turbo20240409 CreateRunRequestModel1 = "gpt-4-turbo-2024-04-09"
-	CreateRunRequestModel1Gpt4TurboPreview  CreateRunRequestModel1 = "gpt-4-turbo-preview"
-	CreateRunRequestModel1Gpt4VisionPreview CreateRunRequestModel1 = "gpt-4-vision-preview"
-	CreateRunRequestModel1Gpt4o             CreateRunRequestModel1 = "gpt-4o"
-	CreateRunRequestModel1Gpt4o20240513     CreateRunRequestModel1 = "gpt-4o-2024-05-13"
-	CreateRunRequestModel1Gpt4o20240806     CreateRunRequestModel1 = "gpt-4o-2024-08-06"
-	CreateRunRequestModel1Gpt4o20241120     CreateRunRequestModel1 = "gpt-4o-2024-11-20"
-	CreateRunRequestModel1Gpt4oMini         CreateRunRequestModel1 = "gpt-4o-mini"
-	CreateRunRequestModel1Gpt4oMini20240718 CreateRunRequestModel1 = "gpt-4o-mini-2024-07-18"
-)
-
 // Defines values for CreateSpeechRequestModel1.
 const (
 	Tts1   CreateSpeechRequestModel1 = "tts-1"
@@ -700,30 +669,30 @@ const (
 
 // Defines values for CreateThreadAndRunRequestModel1.
 const (
-	CreateThreadAndRunRequestModel1Gpt35Turbo        CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo"
-	CreateThreadAndRunRequestModel1Gpt35Turbo0125    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-0125"
-	CreateThreadAndRunRequestModel1Gpt35Turbo0613    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-0613"
-	CreateThreadAndRunRequestModel1Gpt35Turbo1106    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-1106"
-	CreateThreadAndRunRequestModel1Gpt35Turbo16k     CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-16k"
-	CreateThreadAndRunRequestModel1Gpt35Turbo16k0613 CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-16k-0613"
-	CreateThreadAndRunRequestModel1Gpt4              CreateThreadAndRunRequestModel1 = "gpt-4"
-	CreateThreadAndRunRequestModel1Gpt40125Preview   CreateThreadAndRunRequestModel1 = "gpt-4-0125-preview"
-	CreateThreadAndRunRequestModel1Gpt40314          CreateThreadAndRunRequestModel1 = "gpt-4-0314"
-	CreateThreadAndRunRequestModel1Gpt40613          CreateThreadAndRunRequestModel1 = "gpt-4-0613"
-	CreateThreadAndRunRequestModel1Gpt41106Preview   CreateThreadAndRunRequestModel1 = "gpt-4-1106-preview"
-	CreateThreadAndRunRequestModel1Gpt432k           CreateThreadAndRunRequestModel1 = "gpt-4-32k"
-	CreateThreadAndRunRequestModel1Gpt432k0314       CreateThreadAndRunRequestModel1 = "gpt-4-32k-0314"
-	CreateThreadAndRunRequestModel1Gpt432k0613       CreateThreadAndRunRequestModel1 = "gpt-4-32k-0613"
-	CreateThreadAndRunRequestModel1Gpt4Turbo         CreateThreadAndRunRequestModel1 = "gpt-4-turbo"
-	CreateThreadAndRunRequestModel1Gpt4Turbo20240409 CreateThreadAndRunRequestModel1 = "gpt-4-turbo-2024-04-09"
-	CreateThreadAndRunRequestModel1Gpt4TurboPreview  CreateThreadAndRunRequestModel1 = "gpt-4-turbo-preview"
-	CreateThreadAndRunRequestModel1Gpt4VisionPreview CreateThreadAndRunRequestModel1 = "gpt-4-vision-preview"
-	CreateThreadAndRunRequestModel1Gpt4o             CreateThreadAndRunRequestModel1 = "gpt-4o"
-	CreateThreadAndRunRequestModel1Gpt4o20240513     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-05-13"
-	CreateThreadAndRunRequestModel1Gpt4o20240806     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-08-06"
-	CreateThreadAndRunRequestModel1Gpt4o20241120     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-11-20"
-	CreateThreadAndRunRequestModel1Gpt4oMini         CreateThreadAndRunRequestModel1 = "gpt-4o-mini"
-	CreateThreadAndRunRequestModel1Gpt4oMini20240718 CreateThreadAndRunRequestModel1 = "gpt-4o-mini-2024-07-18"
+	Gpt35Turbo        CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo"
+	Gpt35Turbo0125    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-0125"
+	Gpt35Turbo0613    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-0613"
+	Gpt35Turbo1106    CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-1106"
+	Gpt35Turbo16k     CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-16k"
+	Gpt35Turbo16k0613 CreateThreadAndRunRequestModel1 = "gpt-3.5-turbo-16k-0613"
+	Gpt4              CreateThreadAndRunRequestModel1 = "gpt-4"
+	Gpt40125Preview   CreateThreadAndRunRequestModel1 = "gpt-4-0125-preview"
+	Gpt40314          CreateThreadAndRunRequestModel1 = "gpt-4-0314"
+	Gpt40613          CreateThreadAndRunRequestModel1 = "gpt-4-0613"
+	Gpt41106Preview   CreateThreadAndRunRequestModel1 = "gpt-4-1106-preview"
+	Gpt432k           CreateThreadAndRunRequestModel1 = "gpt-4-32k"
+	Gpt432k0314       CreateThreadAndRunRequestModel1 = "gpt-4-32k-0314"
+	Gpt432k0613       CreateThreadAndRunRequestModel1 = "gpt-4-32k-0613"
+	Gpt4Turbo         CreateThreadAndRunRequestModel1 = "gpt-4-turbo"
+	Gpt4Turbo20240409 CreateThreadAndRunRequestModel1 = "gpt-4-turbo-2024-04-09"
+	Gpt4TurboPreview  CreateThreadAndRunRequestModel1 = "gpt-4-turbo-preview"
+	Gpt4VisionPreview CreateThreadAndRunRequestModel1 = "gpt-4-vision-preview"
+	Gpt4o             CreateThreadAndRunRequestModel1 = "gpt-4o"
+	Gpt4o20240513     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-05-13"
+	Gpt4o20240806     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-08-06"
+	Gpt4o20241120     CreateThreadAndRunRequestModel1 = "gpt-4o-2024-11-20"
+	Gpt4oMini         CreateThreadAndRunRequestModel1 = "gpt-4o-mini"
+	Gpt4oMini20240718 CreateThreadAndRunRequestModel1 = "gpt-4o-mini-2024-07-18"
 )
 
 // Defines values for CreateThreadRequestToolResourcesFileSearchVectorStoresChunkingStrategy0Type.
@@ -1266,6 +1235,13 @@ const (
 	RealtimeSessionCreateResponseVoiceSage    RealtimeSessionCreateResponseVoice = "sage"
 	RealtimeSessionCreateResponseVoiceShimmer RealtimeSessionCreateResponseVoice = "shimmer"
 	RealtimeSessionCreateResponseVoiceVerse   RealtimeSessionCreateResponseVoice = "verse"
+)
+
+// Defines values for ReasoningEffort.
+const (
+	ReasoningEffortHigh   ReasoningEffort = "high"
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
 )
 
 // Defines values for ResponseFormatJsonObjectType.
@@ -1905,6 +1881,9 @@ type AssistantObject_ResponseFormat struct {
 type AssistantObject_Tools_Item struct {
 	union json.RawMessage
 }
+
+// AssistantSupportedModels defines model for AssistantSupportedModels.
+type AssistantSupportedModels string
 
 // AssistantToolsCode defines model for AssistantToolsCode.
 type AssistantToolsCode struct {
@@ -2993,8 +2972,17 @@ type CreateAssistantRequest struct {
 	Model CreateAssistantRequest_Model `json:"model"`
 
 	// Name The name of the assistant. The maximum length is 256 characters.
-	Name           *string                                `json:"name"`
-	ResponseFormat *CreateAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
+	Name *string `json:"name"`
+
+	// ReasoningEffort **o1 and o3-mini models only**
+	//
+	// Constrains effort on reasoning for
+	// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+	// Currently supported values are `low`, `medium`, and `high`. Reducing
+	// reasoning effort can result in faster responses and fewer tokens used
+	// on reasoning in a response.
+	ReasoningEffort *ReasoningEffort                       `json:"reasoning_effort"`
+	ResponseFormat  *CreateAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 	Temperature *float32 `json:"temperature"`
@@ -3019,9 +3007,6 @@ type CreateAssistantRequest struct {
 
 // CreateAssistantRequestModel0 defines model for .
 type CreateAssistantRequestModel0 = string
-
-// CreateAssistantRequestModel1 defines model for CreateAssistantRequest.Model.1.
-type CreateAssistantRequestModel1 string
 
 // CreateAssistantRequest_Model ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 type CreateAssistantRequest_Model struct {
@@ -3219,14 +3204,14 @@ type CreateChatCompletionRequest struct {
 	// to talk about new topics.
 	PresencePenalty *float32 `json:"presence_penalty"`
 
-	// ReasoningEffort **o1 models only**
+	// ReasoningEffort **o1 and o3-mini models only**
 	//
 	// Constrains effort on reasoning for
 	// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
 	// Currently supported values are `low`, `medium`, and `high`. Reducing
 	// reasoning effort can result in faster responses and fewer tokens used
 	// on reasoning in a response.
-	ReasoningEffort *CreateChatCompletionRequestReasoningEffort `json:"reasoning_effort,omitempty"`
+	ReasoningEffort *ReasoningEffort `json:"reasoning_effort"`
 
 	// ResponseFormat An object specifying the format that the model must output.
 	//
@@ -3353,15 +3338,6 @@ type CreateChatCompletionRequest_Model struct {
 type CreateChatCompletionRequest_Prediction struct {
 	union json.RawMessage
 }
-
-// CreateChatCompletionRequestReasoningEffort **o1 models only**
-//
-// Constrains effort on reasoning for
-// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-// Currently supported values are `low`, `medium`, and `high`. Reducing
-// reasoning effort can result in faster responses and fewer tokens used
-// on reasoning in a response.
-type CreateChatCompletionRequestReasoningEffort string
 
 // CreateChatCompletionRequest_ResponseFormat An object specifying the format that the model must output.
 //
@@ -4219,10 +4195,10 @@ type CreateModerationResponse struct {
 			Hatethreatening bool `json:"hate/threatening"`
 
 			// Illicit Content that includes instructions or advice that facilitate the planning or execution of wrongdoing, or that gives advice or instruction on how to commit illicit acts. For example, "how to shoplift" would fit this category.
-			Illicit bool `json:"illicit"`
+			Illicit *bool `json:"illicit"`
 
 			// Illicitviolent Content that includes instructions or advice that facilitate the planning or execution of wrongdoing that also includes violence, or that gives advice or instruction on the procurement of any weapon.
-			Illicitviolent bool `json:"illicit/violent"`
+			Illicitviolent *bool `json:"illicit/violent"`
 
 			// SelfHarm Content that promotes, encourages, or depicts acts of self-harm, such as suicide, cutting, and eating disorders.
 			SelfHarm bool `json:"self-harm"`
@@ -4406,8 +4382,17 @@ type CreateRunRequest struct {
 	Model *CreateRunRequest_Model `json:"model"`
 
 	// ParallelToolCalls Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
-	ParallelToolCalls *ParallelToolCalls               `json:"parallel_tool_calls,omitempty"`
-	ResponseFormat    *CreateRunRequest_ResponseFormat `json:"response_format,omitempty"`
+	ParallelToolCalls *ParallelToolCalls `json:"parallel_tool_calls,omitempty"`
+
+	// ReasoningEffort **o1 and o3-mini models only**
+	//
+	// Constrains effort on reasoning for
+	// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+	// Currently supported values are `low`, `medium`, and `high`. Reducing
+	// reasoning effort can result in faster responses and fewer tokens used
+	// on reasoning in a response.
+	ReasoningEffort *ReasoningEffort                 `json:"reasoning_effort"`
+	ResponseFormat  *CreateRunRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Stream If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
 	Stream *bool `json:"stream"`
@@ -4428,9 +4413,6 @@ type CreateRunRequest struct {
 
 // CreateRunRequestModel0 defines model for .
 type CreateRunRequestModel0 = string
-
-// CreateRunRequestModel1 defines model for CreateRunRequest.Model.1.
-type CreateRunRequestModel1 string
 
 // CreateRunRequest_Model The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
 type CreateRunRequest_Model struct {
@@ -5526,8 +5508,9 @@ type ListFineTuningJobCheckpointsResponseObject string
 
 // ListFineTuningJobEventsResponse defines model for ListFineTuningJobEventsResponse.
 type ListFineTuningJobEventsResponse struct {
-	Data   []FineTuningJobEvent                  `json:"data"`
-	Object ListFineTuningJobEventsResponseObject `json:"object"`
+	Data    []FineTuningJobEvent                  `json:"data"`
+	HasMore bool                                  `json:"has_more"`
+	Object  ListFineTuningJobEventsResponseObject `json:"object"`
 }
 
 // ListFineTuningJobEventsResponseObject defines model for ListFineTuningJobEventsResponse.Object.
@@ -5846,8 +5829,17 @@ type ModifyAssistantRequest struct {
 	Model *ModifyAssistantRequest_Model `json:"model,omitempty"`
 
 	// Name The name of the assistant. The maximum length is 256 characters.
-	Name           *string                                `json:"name"`
-	ResponseFormat *ModifyAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
+	Name *string `json:"name"`
+
+	// ReasoningEffort **o1 and o3-mini models only**
+	//
+	// Constrains effort on reasoning for
+	// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+	// Currently supported values are `low`, `medium`, and `high`. Reducing
+	// reasoning effort can result in faster responses and fewer tokens used
+	// on reasoning in a response.
+	ReasoningEffort *ReasoningEffort                       `json:"reasoning_effort"`
+	ResponseFormat  *ModifyAssistantRequest_ResponseFormat `json:"response_format,omitempty"`
 
 	// Temperature What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 	Temperature *float32 `json:"temperature"`
@@ -6623,6 +6615,15 @@ type RealtimeSessionCreateResponseToolsType string
 // `shimmer` and `verse`.
 type RealtimeSessionCreateResponseVoice string
 
+// ReasoningEffort **o1 and o3-mini models only**
+//
+// Constrains effort on reasoning for
+// [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+// Currently supported values are `low`, `medium`, and `high`. Reducing
+// reasoning effort can result in faster responses and fewer tokens used
+// on reasoning in a response.
+type ReasoningEffort string
+
 // ResponseFormatJsonObject defines model for ResponseFormatJsonObject.
 type ResponseFormatJsonObject struct {
 	// Type The type of response format being defined: `json_object`
@@ -7376,13 +7377,12 @@ type UsageAudioTranscriptionsResultObject string
 
 // UsageCodeInterpreterSessionsResult The aggregated code interpreter sessions usage details of the specific time bucket.
 type UsageCodeInterpreterSessionsResult struct {
-	Object UsageCodeInterpreterSessionsResultObject `json:"object"`
+	// NumSessions The number of code interpreter sessions.
+	NumSessions *int64                                   `json:"num_sessions,omitempty"`
+	Object      UsageCodeInterpreterSessionsResultObject `json:"object"`
 
 	// ProjectId When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 	ProjectId *string `json:"project_id"`
-
-	// Sessions The number of code interpreter sessions.
-	Sessions int64 `json:"sessions"`
 }
 
 // UsageCodeInterpreterSessionsResultObject defines model for UsageCodeInterpreterSessionsResult.Object.
@@ -9809,22 +9809,22 @@ func (t *CreateAssistantRequest_Model) MergeCreateAssistantRequestModel0(v Creat
 	return err
 }
 
-// AsCreateAssistantRequestModel1 returns the union data inside the CreateAssistantRequest_Model as a CreateAssistantRequestModel1
-func (t CreateAssistantRequest_Model) AsCreateAssistantRequestModel1() (CreateAssistantRequestModel1, error) {
-	var body CreateAssistantRequestModel1
+// AsAssistantSupportedModels returns the union data inside the CreateAssistantRequest_Model as a AssistantSupportedModels
+func (t CreateAssistantRequest_Model) AsAssistantSupportedModels() (AssistantSupportedModels, error) {
+	var body AssistantSupportedModels
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromCreateAssistantRequestModel1 overwrites any union data inside the CreateAssistantRequest_Model as the provided CreateAssistantRequestModel1
-func (t *CreateAssistantRequest_Model) FromCreateAssistantRequestModel1(v CreateAssistantRequestModel1) error {
+// FromAssistantSupportedModels overwrites any union data inside the CreateAssistantRequest_Model as the provided AssistantSupportedModels
+func (t *CreateAssistantRequest_Model) FromAssistantSupportedModels(v AssistantSupportedModels) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeCreateAssistantRequestModel1 performs a merge with any union data inside the CreateAssistantRequest_Model, using the provided CreateAssistantRequestModel1
-func (t *CreateAssistantRequest_Model) MergeCreateAssistantRequestModel1(v CreateAssistantRequestModel1) error {
+// MergeAssistantSupportedModels performs a merge with any union data inside the CreateAssistantRequest_Model, using the provided AssistantSupportedModels
+func (t *CreateAssistantRequest_Model) MergeAssistantSupportedModels(v AssistantSupportedModels) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -11811,22 +11811,22 @@ func (t *CreateRunRequest_Model) MergeCreateRunRequestModel0(v CreateRunRequestM
 	return err
 }
 
-// AsCreateRunRequestModel1 returns the union data inside the CreateRunRequest_Model as a CreateRunRequestModel1
-func (t CreateRunRequest_Model) AsCreateRunRequestModel1() (CreateRunRequestModel1, error) {
-	var body CreateRunRequestModel1
+// AsAssistantSupportedModels returns the union data inside the CreateRunRequest_Model as a AssistantSupportedModels
+func (t CreateRunRequest_Model) AsAssistantSupportedModels() (AssistantSupportedModels, error) {
+	var body AssistantSupportedModels
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromCreateRunRequestModel1 overwrites any union data inside the CreateRunRequest_Model as the provided CreateRunRequestModel1
-func (t *CreateRunRequest_Model) FromCreateRunRequestModel1(v CreateRunRequestModel1) error {
+// FromAssistantSupportedModels overwrites any union data inside the CreateRunRequest_Model as the provided AssistantSupportedModels
+func (t *CreateRunRequest_Model) FromAssistantSupportedModels(v AssistantSupportedModels) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeCreateRunRequestModel1 performs a merge with any union data inside the CreateRunRequest_Model, using the provided CreateRunRequestModel1
-func (t *CreateRunRequest_Model) MergeCreateRunRequestModel1(v CreateRunRequestModel1) error {
+// MergeAssistantSupportedModels performs a merge with any union data inside the CreateRunRequest_Model, using the provided AssistantSupportedModels
+func (t *CreateRunRequest_Model) MergeAssistantSupportedModels(v AssistantSupportedModels) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -13787,6 +13787,32 @@ func (t *ModifyAssistantRequest_Model) FromModifyAssistantRequestModel0(v Modify
 
 // MergeModifyAssistantRequestModel0 performs a merge with any union data inside the ModifyAssistantRequest_Model, using the provided ModifyAssistantRequestModel0
 func (t *ModifyAssistantRequest_Model) MergeModifyAssistantRequestModel0(v ModifyAssistantRequestModel0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAssistantSupportedModels returns the union data inside the ModifyAssistantRequest_Model as a AssistantSupportedModels
+func (t ModifyAssistantRequest_Model) AsAssistantSupportedModels() (AssistantSupportedModels, error) {
+	var body AssistantSupportedModels
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAssistantSupportedModels overwrites any union data inside the ModifyAssistantRequest_Model as the provided AssistantSupportedModels
+func (t *ModifyAssistantRequest_Model) FromAssistantSupportedModels(v AssistantSupportedModels) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAssistantSupportedModels performs a merge with any union data inside the ModifyAssistantRequest_Model, using the provided AssistantSupportedModels
+func (t *ModifyAssistantRequest_Model) MergeAssistantSupportedModels(v AssistantSupportedModels) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
