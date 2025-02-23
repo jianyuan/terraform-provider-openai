@@ -14,7 +14,7 @@ require (
 	github.com/oapi-codegen/runtime v1.1.1
 )
 
-require github.com/jianyuan/go-utils v0.0.0-20241210005310-ec4088c3adbd
+require github.com/jianyuan/go-utils v0.0.0-20250223213401-62c93a9e0b6c
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
