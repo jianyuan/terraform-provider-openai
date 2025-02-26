@@ -1,4 +1,4 @@
-package provider
+package provider_test
 
 import (
 	"testing"
@@ -15,7 +15,7 @@ func TestAccProjectsDataSource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProjectsDataSourceConfig,
@@ -40,7 +40,7 @@ func TestAccProjectsDataSource_includeArchived(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProjectsDataSourceConfig_includeArchived,

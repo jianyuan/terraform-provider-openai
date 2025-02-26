@@ -1,4 +1,4 @@
-package provider
+package provider_test
 
 import (
 	"context"
@@ -78,7 +78,7 @@ func TestAccProjectResource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProjectResourceConfig(projectName),

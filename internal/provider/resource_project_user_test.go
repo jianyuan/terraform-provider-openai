@@ -1,4 +1,4 @@
-package provider
+package provider_test
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
+	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 )
 
 func TestAccProjectUserResource(t *testing.T) {
@@ -19,7 +20,7 @@ func TestAccProjectUserResource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProjectUserResourceConfig(projectName, acctest.TestUserId, "owner"),
@@ -39,7 +40,7 @@ func TestAccProjectUserResource(t *testing.T) {
 					}
 					projectId := rs.Primary.Attributes["project_id"]
 					userId := rs.Primary.Attributes["user_id"]
-					return BuildTwoPartId(projectId, userId), nil
+					return tfutils.BuildTwoPartId(projectId, userId), nil
 				},
 			},
 			{
@@ -60,7 +61,7 @@ func TestAccProjectUserResource(t *testing.T) {
 					}
 					projectId := rs.Primary.Attributes["project_id"]
 					userId := rs.Primary.Attributes["user_id"]
-					return BuildTwoPartId(projectId, userId), nil
+					return tfutils.BuildTwoPartId(projectId, userId), nil
 				},
 			},
 		},

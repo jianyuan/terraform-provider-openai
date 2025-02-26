@@ -1,4 +1,4 @@
-package provider
+package provider_test
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func TestAccInviteDataSource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccInviteDataSourceConfig(email),

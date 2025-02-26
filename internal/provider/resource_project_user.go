@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 )
 
 type ProjectUserResourceModel struct {
@@ -191,7 +192,7 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 }
 
 func (r *ProjectUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	projectId, userId, err := SplitTwoPartId(req.ID, "project-id", "user-id")
+	projectId, userId, err := tfutils.SplitTwoPartId(req.ID, "project-id", "user-id")
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
 		return
