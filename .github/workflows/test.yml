@@ -59,7 +59,7 @@ jobs:
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -104,4 +104,4 @@ jobs:
           OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
           OPENAI_TEST_USER_ID: ${{ secrets.OPENAI_TEST_USER_ID }}
         run: go test -v -cover ./internal/provider/
-        timeout-minutes: 10
+        timeout-minutes: 20
