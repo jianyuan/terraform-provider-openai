@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -25,6 +27,7 @@ type ProjectsDataSource struct {
 
 type ProjectsDataSourceModel struct {
 	IncludeArchived types.Bool     `tfsdk:"include_archived"`
+	Limit           types.Int64    `tfsdk:"limit"`
 	Projects        []ProjectModel `tfsdk:"projects"`
 }
 
@@ -51,6 +54,13 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			"include_archived": schema.BoolAttribute{
 				MarkdownDescription: "Include archived projects. Default is `false`.",
 				Optional:            true,
+			},
+			"limit": schema.Int64Attribute{
+				MarkdownDescription: "Limit the number of projects to return. Default is to return all projects.",
+				Optional:            true,
+				Validators: []validator.Int64{
+					int64validator.AtLeast(1),
+				},
 			},
 			"projects": schema.SetNestedAttribute{
 				MarkdownDescription: "List of projects.",
@@ -94,11 +104,35 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	var projects []apiclient.Project
 	params := &apiclient.ListProjectsParams{
-		Limit:           ptr.Ptr(100),
 		IncludeArchived: data.IncludeArchived.ValueBoolPointer(),
 	}
 
+	// Set the limit for the API request
+	if data.Limit.IsNull() {
+		params.Limit = ptr.Ptr(100)
+	} else {
+		requestLimit := int(data.Limit.ValueInt64())
+		if requestLimit > 100 {
+			params.Limit = ptr.Ptr(100)
+		} else {
+			params.Limit = ptr.Ptr(requestLimit)
+		}
+	}
+
 	for {
+		// Recalculate the limit for each request to ensure we don't exceed the desired limit
+		if !data.Limit.IsNull() {
+			remainingLimit := int(data.Limit.ValueInt64()) - len(projects)
+			if remainingLimit <= 0 {
+				break
+			}
+			if remainingLimit > 100 {
+				params.Limit = ptr.Ptr(100)
+			} else {
+				params.Limit = ptr.Ptr(remainingLimit)
+			}
+		}
+
 		httpResp, err := d.client.ListProjectsWithResponse(
 			ctx,
 			params,
@@ -113,6 +147,13 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 		projects = append(projects, httpResp.JSON200.Data...)
 
+		// If limit is set and we have enough projects, break.
+		if !data.Limit.IsNull() && len(projects) >= int(data.Limit.ValueInt64()) {
+			projects = projects[:data.Limit.ValueInt64()]
+			break
+		}
+
+		// If there are no more projects, break.
 		if !httpResp.JSON200.HasMore {
 			break
 		}

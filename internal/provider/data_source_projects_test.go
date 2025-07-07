@@ -68,5 +68,7 @@ data "openai_projects" "test" {
 var testAccProjectsDataSourceConfig_includeArchived = `
 data "openai_projects" "test" {
   include_archived = true
+
+	limit = 10
 }
 `

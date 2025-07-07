@@ -23,6 +23,7 @@ data "openai_projects" "example" {
 ### Optional
 
 - `include_archived` (Boolean) Include archived projects. Default is `false`.
+- `limit` (Number) Limit the number of projects to return. Default is to return all projects.
 
 ### Read-Only
 
