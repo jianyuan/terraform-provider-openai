@@ -1,11 +1,11 @@
 module github.com/jianyuan/terraform-provider-openai
 
-go 1.23.7
+go 1.24.2
 
 toolchain go1.24.4
 
 require (
-	carvel.dev/ytt v0.51.1
+	carvel.dev/ytt v0.52.0
 	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/hashicorp/terraform-plugin-docs v0.22.0
 	github.com/hashicorp/terraform-plugin-framework v1.15.0
