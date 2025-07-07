@@ -36,6 +36,8 @@ resource "openai_project" "example" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Import an existing project
 terraform import openai_project.example project-id
