@@ -96,7 +96,7 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	var invites []apiclient.Invite
 	params := &apiclient.ListInvitesParams{
-		Limit: ptr.Ptr(100),
+		Limit: ptr.Ptr(int64(100)),
 	}
 
 	for {

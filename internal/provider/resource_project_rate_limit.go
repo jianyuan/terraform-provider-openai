@@ -164,7 +164,7 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	params := &apiclient.ListProjectRateLimitsParams{
-		Limit: ptr.Ptr(100),
+		Limit: ptr.Ptr(int64(100)),
 	}
 
 out:

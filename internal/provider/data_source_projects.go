@@ -109,11 +109,11 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	// Set the limit for the API request
 	if data.Limit.IsNull() {
-		params.Limit = ptr.Ptr(100)
+		params.Limit = ptr.Ptr(int64(100))
 	} else {
-		requestLimit := int(data.Limit.ValueInt64())
+		requestLimit := data.Limit.ValueInt64()
 		if requestLimit > 100 {
-			params.Limit = ptr.Ptr(100)
+			params.Limit = ptr.Ptr(int64(100))
 		} else {
 			params.Limit = ptr.Ptr(requestLimit)
 		}
@@ -122,12 +122,12 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 	for {
 		// Recalculate the limit for each request to ensure we don't exceed the desired limit
 		if !data.Limit.IsNull() {
-			remainingLimit := int(data.Limit.ValueInt64()) - len(projects)
+			remainingLimit := data.Limit.ValueInt64() - int64(len(projects))
 			if remainingLimit <= 0 {
 				break
 			}
 			if remainingLimit > 100 {
-				params.Limit = ptr.Ptr(100)
+				params.Limit = ptr.Ptr(int64(100))
 			} else {
 				params.Limit = ptr.Ptr(remainingLimit)
 			}

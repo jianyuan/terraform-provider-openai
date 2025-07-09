@@ -24,7 +24,7 @@ func init() {
 			ctx := context.Background()
 
 			params := &apiclient.ListProjectsParams{
-				Limit: ptr.Ptr(100),
+				Limit: ptr.Ptr(int64(100)),
 			}
 
 			for {
