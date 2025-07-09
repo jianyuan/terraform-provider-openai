@@ -23,9 +23,9 @@ type AdminApiKeyResourceModel struct {
 }
 
 func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, apiKey apiclient.AdminApiKey) (diags diag.Diagnostics) {
-	m.Id = types.StringPointerValue(apiKey.Id)
-	m.Name = types.StringPointerValue(apiKey.Name)
-	m.CreatedAt = types.Int64PointerValue(apiKey.CreatedAt)
+	m.Id = types.StringValue(apiKey.Id)
+	m.Name = types.StringValue(apiKey.Name)
+	m.CreatedAt = types.Int64Value(apiKey.CreatedAt)
 	return
 }
 
@@ -103,7 +103,6 @@ func (r *AdminApiKeyResource) Create(ctx context.Context, req resource.CreateReq
 		ctx,
 		apiclient.AdminApiKeysCreateJSONRequestBody{
 			Name: data.Name.ValueString(),
-			Type: "",
 		},
 	)
 

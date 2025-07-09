@@ -29,7 +29,7 @@ func init() {
 			// List all projects
 			{
 				params := &apiclient.ListProjectsParams{
-					Limit: ptr.Ptr(100),
+					Limit: ptr.Ptr(int64(100)),
 				}
 
 				for {
@@ -60,7 +60,7 @@ func init() {
 
 				var projectServiceAccounts []apiclient.ProjectServiceAccount
 				params := &apiclient.ListProjectServiceAccountsParams{
-					Limit: ptr.Ptr(100),
+					Limit: ptr.Ptr(int64(100)),
 				}
 
 				for {

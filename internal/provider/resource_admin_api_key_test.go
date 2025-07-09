@@ -23,7 +23,7 @@ func init() {
 			ctx := context.Background()
 
 			params := &apiclient.AdminApiKeysListParams{
-				Limit: ptr.Ptr(100),
+				Limit: ptr.Ptr(int64(100)),
 			}
 
 			for {
@@ -39,10 +39,10 @@ func init() {
 				}
 
 				for _, apiKey := range *httpResp.JSON200.Data {
-					if strings.HasPrefix(ptr.Value(apiKey.Name), "tf-") {
+					if strings.HasPrefix(apiKey.Name, "tf-") {
 						httpResp, err := acctest.SharedClient.AdminApiKeysDeleteWithResponse(
 							ctx,
-							ptr.Value(apiKey.Id),
+							apiKey.Id,
 						)
 
 						if err != nil {

@@ -88,7 +88,7 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	var users []apiclient.User
 	params := &apiclient.ListUsersParams{
-		Limit: ptr.Ptr(100),
+		Limit: ptr.Ptr(int64(100)),
 	}
 
 	for {

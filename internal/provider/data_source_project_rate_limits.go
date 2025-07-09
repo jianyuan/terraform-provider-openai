@@ -129,7 +129,7 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 
 	var rateLimits []apiclient.ProjectRateLimit
 	params := &apiclient.ListProjectRateLimitsParams{
-		Limit: ptr.Ptr(100),
+		Limit: ptr.Ptr(int64(100)),
 	}
 
 	for {

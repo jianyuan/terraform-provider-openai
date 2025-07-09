@@ -7,6 +7,4 @@ import (
 	_ "github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs"
 	// API client generation
 	_ "github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen"
-	// YAML patching
-	_ "carvel.dev/ytt/cmd/ytt"
 )
