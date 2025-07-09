@@ -18,6 +18,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
+      - uses: astral-sh/setup-uv@v6
       - run: go mod download
       - run: go generate ./internal/apiclient
       - name: Create Pull Request
