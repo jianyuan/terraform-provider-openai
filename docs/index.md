@@ -20,6 +20,15 @@ If you find this provider useful, please consider supporting me through GitHub S
 ## Example Usage
 
 ```terraform
+terraform {
+  required_providers {
+    openai = {
+      source  = "jianyuan/openai"
+    }
+  }
+}
+
+provider "openai" {}
 # Configure the OpenAI provider
 provider "openai" {
   admin_key = "sk-admin-0000000000000000000000000000000000000000"
