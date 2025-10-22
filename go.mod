@@ -1,8 +1,6 @@
 module github.com/jianyuan/terraform-provider-openai
 
-go 1.23.7
-
-toolchain go1.24.4
+go 1.25.3
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.8
@@ -16,6 +14,12 @@ require (
 )
 
 require github.com/jianyuan/go-utils v0.0.0-20250223213401-62c93a9e0b6c
+
+require (
+	github.com/oasdiff/yaml v0.0.0-20250309154309-f31be36b4037 // indirect
+	github.com/oasdiff/yaml3 v0.0.0-20250309153720-d2182401db90 // indirect
+	github.com/speakeasy-api/jsonpath v0.6.0 // indirect
+)
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
@@ -61,7 +65,6 @@ require (
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
-	github.com/invopop/yaml v0.3.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
