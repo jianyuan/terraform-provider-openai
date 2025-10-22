@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import requests
+import httpx
 import yaml
 
 ROOT = Path(__file__).parent
@@ -108,7 +108,7 @@ fix_funcs = [
 
 
 def main() -> None:
-    response = requests.get(OPENAPI_SPEC_URL)
+    response = httpx.get(OPENAPI_SPEC_URL)
     response.raise_for_status()
 
     SPEC_ORIGINAL_PATH.write_text(response.text)
