@@ -41621,13 +41621,12 @@ components:
         - type
         - input_audio
     InputContent:
+      discriminator:
+        propertyName: type
       anyOf:
         - $ref: '#/components/schemas/InputTextContent'
         - $ref: '#/components/schemas/InputImageContent'
         - $ref: '#/components/schemas/InputFileContent'
-        - $ref: '#/components/schemas/InputAudio'
-      discriminator:
-        propertyName: type
     InputItem:
       discriminator:
         propertyName: type
@@ -61818,6 +61817,8 @@ components:
       type: object
       required:
         - type
+      title: Local shell tool
+      description: A tool that allows the model to execute shell commands in a local environment.
     CustomTextFormatParam:
       properties:
         type:
@@ -61881,6 +61882,10 @@ components:
       required:
         - type
         - name
+      title: Custom tool
+      description: >-
+        A custom tool that processes input using a specified format. Learn more about   [custom
+        tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
     ApproximateLocation:
       properties:
         type:

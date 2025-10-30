@@ -25,6 +25,10 @@ resource "openai_project" "example" {
 
 - `name` (String) The friendly name of the project, this name appears in reports.
 
+### Optional
+
+- `external_key_id` (String) The ID of the customer-managed encryption key to use for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).
+
 ### Read-Only
 
 - `archived_at` (Number) The Unix timestamp (in seconds) of when the project was archived or `null`.

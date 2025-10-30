@@ -97,6 +97,21 @@ def fix_response_status_code(spec):
     return spec
 
 
+def add_external_key_id_to_project(spec):
+    property_spec = {
+        "type": "string",
+        "description": "The ID of the customer-managed encryption key for Enterprise Key Management (EKM).",
+    }
+    spec["components"]["schemas"]["Project"]["properties"][
+        "external_key_id"
+    ] = property_spec
+    spec["components"]["schemas"]["ProjectCreateRequest"]["properties"][
+        "external_key_id"
+    ] = property_spec
+
+    return spec
+
+
 fix_funcs = [
     fix_openapi_version,
     fix_remove_non_administrative_endpoints,
@@ -104,6 +119,7 @@ fix_funcs = [
     fix_any_of,
     fix_number_format,
     fix_response_status_code,
+    add_external_key_id_to_project,
 ]
 
 

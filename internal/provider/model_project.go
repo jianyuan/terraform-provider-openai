@@ -9,17 +9,19 @@ import (
 )
 
 type ProjectModel struct {
-	Id         types.String `tfsdk:"id"`
-	Name       types.String `tfsdk:"name"`
-	Status     types.String `tfsdk:"status"`
-	CreatedAt  types.Int64  `tfsdk:"created_at"`
-	ArchivedAt types.Int64  `tfsdk:"archived_at"`
+	Id            types.String `tfsdk:"id"`
+	Name          types.String `tfsdk:"name"`
+	Status        types.String `tfsdk:"status"`
+	ExternalKeyId types.String `tfsdk:"external_key_id"`
+	CreatedAt     types.Int64  `tfsdk:"created_at"`
+	ArchivedAt    types.Int64  `tfsdk:"archived_at"`
 }
 
 func (m *ProjectModel) Fill(ctx context.Context, p apiclient.Project) (diags diag.Diagnostics) {
 	m.Id = types.StringValue(p.Id)
 	m.Name = types.StringValue(p.Name)
 	m.Status = types.StringValue(string(p.Status))
+	m.ExternalKeyId = types.StringPointerValue(p.ExternalKeyId)
 	m.CreatedAt = types.Int64Value(p.CreatedAt)
 	m.ArchivedAt = types.Int64PointerValue(p.ArchivedAt)
 	return

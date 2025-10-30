@@ -22,11 +22,12 @@ func TestAccProjectsDataSource(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("projects"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":          knownvalue.NotNull(),
-							"name":        knownvalue.StringExact("Default project"),
-							"status":      knownvalue.StringExact("active"),
-							"created_at":  knownvalue.NotNull(),
-							"archived_at": knownvalue.Null(),
+							"id":              knownvalue.NotNull(),
+							"name":            knownvalue.StringExact("Default project"),
+							"status":          knownvalue.StringExact("active"),
+							"external_key_id": knownvalue.Null(),
+							"created_at":      knownvalue.NotNull(),
+							"archived_at":     knownvalue.Null(),
 						}),
 					})),
 				},
@@ -47,11 +48,12 @@ func TestAccProjectsDataSource_includeArchived(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("projects"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":          knownvalue.NotNull(),
-							"name":        knownvalue.StringExact("Default project"),
-							"status":      knownvalue.StringExact("archived"),
-							"created_at":  knownvalue.NotNull(),
-							"archived_at": knownvalue.NotNull(),
+							"id":              knownvalue.NotNull(),
+							"name":            knownvalue.StringExact("Default project"),
+							"status":          knownvalue.StringExact("archived"),
+							"external_key_id": knownvalue.Null(),
+							"created_at":      knownvalue.NotNull(),
+							"archived_at":     knownvalue.NotNull(),
 						}),
 					})),
 				},
@@ -67,7 +69,7 @@ data "openai_projects" "test" {
 
 var testAccProjectsDataSourceConfig_includeArchived = `
 data "openai_projects" "test" {
-  include_archived = true
+	include_archived = true
 
 	limit = 10
 }

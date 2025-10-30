@@ -9401,6 +9401,8 @@ components:
       title: Custom tool
       type: object
     CustomToolParam:
+      description: A custom tool that processes input using a specified format. Learn
+        more about   [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
       properties:
         description:
           description: Optional description of the custom tool, used to provide more
@@ -9427,6 +9429,7 @@ components:
       required:
       - type
       - name
+      title: Custom tool
       type: object
     DeleteAssistantResponse:
       properties:
@@ -13617,7 +13620,6 @@ components:
       - $ref: '#/components/schemas/InputTextContent'
       - $ref: '#/components/schemas/InputImageContent'
       - $ref: '#/components/schemas/InputFileContent'
-      - $ref: '#/components/schemas/InputAudio'
       discriminator:
         propertyName: type
     InputFidelity:
@@ -14637,6 +14639,8 @@ components:
       title: Local shell call output
       type: object
     LocalShellToolParam:
+      description: A tool that allows the model to execute shell commands in a local
+        environment.
       properties:
         type:
           default: local_shell
@@ -14647,6 +14651,7 @@ components:
           x-stainless-const: true
       required:
       - type
+      title: Local shell tool
       type: object
     LockedStatus:
       description: Indicates that a thread is locked and cannot accept new input.
@@ -16643,6 +16648,10 @@ components:
           description: The Unix timestamp (in seconds) of when the project was created.
           format: int64
           type: integer
+        external_key_id: &id001
+          description: The ID of the customer-managed encryption key for Enterprise
+            Key Management (EKM).
+          type: string
         id:
           description: The identifier, which can be referenced in API endpoints
           type: string
@@ -16774,6 +16783,7 @@ components:
       type: object
     ProjectCreateRequest:
       properties:
+        external_key_id: *id001
         geography:
           description: Create the project with the specified data residency region.
             Your organization must have access to Data residency functionality in

@@ -29,5 +29,6 @@ data "openai_project" "example" {
 
 - `archived_at` (Number) The Unix timestamp (in seconds) of when the project was archived or `null`.
 - `created_at` (Number) The Unix timestamp (in seconds) of when the project was created.
+- `external_key_id` (String) The ID of the customer-managed encryption key used for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).
 - `name` (String) The name of the project. This appears in reporting.
 - `status` (String) Status `active` or `archived`.

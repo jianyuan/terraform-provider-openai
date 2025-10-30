@@ -48,6 +48,13 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "Status `active` or `archived`.",
 				Computed:            true,
 			},
+			"external_key_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the customer-managed encryption key to use for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
+				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"created_at": schema.Int64Attribute{
 				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
 				Computed:            true,
@@ -71,7 +78,8 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 	httpResp, err := r.client.CreateProjectWithResponse(
 		ctx,
 		apiclient.CreateProjectJSONRequestBody{
-			Name: data.Name.ValueString(),
+			Name:          data.Name.ValueString(),
+			ExternalKeyId: data.ExternalKeyId.ValueStringPointer(),
 		},
 	)
 
