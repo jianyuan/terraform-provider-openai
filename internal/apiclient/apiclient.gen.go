@@ -494,6 +494,9 @@ type Project struct {
 	// CreatedAt The Unix timestamp (in seconds) of when the project was created.
 	CreatedAt int64 `json:"created_at"`
 
+	// ExternalKeyId The ID of the customer-managed encryption key for Enterprise Key Management (EKM).
+	ExternalKeyId *string `json:"external_key_id,omitempty"`
+
 	// Id The identifier, which can be referenced in API endpoints
 	Id string `json:"id"`
 
@@ -574,6 +577,9 @@ type ProjectApiKeyListResponseObject string
 
 // ProjectCreateRequest defines model for ProjectCreateRequest.
 type ProjectCreateRequest struct {
+	// ExternalKeyId The ID of the customer-managed encryption key for Enterprise Key Management (EKM).
+	ExternalKeyId *string `json:"external_key_id,omitempty"`
+
 	// Geography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
 	Geography *ProjectCreateRequestGeography `json:"geography,omitempty"`
 

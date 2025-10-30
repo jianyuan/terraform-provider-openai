@@ -79,6 +79,10 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 							MarkdownDescription: "Status `active` or `archived`.",
 							Computed:            true,
 						},
+						"external_key_id": schema.StringAttribute{
+							MarkdownDescription: "The ID of the customer-managed encryption key used for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
+							Computed:            true,
+						},
 						"created_at": schema.Int64Attribute{
 							MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
 							Computed:            true,
