@@ -26,3 +26,17 @@ resource "openai_user_role" "example" {
 
 - `role` (String) `owner` or `reader`.
 - `user_id` (String) The ID of the user.
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# Import an organization user
+terraform import openai_user_role.example user-id
+
+# Example
+terraform import openai_user_role.example user-000000000000000000000000
+```
