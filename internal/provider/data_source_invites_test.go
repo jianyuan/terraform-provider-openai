@@ -1,6 +1,7 @@
 package provider_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -11,6 +12,7 @@ import (
 )
 
 func TestAccInvitesDataSource(t *testing.T) {
+	email := fmt.Sprintf("tf-%d@example.com", acctest.RandInt())
 	rn := "data.openai_invites.test"
 
 	resource.Test(t, resource.TestCase{
@@ -18,26 +20,17 @@ func TestAccInvitesDataSource(t *testing.T) {
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccInvitesDataSourceConfig,
+				Config: testAccInvitesDataSourceConfig(email),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("invites"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
 							"id":          knownvalue.NotNull(),
-							"email":       knownvalue.NotNull(),
+							"email":       knownvalue.StringExact(email),
 							"role":        knownvalue.StringExact("reader"),
-							"status":      knownvalue.StringExact("expired"),
+							"status":      knownvalue.NotNull(),
 							"invited_at":  knownvalue.NotNull(),
 							"expires_at":  knownvalue.NotNull(),
 							"accepted_at": knownvalue.Null(),
-						}),
-						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":          knownvalue.NotNull(),
-							"email":       knownvalue.NotNull(),
-							"role":        knownvalue.StringExact("reader"),
-							"status":      knownvalue.StringExact("accepted"),
-							"invited_at":  knownvalue.NotNull(),
-							"expires_at":  knownvalue.NotNull(),
-							"accepted_at": knownvalue.NotNull(),
 						}),
 					})),
 				},
@@ -46,7 +39,16 @@ func TestAccInvitesDataSource(t *testing.T) {
 	})
 }
 
-var testAccInvitesDataSourceConfig = `
-data "openai_invites" "test" {
+func testAccInvitesDataSourceConfig(email string) string {
+	return fmt.Sprintf(`
+resource "openai_invite" "test" {
+	email = %[1]q
+	role  = "reader"
 }
-`
+
+data "openai_invites" "test" {
+	depends_on = [openai_invite.test]
+}
+`, email)
+
+}

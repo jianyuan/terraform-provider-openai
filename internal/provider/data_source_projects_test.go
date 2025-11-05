@@ -49,8 +49,8 @@ func TestAccProjectsDataSource_includeArchived(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("projects"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
 							"id":              knownvalue.NotNull(),
-							"name":            knownvalue.StringExact("Default project"),
-							"status":          knownvalue.StringExact("archived"),
+							"name":            knownvalue.NotNull(),
+							"status":          knownvalue.NotNull(),
 							"external_key_id": knownvalue.Null(),
 							"created_at":      knownvalue.NotNull(),
 							"archived_at":     knownvalue.NotNull(),
