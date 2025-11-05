@@ -17621,7 +17621,7 @@ paths:
           description: >-
             The identifier for the call provided in the
 
-            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook_events/realtime/call/incoming)
+            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook-events/realtime/call/incoming)
 
             webhook.
       requestBody:
@@ -17745,7 +17745,7 @@ paths:
           description: >-
             The identifier for the call. For SIP calls, use the value provided in the
 
-            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook_events/realtime/call/incoming)
+            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook-events/realtime/call/incoming)
 
             webhook. For WebRTC sessions, reuse the call ID returned in the `Location`
 
@@ -17843,7 +17843,7 @@ paths:
           description: >-
             The identifier for the call provided in the
 
-            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook_events/realtime/call/incoming)
+            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook-events/realtime/call/incoming)
 
             webhook.
       requestBody:
@@ -17956,7 +17956,7 @@ paths:
           description: >-
             The identifier for the call provided in the
 
-            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook_events/realtime/call/incoming)
+            [`realtime.call.incoming`](https://platform.openai.com/docs/api-reference/webhook-events/realtime/call/incoming)
 
             webhook.
       requestBody:
@@ -25852,7 +25852,20 @@ paths:
                   -H "Content-Type: application/json \
                   -H "OpenAI-Beta: assistants=v2" \
                   -d '{
-                    "file_ids": ["file-abc123", "file-abc456"]
+                    "files": [
+                      {
+                        "file_id": "file-abc123",
+                        "attributes": {"category": "finance"}
+                      },
+                      {
+                        "file_id": "file-abc456",
+                        "chunking_strategy": {
+                          "type": "static",
+                          "max_chunk_size_tokens": 1200,
+                          "chunk_overlap_tokens": 200
+                        }
+                      }
+                    ]
                   }'
             python: |-
               from openai import OpenAI
@@ -25862,7 +25875,6 @@ paths:
               )
               vector_store_file_batch = client.vector_stores.file_batches.create(
                   vector_store_id="vs_abc123",
-                  file_ids=["string"],
               )
               print(vector_store_file_batch.id)
             node.js: |-
@@ -25872,9 +25884,7 @@ paths:
                 apiKey: 'My API Key',
               });
 
-              const vectorStoreFileBatch = await client.vectorStores.fileBatches.create('vs_abc123', {
-                file_ids: ['string'],
-              });
+              const vectorStoreFileBatch = await client.vectorStores.fileBatches.create('vs_abc123');
 
               console.log(vectorStoreFileBatch.id);
             go: |
@@ -25896,7 +25906,7 @@ paths:
                   context.TODO(),
                   "vs_abc123",
                   openai.VectorStoreFileBatchNewParams{
-                    FileIDs: []string{"string"},
+
                   },
                 )
                 if err != nil {
@@ -25918,23 +25928,15 @@ paths:
                   public static void main(String[] args) {
                       OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
-                      FileBatchCreateParams params = FileBatchCreateParams.builder()
-                          .vectorStoreId("vs_abc123")
-                          .addFileId("string")
-                          .build();
-                      VectorStoreFileBatch vectorStoreFileBatch = client.vectorStores().fileBatches().create(params);
+                      VectorStoreFileBatch vectorStoreFileBatch = client.vectorStores().fileBatches().create("vs_abc123");
                   }
               }
-            ruby: >-
+            ruby: |-
               require "openai"
-
 
               openai = OpenAI::Client.new(api_key: "My API Key")
 
-
-              vector_store_file_batch = openai.vector_stores.file_batches.create("vs_abc123", file_ids:
-              ["string"])
-
+              vector_store_file_batch = openai.vector_stores.file_batches.create("vs_abc123")
 
               puts(vector_store_file_batch)
       description: Create a vector store file batch.
@@ -37487,18 +37489,29 @@ components:
         file_ids:
           description: >-
             A list of [File](https://platform.openai.com/docs/api-reference/files) IDs that the vector store
-            should use. Useful for tools like `file_search` that can access files.
+            should use. Useful for tools like `file_search` that can access files.  If `attributes` or
+            `chunking_strategy` are provided, they will be  applied to all files in the batch. Mutually
+            exclusive with `files`.
           type: array
           minItems: 1
           maxItems: 500
           items:
             type: string
+        files:
+          description: >-
+            A list of objects that each include a `file_id` plus optional `attributes` or `chunking_strategy`.
+            Use this when you need to override metadata for specific files. The global `attributes` or
+            `chunking_strategy` will be ignored and must be specified for each file. Mutually exclusive with
+            `file_ids`.
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/CreateVectorStoreFileRequest'
         chunking_strategy:
           $ref: '#/components/schemas/ChunkingStrategyRequestParam'
         attributes:
           $ref: '#/components/schemas/VectorStoreFileAttributes'
-      required:
-        - file_ids
     CreateVectorStoreFileRequest:
       type: object
       additionalProperties: false
@@ -52757,9 +52770,22 @@ components:
           }
     RealtimeTruncation:
       title: Realtime Truncation Controls
-      description: |
-        Controls how the realtime conversation is truncated prior to model inference.
-        The default is `auto`.
+      description: >
+        When the number of tokens in a conversation exceeds the model's input token limit, the conversation be
+        truncated, meaning messages (starting from the oldest) will not be included in the model's context. A
+        32k context model with 4,096 max output tokens can only include 28,224 tokens in the context before
+        truncation occurs.
+
+        Clients can configure truncation behavior to truncate with a lower max token limit, which is an
+        effective way to control token usage and cost.
+
+        Truncation will reduce the number of cached tokens on the next turn (busting the cache), since
+        messages are dropped from the beginning of the context. However, clients can also configure truncation
+        to retain messages up to a fraction of the maximum context size, which will reduce the need for future
+        truncations and thus improve the cache rate.
+
+        Truncation can be disabled entirely, which means the server will never truncate but would instead
+        return an error if the conversation exceeds the model's input token limit.
       anyOf:
         - type: string
           description: >-
@@ -52786,10 +52812,26 @@ components:
             retention_ratio:
               type: number
               description: >
-                Fraction of post-instruction conversation tokens to retain (0.0 - 1.0) when the conversation
-                exceeds the input token limit.
+                Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the
+                conversation exceeds the input token limit. Setting this to `0.8` means that messages will be
+                dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of
+                truncations and improve cache rates.
               minimum: 0
               maximum: 1
+            token_limits:
+              type: object
+              description: >-
+                Optional custom token limits for this truncation strategy. If not provided, the model's
+                default token limits will be used.
+              properties:
+                post_instructions:
+                  type: integer
+                  description: >-
+                    Maximum tokens allowed in the conversation after instructions (which including tool
+                    definitions). For example, setting this to 5,000 would mean that truncation would occur
+                    when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than
+                    the model's context window size minus the maximum output tokens.
+                  minimum: 0
           required:
             - type
             - retention_ratio
@@ -61712,6 +61754,18 @@ components:
       enum:
         - auto
         - default-2024-11-15
+    HybridSearchOptions:
+      properties:
+        embedding_weight:
+          type: number
+          description: The weight of the embedding in the reciprocal ranking fusion.
+        text_weight:
+          type: number
+          description: The weight of the text in the reciprocal ranking fusion.
+      type: object
+      required:
+        - embedding_weight
+        - text_weight
     RankingOptions:
       properties:
         ranker:
@@ -61722,6 +61776,11 @@ components:
           description: >-
             The score threshold for the file search, a number between 0 and 1. Numbers closer to 1 will
             attempt to return only the most relevant results, but may return fewer results.
+        hybrid_search:
+          $ref: '#/components/schemas/HybridSearchOptions'
+          description: >-
+            Weights that control how reciprocal rank fusion balances semantic embedding matches versus sparse
+            keyword matches when hybrid search is enabled.
       type: object
       required: []
     Filters:
@@ -61797,14 +61856,22 @@ components:
       description: >-
         A tool that controls a virtual computer. Learn more about the [computer
         tool](https://platform.openai.com/docs/guides/tools-computer-use).
+    ContainerMemoryLimit:
+      type: string
+      enum:
+        - 1g
+        - 4g
+        - 16g
+        - 64g
     InputFidelity:
       type: string
       enum:
         - high
         - low
-      description: |2-
-
-                    Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+      description: >-
+        Control how much effort the model will exert to match the style and features, especially facial
+        features, of input images. This parameter is only supported for `gpt-image-1`. Unsupported for
+        `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
     LocalShellToolParam:
       properties:
         type:
@@ -61831,6 +61898,8 @@ components:
       type: object
       required:
         - type
+      title: Text format
+      description: Unconstrained free-form text.
     GrammarSyntax1:
       type: string
       enum:
@@ -61856,6 +61925,8 @@ components:
         - type
         - syntax
         - definition
+      title: Grammar format
+      description: A grammar defined by the user.
     CustomToolParam:
       properties:
         type:
@@ -62137,6 +62208,11 @@ components:
             - type: integer
               description: Unix timestamp (seconds) for when the downloadable assets expire, if set.
             - type: 'null'
+        prompt:
+          anyOf:
+            - type: string
+              description: The prompt that was used to generate the video.
+            - type: 'null'
         size:
           $ref: '#/components/schemas/VideoSize'
           description: The resolution of the generated video.
@@ -62163,6 +62239,7 @@ components:
         - created_at
         - completed_at
         - expires_at
+        - prompt
         - size
         - seconds
         - remixed_from_video_id
@@ -64009,6 +64086,10 @@ components:
           type: array
           maxItems: 50
           description: An optional list of uploaded files to make available to your code.
+        memory_limit:
+          anyOf:
+            - $ref: '#/components/schemas/ContainerMemoryLimit'
+            - type: 'null'
       type: object
       required:
         - type
@@ -64130,33 +64211,6 @@ x-oaiMeta:
         - type: object
           key: ConversationItemList
           path: list-items-object
-    - id: videos
-      title: Videos
-      description: |
-        Generate videos.
-      navigationGroup: responses
-      sections:
-        - type: endpoint
-          key: createVideo
-          path: create
-        - type: endpoint
-          key: CreateVideoRemix
-          path: remix
-        - type: endpoint
-          key: ListVideos
-          path: list
-        - type: endpoint
-          key: GetVideo
-          path: retrieve
-        - type: endpoint
-          key: DeleteVideo
-          path: delete
-        - type: endpoint
-          key: RetrieveVideoContent
-          path: content
-        - type: object
-          key: VideoResource
-          path: object
     - id: responses-streaming
       title: Streaming events
       description: >
@@ -64415,6 +64469,33 @@ x-oaiMeta:
         - type: object
           key: TranscriptTextDoneEvent
           path: transcript-text-done-event
+    - id: videos
+      title: Videos
+      description: |
+        Generate videos.
+      navigationGroup: endpoints
+      sections:
+        - type: endpoint
+          key: createVideo
+          path: create
+        - type: endpoint
+          key: CreateVideoRemix
+          path: remix
+        - type: endpoint
+          key: ListVideos
+          path: list
+        - type: endpoint
+          key: GetVideo
+          path: retrieve
+        - type: endpoint
+          key: DeleteVideo
+          path: delete
+        - type: endpoint
+          key: RetrieveVideoContent
+          path: content
+        - type: object
+          key: VideoResource
+          path: object
     - id: images
       title: Images
       description: |
