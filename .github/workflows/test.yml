@@ -30,7 +30,7 @@ jobs:
           require: write
           username: ${{ github.triggering_actor }}
       - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'false'
+        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
         run: |
           echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
           echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
@@ -60,7 +60,7 @@ jobs:
           require: write
           username: ${{ github.triggering_actor }}
       - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'false'
+        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
         run: |
           echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
           echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
@@ -103,7 +103,7 @@ jobs:
           require: write
           username: ${{ github.triggering_actor }}
       - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'false'
+        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
         run: |
           echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
           echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
