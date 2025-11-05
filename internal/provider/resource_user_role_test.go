@@ -18,6 +18,13 @@ func TestAccUserRoleResource(t *testing.T) {
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
+			// Import existing user role
+			{
+				Config:        testAccUserRoleResourceConfig(acctest.TestUserId, "owner"),
+				ResourceName:  rn,
+				ImportState:   true,
+				ImportStateId: acctest.TestUserId,
+			},
 			{
 				Config: testAccUserRoleResourceConfig(acctest.TestUserId, "owner"),
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -32,6 +39,10 @@ func TestAccUserRoleResource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("role"), knownvalue.StringExact("reader")),
 				},
 			},
+			{
+				// Detach state to prevent deletion of user
+				Config: testAccUserRoleDetachState(),
+			},
 		},
 	})
 }
@@ -41,6 +52,22 @@ func testAccUserRoleResourceConfig(userId, role string) string {
 resource "openai_user_role" "test" {
 	user_id = %[1]q
 	role    = %[2]q
+
+	lifecycle {
+		prevent_destroy = true
+	}
 }
 `, userId, role)
+}
+
+func testAccUserRoleDetachState() string {
+	return `
+removed {
+  from = openai_user_role.test
+
+  lifecycle {
+    destroy = false
+  }
+}
+`
 }
