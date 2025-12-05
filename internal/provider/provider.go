@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
@@ -87,6 +88,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	retryClient := retryablehttp.NewClient()
+	retryClient.HTTPClient.Transport = logging.NewLoggingHTTPTransport(retryClient.HTTPClient.Transport)
 	retryClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 	retryClient.Logger = nil
 	retryClient.RetryMax = 10

@@ -132,12 +132,15 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
+	} else if httpResp.StatusCode() != http.StatusOK {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		return
+	} else if httpResp.JSON200 == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON201)...)
+	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON200)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -194,10 +197,12 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 	)
 
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		return
+	} else if httpResp.StatusCode() == http.StatusNotFound {
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

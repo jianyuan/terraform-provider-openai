@@ -82,32 +82,25 @@ def fix_number_format(spec):
             return spec
 
 
-def fix_response_status_code(spec):
-    path_keys = [
-        "/organization/invites",
-        "/organization/projects",
-        "/organization/projects/{project_id}/users",
-        "/organization/projects/{project_id}/service_accounts",
-    ]
-
-    for path_key in path_keys:
-        path = spec["paths"][path_key]
-        path["post"]["responses"]["201"] = path["post"]["responses"].pop("200")
-
-    return spec
-
-
 def add_external_key_id_to_project(spec):
     property_spec = {
         "type": "string",
         "description": "The ID of the customer-managed encryption key for Enterprise Key Management (EKM).",
     }
-    spec["components"]["schemas"]["Project"]["properties"][
-        "external_key_id"
-    ] = property_spec
+    spec["components"]["schemas"]["Project"]["properties"]["external_key_id"] = (
+        property_spec
+    )
     spec["components"]["schemas"]["ProjectCreateRequest"]["properties"][
         "external_key_id"
     ] = property_spec
+
+    return spec
+
+
+def rename_user_role_assignment_object(spec):
+    spec["components"]["schemas"]["UserRoleAssignment"]["properties"]["object"][
+        "x-enum-varnames"
+    ] = ["UserRoleAssignmentObjectUserRole"]
 
     return spec
 
@@ -118,8 +111,8 @@ fix_funcs = [
     fix_certificate_id_parameter,
     fix_any_of,
     fix_number_format,
-    fix_response_status_code,
     add_external_key_id_to_project,
+    rename_user_role_assignment_object,
 ]
 
 
