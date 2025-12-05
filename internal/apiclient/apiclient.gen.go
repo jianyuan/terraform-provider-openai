@@ -27,6 +27,36 @@ const (
 	CertificateObjectOrganizationProjectCertificate CertificateObject = "organization.project.certificate"
 )
 
+// Defines values for GroupObject.
+const (
+	GroupObjectGroup GroupObject = "group"
+)
+
+// Defines values for GroupDeletedResourceObject.
+const (
+	GroupDeleted GroupDeletedResourceObject = "group.deleted"
+)
+
+// Defines values for GroupListResourceObject.
+const (
+	GroupListResourceObjectList GroupListResourceObject = "list"
+)
+
+// Defines values for GroupRoleAssignmentObject.
+const (
+	GroupRole GroupRoleAssignmentObject = "group.role"
+)
+
+// Defines values for GroupUserAssignmentObject.
+const (
+	GroupUser GroupUserAssignmentObject = "group.user"
+)
+
+// Defines values for GroupUserDeletedResourceObject.
+const (
+	GroupUserDeleted GroupUserDeletedResourceObject = "group.user.deleted"
+)
+
 // Defines values for InviteObject.
 const (
 	OrganizationInvite InviteObject = "organization.invite"
@@ -122,6 +152,21 @@ const (
 	US ProjectCreateRequestGeography = "US"
 )
 
+// Defines values for ProjectGroupObject.
+const (
+	ProjectGroupObjectProjectGroup ProjectGroupObject = "project.group"
+)
+
+// Defines values for ProjectGroupDeletedResourceObject.
+const (
+	ProjectGroupDeleted ProjectGroupDeletedResourceObject = "project.group.deleted"
+)
+
+// Defines values for ProjectGroupListResourceObject.
+const (
+	ProjectGroupListResourceObjectList ProjectGroupListResourceObject = "list"
+)
+
 // Defines values for ProjectListResponseObject.
 const (
 	ProjectListResponseObjectList ProjectListResponseObject = "list"
@@ -201,6 +246,26 @@ const (
 	ProjectUserUpdateRequestRoleOwner  ProjectUserUpdateRequestRole = "owner"
 )
 
+// Defines values for PublicRoleListResourceObject.
+const (
+	PublicRoleListResourceObjectList PublicRoleListResourceObject = "list"
+)
+
+// Defines values for RoleObject.
+const (
+	RoleObjectRole RoleObject = "role"
+)
+
+// Defines values for RoleDeletedResourceObject.
+const (
+	RoleDeleted RoleDeletedResourceObject = "role.deleted"
+)
+
+// Defines values for RoleListResourceObject.
+const (
+	RoleListResourceObjectList RoleListResourceObject = "list"
+)
+
 // Defines values for UserObject.
 const (
 	OrganizationUser UserObject = "organization.user"
@@ -217,9 +282,19 @@ const (
 	OrganizationUserDeleted UserDeleteResponseObject = "organization.user.deleted"
 )
 
+// Defines values for UserListResourceObject.
+const (
+	UserListResourceObjectList UserListResourceObject = "list"
+)
+
 // Defines values for UserListResponseObject.
 const (
-	List UserListResponseObject = "list"
+	UserListResponseObjectList UserListResponseObject = "list"
+)
+
+// Defines values for UserRoleAssignmentObject.
+const (
+	UserRoleAssignmentObjectUserRole UserRoleAssignmentObject = "user.role"
 )
 
 // Defines values for UserRoleUpdateRequestRole.
@@ -245,10 +320,64 @@ const (
 	Content GetCertificateParamsInclude = "content"
 )
 
+// Defines values for ListGroupsParamsOrder.
+const (
+	ListGroupsParamsOrderAsc  ListGroupsParamsOrder = "asc"
+	ListGroupsParamsOrderDesc ListGroupsParamsOrder = "desc"
+)
+
+// Defines values for ListGroupRoleAssignmentsParamsOrder.
+const (
+	ListGroupRoleAssignmentsParamsOrderAsc  ListGroupRoleAssignmentsParamsOrder = "asc"
+	ListGroupRoleAssignmentsParamsOrderDesc ListGroupRoleAssignmentsParamsOrder = "desc"
+)
+
+// Defines values for ListGroupUsersParamsOrder.
+const (
+	ListGroupUsersParamsOrderAsc  ListGroupUsersParamsOrder = "asc"
+	ListGroupUsersParamsOrderDesc ListGroupUsersParamsOrder = "desc"
+)
+
 // Defines values for ListProjectCertificatesParamsOrder.
 const (
-	Asc  ListProjectCertificatesParamsOrder = "asc"
-	Desc ListProjectCertificatesParamsOrder = "desc"
+	ListProjectCertificatesParamsOrderAsc  ListProjectCertificatesParamsOrder = "asc"
+	ListProjectCertificatesParamsOrderDesc ListProjectCertificatesParamsOrder = "desc"
+)
+
+// Defines values for ListProjectGroupsParamsOrder.
+const (
+	ListProjectGroupsParamsOrderAsc  ListProjectGroupsParamsOrder = "asc"
+	ListProjectGroupsParamsOrderDesc ListProjectGroupsParamsOrder = "desc"
+)
+
+// Defines values for ListRolesParamsOrder.
+const (
+	ListRolesParamsOrderAsc  ListRolesParamsOrder = "asc"
+	ListRolesParamsOrderDesc ListRolesParamsOrder = "desc"
+)
+
+// Defines values for ListUserRoleAssignmentsParamsOrder.
+const (
+	ListUserRoleAssignmentsParamsOrderAsc  ListUserRoleAssignmentsParamsOrder = "asc"
+	ListUserRoleAssignmentsParamsOrderDesc ListUserRoleAssignmentsParamsOrder = "desc"
+)
+
+// Defines values for ListProjectGroupRoleAssignmentsParamsOrder.
+const (
+	ListProjectGroupRoleAssignmentsParamsOrderAsc  ListProjectGroupRoleAssignmentsParamsOrder = "asc"
+	ListProjectGroupRoleAssignmentsParamsOrderDesc ListProjectGroupRoleAssignmentsParamsOrder = "desc"
+)
+
+// Defines values for ListProjectRolesParamsOrder.
+const (
+	ListProjectRolesParamsOrderAsc  ListProjectRolesParamsOrder = "asc"
+	ListProjectRolesParamsOrderDesc ListProjectRolesParamsOrder = "desc"
+)
+
+// Defines values for ListProjectUserRoleAssignmentsParamsOrder.
+const (
+	ListProjectUserRoleAssignmentsParamsOrderAsc  ListProjectUserRoleAssignmentsParamsOrder = "asc"
+	ListProjectUserRoleAssignmentsParamsOrderDesc ListProjectUserRoleAssignmentsParamsOrder = "desc"
 )
 
 // AdminApiKey Represents an individual Admin API key in an org.
@@ -303,6 +432,31 @@ type ApiKeyList struct {
 	Object  *string        `json:"object,omitempty"`
 }
 
+// AssignedRoleDetails Detailed information about a role assignment entry returned when listing assignments.
+type AssignedRoleDetails struct {
+	CreatedAt        *int64                  `json:"created_at"`
+	CreatedBy        *string                 `json:"created_by"`
+	CreatedByUserObj *map[string]interface{} `json:"created_by_user_obj"`
+	Description      *string                 `json:"description"`
+
+	// Id Identifier for the role.
+	Id       string                  `json:"id"`
+	Metadata *map[string]interface{} `json:"metadata"`
+
+	// Name Name of the role.
+	Name string `json:"name"`
+
+	// Permissions Permissions associated with the role.
+	Permissions []string `json:"permissions"`
+
+	// PredefinedRole Whether the role is predefined by OpenAI.
+	PredefinedRole bool `json:"predefined_role"`
+
+	// ResourceType Resource type the role applies to.
+	ResourceType string `json:"resource_type"`
+	UpdatedAt    *int64 `json:"updated_at"`
+}
+
 // Certificate Represents an individual `certificate` uploaded to the organization.
 type Certificate struct {
 	// Active Whether the certificate is currently active at the specified scope. Not returned when getting details for a specific certificate.
@@ -342,6 +496,18 @@ type Certificate struct {
 // - If listing, activating, or deactivating certificates for a project, the object type is `organization.project.certificate`.
 type CertificateObject string
 
+// CreateGroupBody Request payload for creating a new group in the organization.
+type CreateGroupBody struct {
+	// Name Human readable name for the group.
+	Name string `json:"name"`
+}
+
+// CreateGroupUserBody Request payload for adding a user to a group.
+type CreateGroupUserBody struct {
+	// UserId Identifier of the user to add to the group.
+	UserId string `json:"user_id"`
+}
+
 // DeleteCertificateResponse defines model for DeleteCertificateResponse.
 type DeleteCertificateResponse struct {
 	// Id The ID of the certificate that was deleted.
@@ -349,6 +515,15 @@ type DeleteCertificateResponse struct {
 
 	// Object The object type, must be `certificate.deleted`.
 	Object interface{} `json:"object"`
+}
+
+// DeletedRoleAssignmentResource Confirmation payload returned after unassigning a role.
+type DeletedRoleAssignmentResource struct {
+	// Deleted Whether the assignment was removed.
+	Deleted bool `json:"deleted"`
+
+	// Object Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
+	Object string `json:"object"`
 }
 
 // Error defines model for Error.
@@ -363,6 +538,130 @@ type Error struct {
 type ErrorResponse struct {
 	Error Error `json:"error"`
 }
+
+// Group Summary information about a group returned in role assignment responses.
+type Group struct {
+	// CreatedAt Unix timestamp (in seconds) when the group was created.
+	CreatedAt int64 `json:"created_at"`
+
+	// Id Identifier for the group.
+	Id string `json:"id"`
+
+	// Name Display name of the group.
+	Name string `json:"name"`
+
+	// Object Always `group`.
+	Object GroupObject `json:"object"`
+
+	// ScimManaged Whether the group is managed through SCIM.
+	ScimManaged bool `json:"scim_managed"`
+}
+
+// GroupObject Always `group`.
+type GroupObject string
+
+// GroupDeletedResource Confirmation payload returned after deleting a group.
+type GroupDeletedResource struct {
+	// Deleted Whether the group was deleted.
+	Deleted bool `json:"deleted"`
+
+	// Id Identifier of the deleted group.
+	Id string `json:"id"`
+
+	// Object Always `group.deleted`.
+	Object GroupDeletedResourceObject `json:"object"`
+}
+
+// GroupDeletedResourceObject Always `group.deleted`.
+type GroupDeletedResourceObject string
+
+// GroupListResource Paginated list of organization groups.
+type GroupListResource struct {
+	// Data Groups returned in the current page.
+	Data []GroupResponse `json:"data"`
+
+	// HasMore Whether additional groups are available when paginating.
+	HasMore bool    `json:"has_more"`
+	Next    *string `json:"next"`
+
+	// Object Always `list`.
+	Object GroupListResourceObject `json:"object"`
+}
+
+// GroupListResourceObject Always `list`.
+type GroupListResourceObject string
+
+// GroupResourceWithSuccess Response returned after updating a group.
+type GroupResourceWithSuccess struct {
+	// CreatedAt Unix timestamp (in seconds) when the group was created.
+	CreatedAt int64 `json:"created_at"`
+
+	// Id Identifier for the group.
+	Id string `json:"id"`
+
+	// IsScimManaged Whether the group is managed through SCIM and controlled by your identity provider.
+	IsScimManaged bool `json:"is_scim_managed"`
+
+	// Name Updated display name for the group.
+	Name string `json:"name"`
+}
+
+// GroupResponse Details about an organization group.
+type GroupResponse struct {
+	// CreatedAt Unix timestamp (in seconds) when the group was created.
+	CreatedAt int64 `json:"created_at"`
+
+	// Id Identifier for the group.
+	Id string `json:"id"`
+
+	// IsScimManaged Whether the group is managed through SCIM and controlled by your identity provider.
+	IsScimManaged bool `json:"is_scim_managed"`
+
+	// Name Display name of the group.
+	Name string `json:"name"`
+}
+
+// GroupRoleAssignment Role assignment linking a group to a role.
+type GroupRoleAssignment struct {
+	// Group Summary information about a group returned in role assignment responses.
+	Group Group `json:"group"`
+
+	// Object Always `group.role`.
+	Object GroupRoleAssignmentObject `json:"object"`
+
+	// Role Details about a role that can be assigned through the public Roles API.
+	Role Role `json:"role"`
+}
+
+// GroupRoleAssignmentObject Always `group.role`.
+type GroupRoleAssignmentObject string
+
+// GroupUserAssignment Confirmation payload returned after adding a user to a group.
+type GroupUserAssignment struct {
+	// GroupId Identifier of the group the user was added to.
+	GroupId string `json:"group_id"`
+
+	// Object Always `group.user`.
+	Object GroupUserAssignmentObject `json:"object"`
+
+	// UserId Identifier of the user that was added.
+	UserId string `json:"user_id"`
+}
+
+// GroupUserAssignmentObject Always `group.user`.
+type GroupUserAssignmentObject string
+
+// GroupUserDeletedResource Confirmation payload returned after removing a user from a group.
+type GroupUserDeletedResource struct {
+	// Deleted Whether the group membership was removed.
+	Deleted bool `json:"deleted"`
+
+	// Object Always `group.user.deleted`.
+	Object GroupUserDeletedResourceObject `json:"object"`
+}
+
+// GroupUserDeletedResourceObject Always `group.user.deleted`.
+type GroupUserDeletedResourceObject string
 
 // Invite Represents an individual `invite` to the organization.
 type Invite struct {
@@ -443,6 +742,15 @@ type InviteListResponse struct {
 
 // InviteListResponseObject The object type, which is always `list`
 type InviteListResponseObject string
+
+// InviteProjectGroupBody Request payload for granting a group access to a project.
+type InviteProjectGroupBody struct {
+	// GroupId Identifier of the group to add to the project.
+	GroupId string `json:"group_id"`
+
+	// Role Identifier of the project role to grant to the group.
+	Role string `json:"role"`
+}
 
 // InviteRequest defines model for InviteRequest.
 type InviteRequest struct {
@@ -589,6 +897,55 @@ type ProjectCreateRequest struct {
 
 // ProjectCreateRequestGeography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
 type ProjectCreateRequestGeography string
+
+// ProjectGroup Details about a group's membership in a project.
+type ProjectGroup struct {
+	// CreatedAt Unix timestamp (in seconds) when the group was granted project access.
+	CreatedAt int64 `json:"created_at"`
+
+	// GroupId Identifier of the group that has access to the project.
+	GroupId string `json:"group_id"`
+
+	// GroupName Display name of the group.
+	GroupName string `json:"group_name"`
+
+	// Object Always `project.group`.
+	Object ProjectGroupObject `json:"object"`
+
+	// ProjectId Identifier of the project.
+	ProjectId string `json:"project_id"`
+}
+
+// ProjectGroupObject Always `project.group`.
+type ProjectGroupObject string
+
+// ProjectGroupDeletedResource Confirmation payload returned after removing a group from a project.
+type ProjectGroupDeletedResource struct {
+	// Deleted Whether the group membership in the project was removed.
+	Deleted bool `json:"deleted"`
+
+	// Object Always `project.group.deleted`.
+	Object ProjectGroupDeletedResourceObject `json:"object"`
+}
+
+// ProjectGroupDeletedResourceObject Always `project.group.deleted`.
+type ProjectGroupDeletedResourceObject string
+
+// ProjectGroupListResource Paginated list of groups that have access to a project.
+type ProjectGroupListResource struct {
+	// Data Project group memberships returned in the current page.
+	Data []ProjectGroup `json:"data"`
+
+	// HasMore Whether additional project group memberships are available.
+	HasMore bool    `json:"has_more"`
+	Next    *string `json:"next"`
+
+	// Object Always `list`.
+	Object ProjectGroupListResourceObject `json:"object"`
+}
+
+// ProjectGroupListResourceObject Always `list`.
+type ProjectGroupListResourceObject string
 
 // ProjectListResponse defines model for ProjectListResponse.
 type ProjectListResponse struct {
@@ -825,9 +1182,112 @@ type ProjectUserUpdateRequest struct {
 // ProjectUserUpdateRequestRole `owner` or `member`
 type ProjectUserUpdateRequestRole string
 
+// PublicAssignOrganizationGroupRoleBody Request payload for assigning a role to a group or user.
+type PublicAssignOrganizationGroupRoleBody struct {
+	// RoleId Identifier of the role to assign.
+	RoleId string `json:"role_id"`
+}
+
+// PublicCreateOrganizationRoleBody Request payload for creating a custom role.
+type PublicCreateOrganizationRoleBody struct {
+	Description *string `json:"description"`
+
+	// Permissions Permissions to grant to the role.
+	Permissions []string `json:"permissions"`
+
+	// RoleName Unique name for the role.
+	RoleName string `json:"role_name"`
+}
+
+// PublicRoleListResource Paginated list of roles available on an organization or project.
+type PublicRoleListResource struct {
+	// Data Roles returned in the current page.
+	Data []Role `json:"data"`
+
+	// HasMore Whether more roles are available when paginating.
+	HasMore bool    `json:"has_more"`
+	Next    *string `json:"next"`
+
+	// Object Always `list`.
+	Object PublicRoleListResourceObject `json:"object"`
+}
+
+// PublicRoleListResourceObject Always `list`.
+type PublicRoleListResourceObject string
+
+// PublicUpdateOrganizationRoleBody Request payload for updating an existing role.
+type PublicUpdateOrganizationRoleBody struct {
+	Description *string   `json:"description"`
+	Permissions *[]string `json:"permissions"`
+	RoleName    *string   `json:"role_name"`
+}
+
+// Role Details about a role that can be assigned through the public Roles API.
+type Role struct {
+	Description *string `json:"description"`
+
+	// Id Identifier for the role.
+	Id string `json:"id"`
+
+	// Name Unique name for the role.
+	Name string `json:"name"`
+
+	// Object Always `role`.
+	Object RoleObject `json:"object"`
+
+	// Permissions Permissions granted by the role.
+	Permissions []string `json:"permissions"`
+
+	// PredefinedRole Whether the role is predefined and managed by OpenAI.
+	PredefinedRole bool `json:"predefined_role"`
+
+	// ResourceType Resource type the role is bound to (for example `api.organization` or `api.project`).
+	ResourceType string `json:"resource_type"`
+}
+
+// RoleObject Always `role`.
+type RoleObject string
+
+// RoleDeletedResource Confirmation payload returned after deleting a role.
+type RoleDeletedResource struct {
+	// Deleted Whether the role was deleted.
+	Deleted bool `json:"deleted"`
+
+	// Id Identifier of the deleted role.
+	Id string `json:"id"`
+
+	// Object Always `role.deleted`.
+	Object RoleDeletedResourceObject `json:"object"`
+}
+
+// RoleDeletedResourceObject Always `role.deleted`.
+type RoleDeletedResourceObject string
+
+// RoleListResource Paginated list of roles assigned to a principal.
+type RoleListResource struct {
+	// Data Role assignments returned in the current page.
+	Data []AssignedRoleDetails `json:"data"`
+
+	// HasMore Whether additional assignments are available when paginating.
+	HasMore bool    `json:"has_more"`
+	Next    *string `json:"next"`
+
+	// Object Always `list`.
+	Object RoleListResourceObject `json:"object"`
+}
+
+// RoleListResourceObject Always `list`.
+type RoleListResourceObject string
+
 // ToggleCertificatesRequest defines model for ToggleCertificatesRequest.
 type ToggleCertificatesRequest struct {
 	CertificateIds []string `json:"certificate_ids"`
+}
+
+// UpdateGroupBody Request payload for updating the details of an existing group.
+type UpdateGroupBody struct {
+	// Name New display name for the group.
+	Name string `json:"name"`
 }
 
 // UploadCertificateRequest defines model for UploadCertificateRequest.
@@ -876,6 +1336,22 @@ type UserDeleteResponse struct {
 // UserDeleteResponseObject defines model for UserDeleteResponse.Object.
 type UserDeleteResponseObject string
 
+// UserListResource Paginated list of user objects returned when inspecting group membership.
+type UserListResource struct {
+	// Data Users in the current page.
+	Data []User `json:"data"`
+
+	// HasMore Whether more users are available when paginating.
+	HasMore bool    `json:"has_more"`
+	Next    *string `json:"next"`
+
+	// Object Always `list`.
+	Object UserListResourceObject `json:"object"`
+}
+
+// UserListResourceObject Always `list`.
+type UserListResourceObject string
+
 // UserListResponse defines model for UserListResponse.
 type UserListResponse struct {
 	Data    []User                 `json:"data"`
@@ -887,6 +1363,21 @@ type UserListResponse struct {
 
 // UserListResponseObject defines model for UserListResponse.Object.
 type UserListResponseObject string
+
+// UserRoleAssignment Role assignment linking a user to a role.
+type UserRoleAssignment struct {
+	// Object Always `user.role`.
+	Object UserRoleAssignmentObject `json:"object"`
+
+	// Role Details about a role that can be assigned through the public Roles API.
+	Role Role `json:"role"`
+
+	// User Represents an individual `user` within an organization.
+	User User `json:"user"`
+}
+
+// UserRoleAssignmentObject Always `user.role`.
+type UserRoleAssignmentObject string
 
 // UserRoleUpdateRequest defines model for UserRoleUpdateRequest.
 type UserRoleUpdateRequest struct {
@@ -936,6 +1427,51 @@ type GetCertificateParams struct {
 // GetCertificateParamsInclude defines parameters for GetCertificate.
 type GetCertificateParamsInclude string
 
+// ListGroupsParams defines parameters for ListGroups.
+type ListGroupsParams struct {
+	// Limit A limit on the number of groups to be returned. Limit can range between 0 and 1000, and the default is 100.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After A cursor for use in pagination. `after` is a group ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with group_abc, your subsequent call can include `after=group_abc` in order to fetch the next page of the list.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Specifies the sort order of the returned groups.
+	Order *ListGroupsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListGroupsParamsOrder defines parameters for ListGroups.
+type ListGroupsParamsOrder string
+
+// ListGroupRoleAssignmentsParams defines parameters for ListGroupRoleAssignments.
+type ListGroupRoleAssignmentsParams struct {
+	// Limit A limit on the number of organization role assignments to return.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing organization roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned organization roles.
+	Order *ListGroupRoleAssignmentsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListGroupRoleAssignmentsParamsOrder defines parameters for ListGroupRoleAssignments.
+type ListGroupRoleAssignmentsParamsOrder string
+
+// ListGroupUsersParams defines parameters for ListGroupUsers.
+type ListGroupUsersParams struct {
+	// Limit A limit on the number of users to be returned. Limit can range between 0 and 1000, and the default is 100.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After A cursor for use in pagination. Provide the ID of the last user from the previous list response to retrieve the next page.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Specifies the sort order of users in the list.
+	Order *ListGroupUsersParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListGroupUsersParamsOrder defines parameters for ListGroupUsers.
+type ListGroupUsersParamsOrder string
+
 // ListInvitesParams defines parameters for ListInvites.
 type ListInvitesParams struct {
 	// Limit A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -981,6 +1517,21 @@ type ListProjectCertificatesParams struct {
 // ListProjectCertificatesParamsOrder defines parameters for ListProjectCertificates.
 type ListProjectCertificatesParamsOrder string
 
+// ListProjectGroupsParams defines parameters for ListProjectGroups.
+type ListProjectGroupsParams struct {
+	// Limit A limit on the number of project groups to return. Defaults to 20.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the ID of the last group from the previous response to fetch the next page.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned groups.
+	Order *ListProjectGroupsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListProjectGroupsParamsOrder defines parameters for ListProjectGroups.
+type ListProjectGroupsParamsOrder string
+
 // ListProjectRateLimitsParams defines parameters for ListProjectRateLimits.
 type ListProjectRateLimitsParams struct {
 	// Limit A limit on the number of objects to be returned. The default is 100.
@@ -1011,6 +1562,21 @@ type ListProjectUsersParams struct {
 	After *string `form:"after,omitempty" json:"after,omitempty"`
 }
 
+// ListRolesParams defines parameters for ListRoles.
+type ListRolesParams struct {
+	// Limit A limit on the number of roles to return. Defaults to 1000.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned roles.
+	Order *ListRolesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListRolesParamsOrder defines parameters for ListRoles.
+type ListRolesParamsOrder string
+
 // ListUsersParams defines parameters for ListUsers.
 type ListUsersParams struct {
 	// Limit A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -1022,6 +1588,66 @@ type ListUsersParams struct {
 	// Emails Filter by the email address of users.
 	Emails *[]string `form:"emails,omitempty" json:"emails,omitempty"`
 }
+
+// ListUserRoleAssignmentsParams defines parameters for ListUserRoleAssignments.
+type ListUserRoleAssignmentsParams struct {
+	// Limit A limit on the number of organization role assignments to return.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing organization roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned organization roles.
+	Order *ListUserRoleAssignmentsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListUserRoleAssignmentsParamsOrder defines parameters for ListUserRoleAssignments.
+type ListUserRoleAssignmentsParamsOrder string
+
+// ListProjectGroupRoleAssignmentsParams defines parameters for ListProjectGroupRoleAssignments.
+type ListProjectGroupRoleAssignmentsParams struct {
+	// Limit A limit on the number of project role assignments to return.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned project roles.
+	Order *ListProjectGroupRoleAssignmentsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListProjectGroupRoleAssignmentsParamsOrder defines parameters for ListProjectGroupRoleAssignments.
+type ListProjectGroupRoleAssignmentsParamsOrder string
+
+// ListProjectRolesParams defines parameters for ListProjectRoles.
+type ListProjectRolesParams struct {
+	// Limit A limit on the number of roles to return. Defaults to 1000.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned roles.
+	Order *ListProjectRolesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListProjectRolesParamsOrder defines parameters for ListProjectRoles.
+type ListProjectRolesParamsOrder string
+
+// ListProjectUserRoleAssignmentsParams defines parameters for ListProjectUserRoleAssignments.
+type ListProjectUserRoleAssignmentsParams struct {
+	// Limit A limit on the number of project role assignments to return.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+
+	// Order Sort order for the returned project roles.
+	Order *ListProjectUserRoleAssignmentsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListProjectUserRoleAssignmentsParamsOrder defines parameters for ListProjectUserRoleAssignments.
+type ListProjectUserRoleAssignmentsParamsOrder string
 
 // AdminApiKeysCreateJSONRequestBody defines body for AdminApiKeysCreate for application/json ContentType.
 type AdminApiKeysCreateJSONRequestBody AdminApiKeysCreateJSONBody
@@ -1038,6 +1664,18 @@ type DeactivateOrganizationCertificatesJSONRequestBody = ToggleCertificatesReque
 // ModifyCertificateJSONRequestBody defines body for ModifyCertificate for application/json ContentType.
 type ModifyCertificateJSONRequestBody = ModifyCertificateRequest
 
+// CreateGroupJSONRequestBody defines body for CreateGroup for application/json ContentType.
+type CreateGroupJSONRequestBody = CreateGroupBody
+
+// UpdateGroupJSONRequestBody defines body for UpdateGroup for application/json ContentType.
+type UpdateGroupJSONRequestBody = UpdateGroupBody
+
+// AssignGroupRoleJSONRequestBody defines body for AssignGroupRole for application/json ContentType.
+type AssignGroupRoleJSONRequestBody = PublicAssignOrganizationGroupRoleBody
+
+// AddGroupUserJSONRequestBody defines body for AddGroupUser for application/json ContentType.
+type AddGroupUserJSONRequestBody = CreateGroupUserBody
+
 // InviteUserJSONRequestBody defines body for InviteUser for application/json ContentType.
 type InviteUserJSONRequestBody = InviteRequest
 
@@ -1053,6 +1691,9 @@ type ActivateProjectCertificatesJSONRequestBody = ToggleCertificatesRequest
 // DeactivateProjectCertificatesJSONRequestBody defines body for DeactivateProjectCertificates for application/json ContentType.
 type DeactivateProjectCertificatesJSONRequestBody = ToggleCertificatesRequest
 
+// AddProjectGroupJSONRequestBody defines body for AddProjectGroup for application/json ContentType.
+type AddProjectGroupJSONRequestBody = InviteProjectGroupBody
+
 // UpdateProjectRateLimitsJSONRequestBody defines body for UpdateProjectRateLimits for application/json ContentType.
 type UpdateProjectRateLimitsJSONRequestBody = ProjectRateLimitUpdateRequest
 
@@ -1065,8 +1706,29 @@ type CreateProjectUserJSONRequestBody = ProjectUserCreateRequest
 // ModifyProjectUserJSONRequestBody defines body for ModifyProjectUser for application/json ContentType.
 type ModifyProjectUserJSONRequestBody = ProjectUserUpdateRequest
 
+// CreateRoleJSONRequestBody defines body for CreateRole for application/json ContentType.
+type CreateRoleJSONRequestBody = PublicCreateOrganizationRoleBody
+
+// UpdateRoleJSONRequestBody defines body for UpdateRole for application/json ContentType.
+type UpdateRoleJSONRequestBody = PublicUpdateOrganizationRoleBody
+
 // ModifyUserJSONRequestBody defines body for ModifyUser for application/json ContentType.
 type ModifyUserJSONRequestBody = UserRoleUpdateRequest
+
+// AssignUserRoleJSONRequestBody defines body for AssignUserRole for application/json ContentType.
+type AssignUserRoleJSONRequestBody = PublicAssignOrganizationGroupRoleBody
+
+// AssignProjectGroupRoleJSONRequestBody defines body for AssignProjectGroupRole for application/json ContentType.
+type AssignProjectGroupRoleJSONRequestBody = PublicAssignOrganizationGroupRoleBody
+
+// CreateProjectRoleJSONRequestBody defines body for CreateProjectRole for application/json ContentType.
+type CreateProjectRoleJSONRequestBody = PublicCreateOrganizationRoleBody
+
+// UpdateProjectRoleJSONRequestBody defines body for UpdateProjectRole for application/json ContentType.
+type UpdateProjectRoleJSONRequestBody = PublicUpdateOrganizationRoleBody
+
+// AssignProjectUserRoleJSONRequestBody defines body for AssignProjectUserRole for application/json ContentType.
+type AssignProjectUserRoleJSONRequestBody = PublicAssignOrganizationGroupRoleBody
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -1184,6 +1846,44 @@ type ClientInterface interface {
 
 	ModifyCertificate(ctx context.Context, certificateId string, body ModifyCertificateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListGroups request
+	ListGroups(ctx context.Context, params *ListGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateGroupWithBody request with any body
+	CreateGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateGroup(ctx context.Context, body CreateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteGroup request
+	DeleteGroup(ctx context.Context, groupId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateGroupWithBody request with any body
+	UpdateGroupWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateGroup(ctx context.Context, groupId string, body UpdateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGroupRoleAssignments request
+	ListGroupRoleAssignments(ctx context.Context, groupId string, params *ListGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AssignGroupRoleWithBody request with any body
+	AssignGroupRoleWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AssignGroupRole(ctx context.Context, groupId string, body AssignGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnassignGroupRole request
+	UnassignGroupRole(ctx context.Context, groupId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGroupUsers request
+	ListGroupUsers(ctx context.Context, groupId string, params *ListGroupUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddGroupUserWithBody request with any body
+	AddGroupUserWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddGroupUser(ctx context.Context, groupId string, body AddGroupUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveGroupUser request
+	RemoveGroupUser(ctx context.Context, groupId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListInvites request
 	ListInvites(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1239,6 +1939,17 @@ type ClientInterface interface {
 
 	DeactivateProjectCertificates(ctx context.Context, projectId string, body DeactivateProjectCertificatesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListProjectGroups request
+	ListProjectGroups(ctx context.Context, projectId string, params *ListProjectGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddProjectGroupWithBody request with any body
+	AddProjectGroupWithBody(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddProjectGroup(ctx context.Context, projectId string, body AddProjectGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveProjectGroup request
+	RemoveProjectGroup(ctx context.Context, projectId string, groupId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListProjectRateLimits request
 	ListProjectRateLimits(ctx context.Context, projectId string, params *ListProjectRateLimitsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1280,6 +1991,22 @@ type ClientInterface interface {
 
 	ModifyProjectUser(ctx context.Context, projectId string, userId string, body ModifyProjectUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListRoles request
+	ListRoles(ctx context.Context, params *ListRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateRoleWithBody request with any body
+	CreateRoleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateRole(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteRole request
+	DeleteRole(ctx context.Context, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateRoleWithBody request with any body
+	UpdateRoleWithBody(ctx context.Context, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateRole(ctx context.Context, roleId string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListUsers request
 	ListUsers(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1293,6 +2020,55 @@ type ClientInterface interface {
 	ModifyUserWithBody(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	ModifyUser(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListUserRoleAssignments request
+	ListUserRoleAssignments(ctx context.Context, userId string, params *ListUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AssignUserRoleWithBody request with any body
+	AssignUserRoleWithBody(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AssignUserRole(ctx context.Context, userId string, body AssignUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnassignUserRole request
+	UnassignUserRole(ctx context.Context, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListProjectGroupRoleAssignments request
+	ListProjectGroupRoleAssignments(ctx context.Context, projectId string, groupId string, params *ListProjectGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AssignProjectGroupRoleWithBody request with any body
+	AssignProjectGroupRoleWithBody(ctx context.Context, projectId string, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AssignProjectGroupRole(ctx context.Context, projectId string, groupId string, body AssignProjectGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnassignProjectGroupRole request
+	UnassignProjectGroupRole(ctx context.Context, projectId string, groupId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListProjectRoles request
+	ListProjectRoles(ctx context.Context, projectId string, params *ListProjectRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateProjectRoleWithBody request with any body
+	CreateProjectRoleWithBody(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateProjectRole(ctx context.Context, projectId string, body CreateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteProjectRole request
+	DeleteProjectRole(ctx context.Context, projectId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateProjectRoleWithBody request with any body
+	UpdateProjectRoleWithBody(ctx context.Context, projectId string, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateProjectRole(ctx context.Context, projectId string, roleId string, body UpdateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListProjectUserRoleAssignments request
+	ListProjectUserRoleAssignments(ctx context.Context, projectId string, userId string, params *ListProjectUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AssignProjectUserRoleWithBody request with any body
+	AssignProjectUserRoleWithBody(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AssignProjectUserRole(ctx context.Context, projectId string, userId string, body AssignProjectUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnassignProjectUserRole request
+	UnassignProjectUserRole(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) AdminApiKeysList(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -1477,6 +2253,174 @@ func (c *Client) ModifyCertificateWithBody(ctx context.Context, certificateId st
 
 func (c *Client) ModifyCertificate(ctx context.Context, certificateId string, body ModifyCertificateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewModifyCertificateRequest(c.Server, certificateId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListGroups(ctx context.Context, params *ListGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListGroupsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGroupRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateGroup(ctx context.Context, body CreateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGroupRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteGroup(ctx context.Context, groupId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteGroupRequest(c.Server, groupId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateGroupWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGroupRequestWithBody(c.Server, groupId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateGroup(ctx context.Context, groupId string, body UpdateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGroupRequest(c.Server, groupId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListGroupRoleAssignments(ctx context.Context, groupId string, params *ListGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListGroupRoleAssignmentsRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignGroupRoleWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignGroupRoleRequestWithBody(c.Server, groupId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignGroupRole(ctx context.Context, groupId string, body AssignGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignGroupRoleRequest(c.Server, groupId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnassignGroupRole(ctx context.Context, groupId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnassignGroupRoleRequest(c.Server, groupId, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListGroupUsers(ctx context.Context, groupId string, params *ListGroupUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListGroupUsersRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddGroupUserWithBody(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddGroupUserRequestWithBody(c.Server, groupId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddGroupUser(ctx context.Context, groupId string, body AddGroupUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddGroupUserRequest(c.Server, groupId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveGroupUser(ctx context.Context, groupId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveGroupUserRequest(c.Server, groupId, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -1727,6 +2671,54 @@ func (c *Client) DeactivateProjectCertificates(ctx context.Context, projectId st
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListProjectGroups(ctx context.Context, projectId string, params *ListProjectGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListProjectGroupsRequest(c.Server, projectId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddProjectGroupWithBody(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddProjectGroupRequestWithBody(c.Server, projectId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddProjectGroup(ctx context.Context, projectId string, body AddProjectGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddProjectGroupRequest(c.Server, projectId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveProjectGroup(ctx context.Context, projectId string, groupId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveProjectGroupRequest(c.Server, projectId, groupId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListProjectRateLimits(ctx context.Context, projectId string, params *ListProjectRateLimitsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListProjectRateLimitsRequest(c.Server, projectId, params)
 	if err != nil {
@@ -1907,6 +2899,78 @@ func (c *Client) ModifyProjectUser(ctx context.Context, projectId string, userId
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListRoles(ctx context.Context, params *ListRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListRolesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateRoleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRoleRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateRole(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRoleRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteRole(ctx context.Context, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteRoleRequest(c.Server, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateRoleWithBody(ctx context.Context, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRoleRequestWithBody(c.Server, roleId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateRole(ctx context.Context, roleId string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRoleRequest(c.Server, roleId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListUsers(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListUsersRequest(c.Server, params)
 	if err != nil {
@@ -1957,6 +3021,222 @@ func (c *Client) ModifyUserWithBody(ctx context.Context, userId string, contentT
 
 func (c *Client) ModifyUser(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewModifyUserRequest(c.Server, userId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListUserRoleAssignments(ctx context.Context, userId string, params *ListUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListUserRoleAssignmentsRequest(c.Server, userId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignUserRoleWithBody(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignUserRoleRequestWithBody(c.Server, userId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignUserRole(ctx context.Context, userId string, body AssignUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignUserRoleRequest(c.Server, userId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnassignUserRole(ctx context.Context, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnassignUserRoleRequest(c.Server, userId, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListProjectGroupRoleAssignments(ctx context.Context, projectId string, groupId string, params *ListProjectGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListProjectGroupRoleAssignmentsRequest(c.Server, projectId, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignProjectGroupRoleWithBody(ctx context.Context, projectId string, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignProjectGroupRoleRequestWithBody(c.Server, projectId, groupId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignProjectGroupRole(ctx context.Context, projectId string, groupId string, body AssignProjectGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignProjectGroupRoleRequest(c.Server, projectId, groupId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnassignProjectGroupRole(ctx context.Context, projectId string, groupId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnassignProjectGroupRoleRequest(c.Server, projectId, groupId, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListProjectRoles(ctx context.Context, projectId string, params *ListProjectRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListProjectRolesRequest(c.Server, projectId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateProjectRoleWithBody(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateProjectRoleRequestWithBody(c.Server, projectId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateProjectRole(ctx context.Context, projectId string, body CreateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateProjectRoleRequest(c.Server, projectId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteProjectRole(ctx context.Context, projectId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteProjectRoleRequest(c.Server, projectId, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateProjectRoleWithBody(ctx context.Context, projectId string, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProjectRoleRequestWithBody(c.Server, projectId, roleId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateProjectRole(ctx context.Context, projectId string, roleId string, body UpdateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProjectRoleRequest(c.Server, projectId, roleId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListProjectUserRoleAssignments(ctx context.Context, projectId string, userId string, params *ListProjectUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListProjectUserRoleAssignmentsRequest(c.Server, projectId, userId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignProjectUserRoleWithBody(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignProjectUserRoleRequestWithBody(c.Server, projectId, userId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignProjectUserRole(ctx context.Context, projectId string, userId string, body AssignProjectUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignProjectUserRoleRequest(c.Server, projectId, userId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnassignProjectUserRole(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnassignProjectUserRoleRequest(c.Server, projectId, userId, roleId)
 	if err != nil {
 		return nil, err
 	}
@@ -2490,6 +3770,560 @@ func NewModifyCertificateRequestWithBody(server string, certificateId string, co
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListGroupsRequest generates requests for ListGroups
+func NewListGroupsRequest(server string, params *ListGroupsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateGroupRequest calls the generic CreateGroup builder with application/json body
+func NewCreateGroupRequest(server string, body CreateGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateGroupRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateGroupRequestWithBody generates requests for CreateGroup with any type of body
+func NewCreateGroupRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteGroupRequest generates requests for DeleteGroup
+func NewDeleteGroupRequest(server string, groupId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateGroupRequest calls the generic UpdateGroup builder with application/json body
+func NewUpdateGroupRequest(server string, groupId string, body UpdateGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateGroupRequestWithBody(server, groupId, "application/json", bodyReader)
+}
+
+// NewUpdateGroupRequestWithBody generates requests for UpdateGroup with any type of body
+func NewUpdateGroupRequestWithBody(server string, groupId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListGroupRoleAssignmentsRequest generates requests for ListGroupRoleAssignments
+func NewListGroupRoleAssignmentsRequest(server string, groupId string, params *ListGroupRoleAssignmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAssignGroupRoleRequest calls the generic AssignGroupRole builder with application/json body
+func NewAssignGroupRoleRequest(server string, groupId string, body AssignGroupRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAssignGroupRoleRequestWithBody(server, groupId, "application/json", bodyReader)
+}
+
+// NewAssignGroupRoleRequestWithBody generates requests for AssignGroupRole with any type of body
+func NewAssignGroupRoleRequestWithBody(server string, groupId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnassignGroupRoleRequest generates requests for UnassignGroupRole
+func NewUnassignGroupRoleRequest(server string, groupId string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListGroupUsersRequest generates requests for ListGroupUsers
+func NewListGroupUsersRequest(server string, groupId string, params *ListGroupUsersParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddGroupUserRequest calls the generic AddGroupUser builder with application/json body
+func NewAddGroupUserRequest(server string, groupId string, body AddGroupUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddGroupUserRequestWithBody(server, groupId, "application/json", bodyReader)
+}
+
+// NewAddGroupUserRequestWithBody generates requests for AddGroupUser with any type of body
+func NewAddGroupUserRequestWithBody(server string, groupId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveGroupUserRequest generates requests for RemoveGroupUser
+func NewRemoveGroupUserRequest(server string, groupId string, userId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/groups/%s/users/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -3239,6 +5073,182 @@ func NewDeactivateProjectCertificatesRequestWithBody(server string, projectId st
 	return req, nil
 }
 
+// NewListProjectGroupsRequest generates requests for ListProjectGroups
+func NewListProjectGroupsRequest(server string, projectId string, params *ListProjectGroupsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/projects/%s/groups", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddProjectGroupRequest calls the generic AddProjectGroup builder with application/json body
+func NewAddProjectGroupRequest(server string, projectId string, body AddProjectGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddProjectGroupRequestWithBody(server, projectId, "application/json", bodyReader)
+}
+
+// NewAddProjectGroupRequestWithBody generates requests for AddProjectGroup with any type of body
+func NewAddProjectGroupRequestWithBody(server string, projectId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/projects/%s/groups", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveProjectGroupRequest generates requests for RemoveProjectGroup
+func NewRemoveProjectGroupRequest(server string, projectId string, groupId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/projects/%s/groups/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListProjectRateLimitsRequest generates requests for ListProjectRateLimits
 func NewListProjectRateLimitsRequest(server string, projectId string, params *ListProjectRateLimitsParams) (*http.Request, error) {
 	var err error
@@ -3837,6 +5847,208 @@ func NewModifyProjectUserRequestWithBody(server string, projectId string, userId
 	return req, nil
 }
 
+// NewListRolesRequest generates requests for ListRoles
+func NewListRolesRequest(server string, params *ListRolesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/roles")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateRoleRequest calls the generic CreateRole builder with application/json body
+func NewCreateRoleRequest(server string, body CreateRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateRoleRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateRoleRequestWithBody generates requests for CreateRole with any type of body
+func NewCreateRoleRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/roles")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteRoleRequest generates requests for DeleteRole
+func NewDeleteRoleRequest(server string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/roles/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateRoleRequest calls the generic UpdateRole builder with application/json body
+func NewUpdateRoleRequest(server string, roleId string, body UpdateRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateRoleRequestWithBody(server, roleId, "application/json", bodyReader)
+}
+
+// NewUpdateRoleRequestWithBody generates requests for UpdateRole with any type of body
+func NewUpdateRoleRequestWithBody(server string, roleId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/roles/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListUsersRequest generates requests for ListUsers
 func NewListUsersRequest(server string, params *ListUsersParams) (*http.Request, error) {
 	var err error
@@ -4033,6 +6245,806 @@ func NewModifyUserRequestWithBody(server string, userId string, contentType stri
 	return req, nil
 }
 
+// NewListUserRoleAssignmentsRequest generates requests for ListUserRoleAssignments
+func NewListUserRoleAssignmentsRequest(server string, userId string, params *ListUserRoleAssignmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/users/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAssignUserRoleRequest calls the generic AssignUserRole builder with application/json body
+func NewAssignUserRoleRequest(server string, userId string, body AssignUserRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAssignUserRoleRequestWithBody(server, userId, "application/json", bodyReader)
+}
+
+// NewAssignUserRoleRequestWithBody generates requests for AssignUserRole with any type of body
+func NewAssignUserRoleRequestWithBody(server string, userId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/users/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnassignUserRoleRequest generates requests for UnassignUserRole
+func NewUnassignUserRoleRequest(server string, userId string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/organization/users/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListProjectGroupRoleAssignmentsRequest generates requests for ListProjectGroupRoleAssignments
+func NewListProjectGroupRoleAssignmentsRequest(server string, projectId string, groupId string, params *ListProjectGroupRoleAssignmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/groups/%s/roles", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAssignProjectGroupRoleRequest calls the generic AssignProjectGroupRole builder with application/json body
+func NewAssignProjectGroupRoleRequest(server string, projectId string, groupId string, body AssignProjectGroupRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAssignProjectGroupRoleRequestWithBody(server, projectId, groupId, "application/json", bodyReader)
+}
+
+// NewAssignProjectGroupRoleRequestWithBody generates requests for AssignProjectGroupRole with any type of body
+func NewAssignProjectGroupRoleRequestWithBody(server string, projectId string, groupId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/groups/%s/roles", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnassignProjectGroupRoleRequest generates requests for UnassignProjectGroupRole
+func NewUnassignProjectGroupRoleRequest(server string, projectId string, groupId string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "group_id", runtime.ParamLocationPath, groupId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/groups/%s/roles/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListProjectRolesRequest generates requests for ListProjectRoles
+func NewListProjectRolesRequest(server string, projectId string, params *ListProjectRolesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateProjectRoleRequest calls the generic CreateProjectRole builder with application/json body
+func NewCreateProjectRoleRequest(server string, projectId string, body CreateProjectRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateProjectRoleRequestWithBody(server, projectId, "application/json", bodyReader)
+}
+
+// NewCreateProjectRoleRequestWithBody generates requests for CreateProjectRole with any type of body
+func NewCreateProjectRoleRequestWithBody(server string, projectId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteProjectRoleRequest generates requests for DeleteProjectRole
+func NewDeleteProjectRoleRequest(server string, projectId string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateProjectRoleRequest calls the generic UpdateProjectRole builder with application/json body
+func NewUpdateProjectRoleRequest(server string, projectId string, roleId string, body UpdateProjectRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateProjectRoleRequestWithBody(server, projectId, roleId, "application/json", bodyReader)
+}
+
+// NewUpdateProjectRoleRequestWithBody generates requests for UpdateProjectRole with any type of body
+func NewUpdateProjectRoleRequestWithBody(server string, projectId string, roleId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListProjectUserRoleAssignmentsRequest generates requests for ListProjectUserRoleAssignments
+func NewListProjectUserRoleAssignmentsRequest(server string, projectId string, userId string, params *ListProjectUserRoleAssignmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/users/%s/roles", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAssignProjectUserRoleRequest calls the generic AssignProjectUserRole builder with application/json body
+func NewAssignProjectUserRoleRequest(server string, projectId string, userId string, body AssignProjectUserRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAssignProjectUserRoleRequestWithBody(server, projectId, userId, "application/json", bodyReader)
+}
+
+// NewAssignProjectUserRoleRequestWithBody generates requests for AssignProjectUserRole with any type of body
+func NewAssignProjectUserRoleRequestWithBody(server string, projectId string, userId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/users/%s/roles", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnassignProjectUserRoleRequest generates requests for UnassignProjectUserRole
+func NewUnassignProjectUserRoleRequest(server string, projectId string, userId string, roleId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "project_id", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "role_id", runtime.ParamLocationPath, roleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/projects/%s/users/%s/roles/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -4119,6 +7131,44 @@ type ClientWithResponsesInterface interface {
 
 	ModifyCertificateWithResponse(ctx context.Context, certificateId string, body ModifyCertificateJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyCertificateResp, error)
 
+	// ListGroupsWithResponse request
+	ListGroupsWithResponse(ctx context.Context, params *ListGroupsParams, reqEditors ...RequestEditorFn) (*ListGroupsResp, error)
+
+	// CreateGroupWithBodyWithResponse request with any body
+	CreateGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGroupResp, error)
+
+	CreateGroupWithResponse(ctx context.Context, body CreateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGroupResp, error)
+
+	// DeleteGroupWithResponse request
+	DeleteGroupWithResponse(ctx context.Context, groupId string, reqEditors ...RequestEditorFn) (*DeleteGroupResp, error)
+
+	// UpdateGroupWithBodyWithResponse request with any body
+	UpdateGroupWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGroupResp, error)
+
+	UpdateGroupWithResponse(ctx context.Context, groupId string, body UpdateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGroupResp, error)
+
+	// ListGroupRoleAssignmentsWithResponse request
+	ListGroupRoleAssignmentsWithResponse(ctx context.Context, groupId string, params *ListGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListGroupRoleAssignmentsResp, error)
+
+	// AssignGroupRoleWithBodyWithResponse request with any body
+	AssignGroupRoleWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignGroupRoleResp, error)
+
+	AssignGroupRoleWithResponse(ctx context.Context, groupId string, body AssignGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignGroupRoleResp, error)
+
+	// UnassignGroupRoleWithResponse request
+	UnassignGroupRoleWithResponse(ctx context.Context, groupId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignGroupRoleResp, error)
+
+	// ListGroupUsersWithResponse request
+	ListGroupUsersWithResponse(ctx context.Context, groupId string, params *ListGroupUsersParams, reqEditors ...RequestEditorFn) (*ListGroupUsersResp, error)
+
+	// AddGroupUserWithBodyWithResponse request with any body
+	AddGroupUserWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddGroupUserResp, error)
+
+	AddGroupUserWithResponse(ctx context.Context, groupId string, body AddGroupUserJSONRequestBody, reqEditors ...RequestEditorFn) (*AddGroupUserResp, error)
+
+	// RemoveGroupUserWithResponse request
+	RemoveGroupUserWithResponse(ctx context.Context, groupId string, userId string, reqEditors ...RequestEditorFn) (*RemoveGroupUserResp, error)
+
 	// ListInvitesWithResponse request
 	ListInvitesWithResponse(ctx context.Context, params *ListInvitesParams, reqEditors ...RequestEditorFn) (*ListInvitesResp, error)
 
@@ -4174,6 +7224,17 @@ type ClientWithResponsesInterface interface {
 
 	DeactivateProjectCertificatesWithResponse(ctx context.Context, projectId string, body DeactivateProjectCertificatesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeactivateProjectCertificatesResp, error)
 
+	// ListProjectGroupsWithResponse request
+	ListProjectGroupsWithResponse(ctx context.Context, projectId string, params *ListProjectGroupsParams, reqEditors ...RequestEditorFn) (*ListProjectGroupsResp, error)
+
+	// AddProjectGroupWithBodyWithResponse request with any body
+	AddProjectGroupWithBodyWithResponse(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddProjectGroupResp, error)
+
+	AddProjectGroupWithResponse(ctx context.Context, projectId string, body AddProjectGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*AddProjectGroupResp, error)
+
+	// RemoveProjectGroupWithResponse request
+	RemoveProjectGroupWithResponse(ctx context.Context, projectId string, groupId string, reqEditors ...RequestEditorFn) (*RemoveProjectGroupResp, error)
+
 	// ListProjectRateLimitsWithResponse request
 	ListProjectRateLimitsWithResponse(ctx context.Context, projectId string, params *ListProjectRateLimitsParams, reqEditors ...RequestEditorFn) (*ListProjectRateLimitsResp, error)
 
@@ -4215,6 +7276,22 @@ type ClientWithResponsesInterface interface {
 
 	ModifyProjectUserWithResponse(ctx context.Context, projectId string, userId string, body ModifyProjectUserJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyProjectUserResp, error)
 
+	// ListRolesWithResponse request
+	ListRolesWithResponse(ctx context.Context, params *ListRolesParams, reqEditors ...RequestEditorFn) (*ListRolesResp, error)
+
+	// CreateRoleWithBodyWithResponse request with any body
+	CreateRoleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRoleResp, error)
+
+	CreateRoleWithResponse(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRoleResp, error)
+
+	// DeleteRoleWithResponse request
+	DeleteRoleWithResponse(ctx context.Context, roleId string, reqEditors ...RequestEditorFn) (*DeleteRoleResp, error)
+
+	// UpdateRoleWithBodyWithResponse request with any body
+	UpdateRoleWithBodyWithResponse(ctx context.Context, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResp, error)
+
+	UpdateRoleWithResponse(ctx context.Context, roleId string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResp, error)
+
 	// ListUsersWithResponse request
 	ListUsersWithResponse(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*ListUsersResp, error)
 
@@ -4228,6 +7305,55 @@ type ClientWithResponsesInterface interface {
 	ModifyUserWithBodyWithResponse(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ModifyUserResp, error)
 
 	ModifyUserWithResponse(ctx context.Context, userId string, body ModifyUserJSONRequestBody, reqEditors ...RequestEditorFn) (*ModifyUserResp, error)
+
+	// ListUserRoleAssignmentsWithResponse request
+	ListUserRoleAssignmentsWithResponse(ctx context.Context, userId string, params *ListUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListUserRoleAssignmentsResp, error)
+
+	// AssignUserRoleWithBodyWithResponse request with any body
+	AssignUserRoleWithBodyWithResponse(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignUserRoleResp, error)
+
+	AssignUserRoleWithResponse(ctx context.Context, userId string, body AssignUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignUserRoleResp, error)
+
+	// UnassignUserRoleWithResponse request
+	UnassignUserRoleWithResponse(ctx context.Context, userId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignUserRoleResp, error)
+
+	// ListProjectGroupRoleAssignmentsWithResponse request
+	ListProjectGroupRoleAssignmentsWithResponse(ctx context.Context, projectId string, groupId string, params *ListProjectGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListProjectGroupRoleAssignmentsResp, error)
+
+	// AssignProjectGroupRoleWithBodyWithResponse request with any body
+	AssignProjectGroupRoleWithBodyWithResponse(ctx context.Context, projectId string, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignProjectGroupRoleResp, error)
+
+	AssignProjectGroupRoleWithResponse(ctx context.Context, projectId string, groupId string, body AssignProjectGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignProjectGroupRoleResp, error)
+
+	// UnassignProjectGroupRoleWithResponse request
+	UnassignProjectGroupRoleWithResponse(ctx context.Context, projectId string, groupId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignProjectGroupRoleResp, error)
+
+	// ListProjectRolesWithResponse request
+	ListProjectRolesWithResponse(ctx context.Context, projectId string, params *ListProjectRolesParams, reqEditors ...RequestEditorFn) (*ListProjectRolesResp, error)
+
+	// CreateProjectRoleWithBodyWithResponse request with any body
+	CreateProjectRoleWithBodyWithResponse(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProjectRoleResp, error)
+
+	CreateProjectRoleWithResponse(ctx context.Context, projectId string, body CreateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProjectRoleResp, error)
+
+	// DeleteProjectRoleWithResponse request
+	DeleteProjectRoleWithResponse(ctx context.Context, projectId string, roleId string, reqEditors ...RequestEditorFn) (*DeleteProjectRoleResp, error)
+
+	// UpdateProjectRoleWithBodyWithResponse request with any body
+	UpdateProjectRoleWithBodyWithResponse(ctx context.Context, projectId string, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProjectRoleResp, error)
+
+	UpdateProjectRoleWithResponse(ctx context.Context, projectId string, roleId string, body UpdateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProjectRoleResp, error)
+
+	// ListProjectUserRoleAssignmentsWithResponse request
+	ListProjectUserRoleAssignmentsWithResponse(ctx context.Context, projectId string, userId string, params *ListProjectUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListProjectUserRoleAssignmentsResp, error)
+
+	// AssignProjectUserRoleWithBodyWithResponse request with any body
+	AssignProjectUserRoleWithBodyWithResponse(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignProjectUserRoleResp, error)
+
+	AssignProjectUserRoleWithResponse(ctx context.Context, projectId string, userId string, body AssignProjectUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignProjectUserRoleResp, error)
+
+	// UnassignProjectUserRoleWithResponse request
+	UnassignProjectUserRoleWithResponse(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignProjectUserRoleResp, error)
 }
 
 type AdminApiKeysListResp struct {
@@ -4476,6 +7602,226 @@ func (r ModifyCertificateResp) StatusCode() int {
 	return 0
 }
 
+type ListGroupsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGroupsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGroupsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateGroupResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupDeletedResource
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteGroupResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupResourceWithSuccess
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateGroupResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListGroupRoleAssignmentsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGroupRoleAssignmentsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGroupRoleAssignmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AssignGroupRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupRoleAssignment
+}
+
+// Status returns HTTPResponse.Status
+func (r AssignGroupRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AssignGroupRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnassignGroupRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedRoleAssignmentResource
+}
+
+// Status returns HTTPResponse.Status
+func (r UnassignGroupRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnassignGroupRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListGroupUsersResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGroupUsersResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGroupUsersResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddGroupUserResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupUserAssignment
+}
+
+// Status returns HTTPResponse.Status
+func (r AddGroupUserResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddGroupUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveGroupUserResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupUserDeletedResource
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveGroupUserResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveGroupUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListInvitesResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -4501,7 +7847,7 @@ func (r ListInvitesResp) StatusCode() int {
 type InviteUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *Invite
+	JSON200      *Invite
 }
 
 // Status returns HTTPResponse.Status
@@ -4589,7 +7935,7 @@ func (r ListProjectsResp) StatusCode() int {
 type CreateProjectResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *Project
+	JSON200      *Project
 }
 
 // Status returns HTTPResponse.Status
@@ -4808,6 +8154,72 @@ func (r DeactivateProjectCertificatesResp) StatusCode() int {
 	return 0
 }
 
+type ListProjectGroupsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProjectGroupListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListProjectGroupsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListProjectGroupsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddProjectGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProjectGroup
+}
+
+// Status returns HTTPResponse.Status
+func (r AddProjectGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddProjectGroupResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveProjectGroupResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProjectGroupDeletedResource
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveProjectGroupResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveProjectGroupResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListProjectRateLimitsResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -4879,7 +8291,7 @@ func (r ListProjectServiceAccountsResp) StatusCode() int {
 type CreateProjectServiceAccountResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *ProjectServiceAccountCreateResponse
+	JSON200      *ProjectServiceAccountCreateResponse
 	JSON400      *ErrorResponse
 }
 
@@ -4969,7 +8381,7 @@ func (r ListProjectUsersResp) StatusCode() int {
 type CreateProjectUserResp struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *ProjectUser
+	JSON200      *ProjectUser
 	JSON400      *ErrorResponse
 }
 
@@ -5051,6 +8463,94 @@ func (r ModifyProjectUserResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ModifyProjectUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListRolesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PublicRoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListRolesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListRolesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Role
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleDeletedResource
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Role
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateRoleResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5139,6 +8639,292 @@ func (r ModifyUserResp) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ModifyUserResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListUserRoleAssignmentsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListUserRoleAssignmentsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListUserRoleAssignmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AssignUserRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserRoleAssignment
+}
+
+// Status returns HTTPResponse.Status
+func (r AssignUserRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AssignUserRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnassignUserRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedRoleAssignmentResource
+}
+
+// Status returns HTTPResponse.Status
+func (r UnassignUserRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnassignUserRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListProjectGroupRoleAssignmentsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListProjectGroupRoleAssignmentsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListProjectGroupRoleAssignmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AssignProjectGroupRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GroupRoleAssignment
+}
+
+// Status returns HTTPResponse.Status
+func (r AssignProjectGroupRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AssignProjectGroupRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnassignProjectGroupRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedRoleAssignmentResource
+}
+
+// Status returns HTTPResponse.Status
+func (r UnassignProjectGroupRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnassignProjectGroupRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListProjectRolesResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PublicRoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListProjectRolesResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListProjectRolesResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateProjectRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Role
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateProjectRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateProjectRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteProjectRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleDeletedResource
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteProjectRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteProjectRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateProjectRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Role
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateProjectRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateProjectRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListProjectUserRoleAssignmentsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RoleListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListProjectUserRoleAssignmentsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListProjectUserRoleAssignmentsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AssignProjectUserRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserRoleAssignment
+}
+
+// Status returns HTTPResponse.Status
+func (r AssignProjectUserRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AssignProjectUserRoleResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnassignProjectUserRoleResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedRoleAssignmentResource
+}
+
+// Status returns HTTPResponse.Status
+func (r UnassignProjectUserRoleResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnassignProjectUserRoleResp) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5282,6 +9068,128 @@ func (c *ClientWithResponses) ModifyCertificateWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseModifyCertificateResp(rsp)
+}
+
+// ListGroupsWithResponse request returning *ListGroupsResp
+func (c *ClientWithResponses) ListGroupsWithResponse(ctx context.Context, params *ListGroupsParams, reqEditors ...RequestEditorFn) (*ListGroupsResp, error) {
+	rsp, err := c.ListGroups(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGroupsResp(rsp)
+}
+
+// CreateGroupWithBodyWithResponse request with arbitrary body returning *CreateGroupResp
+func (c *ClientWithResponses) CreateGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGroupResp, error) {
+	rsp, err := c.CreateGroupWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateGroupResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateGroupWithResponse(ctx context.Context, body CreateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGroupResp, error) {
+	rsp, err := c.CreateGroup(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateGroupResp(rsp)
+}
+
+// DeleteGroupWithResponse request returning *DeleteGroupResp
+func (c *ClientWithResponses) DeleteGroupWithResponse(ctx context.Context, groupId string, reqEditors ...RequestEditorFn) (*DeleteGroupResp, error) {
+	rsp, err := c.DeleteGroup(ctx, groupId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteGroupResp(rsp)
+}
+
+// UpdateGroupWithBodyWithResponse request with arbitrary body returning *UpdateGroupResp
+func (c *ClientWithResponses) UpdateGroupWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGroupResp, error) {
+	rsp, err := c.UpdateGroupWithBody(ctx, groupId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGroupResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateGroupWithResponse(ctx context.Context, groupId string, body UpdateGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGroupResp, error) {
+	rsp, err := c.UpdateGroup(ctx, groupId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGroupResp(rsp)
+}
+
+// ListGroupRoleAssignmentsWithResponse request returning *ListGroupRoleAssignmentsResp
+func (c *ClientWithResponses) ListGroupRoleAssignmentsWithResponse(ctx context.Context, groupId string, params *ListGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListGroupRoleAssignmentsResp, error) {
+	rsp, err := c.ListGroupRoleAssignments(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGroupRoleAssignmentsResp(rsp)
+}
+
+// AssignGroupRoleWithBodyWithResponse request with arbitrary body returning *AssignGroupRoleResp
+func (c *ClientWithResponses) AssignGroupRoleWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignGroupRoleResp, error) {
+	rsp, err := c.AssignGroupRoleWithBody(ctx, groupId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignGroupRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) AssignGroupRoleWithResponse(ctx context.Context, groupId string, body AssignGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignGroupRoleResp, error) {
+	rsp, err := c.AssignGroupRole(ctx, groupId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignGroupRoleResp(rsp)
+}
+
+// UnassignGroupRoleWithResponse request returning *UnassignGroupRoleResp
+func (c *ClientWithResponses) UnassignGroupRoleWithResponse(ctx context.Context, groupId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignGroupRoleResp, error) {
+	rsp, err := c.UnassignGroupRole(ctx, groupId, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnassignGroupRoleResp(rsp)
+}
+
+// ListGroupUsersWithResponse request returning *ListGroupUsersResp
+func (c *ClientWithResponses) ListGroupUsersWithResponse(ctx context.Context, groupId string, params *ListGroupUsersParams, reqEditors ...RequestEditorFn) (*ListGroupUsersResp, error) {
+	rsp, err := c.ListGroupUsers(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGroupUsersResp(rsp)
+}
+
+// AddGroupUserWithBodyWithResponse request with arbitrary body returning *AddGroupUserResp
+func (c *ClientWithResponses) AddGroupUserWithBodyWithResponse(ctx context.Context, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddGroupUserResp, error) {
+	rsp, err := c.AddGroupUserWithBody(ctx, groupId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddGroupUserResp(rsp)
+}
+
+func (c *ClientWithResponses) AddGroupUserWithResponse(ctx context.Context, groupId string, body AddGroupUserJSONRequestBody, reqEditors ...RequestEditorFn) (*AddGroupUserResp, error) {
+	rsp, err := c.AddGroupUser(ctx, groupId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddGroupUserResp(rsp)
+}
+
+// RemoveGroupUserWithResponse request returning *RemoveGroupUserResp
+func (c *ClientWithResponses) RemoveGroupUserWithResponse(ctx context.Context, groupId string, userId string, reqEditors ...RequestEditorFn) (*RemoveGroupUserResp, error) {
+	rsp, err := c.RemoveGroupUser(ctx, groupId, userId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveGroupUserResp(rsp)
 }
 
 // ListInvitesWithResponse request returning *ListInvitesResp
@@ -5459,6 +9367,41 @@ func (c *ClientWithResponses) DeactivateProjectCertificatesWithResponse(ctx cont
 	return ParseDeactivateProjectCertificatesResp(rsp)
 }
 
+// ListProjectGroupsWithResponse request returning *ListProjectGroupsResp
+func (c *ClientWithResponses) ListProjectGroupsWithResponse(ctx context.Context, projectId string, params *ListProjectGroupsParams, reqEditors ...RequestEditorFn) (*ListProjectGroupsResp, error) {
+	rsp, err := c.ListProjectGroups(ctx, projectId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListProjectGroupsResp(rsp)
+}
+
+// AddProjectGroupWithBodyWithResponse request with arbitrary body returning *AddProjectGroupResp
+func (c *ClientWithResponses) AddProjectGroupWithBodyWithResponse(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddProjectGroupResp, error) {
+	rsp, err := c.AddProjectGroupWithBody(ctx, projectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddProjectGroupResp(rsp)
+}
+
+func (c *ClientWithResponses) AddProjectGroupWithResponse(ctx context.Context, projectId string, body AddProjectGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*AddProjectGroupResp, error) {
+	rsp, err := c.AddProjectGroup(ctx, projectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddProjectGroupResp(rsp)
+}
+
+// RemoveProjectGroupWithResponse request returning *RemoveProjectGroupResp
+func (c *ClientWithResponses) RemoveProjectGroupWithResponse(ctx context.Context, projectId string, groupId string, reqEditors ...RequestEditorFn) (*RemoveProjectGroupResp, error) {
+	rsp, err := c.RemoveProjectGroup(ctx, projectId, groupId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveProjectGroupResp(rsp)
+}
+
 // ListProjectRateLimitsWithResponse request returning *ListProjectRateLimitsResp
 func (c *ClientWithResponses) ListProjectRateLimitsWithResponse(ctx context.Context, projectId string, params *ListProjectRateLimitsParams, reqEditors ...RequestEditorFn) (*ListProjectRateLimitsResp, error) {
 	rsp, err := c.ListProjectRateLimits(ctx, projectId, params, reqEditors...)
@@ -5590,6 +9533,58 @@ func (c *ClientWithResponses) ModifyProjectUserWithResponse(ctx context.Context,
 	return ParseModifyProjectUserResp(rsp)
 }
 
+// ListRolesWithResponse request returning *ListRolesResp
+func (c *ClientWithResponses) ListRolesWithResponse(ctx context.Context, params *ListRolesParams, reqEditors ...RequestEditorFn) (*ListRolesResp, error) {
+	rsp, err := c.ListRoles(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListRolesResp(rsp)
+}
+
+// CreateRoleWithBodyWithResponse request with arbitrary body returning *CreateRoleResp
+func (c *ClientWithResponses) CreateRoleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRoleResp, error) {
+	rsp, err := c.CreateRoleWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateRoleWithResponse(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRoleResp, error) {
+	rsp, err := c.CreateRole(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRoleResp(rsp)
+}
+
+// DeleteRoleWithResponse request returning *DeleteRoleResp
+func (c *ClientWithResponses) DeleteRoleWithResponse(ctx context.Context, roleId string, reqEditors ...RequestEditorFn) (*DeleteRoleResp, error) {
+	rsp, err := c.DeleteRole(ctx, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteRoleResp(rsp)
+}
+
+// UpdateRoleWithBodyWithResponse request with arbitrary body returning *UpdateRoleResp
+func (c *ClientWithResponses) UpdateRoleWithBodyWithResponse(ctx context.Context, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResp, error) {
+	rsp, err := c.UpdateRoleWithBody(ctx, roleId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateRoleWithResponse(ctx context.Context, roleId string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResp, error) {
+	rsp, err := c.UpdateRole(ctx, roleId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRoleResp(rsp)
+}
+
 // ListUsersWithResponse request returning *ListUsersResp
 func (c *ClientWithResponses) ListUsersWithResponse(ctx context.Context, params *ListUsersParams, reqEditors ...RequestEditorFn) (*ListUsersResp, error) {
 	rsp, err := c.ListUsers(ctx, params, reqEditors...)
@@ -5632,6 +9627,163 @@ func (c *ClientWithResponses) ModifyUserWithResponse(ctx context.Context, userId
 		return nil, err
 	}
 	return ParseModifyUserResp(rsp)
+}
+
+// ListUserRoleAssignmentsWithResponse request returning *ListUserRoleAssignmentsResp
+func (c *ClientWithResponses) ListUserRoleAssignmentsWithResponse(ctx context.Context, userId string, params *ListUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListUserRoleAssignmentsResp, error) {
+	rsp, err := c.ListUserRoleAssignments(ctx, userId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListUserRoleAssignmentsResp(rsp)
+}
+
+// AssignUserRoleWithBodyWithResponse request with arbitrary body returning *AssignUserRoleResp
+func (c *ClientWithResponses) AssignUserRoleWithBodyWithResponse(ctx context.Context, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignUserRoleResp, error) {
+	rsp, err := c.AssignUserRoleWithBody(ctx, userId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignUserRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) AssignUserRoleWithResponse(ctx context.Context, userId string, body AssignUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignUserRoleResp, error) {
+	rsp, err := c.AssignUserRole(ctx, userId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignUserRoleResp(rsp)
+}
+
+// UnassignUserRoleWithResponse request returning *UnassignUserRoleResp
+func (c *ClientWithResponses) UnassignUserRoleWithResponse(ctx context.Context, userId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignUserRoleResp, error) {
+	rsp, err := c.UnassignUserRole(ctx, userId, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnassignUserRoleResp(rsp)
+}
+
+// ListProjectGroupRoleAssignmentsWithResponse request returning *ListProjectGroupRoleAssignmentsResp
+func (c *ClientWithResponses) ListProjectGroupRoleAssignmentsWithResponse(ctx context.Context, projectId string, groupId string, params *ListProjectGroupRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListProjectGroupRoleAssignmentsResp, error) {
+	rsp, err := c.ListProjectGroupRoleAssignments(ctx, projectId, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListProjectGroupRoleAssignmentsResp(rsp)
+}
+
+// AssignProjectGroupRoleWithBodyWithResponse request with arbitrary body returning *AssignProjectGroupRoleResp
+func (c *ClientWithResponses) AssignProjectGroupRoleWithBodyWithResponse(ctx context.Context, projectId string, groupId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignProjectGroupRoleResp, error) {
+	rsp, err := c.AssignProjectGroupRoleWithBody(ctx, projectId, groupId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignProjectGroupRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) AssignProjectGroupRoleWithResponse(ctx context.Context, projectId string, groupId string, body AssignProjectGroupRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignProjectGroupRoleResp, error) {
+	rsp, err := c.AssignProjectGroupRole(ctx, projectId, groupId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignProjectGroupRoleResp(rsp)
+}
+
+// UnassignProjectGroupRoleWithResponse request returning *UnassignProjectGroupRoleResp
+func (c *ClientWithResponses) UnassignProjectGroupRoleWithResponse(ctx context.Context, projectId string, groupId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignProjectGroupRoleResp, error) {
+	rsp, err := c.UnassignProjectGroupRole(ctx, projectId, groupId, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnassignProjectGroupRoleResp(rsp)
+}
+
+// ListProjectRolesWithResponse request returning *ListProjectRolesResp
+func (c *ClientWithResponses) ListProjectRolesWithResponse(ctx context.Context, projectId string, params *ListProjectRolesParams, reqEditors ...RequestEditorFn) (*ListProjectRolesResp, error) {
+	rsp, err := c.ListProjectRoles(ctx, projectId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListProjectRolesResp(rsp)
+}
+
+// CreateProjectRoleWithBodyWithResponse request with arbitrary body returning *CreateProjectRoleResp
+func (c *ClientWithResponses) CreateProjectRoleWithBodyWithResponse(ctx context.Context, projectId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProjectRoleResp, error) {
+	rsp, err := c.CreateProjectRoleWithBody(ctx, projectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateProjectRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateProjectRoleWithResponse(ctx context.Context, projectId string, body CreateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProjectRoleResp, error) {
+	rsp, err := c.CreateProjectRole(ctx, projectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateProjectRoleResp(rsp)
+}
+
+// DeleteProjectRoleWithResponse request returning *DeleteProjectRoleResp
+func (c *ClientWithResponses) DeleteProjectRoleWithResponse(ctx context.Context, projectId string, roleId string, reqEditors ...RequestEditorFn) (*DeleteProjectRoleResp, error) {
+	rsp, err := c.DeleteProjectRole(ctx, projectId, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteProjectRoleResp(rsp)
+}
+
+// UpdateProjectRoleWithBodyWithResponse request with arbitrary body returning *UpdateProjectRoleResp
+func (c *ClientWithResponses) UpdateProjectRoleWithBodyWithResponse(ctx context.Context, projectId string, roleId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProjectRoleResp, error) {
+	rsp, err := c.UpdateProjectRoleWithBody(ctx, projectId, roleId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProjectRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateProjectRoleWithResponse(ctx context.Context, projectId string, roleId string, body UpdateProjectRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProjectRoleResp, error) {
+	rsp, err := c.UpdateProjectRole(ctx, projectId, roleId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProjectRoleResp(rsp)
+}
+
+// ListProjectUserRoleAssignmentsWithResponse request returning *ListProjectUserRoleAssignmentsResp
+func (c *ClientWithResponses) ListProjectUserRoleAssignmentsWithResponse(ctx context.Context, projectId string, userId string, params *ListProjectUserRoleAssignmentsParams, reqEditors ...RequestEditorFn) (*ListProjectUserRoleAssignmentsResp, error) {
+	rsp, err := c.ListProjectUserRoleAssignments(ctx, projectId, userId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListProjectUserRoleAssignmentsResp(rsp)
+}
+
+// AssignProjectUserRoleWithBodyWithResponse request with arbitrary body returning *AssignProjectUserRoleResp
+func (c *ClientWithResponses) AssignProjectUserRoleWithBodyWithResponse(ctx context.Context, projectId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignProjectUserRoleResp, error) {
+	rsp, err := c.AssignProjectUserRoleWithBody(ctx, projectId, userId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignProjectUserRoleResp(rsp)
+}
+
+func (c *ClientWithResponses) AssignProjectUserRoleWithResponse(ctx context.Context, projectId string, userId string, body AssignProjectUserRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignProjectUserRoleResp, error) {
+	rsp, err := c.AssignProjectUserRole(ctx, projectId, userId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignProjectUserRoleResp(rsp)
+}
+
+// UnassignProjectUserRoleWithResponse request returning *UnassignProjectUserRoleResp
+func (c *ClientWithResponses) UnassignProjectUserRoleWithResponse(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignProjectUserRoleResp, error) {
+	rsp, err := c.UnassignProjectUserRole(ctx, projectId, userId, roleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnassignProjectUserRoleResp(rsp)
 }
 
 // ParseAdminApiKeysListResp parses an HTTP response from a AdminApiKeysListWithResponse call
@@ -5924,6 +10076,266 @@ func ParseModifyCertificateResp(rsp *http.Response) (*ModifyCertificateResp, err
 	return response, nil
 }
 
+// ParseListGroupsResp parses an HTTP response from a ListGroupsWithResponse call
+func ParseListGroupsResp(rsp *http.Response) (*ListGroupsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGroupsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateGroupResp parses an HTTP response from a CreateGroupWithResponse call
+func ParseCreateGroupResp(rsp *http.Response) (*CreateGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteGroupResp parses an HTTP response from a DeleteGroupWithResponse call
+func ParseDeleteGroupResp(rsp *http.Response) (*DeleteGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupDeletedResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateGroupResp parses an HTTP response from a UpdateGroupWithResponse call
+func ParseUpdateGroupResp(rsp *http.Response) (*UpdateGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupResourceWithSuccess
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListGroupRoleAssignmentsResp parses an HTTP response from a ListGroupRoleAssignmentsWithResponse call
+func ParseListGroupRoleAssignmentsResp(rsp *http.Response) (*ListGroupRoleAssignmentsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGroupRoleAssignmentsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAssignGroupRoleResp parses an HTTP response from a AssignGroupRoleWithResponse call
+func ParseAssignGroupRoleResp(rsp *http.Response) (*AssignGroupRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AssignGroupRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupRoleAssignment
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnassignGroupRoleResp parses an HTTP response from a UnassignGroupRoleWithResponse call
+func ParseUnassignGroupRoleResp(rsp *http.Response) (*UnassignGroupRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnassignGroupRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedRoleAssignmentResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListGroupUsersResp parses an HTTP response from a ListGroupUsersWithResponse call
+func ParseListGroupUsersResp(rsp *http.Response) (*ListGroupUsersResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGroupUsersResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddGroupUserResp parses an HTTP response from a AddGroupUserWithResponse call
+func ParseAddGroupUserResp(rsp *http.Response) (*AddGroupUserResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddGroupUserResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupUserAssignment
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveGroupUserResp parses an HTTP response from a RemoveGroupUserWithResponse call
+func ParseRemoveGroupUserResp(rsp *http.Response) (*RemoveGroupUserResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveGroupUserResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupUserDeletedResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListInvitesResp parses an HTTP response from a ListInvitesWithResponse call
 func ParseListInvitesResp(rsp *http.Response) (*ListInvitesResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -5964,12 +10376,12 @@ func ParseInviteUserResp(rsp *http.Response) (*InviteUserResp, error) {
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Invite
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON201 = &dest
+		response.JSON200 = &dest
 
 	}
 
@@ -6068,12 +10480,12 @@ func ParseCreateProjectResp(rsp *http.Response) (*CreateProjectResp, error) {
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Project
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON201 = &dest
+		response.JSON200 = &dest
 
 	}
 
@@ -6328,6 +10740,84 @@ func ParseDeactivateProjectCertificatesResp(rsp *http.Response) (*DeactivateProj
 	return response, nil
 }
 
+// ParseListProjectGroupsResp parses an HTTP response from a ListProjectGroupsWithResponse call
+func ParseListProjectGroupsResp(rsp *http.Response) (*ListProjectGroupsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListProjectGroupsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProjectGroupListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddProjectGroupResp parses an HTTP response from a AddProjectGroupWithResponse call
+func ParseAddProjectGroupResp(rsp *http.Response) (*AddProjectGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddProjectGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProjectGroup
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveProjectGroupResp parses an HTTP response from a RemoveProjectGroupWithResponse call
+func ParseRemoveProjectGroupResp(rsp *http.Response) (*RemoveProjectGroupResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveProjectGroupResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProjectGroupDeletedResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListProjectRateLimitsResp parses an HTTP response from a ListProjectRateLimitsWithResponse call
 func ParseListProjectRateLimitsResp(rsp *http.Response) (*ListProjectRateLimitsResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -6434,12 +10924,12 @@ func ParseCreateProjectServiceAccountResp(rsp *http.Response) (*CreateProjectSer
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ProjectServiceAccountCreateResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON201 = &dest
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ErrorResponse
@@ -6552,12 +11042,12 @@ func ParseCreateProjectUserResp(rsp *http.Response) (*CreateProjectUserResp, err
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ProjectUser
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON201 = &dest
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ErrorResponse
@@ -6663,6 +11153,110 @@ func ParseModifyProjectUserResp(rsp *http.Response) (*ModifyProjectUserResp, err
 	return response, nil
 }
 
+// ParseListRolesResp parses an HTTP response from a ListRolesWithResponse call
+func ParseListRolesResp(rsp *http.Response) (*ListRolesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListRolesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PublicRoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateRoleResp parses an HTTP response from a CreateRoleWithResponse call
+func ParseCreateRoleResp(rsp *http.Response) (*CreateRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Role
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteRoleResp parses an HTTP response from a DeleteRoleWithResponse call
+func ParseDeleteRoleResp(rsp *http.Response) (*DeleteRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleDeletedResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateRoleResp parses an HTTP response from a UpdateRoleWithResponse call
+func ParseUpdateRoleResp(rsp *http.Response) (*UpdateRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Role
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListUsersResp parses an HTTP response from a ListUsersWithResponse call
 func ParseListUsersResp(rsp *http.Response) (*ListUsersResp, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -6757,6 +11351,344 @@ func ParseModifyUserResp(rsp *http.Response) (*ModifyUserResp, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListUserRoleAssignmentsResp parses an HTTP response from a ListUserRoleAssignmentsWithResponse call
+func ParseListUserRoleAssignmentsResp(rsp *http.Response) (*ListUserRoleAssignmentsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListUserRoleAssignmentsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAssignUserRoleResp parses an HTTP response from a AssignUserRoleWithResponse call
+func ParseAssignUserRoleResp(rsp *http.Response) (*AssignUserRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AssignUserRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserRoleAssignment
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnassignUserRoleResp parses an HTTP response from a UnassignUserRoleWithResponse call
+func ParseUnassignUserRoleResp(rsp *http.Response) (*UnassignUserRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnassignUserRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedRoleAssignmentResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListProjectGroupRoleAssignmentsResp parses an HTTP response from a ListProjectGroupRoleAssignmentsWithResponse call
+func ParseListProjectGroupRoleAssignmentsResp(rsp *http.Response) (*ListProjectGroupRoleAssignmentsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListProjectGroupRoleAssignmentsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAssignProjectGroupRoleResp parses an HTTP response from a AssignProjectGroupRoleWithResponse call
+func ParseAssignProjectGroupRoleResp(rsp *http.Response) (*AssignProjectGroupRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AssignProjectGroupRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GroupRoleAssignment
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnassignProjectGroupRoleResp parses an HTTP response from a UnassignProjectGroupRoleWithResponse call
+func ParseUnassignProjectGroupRoleResp(rsp *http.Response) (*UnassignProjectGroupRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnassignProjectGroupRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedRoleAssignmentResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListProjectRolesResp parses an HTTP response from a ListProjectRolesWithResponse call
+func ParseListProjectRolesResp(rsp *http.Response) (*ListProjectRolesResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListProjectRolesResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PublicRoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateProjectRoleResp parses an HTTP response from a CreateProjectRoleWithResponse call
+func ParseCreateProjectRoleResp(rsp *http.Response) (*CreateProjectRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateProjectRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Role
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteProjectRoleResp parses an HTTP response from a DeleteProjectRoleWithResponse call
+func ParseDeleteProjectRoleResp(rsp *http.Response) (*DeleteProjectRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteProjectRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleDeletedResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateProjectRoleResp parses an HTTP response from a UpdateProjectRoleWithResponse call
+func ParseUpdateProjectRoleResp(rsp *http.Response) (*UpdateProjectRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateProjectRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Role
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListProjectUserRoleAssignmentsResp parses an HTTP response from a ListProjectUserRoleAssignmentsWithResponse call
+func ParseListProjectUserRoleAssignmentsResp(rsp *http.Response) (*ListProjectUserRoleAssignmentsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListProjectUserRoleAssignmentsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAssignProjectUserRoleResp parses an HTTP response from a AssignProjectUserRoleWithResponse call
+func ParseAssignProjectUserRoleResp(rsp *http.Response) (*AssignProjectUserRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AssignProjectUserRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserRoleAssignment
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnassignProjectUserRoleResp parses an HTTP response from a UnassignProjectUserRoleWithResponse call
+func ParseUnassignProjectUserRoleResp(rsp *http.Response) (*UnassignProjectUserRoleResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnassignProjectUserRoleResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedRoleAssignmentResource
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

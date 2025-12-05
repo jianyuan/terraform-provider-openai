@@ -92,12 +92,15 @@ func (r *ProjectUserResource) Create(ctx context.Context, req resource.CreateReq
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
+	} else if httpResp.StatusCode() != http.StatusOK {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		return
+	} else if httpResp.JSON200 == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON201)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
