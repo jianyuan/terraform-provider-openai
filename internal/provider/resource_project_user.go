@@ -92,12 +92,27 @@ func (r *ProjectUserResource) Create(ctx context.Context, req resource.CreateReq
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
+	}
+
+	// Accept both 201 Created (older API behavior) and 200 OK (newer API behavior)
+	// as valid success responses for project user creation.
+	switch httpResp.StatusCode() {
+	case http.StatusCreated:
+		if httpResp.JSON201 == nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d with empty response body: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+		resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON201)...)
+	case http.StatusOK:
+		if httpResp.JSON200 == nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d with empty response body: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+		resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	default:
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON201)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
