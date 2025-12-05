@@ -132,12 +132,27 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusCreated || httpResp.JSON201 == nil {
+	}
+
+	// Accept both 201 Created (older API behavior) and 200 OK (newer API behavior)
+	// as valid success responses for service account creation.
+	switch httpResp.StatusCode() {
+	case http.StatusCreated:
+		if httpResp.JSON201 == nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d with empty response body: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+		resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON201)...)
+	case http.StatusOK:
+		if httpResp.JSON200 == nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d with empty response body: %s", httpResp.StatusCode(), string(httpResp.Body)))
+			return
+		}
+		resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON200)...)
+	default:
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
-
-	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON201)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
