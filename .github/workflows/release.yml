@@ -12,10 +12,35 @@ on:
 # GitHub considers creating releases and uploading assets as writing contents.
 permissions:
   contents: write
+  security-events: write
 
 jobs:
+  # Security scanning with Trivy
+  trivy-scan:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run Trivy security scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig,license'
+          severity: 'HIGH,CRITICAL'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          secret-config: 'trivy.yaml'
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
   goreleaser:
     runs-on: ubuntu-latest
+    needs: trivy-scan
     steps:
       - uses: actions/checkout@v5
         with:

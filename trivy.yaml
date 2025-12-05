@@ -1,0 +1,5 @@
+# Global allow rules to suppress false positives
+allow-rules:
+  - id: gcp-sa-api-spec-false-positive
+    description: "False positive: line 13819 in API spec contains JSON field matching GCP service account pattern"
+    path: internal/apiclient/api-original\.yaml

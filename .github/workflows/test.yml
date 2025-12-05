@@ -15,27 +15,41 @@ on:
 # Testing only needs permissions to read the repository contents.
 permissions:
   contents: read
+  security-events: write
 
 jobs:
+  # Security scanning with Trivy
+  trivy-scan:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Run Trivy security scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig,license'
+          severity: 'HIGH,CRITICAL'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          secret-config: 'trivy.yaml'
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
   # Ensure project builds before running testing matrix
   build:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: trivy-scan
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -52,20 +66,8 @@ jobs:
 
   generate:
     runs-on: ubuntu-latest
+    needs: trivy-scan
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -96,19 +98,6 @@ jobs:
         terraform:
           - "1.13.*"
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
