@@ -425,7 +425,7 @@ export const DATASOURCES: Array<DataSource> = [
             name: "id",
             type: "string",
             description: "User ID.",
-            computedOptionalRequired: "required",
+            computedOptionalRequired: "computed",
           },
           {
             name: "email",

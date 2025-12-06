@@ -39,7 +39,7 @@ func (d *UsersDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							MarkdownDescription: "User ID.",
-							Required:            true,
+							Computed:            true,
 							CustomType:          supertypes.StringType{},
 						},
 						"email": schema.StringAttribute{
