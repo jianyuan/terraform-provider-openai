@@ -88,6 +88,46 @@ function generateTerraformAttribute({
       parts.push("}");
       return parts.join("\n");
     })
+    .with({ type: "list", elementType: "string" }, (attribute) => {
+      const parts: string[] = [];
+      parts.push("schema.ListAttribute{");
+      parts.push(...commonParts);
+      parts.push("CustomType: supertypes.NewListTypeOf[string](ctx),");
+      if (attribute.validators) {
+        parts.push("Validators: []validator.List{");
+        parts.push(...attribute.validators.map((validator) => `${validator},`));
+        parts.push("},");
+      }
+      if (attribute.planModifiers) {
+        parts.push("PlanModifiers: []planmodifier.List{");
+        parts.push(
+          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+        );
+        parts.push("},");
+      }
+      parts.push("}");
+      return parts.join("\n");
+    })
+    .with({ type: "set", elementType: "string" }, (attribute) => {
+      const parts: string[] = [];
+      parts.push("schema.SetAttribute{");
+      parts.push(...commonParts);
+      parts.push("CustomType: supertypes.NewSetTypeOf[string](ctx),");
+      if (attribute.validators) {
+        parts.push("Validators: []validator.Set{");
+        parts.push(...attribute.validators.map((validator) => `${validator},`));
+        parts.push("},");
+      }
+      if (attribute.planModifiers) {
+        parts.push("PlanModifiers: []planmodifier.Set{");
+        parts.push(
+          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+        );
+        parts.push("},");
+      }
+      parts.push("}");
+      return parts.join("\n");
+    })
     .with({ type: "set_nested" }, (attribute) => {
       const parts: string[] = [];
       parts.push("schema.SetNestedAttribute{");
@@ -127,6 +167,14 @@ function generateTerraformValueType({
     .with({ type: "int" }, () => "supertypes.Int64Value")
     .with({ type: "bool" }, () => "supertypes.BoolValue")
     .with(
+      { type: "list", elementType: "string" },
+      () => "supertypes.ListValueOf[string]"
+    )
+    .with(
+      { type: "set", elementType: "string" },
+      () => "supertypes.SetValueOf[string]"
+    )
+    .with(
       { type: "set_nested" },
       () =>
         `supertypes.SetNestedObjectValueOf[${parent}${camelize(
@@ -151,63 +199,6 @@ function generateTerraformToPrimitive({
     .exhaustive();
 }
 
-function generatePrimitiveToTerraform({
-  attribute,
-  srcVar,
-  destVar,
-}: {
-  attribute: Attribute;
-  srcVar: string;
-  destVar: string;
-}) {
-  const srcVarName = `${srcVar}.${camelize(attribute.name)}`;
-  const destVarName = `${destVar}.${camelize(attribute.name)}`;
-  return match(attribute)
-    .with({ type: "string", nullable: true }, () =>
-      `
-      if ${srcVarName} != nil {
-        ${destVarName} = supertypes.NewStringValue(string(*${srcVarName}))
-      } else {
-        ${destVarName} = supertypes.NewStringNull()
-      }
-      `.trim()
-    )
-    .with(
-      { type: "string" },
-      () => `${destVarName} = supertypes.NewStringValue(string(${srcVarName}))`
-    )
-    .with({ type: "int", nullable: true }, () =>
-      `
-      if ${srcVarName} != nil {
-        ${destVarName} = supertypes.NewInt64Value(*${srcVarName})
-      } else {
-        ${destVarName} = supertypes.NewInt64Null()
-      }
-      `.trim()
-    )
-    .with(
-      { type: "int" },
-      () => `${destVarName} = supertypes.NewInt64Value(${srcVarName})`
-    )
-    .with(
-      { type: "bool" },
-      () => `${destVarName} = supertypes.NewBoolValue(${srcVarName})`
-    )
-    .with({ type: "set_nested" }, () => {
-      const srcVarName = `${srcVar}.${camelize(attribute.name)}`;
-      const destVarName = `${destVar}.${camelize(attribute.name)}`;
-      return `
-      // if ${srcVarName} != nil {
-      //   ${destVarName} = supertypes.NewSetNestedObjectValueOf[${destVarName}](${srcVarName})
-      // } else {
-      //   ${destVarName} = supertypes.NewSetNestedObjectValueOf[${destVarName}](nil)
-      // }
-      // TODO
-      `.trim();
-    })
-    .exhaustive();
-}
-
 function generateModel({
   name,
   attributes,
@@ -216,7 +207,6 @@ function generateModel({
   attributes: Array<Attribute>;
 }) {
   const structLines: string[] = [];
-  const fillLines: string[] = [];
   const extras: string[] = [];
 
   for (const attribute of attributes) {
@@ -225,13 +215,6 @@ function generateModel({
         parent: name,
         attribute,
       })} \`tfsdk:"${attribute.name}"\``
-    );
-    fillLines.push(
-      generatePrimitiveToTerraform({
-        attribute,
-        srcVar: "data",
-        destVar: "m",
-      })
     );
 
     extras.push(
@@ -362,7 +345,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
         panic("unknown type")
       }
 
-      switch v := any(httpResp.JSON200.LastId).(type) {
+      switch v := any(httpResp.JSON200.${api.cursorParam ?? "LastId"}).(type) {
       case string:
         params.After = &v
       case *string:
