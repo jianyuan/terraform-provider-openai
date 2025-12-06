@@ -81,7 +81,7 @@ export interface ResourceApiStrategy {
   readRequestAttributes?: Array<string>;
   updateMethod?: string;
   updateRequestAttributes?: Array<string>;
-  deleteMethod: string;
+  deleteMethod?: string;
   deleteRequestAttributes?: Array<string>;
   hooks?: {};
 }

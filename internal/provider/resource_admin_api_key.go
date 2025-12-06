@@ -132,6 +132,7 @@ func (r *AdminApiKeyResource) Update(ctx context.Context, req resource.UpdateReq
 }
 
 func (r *AdminApiKeyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+
 	var data AdminApiKeyResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -149,6 +150,7 @@ func (r *AdminApiKeyResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
 		return
 	}
+
 }
 
 type AdminApiKeyResourceModel struct {

@@ -151,6 +151,7 @@ func (r *ProjectUserResource) Update(ctx context.Context, req resource.UpdateReq
 }
 
 func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+
 	var data ProjectUserResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -168,6 +169,7 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
 		return
 	}
+
 }
 
 func (r *ProjectUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

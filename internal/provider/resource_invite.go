@@ -149,6 +149,7 @@ func (r *InviteResource) Update(ctx context.Context, req resource.UpdateRequest,
 }
 
 func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+
 	var data InviteResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -166,6 +167,7 @@ func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
 		return
 	}
+
 }
 
 func (r *InviteResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

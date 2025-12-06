@@ -735,24 +735,32 @@ func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest
 }
 
 func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-  var data ${modelName}
-
-  resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-  if resp.Diagnostics.HasError() {
-    return
-  }
-
-  httpResp, err := r.client.${
+  ${
     resource.api.deleteMethod
-  }WithResponse(${deleteRequestParams.join(",")})
-  if err != nil {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-    return
-  } else if httpResp.StatusCode() == http.StatusNotFound {
-    return
-  } else if httpResp.StatusCode() != http.StatusOK {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
-    return
+      ? `
+      var data ${modelName}
+
+      resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+      if resp.Diagnostics.HasError() {
+        return
+      }
+
+      httpResp, err := r.client.${
+        resource.api.deleteMethod
+      }WithResponse(${deleteRequestParams.join(",")})
+      if err != nil {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+        return
+      } else if httpResp.StatusCode() == http.StatusNotFound {
+        return
+      } else if httpResp.StatusCode() != http.StatusOK {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
+        return
+      }
+      `
+      : `
+      resp.Diagnostics.AddWarning("Not Supported", "Delete is not supported for this resource. Please manually delete the resource.")
+      `
   }
 }
 

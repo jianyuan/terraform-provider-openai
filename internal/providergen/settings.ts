@@ -666,4 +666,32 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "user_role",
+    description: "Modifies a user's role in the organization.",
+    api: {
+      createMethod: "ModifyUser",
+      createRequestAttributes: ["user_id"],
+      readMethod: "RetrieveUser",
+      readRequestAttributes: ["user_id"],
+      updateMethod: "ModifyUser",
+      updateRequestAttributes: ["user_id"],
+    },
+    importStateAttributes: ["user_id"],
+    attributes: [
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "role",
+        type: "string",
+        description: "`owner` or `reader`.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("owner", "reader")'],
+      },
+    ],
+  },
 ];
