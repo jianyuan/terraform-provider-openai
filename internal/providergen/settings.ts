@@ -461,6 +461,50 @@ export const DATASOURCES: Array<DataSource> = [
 
 export const RESOURCES: Array<Resource> = [
   {
+    name: "admin_api_key",
+    description: "Manages an organization admin API key.",
+    api: {
+      createMethod: "AdminApiKeysCreate",
+      readMethod: "AdminApiKeysGet",
+      readRequestAttributes: ["id"],
+      deleteMethod: "AdminApiKeysDelete",
+      deleteRequestAttributes: ["id"],
+    },
+    attributes: [
+      {
+        name: "name",
+        type: "string",
+        description: "The name of the organization admin API key.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the organization admin API key.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "created_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the organization admin API key was created.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["int64planmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "api_key",
+        type: "string",
+        description:
+          "The organization admin API key that can be used to authenticate with the API.",
+        computedOptionalRequired: "computed",
+        sensitive: true,
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+    ],
+  },
+  {
     name: "invite",
     description:
       "Invite and manage invitations for an organization. Invited users are automatically added to the Default project.",
@@ -468,7 +512,6 @@ export const RESOURCES: Array<Resource> = [
       createMethod: "InviteUser",
       readMethod: "RetrieveInvite",
       readRequestAttributes: ["id"],
-      // updateMethod: "UpdateInvite",
       deleteMethod: "DeleteInvite",
     },
     importStateAttributes: ["id"],

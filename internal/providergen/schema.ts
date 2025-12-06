@@ -15,6 +15,7 @@ export interface BaseAttribute {
   name: string;
   description: string;
   computedOptionalRequired: ComputedOptionalRequired;
+  sensitive?: boolean;
   planModifiers?: Array<string>;
   validators?: Array<string>;
   nullable?: boolean;

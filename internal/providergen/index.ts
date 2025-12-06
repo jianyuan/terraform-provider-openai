@@ -23,6 +23,9 @@ function generateTerraformAttribute({
       .with("optional", () => "Optional: true,")
       .exhaustive()
   );
+  if (attribute.sensitive) {
+    commonParts.push("Sensitive: true,");
+  }
 
   return match(attribute)
     .with({ type: "string" }, () => {
