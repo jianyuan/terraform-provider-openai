@@ -94,6 +94,7 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 done:
 	for {
+
 		httpResp, err := d.client.ListInvitesWithResponse(ctx, params)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
@@ -133,6 +134,7 @@ done:
 		default:
 			panic("unknown type")
 		}
+
 	}
 
 	resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)

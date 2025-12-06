@@ -176,6 +176,117 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "projects",
+    description: "List all projects in an organization.",
+    api: {
+      strategy: "paginate",
+      method: "ListProjects",
+      model: "Project",
+      hooks: {
+        readInitLoop: `
+          params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
+
+          // Set the limit for the API request
+          if data.Limit.IsNull() {
+            params.Limit = ptr.Ptr(int64(100))
+          } else {
+            requestLimit := data.Limit.ValueInt64()
+            if requestLimit > 100 {
+              params.Limit = ptr.Ptr(int64(100))
+            } else {
+              params.Limit = ptr.Ptr(requestLimit)
+            }
+          }
+        `,
+        readPreIterate: `
+          // Recalculate the limit for each request to ensure we don't exceed the desired limit
+          if !data.Limit.IsNull() {
+            remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
+            if remainingLimit <= 0 {
+              break
+            }
+            if remainingLimit > 100 {
+              params.Limit = ptr.Ptr(int64(100))
+            } else {
+              params.Limit = ptr.Ptr(remainingLimit)
+            }
+          }
+        `,
+        readPostIterate: `
+          // If limit is set and we have enough projects, break.
+          if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
+            modelInstances = modelInstances[:data.Limit.ValueInt64()]
+            break
+          }
+        `,
+      },
+    },
+    attributes: [
+      {
+        name: "include_archived",
+        type: "bool",
+        description: "Include archived projects. Default is `false`.",
+        computedOptionalRequired: "optional",
+      },
+      {
+        name: "limit",
+        type: "int",
+        description:
+          "Limit the number of projects to return. Default is to return all projects.",
+        computedOptionalRequired: "optional",
+      },
+      {
+        name: "projects",
+        type: "set_nested",
+        description: "List of projects.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Project ID.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "The name of the project. This appears in reporting.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "status",
+            type: "string",
+            description: "Status `active` or `archived`.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "external_key_id",
+            type: "string",
+            description:
+              "The ID of the customer-managed encryption key used for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
+            computedOptionalRequired: "computed",
+            nullable: true,
+          },
+          {
+            name: "created_at",
+            type: "int",
+            description:
+              "The Unix timestamp (in seconds) of when the project was created.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "archived_at",
+            type: "int",
+            description:
+              "The Unix timestamp (in seconds) of when the project was archived or `null`.",
+            computedOptionalRequired: "computed",
+            nullable: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "project_rate_limits",
     description: "Returns the rate limits per model for a project.",
     api: {

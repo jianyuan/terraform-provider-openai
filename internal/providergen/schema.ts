@@ -7,6 +7,7 @@ export type ComputedOptionalRequired =
 export type Attribute =
   | StringAttribute
   | IntAttribute
+  | BoolAttribute
   | SetNestedAttribute
   | ObjectAttribute;
 
@@ -25,6 +26,10 @@ export interface IntAttribute extends BaseAttribute {
   type: "int";
 }
 
+export interface BoolAttribute extends BaseAttribute {
+  type: "bool";
+}
+
 export interface SetNestedAttribute extends BaseAttribute {
   type: "set_nested";
   attributes: Array<Attribute>;
@@ -35,14 +40,33 @@ export interface ObjectAttribute extends BaseAttribute {
   attributes: Array<Attribute>;
 }
 
+export interface BaseDataSourceApiStrategy {
+  method: string;
+  model: string;
+  params?: Array<string>;
+}
+
+export type DataSourceApiStrategy =
+  | SimpleDataSourceApiStrategy
+  | PaginateDataSourceApiStrategy;
+
+export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
+  strategy: "simple";
+}
+
+export interface PaginateDataSourceApiStrategy
+  extends BaseDataSourceApiStrategy {
+  strategy: "paginate";
+  hooks?: {
+    readInitLoop?: string;
+    readPreIterate?: string;
+    readPostIterate?: string;
+  };
+}
+
 export interface DataSource {
   name: string;
   description: string;
-  api: {
-    strategy: "simple" | "paginate";
-    method: string;
-    model: string;
-    params?: Array<string>;
-  };
+  api: DataSourceApiStrategy;
   attributes: Array<Attribute>;
 }
