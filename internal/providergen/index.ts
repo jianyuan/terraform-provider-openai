@@ -580,6 +580,24 @@ function generateResource({ resource }: { resource: Resource }) {
         }
       `;
     })
+    .with([P.any, P.any], (attributes) => {
+      return `
+        func (r *${resourceName}) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+          first, second, err := tfutils.SplitTwoPartId(req.ID, "${attributes[0]}", "${attributes[1]}")
+          if err != nil {
+            resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
+            return
+          }
+
+          resp.Diagnostics.Append(resp.State.SetAttribute(
+            ctx, path.Root("${attributes[0]}"), first,
+          )...)
+          resp.Diagnostics.Append(resp.State.SetAttribute(
+            ctx, path.Root("${attributes[1]}"), second,
+          )...)
+        }
+      `;
+    })
     .otherwise(() => "");
 
   return `
@@ -724,11 +742,9 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
     return
   }
 
-  httpResp, err := r.client.${resource.api.deleteMethod}WithResponse(
-    ctx,
-    data.Id.ValueString(),
-  )
-
+  httpResp, err := r.client.${
+    resource.api.deleteMethod
+  }WithResponse(${deleteRequestParams.join(",")})
   if err != nil {
     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
     return

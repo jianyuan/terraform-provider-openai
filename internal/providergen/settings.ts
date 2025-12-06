@@ -626,4 +626,43 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "project_user",
+    description:
+      "Adds a user to the project. Users must already be members of the organization to be added to a project.",
+    api: {
+      createMethod: "CreateProjectUser",
+      createRequestAttributes: ["project_id"],
+      readMethod: "RetrieveProjectUser",
+      readRequestAttributes: ["project_id", "user_id"],
+      updateMethod: "ModifyProjectUser",
+      updateRequestAttributes: ["project_id", "user_id"],
+      deleteMethod: "DeleteProjectUser",
+      deleteRequestAttributes: ["project_id", "user_id"],
+    },
+    importStateAttributes: ["project_id", "user_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role",
+        type: "string",
+        description: "`owner` or `member`.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("owner", "member")'],
+      },
+    ],
+  },
 ];
