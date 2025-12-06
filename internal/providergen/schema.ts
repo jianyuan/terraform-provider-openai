@@ -8,6 +8,8 @@ export type Attribute =
   | StringAttribute
   | IntAttribute
   | BoolAttribute
+  | ListAttribute
+  | SetAttribute
   | SetNestedAttribute
   | ObjectAttribute;
 
@@ -31,6 +33,16 @@ export interface IntAttribute extends BaseAttribute {
 
 export interface BoolAttribute extends BaseAttribute {
   type: "bool";
+}
+
+export interface ListAttribute extends BaseAttribute {
+  type: "list";
+  elementType: "string";
+}
+
+export interface SetAttribute extends BaseAttribute {
+  type: "set";
+  elementType: "string";
 }
 
 export interface SetNestedAttribute extends BaseAttribute {
@@ -60,6 +72,7 @@ export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
 export interface PaginateDataSourceApiStrategy
   extends BaseDataSourceApiStrategy {
   strategy: "paginate";
+  cursorParam?: string;
   hooks?: {
     readInitLoop?: string;
     readPreIterate?: string;
