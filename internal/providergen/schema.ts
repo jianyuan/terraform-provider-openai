@@ -15,6 +15,7 @@ export interface BaseAttribute {
   name: string;
   description: string;
   computedOptionalRequired: ComputedOptionalRequired;
+  planModifiers?: Array<string>;
   validators?: Array<string>;
   nullable?: boolean;
 }
@@ -42,9 +43,9 @@ export interface ObjectAttribute extends BaseAttribute {
 }
 
 export interface BaseDataSourceApiStrategy {
-  method: string;
   model: string;
-  params?: Array<string>;
+  readMethod: string;
+  readRequestAttributes?: Array<string>;
 }
 
 export type DataSourceApiStrategy =
@@ -69,5 +70,25 @@ export interface DataSource {
   name: string;
   description: string;
   api: DataSourceApiStrategy;
+  attributes: Array<Attribute>;
+}
+
+export interface ResourceApiStrategy {
+  createMethod: string;
+  createRequestAttributes?: Array<string>;
+  readMethod: string;
+  readRequestAttributes?: Array<string>;
+  updateMethod?: string;
+  updateRequestAttributes?: Array<string>;
+  deleteMethod: string;
+  deleteRequestAttributes?: Array<string>;
+  hooks?: {};
+}
+
+export interface Resource {
+  name: string;
+  description: string;
+  api: ResourceApiStrategy;
+  importStateAttributes?: Array<string>;
   attributes: Array<Attribute>;
 }

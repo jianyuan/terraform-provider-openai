@@ -1,7 +1,8 @@
 import { camelize } from "inflection";
-import { DATASOURCES } from "./settings";
-import type { DataSource, Attribute } from "./schema";
-import { match } from "ts-pattern";
+import { DATASOURCES, RESOURCES } from "./settings";
+import type { DataSource, Attribute, Resource } from "./schema";
+import { match, P } from "ts-pattern";
+import { parseArgs } from "util";
 
 function generateTerraformAttribute({
   parent,
@@ -29,6 +30,18 @@ function generateTerraformAttribute({
       parts.push("schema.StringAttribute{");
       parts.push(...commonParts);
       parts.push("CustomType: supertypes.StringType{},");
+      if (attribute.validators) {
+        parts.push("Validators: []validator.String{");
+        parts.push(...attribute.validators.map((validator) => `${validator},`));
+        parts.push("},");
+      }
+      if (attribute.planModifiers) {
+        parts.push("PlanModifiers: []planmodifier.String{");
+        parts.push(
+          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+        );
+        parts.push("},");
+      }
       parts.push("}");
       return parts.join("\n");
     })
@@ -42,6 +55,13 @@ function generateTerraformAttribute({
         parts.push(...attribute.validators.map((validator) => `${validator},`));
         parts.push("},");
       }
+      if (attribute.planModifiers) {
+        parts.push("PlanModifiers: []planmodifier.Int64{");
+        parts.push(
+          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+        );
+        parts.push("},");
+      }
       parts.push("}");
       return parts.join("\n");
     })
@@ -50,6 +70,18 @@ function generateTerraformAttribute({
       parts.push("schema.BoolAttribute{");
       parts.push(...commonParts);
       parts.push("CustomType: supertypes.BoolType{},");
+      if (attribute.validators) {
+        parts.push("Validators: []validator.Bool{");
+        parts.push(...attribute.validators.map((validator) => `${validator},`));
+        parts.push("},");
+      }
+      if (attribute.planModifiers) {
+        parts.push("PlanModifiers: []planmodifier.Bool{");
+        parts.push(
+          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+        );
+        parts.push("},");
+      }
       parts.push("}");
       return parts.join("\n");
     })
@@ -253,14 +285,14 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
   const dataSourceName = `${camelize(dataSource.name)}DataSource`;
   const modelName = `${camelize(dataSource.name)}DataSourceModel`;
 
-  const params = ["ctx"];
-  params.push(
+  const readRequestParams = ["ctx"];
+  readRequestParams.push(
     ...match(dataSource.api)
       .with({ strategy: "paginate" }, (api) => {
         const parts: string[] = [];
-        if (api.params) {
+        if (api.readRequestAttributes) {
           parts.push(
-            ...api.params.map((param) => {
+            ...api.readRequestAttributes.map((param) => {
               const attribute = dataSource.attributes.find(
                 (attribute) => attribute.name === param
               );
@@ -288,7 +320,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
       { strategy: "paginate" },
       (api) => `
     var modelInstances []apiclient.${dataSource.api.model}
-    params := &apiclient.${dataSource.api.method}Params{
+    params := &apiclient.${dataSource.api.readMethod}Params{
       Limit: ptr.Ptr(int64(100)),
     }
 
@@ -299,8 +331,8 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
       ${api.hooks?.readPreIterate ?? ""}
 
       httpResp, err := d.client.${
-        dataSource.api.method
-      }WithResponse(${params.join(",")})
+        dataSource.api.readMethod
+      }WithResponse(${readRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
         return
@@ -353,8 +385,8 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
       { strategy: "simple" },
       () => `
     httpResp, err := d.client.${
-      dataSource.api.method
-    }WithResponse(${params.join(",")})
+      dataSource.api.readMethod
+    }WithResponse(${readRequestParams.join(",")})
     if err != nil {
       resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
       return
@@ -379,8 +411,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 package provider
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework/datasource"
-	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+  "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
 var _ datasource.DataSource = &${dataSourceName}{}
@@ -423,6 +454,296 @@ ${generateDataSourceModel({ dataSource })}
 `;
 }
 
+function generateResourceModel({ resource }: { resource: Resource }) {
+  const modelName = `${camelize(resource.name)}ResourceModel`;
+  return generateModel({
+    name: modelName,
+    attributes: resource.attributes,
+  });
+}
+
+function generateResourceSchemaAttributes({
+  resource,
+}: {
+  resource: Resource;
+}) {
+  const lines: string[] = [];
+
+  for (const attribute of resource.attributes) {
+    lines.push(
+      `"${attribute.name}": ${generateTerraformAttribute({
+        parent: `${camelize(resource.name)}ResourceModel`,
+        attribute,
+      })},`
+    );
+  }
+
+  return lines.join("\n");
+}
+
+function generateResource({ resource }: { resource: Resource }) {
+  console.log(`Generating resource - ${resource.name}`);
+
+  const resourceName = `${camelize(resource.name)}Resource`;
+  const modelName = `${camelize(resource.name)}ResourceModel`;
+
+  const createRequestParams = ["ctx"];
+  if (resource.api.createRequestAttributes) {
+    createRequestParams.push(
+      ...resource.api.createRequestAttributes.map((param) => {
+        const attribute = resource.attributes.find(
+          (attribute) => attribute.name === param
+        );
+        if (!attribute) {
+          throw new Error(
+            `Attribute ${param} not found in resource ${resource.name}`
+          );
+        }
+        return generateTerraformToPrimitive({
+          attribute,
+          srcVar: "data",
+        });
+      })
+    );
+  }
+  createRequestParams.push("r.getCreateJSONRequestBody(data)");
+
+  const readRequestParams = ["ctx"];
+  if (resource.api.readRequestAttributes) {
+    readRequestParams.push(
+      ...resource.api.readRequestAttributes.map((param) => {
+        const attribute = resource.attributes.find(
+          (attribute) => attribute.name === param
+        );
+        if (!attribute) {
+          throw new Error(
+            `Attribute ${param} not found in resource ${resource.name}`
+          );
+        }
+        return generateTerraformToPrimitive({
+          attribute,
+          srcVar: "data",
+        });
+      })
+    );
+  }
+
+  const updateRequestParams = ["ctx"];
+  if (resource.api.updateRequestAttributes) {
+    updateRequestParams.push(
+      ...resource.api.updateRequestAttributes.map((param) => {
+        const attribute = resource.attributes.find(
+          (attribute) => attribute.name === param
+        );
+        if (!attribute) {
+          throw new Error(
+            `Attribute ${param} not found in resource ${resource.name}`
+          );
+        }
+        return generateTerraformToPrimitive({
+          attribute,
+          srcVar: "data",
+        });
+      })
+    );
+  }
+  updateRequestParams.push("r.getUpdateJSONRequestBody(data)");
+
+  const deleteRequestParams = ["ctx"];
+  if (resource.api.deleteRequestAttributes) {
+    deleteRequestParams.push(
+      ...resource.api.deleteRequestAttributes.map((param) => {
+        const attribute = resource.attributes.find(
+          (attribute) => attribute.name === param
+        );
+        if (!attribute) {
+          throw new Error(
+            `Attribute ${param} not found in resource ${resource.name}`
+          );
+        }
+        return generateTerraformToPrimitive({
+          attribute,
+          srcVar: "data",
+        });
+      })
+    );
+  }
+
+  const importState = match(resource.importStateAttributes)
+    .with([P.any], (attributes) => {
+      return `
+        func (r *${resourceName}) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+          resource.ImportStatePassthroughID(ctx, path.Root("${attributes[0]}"), req, resp)
+        }
+      `;
+    })
+    .otherwise(() => "");
+
+  return `
+// Code generated by providergen. DO NOT EDIT.
+package provider
+
+import (
+  "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+)
+
+var _ resource.Resource = &${resourceName}{}
+${
+  resource.importStateAttributes
+    ? `var _ resource.ResourceWithImportState = &${resourceName}{}`
+    : ""
+}
+
+func New${resourceName}() resource.Resource {
+  return &${resourceName}{}
+}
+
+type ${resourceName} struct {
+  baseResource
+}
+
+func (r *${resourceName}) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+  resp.TypeName = req.ProviderTypeName + "_${resource.name}"
+}
+
+func (r *${resourceName}) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+  resp.Schema = schema.Schema{
+    MarkdownDescription: ${JSON.stringify(resource.description)},
+    Attributes: map[string]schema.Attribute{
+      ${generateResourceSchemaAttributes({ resource })}
+    },
+  }
+}
+
+func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+  var data ${modelName}
+
+  resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+
+  httpResp, err := r.client.${
+    resource.api.createMethod
+  }WithResponse(${createRequestParams.join(",")})
+  if err != nil {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+    return
+  } else if httpResp.StatusCode() != http.StatusOK {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code: %d", httpResp.StatusCode()))
+    return
+  } else if httpResp.JSON200 == nil {
+    resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
+    return
+  }
+
+  resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+
+  resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+  var data ${modelName}
+
+  resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+
+  httpResp, err := r.client.${
+    resource.api.readMethod
+  }WithResponse(${readRequestParams.join(",")})
+  if err != nil {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+    return
+  } else if httpResp.StatusCode() != http.StatusOK {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
+    return
+  } else if httpResp.JSON200 == nil {
+    resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
+    return
+  }
+
+  resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+
+  resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+  ${
+    resource.api.updateMethod
+      ? `
+      var data ${modelName}
+
+      resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+      if resp.Diagnostics.HasError() {
+        return
+      }
+
+      httpResp, err := r.client.${
+        resource.api.updateMethod
+      }WithResponse(${updateRequestParams.join(",")})
+      if err != nil {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+        return
+      } else if httpResp.StatusCode() != http.StatusOK {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code: %d", httpResp.StatusCode()))
+        return
+      } else if httpResp.JSON200 == nil {
+        resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
+        return
+      }
+
+      resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+      if resp.Diagnostics.HasError() {
+        return
+      }
+
+      resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+      `
+      : `
+      resp.Diagnostics.AddError("Not Supported", "Update is not supported for this resource")
+      `
+  }
+}
+
+func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+  var data ${modelName}
+
+  resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+
+  httpResp, err := r.client.${resource.api.deleteMethod}WithResponse(
+    ctx,
+    data.Id.ValueString(),
+  )
+
+  if err != nil {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+    return
+  } else if httpResp.StatusCode() == http.StatusNotFound {
+    return
+  } else if httpResp.StatusCode() != http.StatusOK {
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
+    return
+  }
+}
+
+${importState}
+
+
+${generateResourceModel({ resource })}
+`;
+}
+
 async function writeAndFormatGoFile(destination: URL, code: string) {
   await Bun.write(destination, code);
   await Bun.$`go fmt ${destination.pathname}`;
@@ -430,13 +751,41 @@ async function writeAndFormatGoFile(destination: URL, code: string) {
 }
 
 async function main() {
+  const { values } = parseArgs({
+    args: Bun.argv,
+    options: {
+      filter: {
+        type: "string",
+      },
+    },
+    strict: true,
+    allowPositionals: true,
+  });
+
   console.log("Generating provider...");
-  console.log("Generating resources...");
+
   console.log("Generating data sources...");
   for (const dataSource of DATASOURCES) {
+    if (values.filter && values.filter !== dataSource.name) {
+      continue;
+    }
+
     const code = generateDataSource({ dataSource });
     await writeAndFormatGoFile(
       new URL(`../provider/data_source_${dataSource.name}.go`, import.meta.url),
+      code
+    );
+  }
+
+  console.log("Generating resources...");
+  for (const resource of RESOURCES) {
+    if (values.filter && values.filter !== resource.name) {
+      continue;
+    }
+
+    const code = generateResource({ resource });
+    await writeAndFormatGoFile(
+      new URL(`../provider/resource_${resource.name}.go`, import.meta.url),
       code
     );
   }

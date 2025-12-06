@@ -1,4 +1,4 @@
-import type { DataSource } from "./schema";
+import type { DataSource, Resource } from "./schema";
 
 export const DATASOURCES: Array<DataSource> = [
   {
@@ -6,7 +6,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Retrieves an invite.",
     api: {
       strategy: "simple",
-      method: "RetrieveInvite",
+      readMethod: "RetrieveInvite",
       model: "Invite",
     },
     attributes: [
@@ -63,7 +63,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Lists all of the invites in the organization.",
     api: {
       strategy: "paginate",
-      method: "ListInvites",
+      readMethod: "ListInvites",
       model: "Invite",
     },
     attributes: [
@@ -128,7 +128,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Retrieve a project by ID.",
     api: {
       strategy: "simple",
-      method: "RetrieveProject",
+      readMethod: "RetrieveProject",
       model: "Project",
     },
     attributes: [
@@ -180,7 +180,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "List all projects in an organization.",
     api: {
       strategy: "paginate",
-      method: "ListProjects",
+      readMethod: "ListProjects",
       model: "Project",
       hooks: {
         readInitLoop: `
@@ -292,8 +292,8 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Returns the rate limits per model for a project.",
     api: {
       strategy: "paginate",
-      method: "ListProjectRateLimits",
-      params: ["project_id"],
+      readMethod: "ListProjectRateLimits",
+      readRequestAttributes: ["project_id"],
       model: "ProjectRateLimit",
     },
     attributes: [
@@ -370,7 +370,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Retrieves a user by their identifier.",
     api: {
       strategy: "simple",
-      method: "RetrieveUser",
+      readMethod: "RetrieveUser",
       model: "User",
     },
     attributes: [
@@ -412,7 +412,7 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Lists all of the users in the organization.",
     api: {
       strategy: "paginate",
-      method: "ListUsers",
+      readMethod: "ListUsers",
       model: "User",
     },
     attributes: [
@@ -454,6 +454,132 @@ export const DATASOURCES: Array<DataSource> = [
             computedOptionalRequired: "computed",
           },
         ],
+      },
+    ],
+  },
+];
+
+export const RESOURCES: Array<Resource> = [
+  {
+    name: "invite",
+    description:
+      "Invite and manage invitations for an organization. Invited users are automatically added to the Default project.",
+    api: {
+      createMethod: "InviteUser",
+      readMethod: "RetrieveInvite",
+      readRequestAttributes: ["id"],
+      // updateMethod: "UpdateInvite",
+      deleteMethod: "DeleteInvite",
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "Invite ID.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "email",
+        type: "string",
+        description:
+          "The email address of the individual to whom the invite was sent.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role",
+        type: "string",
+        description: "`owner` or `reader`.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        validators: ['stringvalidator.OneOf("owner", "reader")'],
+      },
+      {
+        name: "status",
+        type: "string",
+        description: "`accepted`, `expired`, or `pending`.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "invited_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the invite was sent.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "expires_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the invite expires.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "accepted_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the invite was accepted.",
+        computedOptionalRequired: "computed",
+      },
+    ],
+  },
+  {
+    name: "project",
+    description: "Project resource.",
+    api: {
+      createMethod: "CreateProject",
+      readMethod: "RetrieveProject",
+      readRequestAttributes: ["id"],
+      updateMethod: "ModifyProject",
+      updateRequestAttributes: ["id"],
+      deleteMethod: "ArchiveProject",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "name",
+        type: "string",
+        description:
+          "The friendly name of the project, this name appears in reports.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "status",
+        type: "string",
+        description: "Status `active` or `archived`.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "external_key_id",
+        type: "string",
+        description:
+          "The ID of the customer-managed encryption key to use for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
+        computedOptionalRequired: "optional",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "created_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the project was created.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "archived_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the project was archived or `null`.",
+        computedOptionalRequired: "computed",
       },
     ],
   },
