@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
@@ -40,6 +42,9 @@ func (d *ProjectsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 				MarkdownDescription: "Limit the number of projects to return. Default is to return all projects.",
 				Optional:            true,
 				CustomType:          supertypes.Int64Type{},
+				Validators: []validator.Int64{
+					int64validator.AtLeast(1),
+				},
 			},
 			"projects": schema.SetNestedAttribute{
 				MarkdownDescription: "List of projects.",

@@ -32,11 +32,16 @@ function generateTerraformAttribute({
       parts.push("}");
       return parts.join("\n");
     })
-    .with({ type: "int" }, () => {
+    .with({ type: "int" }, (attribute) => {
       const parts: string[] = [];
       parts.push("schema.Int64Attribute{");
       parts.push(...commonParts);
       parts.push("CustomType: supertypes.Int64Type{},");
+      if (attribute.validators) {
+        parts.push("Validators: []validator.Int64{");
+        parts.push(...attribute.validators.map((validator) => `${validator},`));
+        parts.push("},");
+      }
       parts.push("}");
       return parts.join("\n");
     })

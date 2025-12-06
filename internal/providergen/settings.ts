@@ -234,6 +234,7 @@ export const DATASOURCES: Array<DataSource> = [
         description:
           "Limit the number of projects to return. Default is to return all projects.",
         computedOptionalRequired: "optional",
+        validators: ["int64validator.AtLeast(1)"],
       },
       {
         name: "projects",
