@@ -42,6 +42,7 @@ export interface DataSource {
     strategy: "simple" | "paginate";
     method: string;
     model: string;
+    params?: Array<string>;
   };
-  attributes: Attribute[];
+  attributes: Array<Attribute>;
 }

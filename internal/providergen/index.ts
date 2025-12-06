@@ -87,7 +87,21 @@ function generateTerraformValueType({
     .exhaustive();
 }
 
-function generateTerraformValuer({
+function generateTerraformToPrimitive({
+  attribute,
+  srcVar,
+}: {
+  attribute: Attribute;
+  srcVar: string;
+}) {
+  const srcVarName = `${srcVar}.${camelize(attribute.name)}`;
+  return match(attribute)
+    .with({ type: "string" }, () => `${srcVarName}.ValueString()`)
+    .with({ type: "int" }, () => `${srcVarName}.ValueInt64()`)
+    .exhaustive();
+}
+
+function generatePrimitiveToTerraform({
   attribute,
   srcVar,
   destVar,
@@ -159,7 +173,7 @@ function generateModel({
       })} \`tfsdk:"${attribute.name}"\``
     );
     fillLines.push(
-      generateTerraformValuer({
+      generatePrimitiveToTerraform({
         attribute,
         srcVar: "data",
         destVar: "m",
@@ -220,6 +234,36 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
   const dataSourceName = `${camelize(dataSource.name)}DataSource`;
   const modelName = `${camelize(dataSource.name)}DataSourceModel`;
 
+  const params = ["ctx"];
+  params.push(
+    ...match(dataSource.api)
+      .with({ strategy: "paginate" }, (api) => {
+        const parts: string[] = [];
+        if (api.params) {
+          parts.push(
+            ...api.params.map((param) => {
+              const attribute = dataSource.attributes.find(
+                (attribute) => attribute.name === param
+              );
+              if (!attribute) {
+                throw new Error(
+                  `Attribute ${param} not found in data source ${dataSource.name}`
+                );
+              }
+              return generateTerraformToPrimitive({
+                attribute,
+                srcVar: "data",
+              });
+            })
+          );
+        }
+        parts.push("params");
+        return parts;
+      })
+      .with({ strategy: "simple" }, () => ["data.Id.ValueString()"])
+      .exhaustive()
+  );
+
   const read = match(dataSource.api.strategy)
     .with(
       "paginate",
@@ -231,10 +275,9 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
   done:
     for {
-      httpResp, err := d.client.${dataSource.api.method}WithResponse(
-        ctx,
-        params,
-      )
+      httpResp, err := d.client.${
+        dataSource.api.method
+      }WithResponse(${params.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
         return
@@ -284,10 +327,9 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       "simple",
       () => `
-    httpResp, err := d.client.${dataSource.api.method}WithResponse(
-      ctx,
-      data.Id.ValueString(),
-    )
+    httpResp, err := d.client.${
+      dataSource.api.method
+    }WithResponse(${params.join(",")})
     if err != nil {
       resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
       return

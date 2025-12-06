@@ -176,6 +176,84 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "project_rate_limits",
+    description: "Returns the rate limits per model for a project.",
+    api: {
+      strategy: "paginate",
+      method: "ListProjectRateLimits",
+      params: ["project_id"],
+      model: "ProjectRateLimit",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "rate_limits",
+        type: "set_nested",
+        description: "List of rate limits.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "The rate limit identifier.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "model",
+            type: "string",
+            description: "The model this rate limit applies to.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "max_requests_per_1_minute",
+            type: "int",
+            description: "The maximum requests per minute.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "max_tokens_per_1_minute",
+            type: "int",
+            description: "The maximum tokens per minute.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "max_images_per_1_minute",
+            type: "int",
+            description:
+              "The maximum images per minute. Only present for relevant models.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "max_audio_megabytes_per_1_minute",
+            type: "int",
+            description:
+              "The maximum audio megabytes per minute. Only present for relevant models.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "max_requests_per_1_day",
+            type: "int",
+            description:
+              "The maximum requests per day. Only present for relevant models.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "batch_1_day_max_input_tokens",
+            type: "int",
+            description:
+              "The maximum batch input tokens per day. Only present for relevant models.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {

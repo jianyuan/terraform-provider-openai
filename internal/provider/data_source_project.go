@@ -71,10 +71,7 @@ func (d *ProjectDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	httpResp, err := d.client.RetrieveProjectWithResponse(
-		ctx,
-		data.Id.ValueString(),
-	)
+	httpResp, err := d.client.RetrieveProjectWithResponse(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return

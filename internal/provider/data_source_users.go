@@ -84,10 +84,7 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 done:
 	for {
-		httpResp, err := d.client.ListUsersWithResponse(
-			ctx,
-			params,
-		)
+		httpResp, err := d.client.ListUsersWithResponse(ctx, params)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 			return
