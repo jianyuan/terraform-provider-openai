@@ -82,6 +82,7 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		Limit: ptr.Ptr(int64(100)),
 	}
 
+done:
 	for {
 		httpResp, err := d.client.ListUsersWithResponse(
 			ctx,
@@ -100,11 +101,31 @@ func (d *UsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 		modelInstances = append(modelInstances, httpResp.JSON200.Data...)
 
-		if !httpResp.JSON200.HasMore {
-			break
+		switch v := any(httpResp.JSON200.HasMore).(type) {
+		case bool:
+			if !v {
+				break done
+			}
+		case *bool:
+			if v == nil || !*v {
+				break done
+			}
+		default:
+			panic("unknown type")
 		}
 
-		params.After = &httpResp.JSON200.LastId
+		switch v := any(httpResp.JSON200.LastId).(type) {
+		case string:
+			params.After = &v
+		case *string:
+			if v == nil {
+				params.After = nil
+			} else {
+				params.After = v
+			}
+		default:
+			panic("unknown type")
+		}
 	}
 
 	resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)
