@@ -27,7 +27,7 @@ data "openai_project_rate_limits" "example" {
 
 ### Read-Only
 
-- `rate_limits` (Attributes Set) List of users. (see [below for nested schema](#nestedatt--rate_limits))
+- `rate_limits` (Attributes Set) List of rate limits. (see [below for nested schema](#nestedatt--rate_limits))
 
 <a id="nestedatt--rate_limits"></a>
 ### Nested Schema for `rate_limits`
