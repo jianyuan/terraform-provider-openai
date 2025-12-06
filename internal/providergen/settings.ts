@@ -513,6 +513,7 @@ export const RESOURCES: Array<Resource> = [
       readMethod: "RetrieveInvite",
       readRequestAttributes: ["id"],
       deleteMethod: "DeleteInvite",
+      deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
     attributes: [

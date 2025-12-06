@@ -94,10 +94,7 @@ func (r *InviteResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	httpResp, err := r.client.InviteUserWithResponse(
-		ctx,
-		r.getCreateJSONRequestBody(data),
-	)
+	httpResp, err := r.client.InviteUserWithResponse(ctx, r.getCreateJSONRequestBody(data))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -126,7 +123,6 @@ func (r *InviteResource) Read(ctx context.Context, req resource.ReadRequest, res
 	}
 
 	httpResp, err := r.client.RetrieveInviteWithResponse(ctx, data.Id.ValueString())
-
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -160,11 +156,7 @@ func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		return
 	}
 
-	httpResp, err := r.client.DeleteInviteWithResponse(
-		ctx,
-		data.Id.ValueString(),
-	)
-
+	httpResp, err := r.client.DeleteInviteWithResponse(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

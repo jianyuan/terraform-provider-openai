@@ -139,11 +139,7 @@ func (r *AdminApiKeyResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	httpResp, err := r.client.AdminApiKeysDeleteWithResponse(
-		ctx,
-		data.Id.ValueString(),
-	)
-
+	httpResp, err := r.client.AdminApiKeysDeleteWithResponse(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
