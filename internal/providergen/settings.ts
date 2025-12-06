@@ -44,6 +44,56 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "users",
+    description: "Lists all of the users in the organization.",
+    api: {
+      strategy: "paginate",
+      method: "ListUsers",
+      model: "User",
+    },
+    attributes: [
+      {
+        name: "users",
+        type: "set_nested",
+        description: "List of users.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "User ID.",
+            computedOptionalRequired: "required",
+          },
+          {
+            name: "email",
+            type: "string",
+            description: "The email address of the user.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "The name of the user.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "role",
+            type: "string",
+            description: "Role `owner` or `reader`.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "added_at",
+            type: "int",
+            description:
+              "The Unix timestamp (in seconds) of when the user was added.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "project",
     description: "Retrieve a project by ID.",
     api: {

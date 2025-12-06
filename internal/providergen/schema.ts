@@ -4,7 +4,11 @@ export type ComputedOptionalRequired =
   | "computed_optional"
   | "required";
 
-export type Attribute = StringAttribute | IntAttribute | ObjectAttribute;
+export type Attribute =
+  | StringAttribute
+  | IntAttribute
+  | SetNestedAttribute
+  | ObjectAttribute;
 
 export interface BaseAttribute {
   name: string;
@@ -21,16 +25,21 @@ export interface IntAttribute extends BaseAttribute {
   type: "int";
 }
 
+export interface SetNestedAttribute extends BaseAttribute {
+  type: "set_nested";
+  attributes: Array<Attribute>;
+}
+
 export interface ObjectAttribute extends BaseAttribute {
   type: "object";
-  fields: Array<Attribute>;
+  attributes: Array<Attribute>;
 }
 
 export interface DataSource {
   name: string;
   description: string;
   api: {
-    strategy: "simple";
+    strategy: "simple" | "paginate";
     method: string;
     model: string;
   };

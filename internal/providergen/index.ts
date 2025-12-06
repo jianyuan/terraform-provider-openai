@@ -3,7 +3,13 @@ import { DATASOURCES } from "./settings";
 import type { DataSource, Attribute } from "./schema";
 import { match } from "ts-pattern";
 
-function generateTerraformAttribute({ attribute }: { attribute: Attribute }) {
+function generateTerraformAttribute({
+  parent,
+  attribute,
+}: {
+  parent: string;
+  attribute: Attribute;
+}) {
   const commonParts: string[] = [];
   commonParts.push(
     `MarkdownDescription: ${JSON.stringify(attribute.description)},`
@@ -34,13 +40,50 @@ function generateTerraformAttribute({ attribute }: { attribute: Attribute }) {
       parts.push("}");
       return parts.join("\n");
     })
+    .with({ type: "set_nested" }, (attribute) => {
+      const parts: string[] = [];
+      parts.push("schema.SetNestedAttribute{");
+      parts.push(...commonParts);
+      parts.push(
+        `CustomType: supertypes.NewSetNestedObjectTypeOf[${parent}${camelize(
+          attribute.name
+        )}Item](ctx),`
+      );
+      parts.push("NestedObject: schema.NestedAttributeObject{");
+      parts.push("Attributes: map[string]schema.Attribute{");
+      for (const nestedAttribute of attribute.attributes) {
+        parts.push(
+          `"${nestedAttribute.name}": ${generateTerraformAttribute({
+            parent: attribute.name,
+            attribute: nestedAttribute,
+          })},`
+        );
+      }
+      parts.push("},");
+      parts.push("},");
+      parts.push("}");
+      return parts.join("\n");
+    })
     .exhaustive();
 }
 
-function generateTerraformValueType({ attribute }: { attribute: Attribute }) {
+function generateTerraformValueType({
+  parent,
+  attribute,
+}: {
+  parent: string;
+  attribute: Attribute;
+}) {
   return match(attribute)
     .with({ type: "string" }, () => "supertypes.StringValue")
     .with({ type: "int" }, () => "supertypes.Int64Value")
+    .with(
+      { type: "set_nested" },
+      () =>
+        `supertypes.SetNestedObjectValueOf[${parent}${camelize(
+          attribute.name
+        )}Item]`
+    )
     .exhaustive();
 }
 
@@ -82,24 +125,36 @@ function generateTerraformValuer({
       { type: "int" },
       () => `${destVarName} = supertypes.NewInt64Value(${srcVarName})`
     )
+    .with({ type: "set_nested" }, () => {
+      const srcVarName = `${srcVar}.${camelize(attribute.name)}`;
+      const destVarName = `${destVar}.${camelize(attribute.name)}`;
+      return `
+      // if ${srcVarName} != nil {
+      //   ${destVarName} = supertypes.NewSetNestedObjectValueOf[${destVarName}](${srcVarName})
+      // } else {
+      //   ${destVarName} = supertypes.NewSetNestedObjectValueOf[${destVarName}](nil)
+      // }
+      // TODO
+      `.trim();
+    })
     .exhaustive();
 }
 
 function generateModel({
   name,
-  inputType,
   attributes,
 }: {
   name: string;
-  inputType: string;
   attributes: Array<Attribute>;
 }) {
   const structLines: string[] = [];
   const fillLines: string[] = [];
+  const extras: string[] = [];
 
   for (const attribute of attributes) {
     structLines.push(
       `${camelize(attribute.name)} ${generateTerraformValueType({
+        parent: name,
         attribute,
       })} \`tfsdk:"${attribute.name}"\``
     );
@@ -110,6 +165,17 @@ function generateModel({
         destVar: "m",
       })
     );
+
+    extras.push(
+      ...match(attribute)
+        .with({ type: "set_nested" }, (attribute) => [
+          generateModel({
+            name: `${name}${camelize(attribute.name)}Item`,
+            attributes: attribute.attributes,
+          }),
+        ])
+        .otherwise(() => [])
+    );
   }
 
   return `
@@ -117,10 +183,7 @@ type ${name} struct {
   ${structLines.join("\n")}
 }
 
-func (m *${name}) Fill(ctx context.Context, data ${inputType}) diag.Diagnostics {
-  ${fillLines.join("\n")}
-  return nil
-}
+${extras.join("\n\n")}
 `;
 }
 
@@ -128,7 +191,6 @@ function generateDataSourceModel({ dataSource }: { dataSource: DataSource }) {
   const modelName = `${camelize(dataSource.name)}DataSourceModel`;
   return generateModel({
     name: modelName,
-    inputType: `apiclient.${dataSource.api.model}`,
     attributes: dataSource.attributes,
   });
 }
@@ -142,7 +204,10 @@ function generateDataSourceSchemaAttributes({
 
   for (const attribute of dataSource.attributes) {
     lines.push(
-      `"${attribute.name}": ${generateTerraformAttribute({ attribute })},`
+      `"${attribute.name}": ${generateTerraformAttribute({
+        parent: `${camelize(dataSource.name)}DataSourceModel`,
+        attribute,
+      })},`
     );
   }
 
@@ -154,6 +219,72 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
   const dataSourceName = `${camelize(dataSource.name)}DataSource`;
   const modelName = `${camelize(dataSource.name)}DataSourceModel`;
+
+  const read = match(dataSource.api.strategy)
+    .with(
+      "paginate",
+      () => `
+    var modelInstances []apiclient.${dataSource.api.model}
+    params := &apiclient.${dataSource.api.method}Params{
+      Limit: ptr.Ptr(int64(100)),
+    }
+
+    for {
+      httpResp, err := d.client.${dataSource.api.method}WithResponse(
+        ctx,
+        params,
+      )
+      if err != nil {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+        return
+      } else if httpResp.StatusCode() != http.StatusOK {
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
+        return
+      } else if httpResp.JSON200 == nil {
+        resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
+        return
+      }
+
+      modelInstances = append(modelInstances, httpResp.JSON200.Data...)
+
+      if !httpResp.JSON200.HasMore {
+        break
+      }
+
+      params.After = &httpResp.JSON200.LastId
+    }
+
+    resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)
+    if resp.Diagnostics.HasError() {
+      return
+    }
+    `
+    )
+    .with(
+      "simple",
+      () => `
+    httpResp, err := d.client.${dataSource.api.method}WithResponse(
+      ctx,
+      data.Id.ValueString(),
+    )
+    if err != nil {
+      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+      return
+    } else if httpResp.StatusCode() != http.StatusOK {
+      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
+      return
+    } else if httpResp.JSON200 == nil {
+      resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
+      return
+    }
+
+    resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+    if resp.Diagnostics.HasError() {
+      return
+    }
+    `
+    )
+    .exhaustive();
 
   return `
 // Code generated by providergen. DO NOT EDIT.
@@ -190,25 +321,7 @@ func (d *${dataSourceName}) Read(ctx context.Context, req datasource.ReadRequest
     return
   }
 
-  httpResp, err := d.client.${dataSource.api.method}WithResponse(
-    ctx,
-    data.Id.ValueString(),
-  )
-  if err != nil {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-    return
-  } else if httpResp.StatusCode() != http.StatusOK {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
-    return
-  } else if httpResp.JSON200 == nil {
-    resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-    return
-  }
-
-  resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
-  if resp.Diagnostics.HasError() {
-    return
-  }
+  ${read}
 
   resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

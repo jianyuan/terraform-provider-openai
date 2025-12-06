@@ -8,8 +8,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -97,13 +95,4 @@ type UserDataSourceModel struct {
 	Name    supertypes.StringValue `tfsdk:"name"`
 	Role    supertypes.StringValue `tfsdk:"role"`
 	AddedAt supertypes.Int64Value  `tfsdk:"added_at"`
-}
-
-func (m *UserDataSourceModel) Fill(ctx context.Context, data apiclient.User) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(string(data.Id))
-	m.Email = supertypes.NewStringValue(string(data.Email))
-	m.Name = supertypes.NewStringValue(string(data.Name))
-	m.Role = supertypes.NewStringValue(string(data.Role))
-	m.AddedAt = supertypes.NewInt64Value(data.AddedAt)
-	return nil
 }
