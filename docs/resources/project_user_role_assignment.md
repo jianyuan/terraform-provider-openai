@@ -52,3 +52,17 @@ resource "openai_project_user_role_assignment" "test" {
 - `project_id` (String) The ID of the project to update.
 - `role_id` (String) Identifier of the role to assign.
 - `user_id` (String) The ID of the user that should receive the project role.
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# Import an existing project group role assignment
+terraform import openai_project_user_role_assignment.example <project_id>/<user_id>/<role_id>
+
+# Example
+terraform import openai_project_user_role_assignment.example proj_abc123/user_01J1F8ABCDXYZ/role_01J1F8PROJ
+```

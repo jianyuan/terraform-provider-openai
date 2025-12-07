@@ -660,6 +660,81 @@ export const DATASOURCES: Array<DataSource> = [
       },
     ],
   },
+
+  {
+    name: "project_group_role_assignments",
+    description:
+      "Lists the project roles assigned to a group within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListProjectGroupRoleAssignments",
+      readRequestAttributes: ["project_id", "group_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "group_id",
+        type: "string",
+        description: "The ID of the group to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description:
+          "List of project roles assigned to the group within the project.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
   {
     name: "user",
     description: "Retrieves a user by their identifier.",
