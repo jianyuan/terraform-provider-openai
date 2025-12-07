@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/avast/retry-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -106,37 +107,49 @@ func (r *OrganizationRoleResource) Read(ctx context.Context, req resource.ReadRe
 
 	var responseData *apiclient.Role
 
-	params := &apiclient.ListRolesParams{
-		Limit: ptr.Ptr(int64(100)),
-	}
-
-	for {
-		httpResp, err := r.client.ListRolesWithResponse(ctx, params)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-			return
-		} else if httpResp.StatusCode() != http.StatusOK {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-			return
-		} else if httpResp.JSON200 == nil {
-			resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-			return
-		}
-
-		for _, responseDataItem := range httpResp.JSON200.Data {
-			if r.resourceMatch(data, responseDataItem) {
-				responseData = &responseDataItem
-				break
+	err := retry.Do(
+		func() error {
+			params := &apiclient.ListRolesParams{
+				Limit: ptr.Ptr(int64(100)),
 			}
-		}
 
-		if v := getBool(httpResp.JSON200.HasMore); !v {
-			break
-		}
+			for {
+				httpResp, err := r.client.ListRolesWithResponse(ctx, params)
+				if err != nil {
+					return fmt.Errorf("Unable to read, got error: %s", err)
+				} else if httpResp.StatusCode() != http.StatusOK {
+					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
+				} else if httpResp.JSON200 == nil {
+					return fmt.Errorf("Unable to read, got empty response body")
+				}
 
-		if v := getString(httpResp.JSON200.Next); v != "" {
-			params.After = &v
-		}
+				for _, responseDataItem := range httpResp.JSON200.Data {
+					if r.resourceMatch(data, responseDataItem) {
+						responseData = &responseDataItem
+						break
+					}
+				}
+
+				if v := getBool(httpResp.JSON200.HasMore); !v {
+					break
+				}
+
+				if v := getString(httpResp.JSON200.Next); v != "" {
+					params.After = &v
+				}
+			}
+
+			if responseData == nil {
+				return fmt.Errorf("Unable to read, could not find resource in the list")
+			}
+
+			return nil
+		},
+	)
+
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", err.Error())
+		return
 	}
 
 	if responseData == nil {

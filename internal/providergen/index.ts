@@ -618,37 +618,49 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
       () => dedent`
         var responseData *apiclient.${resource.api.model}
 
-        params := &apiclient.${resource.api.readMethod}Params{
-          Limit: ptr.Ptr(int64(100)),
-        }
-
-        for {
-          httpResp, err := r.client.${resource.api.readMethod}WithResponse(${readRequestParams.join(",")})
-          if err != nil {
-            resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-            return
-          } else if httpResp.StatusCode() != http.StatusOK {
-            resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-            return
-          } else if httpResp.JSON200 == nil {
-            resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-            return
-          }
-
-          for _, responseDataItem := range httpResp.JSON200.Data {
-            if r.resourceMatch(data, responseDataItem) {
-              responseData = &responseDataItem
-              break
+        err := retry.Do(
+          func() error {
+            params := &apiclient.${resource.api.readMethod}Params{
+              Limit: ptr.Ptr(int64(100)),
             }
-          }
 
-          if v := getBool(httpResp.JSON200.HasMore); !v {
-            break
-          }
+            for {
+              httpResp, err := r.client.${resource.api.readMethod}WithResponse(${readRequestParams.join(",")})
+              if err != nil {
+                return fmt.Errorf("Unable to read, got error: %s", err)
+              } else if httpResp.StatusCode() != http.StatusOK {
+                return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
+              } else if httpResp.JSON200 == nil {
+                return fmt.Errorf("Unable to read, got empty response body")
+              }
 
-          if v := getString(httpResp.JSON200.${resource.api.readCursorParam ?? "LastId"}); v != "" {
-            params.After = &v
-          }
+              for _, responseDataItem := range httpResp.JSON200.Data {
+                if r.resourceMatch(data, responseDataItem) {
+                  responseData = &responseDataItem
+                  break
+                }
+              }
+
+              if v := getBool(httpResp.JSON200.HasMore); !v {
+                break
+              }
+
+              if v := getString(httpResp.JSON200.${resource.api.readCursorParam ?? "LastId"}); v != "" {
+                params.After = &v
+              }
+            }
+
+            if responseData == nil {
+              return fmt.Errorf("Unable to read, could not find resource in the list")
+            }
+
+            return nil
+          },
+        )
+
+        if err != nil {
+          resp.Diagnostics.AddError("Client Error", err.Error())
+          return
         }
       `
     )
