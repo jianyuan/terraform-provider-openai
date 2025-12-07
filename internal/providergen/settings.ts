@@ -2,6 +2,51 @@ import type { DataSource, Resource } from "./schema";
 
 export const DATASOURCES: Array<DataSource> = [
   {
+    name: "groups",
+    description: "Lists all groups in the organization.",
+    api: {
+      model: "GroupResponse",
+      readMethod: "ListGroups",
+      cursorParam: "Next",
+      strategy: "paginate",
+    },
+    attributes: [
+      {
+        name: "groups",
+        type: "set_nested",
+        description: "List of groups.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the group.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Human readable name for the group.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "is_scim_managed",
+            type: "bool",
+            description: "Whether the group is managed through SCIM.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "created_at",
+            type: "int",
+            description:
+              "Unix timestamp (in seconds) when the group was created.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "invite",
     description: "Retrieves an invite.",
     api: {
@@ -1087,8 +1132,7 @@ export const RESOURCES: Array<Resource> = [
       {
         name: "created_at",
         type: "int",
-        description:
-          "The Unix timestamp (in seconds) of when the project was created.",
+        description: "Unix timestamp (in seconds) when the group was created.",
         computedOptionalRequired: "computed",
       },
     ],

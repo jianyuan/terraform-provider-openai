@@ -50,7 +50,7 @@ func (r *GroupResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 				},
 			},
 			"created_at": schema.Int64Attribute{
-				MarkdownDescription: "The Unix timestamp (in seconds) of when the project was created.",
+				MarkdownDescription: "Unix timestamp (in seconds) when the group was created.",
 				Computed:            true,
 				CustomType:          supertypes.Int64Type{},
 			},

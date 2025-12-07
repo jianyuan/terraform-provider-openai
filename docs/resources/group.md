@@ -27,7 +27,7 @@ resource "openai_group" "test" {
 
 ### Read-Only
 
-- `created_at` (Number) The Unix timestamp (in seconds) of when the project was created.
+- `created_at` (Number) Unix timestamp (in seconds) when the group was created.
 - `id` (String) Identifier for the group.
 
 ## Import
