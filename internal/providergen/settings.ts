@@ -47,6 +47,65 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "group_users",
+    description: "Lists the users assigned to a group.",
+    api: {
+      model: "GroupUserAssignment",
+      readMethod: "ListGroupUsers",
+      readRequestAttributes: ["group_id"],
+      readModel: "User",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description: "The ID of the group to update.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "users",
+        type: "set_nested",
+        description: "List of users.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "User ID.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "email",
+            type: "string",
+            description: "The email address of the user.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "The name of the user.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "role",
+            type: "string",
+            description: "Role `owner` or `reader`.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "added_at",
+            type: "int",
+            description:
+              "The Unix timestamp (in seconds) of when the user was added.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "invite",
     description: "Retrieves an invite.",
     api: {
@@ -1132,6 +1191,39 @@ export const RESOURCES: Array<Resource> = [
         type: "int",
         description: "Unix timestamp (in seconds) when the group was created.",
         computedOptionalRequired: "computed",
+      },
+    ],
+  },
+  {
+    name: "group_user",
+    description: "Adds a user to a group.",
+    api: {
+      model: "GroupUserAssignment",
+      createMethod: "AddGroupUser",
+      createRequestAttributes: ["group_id"],
+      readMethod: "ListGroupUsers",
+      readRequestAttributes: ["group_id"],
+      readModel: "User",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "RemoveGroupUser",
+      deleteRequestAttributes: ["group_id", "user_id"],
+    },
+    importStateAttributes: ["group_id", "user_id"],
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description: "The ID of the group to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "Identifier of the user to add to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
       },
     ],
   },

@@ -12,6 +12,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 	return []func() resource.Resource{
 		NewAdminApiKeyResource,
 		NewGroupResource,
+		NewGroupUserResource,
 		NewInviteResource,
 		NewOrganizationRoleResource,
 		NewProjectResource,
@@ -25,6 +26,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewGroupUsersDataSource,
 		NewGroupsDataSource,
 		NewInviteDataSource,
 		NewInvitesDataSource,
