@@ -654,6 +654,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
 
             return nil
           },
+          retry.Delay(5*time.Second),
         )
 
         if err != nil {

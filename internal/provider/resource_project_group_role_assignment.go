@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/avast/retry-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -147,6 +148,7 @@ func (r *ProjectGroupRoleAssignmentResource) Read(ctx context.Context, req resou
 
 			return nil
 		},
+		retry.Delay(5*time.Second),
 	)
 
 	if err != nil {
