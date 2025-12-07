@@ -10,8 +10,6 @@ import (
 )
 
 func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
-	var diag diag.Diagnostics
-
 	switch data := data.(type) {
 	case apiclient.GroupUserAssignment:
 		m.GroupId = supertypes.NewStringValue(data.GroupId)
@@ -21,8 +19,9 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 		m.UserId = supertypes.NewStringValue(data.Id)
 		return nil
 	default:
-		diag.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
-		return diag
+		var diags diag.Diagnostics
+		diags.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
+		return diags
 	}
 }
 

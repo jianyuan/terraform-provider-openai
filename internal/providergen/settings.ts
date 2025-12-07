@@ -1227,4 +1227,39 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "group_role",
+    description:
+      "Assigns an organization role to a group within the organization.",
+    api: {
+      model: "GroupRoleAssignment",
+      createMethod: "AssignGroupRole",
+      createRequestAttributes: ["group_id"],
+      readMethod: "ListGroupRoleAssignments",
+      readRequestAttributes: ["group_id"],
+      readStrategy: "paginate",
+      readModel: "AssignedRoleDetails",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignGroupRole",
+      deleteRequestAttributes: ["group_id", "role_id"],
+    },
+    importStateAttributes: ["group_id", "role_id"],
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description:
+          "The ID of the group that should receive the organization role.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
 ];
