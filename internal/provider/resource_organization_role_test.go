@@ -40,7 +40,7 @@ func init() {
 				}
 
 				for _, role := range httpResp.JSON200.Data {
-					if !strings.HasPrefix(role.Name, "tf-") || role.ResourceType != "api.organization" {
+					if !strings.HasPrefix(role.Name, "tf-") {
 						continue
 					}
 

@@ -8,11 +8,9 @@ import (
 	"strings"
 
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -119,33 +117,6 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	resp.DataSourceData = client
 	resp.ResourceData = client
-}
-
-func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewAdminApiKeyResource,
-		NewInviteResource,
-		NewOrganizationRoleResource,
-		NewProjectRateLimitResource,
-		NewProjectResource,
-		NewProjectRoleResource,
-		NewProjectServiceAccountResource,
-		NewProjectUserResource,
-		NewUserRoleResource,
-	}
-}
-
-func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewInviteDataSource,
-		NewInvitesDataSource,
-		NewOrganizationRolesDataSource,
-		NewProjectDataSource,
-		NewProjectRateLimitsDataSource,
-		NewProjectsDataSource,
-		NewUserDataSource,
-		NewUsersDataSource,
-	}
 }
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {
