@@ -797,6 +797,78 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_rate_limit",
+    description:
+      "Manage rate limits per model for projects. Rate limits may be configured to be equal to or lower than the organization's rate limits.",
+    api: {
+      model: "ProjectRateLimit",
+      createMethod: "UpdateProjectRateLimits",
+      createRequestAttributes: ["project_id", "rate_limit_id"],
+      readMethod: "ListProjectRateLimits",
+      readRequestAttributes: ["project_id"],
+      readStrategy: "paginate",
+      updateMethod: "UpdateProjectRateLimits",
+      updateRequestAttributes: ["project_id", "rate_limit_id"],
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "rate_limit_id",
+        type: "string",
+        description:
+          "The ID of the rate limit. This is typically in the format `rl-<model>`.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "max_requests_per_1_minute",
+        type: "int",
+        description: "The maximum requests per minute.",
+        computedOptionalRequired: "computed_optional",
+      },
+      {
+        name: "max_tokens_per_1_minute",
+        type: "int",
+        description: "The maximum tokens per minute.",
+        computedOptionalRequired: "computed_optional",
+      },
+      {
+        name: "max_images_per_1_minute",
+        type: "int",
+        description:
+          "The maximum images per minute. Only relevant for certain models.",
+        computedOptionalRequired: "computed_optional",
+      },
+      {
+        name: "max_audio_megabytes_per_1_minute",
+        type: "int",
+        description:
+          "The maximum audio megabytes per minute. Only relevant for certain models.",
+        computedOptionalRequired: "computed_optional",
+      },
+      {
+        name: "max_requests_per_1_day",
+        type: "int",
+        description:
+          "The maximum requests per day. Only relevant for certain models.",
+        computedOptionalRequired: "computed_optional",
+      },
+      {
+        name: "batch_1_day_max_input_tokens",
+        type: "int",
+        description:
+          "The maximum batch input tokens per day. Only relevant for certain models.",
+        computedOptionalRequired: "computed_optional",
+      },
+    ],
+  },
+  {
     name: "project_role",
     description: "Creates a custom role for a project.",
     api: {

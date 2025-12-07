@@ -14,8 +14,8 @@ Manage rate limits per model for projects. Rate limits may be configured to be e
 
 ```terraform
 resource "openai_project_rate_limit" "example" {
-  project_id = "proj_000000000000000000000000"
-  model      = "o1-preview"
+  project_id    = "proj_000000000000000000000000"
+  rate_limit_id = "rl-o1-preview"
 
   max_requests_per_1_minute = 2
   max_tokens_per_1_minute   = 75000
@@ -27,14 +27,14 @@ resource "openai_project_rate_limit" "example" {
 
 ### Required
 
-- `model` (String) The model to set rate limits for.
 - `project_id` (String) The ID of the project.
+- `rate_limit_id` (String) The ID of the rate limit. This is typically in the format `rl-<model>`.
 
 ### Optional
 
-- `batch_1_day_max_input_tokens` (Number) The maximum batch input tokens per day. Only present for relevant models.
-- `max_audio_megabytes_per_1_minute` (Number) The maximum audio megabytes per minute. Only present for relevant models.
-- `max_images_per_1_minute` (Number) The maximum images per minute. Only present for relevant models.
-- `max_requests_per_1_day` (Number) The maximum requests per day. Only present for relevant models.
+- `batch_1_day_max_input_tokens` (Number) The maximum batch input tokens per day. Only relevant for certain models.
+- `max_audio_megabytes_per_1_minute` (Number) The maximum audio megabytes per minute. Only relevant for certain models.
+- `max_images_per_1_minute` (Number) The maximum images per minute. Only relevant for certain models.
+- `max_requests_per_1_day` (Number) The maximum requests per day. Only relevant for certain models.
 - `max_requests_per_1_minute` (Number) The maximum requests per minute.
 - `max_tokens_per_1_minute` (Number) The maximum tokens per minute.

@@ -810,9 +810,9 @@ package provider
 
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		${[...resources.map((resource) => resource.name), "project_rate_limit"] // HACK: project_rate_limit is not an auto-generated resource yet
-      .sort((a, b) => a.localeCompare(b))
-      .map((name) => `New${camelize(name)}Resource,`)
+		${resources
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((resource) => `New${camelize(resource.name)}Resource,`)
       .join("\n")}
 	}
 }

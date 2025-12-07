@@ -21,10 +21,10 @@ func TestAccProjectRateLimitResource(t *testing.T) {
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 3, 3),
+				Config: testAccProjectRateLimitResourceConfig(projectName, "rl-text-embedding-3-small", 3, 3),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.CompareValuePairs("openai_project.test", tfjsonpath.New("id"), rn, tfjsonpath.New("project_id"), compare.ValuesSame()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("model"), knownvalue.StringExact("text-embedding-3-small")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("rate_limit_id"), knownvalue.StringExact("rl-text-embedding-3-small")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_requests_per_1_minute"), knownvalue.Int64Exact(3)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(3)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_images_per_1_minute"), knownvalue.Null()),
@@ -34,10 +34,10 @@ func TestAccProjectRateLimitResource(t *testing.T) {
 				},
 			},
 			{
-				Config: testAccProjectRateLimitResourceConfig(projectName, "text-embedding-3-small", 2, 2),
+				Config: testAccProjectRateLimitResourceConfig(projectName, "rl-text-embedding-3-small", 2, 2),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.CompareValuePairs("openai_project.test", tfjsonpath.New("id"), rn, tfjsonpath.New("project_id"), compare.ValuesSame()),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("model"), knownvalue.StringExact("text-embedding-3-small")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("rate_limit_id"), knownvalue.StringExact("rl-text-embedding-3-small")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_requests_per_1_minute"), knownvalue.Int64Exact(2)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_tokens_per_1_minute"), knownvalue.Int64Exact(2)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("max_images_per_1_minute"), knownvalue.Null()),
@@ -57,8 +57,8 @@ resource "openai_project" "test" {
 }
 
 resource "openai_project_rate_limit" "test" {
-	project_id = openai_project.test.id
-	model      = %[2]q
+	project_id    = openai_project.test.id
+	rate_limit_id = %[2]q
 
 	max_requests_per_1_minute = %[3]d
 	max_tokens_per_1_minute   = %[4]d
