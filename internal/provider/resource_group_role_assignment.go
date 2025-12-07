@@ -18,22 +18,22 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-var _ resource.Resource = &GroupRoleResource{}
-var _ resource.ResourceWithImportState = &GroupRoleResource{}
+var _ resource.Resource = &GroupRoleAssignmentResource{}
+var _ resource.ResourceWithImportState = &GroupRoleAssignmentResource{}
 
-func NewGroupRoleResource() resource.Resource {
-	return &GroupRoleResource{}
+func NewGroupRoleAssignmentResource() resource.Resource {
+	return &GroupRoleAssignmentResource{}
 }
 
-type GroupRoleResource struct {
+type GroupRoleAssignmentResource struct {
 	baseResource
 }
 
-func (r *GroupRoleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_group_role"
+func (r *GroupRoleAssignmentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_group_role_assignment"
 }
 
-func (r *GroupRoleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *GroupRoleAssignmentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Assigns an organization role to a group within the organization.",
 		Attributes: map[string]schema.Attribute{
@@ -57,8 +57,8 @@ func (r *GroupRoleResource) Schema(ctx context.Context, req resource.SchemaReque
 	}
 }
 
-func (r *GroupRoleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data GroupRoleResourceModel
+func (r *GroupRoleAssignmentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data GroupRoleAssignmentResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -91,8 +91,8 @@ func (r *GroupRoleResource) Create(ctx context.Context, req resource.CreateReque
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GroupRoleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data GroupRoleResourceModel
+func (r *GroupRoleAssignmentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data GroupRoleAssignmentResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -159,12 +159,12 @@ func (r *GroupRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GroupRoleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *GroupRoleAssignmentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	resp.Diagnostics.AddError("Not Supported", "Update is not supported for this resource")
 }
 
-func (r *GroupRoleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data GroupRoleResourceModel
+func (r *GroupRoleAssignmentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data GroupRoleAssignmentResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -183,7 +183,7 @@ func (r *GroupRoleResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 }
 
-func (r *GroupRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *GroupRoleAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	first, second, err := tfutils.SplitTwoPartId(req.ID, "group_id", "role_id")
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
@@ -198,7 +198,7 @@ func (r *GroupRoleResource) ImportState(ctx context.Context, req resource.Import
 	)...)
 }
 
-type GroupRoleResourceModel struct {
+type GroupRoleAssignmentResourceModel struct {
 	GroupId supertypes.StringValue `tfsdk:"group_id"`
 	RoleId  supertypes.StringValue `tfsdk:"role_id"`
 }

@@ -13,8 +13,8 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 )
 
-func TestAccGroupRoleResource(t *testing.T) {
-	rn := "openai_group_role.test"
+func TestAccGroupRoleAssignmentResource(t *testing.T) {
+	rn := "openai_group_role_assignment.test"
 	groupName := acctest.RandomWithPrefix("tf-group")
 	roleName := acctest.RandomWithPrefix("tf-role")
 
@@ -23,7 +23,7 @@ func TestAccGroupRoleResource(t *testing.T) {
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccGroupRoleResourceConfig(groupName, roleName),
+				Config: testAccGroupRoleAssignmentResourceConfig(groupName, roleName),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("group_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("role_id"), knownvalue.NotNull()),
@@ -46,9 +46,9 @@ func TestAccGroupRoleResource(t *testing.T) {
 	})
 }
 
-func testAccGroupRoleResourceConfig(groupName, roleName string) string {
+func testAccGroupRoleAssignmentResourceConfig(groupName, roleName string) string {
 	return testAccGroupResourceConfig(groupName) + testAccOrganizationRoleResourceConfig(roleName, "role description", `["api.groups.read"]`) + `
-resource "openai_group_role" "test" {
+resource "openai_group_role_assignment" "test" {
 	group_id = openai_group.test.id
 	role_id  = openai_organization_role.test.id
 }

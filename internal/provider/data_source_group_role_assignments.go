@@ -13,21 +13,21 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-var _ datasource.DataSource = &GroupRolesDataSource{}
+var _ datasource.DataSource = &GroupRoleAssignmentsDataSource{}
 
-func NewGroupRolesDataSource() datasource.DataSource {
-	return &GroupRolesDataSource{}
+func NewGroupRoleAssignmentsDataSource() datasource.DataSource {
+	return &GroupRoleAssignmentsDataSource{}
 }
 
-type GroupRolesDataSource struct {
+type GroupRoleAssignmentsDataSource struct {
 	baseDataSource
 }
 
-func (d *GroupRolesDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_group_roles"
+func (d *GroupRoleAssignmentsDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_group_role_assignments"
 }
 
-func (d *GroupRolesDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *GroupRoleAssignmentsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Lists the organization roles assigned to a group within the organization.",
 		Attributes: map[string]schema.Attribute{
@@ -39,7 +39,7 @@ func (d *GroupRolesDataSource) Schema(ctx context.Context, req datasource.Schema
 			"roles": schema.SetNestedAttribute{
 				MarkdownDescription: "List of organization roles",
 				Computed:            true,
-				CustomType:          supertypes.NewSetNestedObjectTypeOf[GroupRolesDataSourceModelRolesItem](ctx),
+				CustomType:          supertypes.NewSetNestedObjectTypeOf[GroupRoleAssignmentsDataSourceModelRolesItem](ctx),
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
@@ -79,8 +79,8 @@ func (d *GroupRolesDataSource) Schema(ctx context.Context, req datasource.Schema
 	}
 }
 
-func (d *GroupRolesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data GroupRolesDataSourceModel
+func (d *GroupRoleAssignmentsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data GroupRoleAssignmentsDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -126,12 +126,12 @@ func (d *GroupRolesDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-type GroupRolesDataSourceModel struct {
-	GroupId supertypes.StringValue                                                `tfsdk:"group_id"`
-	Roles   supertypes.SetNestedObjectValueOf[GroupRolesDataSourceModelRolesItem] `tfsdk:"roles"`
+type GroupRoleAssignmentsDataSourceModel struct {
+	GroupId supertypes.StringValue                                                          `tfsdk:"group_id"`
+	Roles   supertypes.SetNestedObjectValueOf[GroupRoleAssignmentsDataSourceModelRolesItem] `tfsdk:"roles"`
 }
 
-type GroupRolesDataSourceModelRolesItem struct {
+type GroupRoleAssignmentsDataSourceModelRolesItem struct {
 	Id             supertypes.StringValue        `tfsdk:"id"`
 	Name           supertypes.StringValue        `tfsdk:"name"`
 	Description    supertypes.StringValue        `tfsdk:"description"`

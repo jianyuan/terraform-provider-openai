@@ -106,7 +106,7 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
-    name: "group_roles",
+    name: "group_role_assignments",
     description:
       "Lists the organization roles assigned to a group within the organization.",
     api: {
@@ -1296,7 +1296,7 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
-    name: "group_role",
+    name: "group_role_assignment",
     description:
       "Assigns an organization role to a group within the organization.",
     api: {

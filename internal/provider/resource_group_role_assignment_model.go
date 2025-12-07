@@ -9,7 +9,7 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *GroupRoleResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
+func (m *GroupRoleAssignmentResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
 	case apiclient.GroupRoleAssignment:
 		m.GroupId = supertypes.NewStringValue(data.Group.Id)
@@ -25,11 +25,11 @@ func (m *GroupRoleResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 	}
 }
 
-func (r *GroupRoleResource) resourceMatch(data GroupRoleResourceModel, roleAssignment apiclient.AssignedRoleDetails) bool {
+func (r *GroupRoleAssignmentResource) resourceMatch(data GroupRoleAssignmentResourceModel, roleAssignment apiclient.AssignedRoleDetails) bool {
 	return data.RoleId.ValueString() == roleAssignment.Id
 }
 
-func (r *GroupRoleResource) getCreateJSONRequestBody(ctx context.Context, data GroupRoleResourceModel) (apiclient.AssignGroupRoleJSONRequestBody, diag.Diagnostics) {
+func (r *GroupRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data GroupRoleAssignmentResourceModel) (apiclient.AssignGroupRoleJSONRequestBody, diag.Diagnostics) {
 	return apiclient.AssignGroupRoleJSONRequestBody{
 		RoleId: data.RoleId.ValueString(),
 	}, nil

@@ -8,13 +8,13 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *GroupRolesDataSourceModel) Fill(ctx context.Context, data []apiclient.AssignedRoleDetails) diag.Diagnostics {
+func (m *GroupRoleAssignmentsDataSourceModel) Fill(ctx context.Context, data []apiclient.AssignedRoleDetails) diag.Diagnostics {
 	if data == nil {
-		m.Roles = supertypes.NewSetNestedObjectValueOfNull[GroupRolesDataSourceModelRolesItem](ctx)
+		m.Roles = supertypes.NewSetNestedObjectValueOfNull[GroupRoleAssignmentsDataSourceModelRolesItem](ctx)
 	} else {
-		items := make([]GroupRolesDataSourceModelRolesItem, len(data))
+		items := make([]GroupRoleAssignmentsDataSourceModelRolesItem, len(data))
 		for i, role := range data {
-			items[i] = GroupRolesDataSourceModelRolesItem{
+			items[i] = GroupRoleAssignmentsDataSourceModelRolesItem{
 				Id:             supertypes.NewStringValue(role.Id),
 				Name:           supertypes.NewStringValue(role.Name),
 				Description:    supertypes.NewStringPointerValue(role.Description),
