@@ -370,9 +370,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       { strategy: "simple" },
       () => `
-    httpResp, err := d.client.${
-      dataSource.api.readMethod
-    }WithResponse(${readRequestParams.join(",")})
+    httpResp, err := d.client.${dataSource.api.readMethod}WithResponse(${readRequestParams.join(",")})
     if err != nil {
       resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
       return
@@ -592,11 +590,7 @@ import (
 )
 
 var _ resource.Resource = &${resourceName}{}
-${
-  resource.importStateAttributes
-    ? `var _ resource.ResourceWithImportState = &${resourceName}{}`
-    : ""
-}
+${resource.importStateAttributes ? `var _ resource.ResourceWithImportState = &${resourceName}{}` : ""}
 
 func New${resourceName}() resource.Resource {
   return &${resourceName}{}
@@ -627,9 +621,7 @@ func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest
     return
   }
 
-  httpResp, err := r.client.${
-    resource.api.createMethod
-  }WithResponse(${createRequestParams.join(",")})
+  httpResp, err := r.client.${resource.api.createMethod}WithResponse(${createRequestParams.join(",")})
   if err != nil {
     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
     return
@@ -657,9 +649,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
     return
   }
 
-  httpResp, err := r.client.${
-    resource.api.readMethod
-  }WithResponse(${readRequestParams.join(",")})
+  httpResp, err := r.client.${resource.api.readMethod}WithResponse(${readRequestParams.join(",")})
   if err != nil {
     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
     return
@@ -690,9 +680,7 @@ func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest
         return
       }
 
-      httpResp, err := r.client.${
-        resource.api.updateMethod
-      }WithResponse(${updateRequestParams.join(",")})
+      httpResp, err := r.client.${resource.api.updateMethod}WithResponse(${updateRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
         return
@@ -728,9 +716,7 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
         return
       }
 
-      httpResp, err := r.client.${
-        resource.api.deleteMethod
-      }WithResponse(${deleteRequestParams.join(",")})
+      httpResp, err := r.client.${resource.api.deleteMethod}WithResponse(${deleteRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
         return

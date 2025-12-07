@@ -52,10 +52,10 @@ func (d *OrganizationRolesDataSource) Schema(ctx context.Context, req datasource
 							Computed:            true,
 							CustomType:          supertypes.StringType{},
 						},
-						"permissions": schema.ListAttribute{
+						"permissions": schema.SetAttribute{
 							MarkdownDescription: "Permissions granted by the role.",
 							Computed:            true,
-							CustomType:          supertypes.NewListTypeOf[string](ctx),
+							CustomType:          supertypes.NewSetTypeOf[string](ctx),
 						},
 						"predefined_role": schema.BoolAttribute{
 							MarkdownDescription: "Whether the role is predefined and managed by OpenAI.",
@@ -145,10 +145,10 @@ type OrganizationRolesDataSourceModel struct {
 }
 
 type OrganizationRolesDataSourceModelRolesItem struct {
-	Id             supertypes.StringValue         `tfsdk:"id"`
-	Name           supertypes.StringValue         `tfsdk:"name"`
-	Description    supertypes.StringValue         `tfsdk:"description"`
-	Permissions    supertypes.ListValueOf[string] `tfsdk:"permissions"`
-	PredefinedRole supertypes.BoolValue           `tfsdk:"predefined_role"`
-	ResourceType   supertypes.StringValue         `tfsdk:"resource_type"`
+	Id             supertypes.StringValue        `tfsdk:"id"`
+	Name           supertypes.StringValue        `tfsdk:"name"`
+	Description    supertypes.StringValue        `tfsdk:"description"`
+	Permissions    supertypes.SetValueOf[string] `tfsdk:"permissions"`
+	PredefinedRole supertypes.BoolValue          `tfsdk:"predefined_role"`
+	ResourceType   supertypes.StringValue        `tfsdk:"resource_type"`
 }
