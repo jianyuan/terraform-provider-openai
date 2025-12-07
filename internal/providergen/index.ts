@@ -275,7 +275,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
   const readRequestParams = ["ctx"];
   readRequestParams.push(
     ...match(dataSource.api)
-      .with({ strategy: "paginate" }, (api) => {
+      .with({ readStrategy: "paginate" }, (api) => {
         const parts: string[] = [];
         if (api.readRequestAttributes) {
           parts.push(
@@ -298,23 +298,23 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
         parts.push("params");
         return parts;
       })
-      .with({ strategy: "simple" }, () => ["data.Id.ValueString()"])
+      .with({ readStrategy: "simple" }, () => ["data.Id.ValueString()"])
       .exhaustive()
   );
 
   const read = match(dataSource.api)
     .with(
-      { strategy: "paginate" },
+      { readStrategy: "paginate" },
       (api) => `
     var modelInstances []apiclient.${dataSource.api.model}
     params := &apiclient.${dataSource.api.readMethod}Params{
       Limit: ptr.Ptr(int64(100)),
     }
 
-    ${api.hooks?.readInitLoop ?? ""}
+    ${api.readInitLoop ?? ""}
 
     for {
-      ${api.hooks?.readPreIterate ?? ""}
+      ${api.readPreIterate ?? ""}
 
       httpResp, err := d.client.${
         dataSource.api.readMethod
@@ -336,11 +336,11 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
         break
       }
 
-      if v := getString(httpResp.JSON200.${api.cursorParam ?? "LastId"}); v != "" {
+      if v := getString(httpResp.JSON200.${api.readCursorParam ?? "LastId"}); v != "" {
         params.After = &v
       }
 
-      ${api.hooks?.readPostIterate ?? ""}
+      ${api.readPostIterate ?? ""}
     }
 
     resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)
@@ -350,7 +350,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     `
     )
     .with(
-      { strategy: "simple" },
+      { readStrategy: "simple" },
       () => `
     httpResp, err := d.client.${dataSource.api.readMethod}WithResponse(${readRequestParams.join(",")})
     if err != nil {
