@@ -7,16 +7,19 @@ import (
 	"net/http"
 
 	"github.com/avast/retry-go"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 var _ resource.Resource = &ProjectGroupRoleAssignmentResource{}
+var _ resource.ResourceWithImportState = &ProjectGroupRoleAssignmentResource{}
 
 func NewProjectGroupRoleAssignmentResource() resource.Resource {
 	return &ProjectGroupRoleAssignmentResource{}
@@ -186,6 +189,24 @@ func (r *ProjectGroupRoleAssignmentResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
+}
+
+func (r *ProjectGroupRoleAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	first, second, third, err := tfutils.SplitThreePartId(req.ID, "project_id", "group_id", "role_id")
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(
+		ctx, path.Root("project_id"), first,
+	)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(
+		ctx, path.Root("group_id"), second,
+	)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(
+		ctx, path.Root("role_id"), third,
+	)...)
 }
 
 type ProjectGroupRoleAssignmentResourceModel struct {

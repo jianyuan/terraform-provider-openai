@@ -7,8 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
+	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 )
 
 func TestAccProjectUserRoleAssignmentResource(t *testing.T) {
@@ -26,6 +28,20 @@ func TestAccProjectUserRoleAssignmentResource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("project_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("user_id"), knownvalue.StringExact(acctest.TestUserId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("role_id"), knownvalue.NotNull()),
+				},
+			},
+			{
+				ResourceName: rn,
+				ImportState:  true,
+				ImportStateIdFunc: func(s *terraform.State) (string, error) {
+					rs, ok := s.RootModule().Resources[rn]
+					if !ok {
+						return "", fmt.Errorf("not found: %s", rn)
+					}
+					projectId := rs.Primary.Attributes["project_id"]
+					userId := rs.Primary.Attributes["user_id"]
+					roleId := rs.Primary.Attributes["role_id"]
+					return tfutils.BuildThreePartId(projectId, userId, roleId), nil
 				},
 			},
 		},
