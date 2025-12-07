@@ -9,19 +9,15 @@ import (
 )
 
 func (m *GroupsDataSourceModel) Fill(ctx context.Context, groups []apiclient.GroupResponse) diag.Diagnostics {
-	if groups == nil {
-		m.Groups = supertypes.NewSetNestedObjectValueOfNull[GroupsDataSourceModelGroupsItem](ctx)
-	} else {
-		items := make([]GroupsDataSourceModelGroupsItem, len(groups))
-		for i, group := range groups {
-			items[i] = GroupsDataSourceModelGroupsItem{
-				Id:            supertypes.NewStringValue(group.Id),
-				Name:          supertypes.NewStringValue(group.Name),
-				IsScimManaged: supertypes.NewBoolValue(group.IsScimManaged),
-				CreatedAt:     supertypes.NewInt64Value(group.CreatedAt),
-			}
+	items := make([]GroupsDataSourceModelGroupsItem, len(groups))
+	for i, group := range groups {
+		items[i] = GroupsDataSourceModelGroupsItem{
+			Id:            supertypes.NewStringValue(group.Id),
+			Name:          supertypes.NewStringValue(group.Name),
+			IsScimManaged: supertypes.NewBoolValue(group.IsScimManaged),
+			CreatedAt:     supertypes.NewInt64Value(group.CreatedAt),
 		}
-		m.Groups = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	}
+	m.Groups = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	return nil
 }

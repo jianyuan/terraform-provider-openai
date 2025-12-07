@@ -13,7 +13,6 @@ import (
 func TestAccProjectGroupRoleAssignmentsDataSource(t *testing.T) {
 	rn := "data.openai_project_group_role_assignments.test"
 	roleName := acctest.RandomWithPrefix("tf-role")
-	groupName := acctest.RandomWithPrefix("tf-group")
 	projectName := acctest.RandomWithPrefix("tf-project")
 
 	resource.Test(t, resource.TestCase{
@@ -21,7 +20,7 @@ func TestAccProjectGroupRoleAssignmentsDataSource(t *testing.T) {
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccProjectGroupRoleAssignmentsDataSourceConfig(roleName, groupName, projectName),
+				Config: testAccProjectGroupRoleAssignmentsDataSourceConfig(projectName, acctest.TestGroupId, roleName),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("roles"), knownvalue.SetExact([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
@@ -39,8 +38,8 @@ func TestAccProjectGroupRoleAssignmentsDataSource(t *testing.T) {
 	})
 }
 
-func testAccProjectGroupRoleAssignmentsDataSourceConfig(roleName, groupName, projectName string) string {
-	return testAccProjectGroupRoleAssignmentResourceConfig(roleName, groupName, projectName) + `
+func testAccProjectGroupRoleAssignmentsDataSourceConfig(projectName, groupId, roleName string) string {
+	return testAccProjectGroupRoleAssignmentResourceConfig(projectName, groupId, roleName) + `
 data "openai_project_group_role_assignments" "test" {
 	project_id = openai_project_group_role_assignment.test.project_id
 	group_id = openai_project_group_role_assignment.test.group_id

@@ -9,21 +9,17 @@ import (
 )
 
 func (m *ProjectUserRoleAssignmentsDataSourceModel) Fill(ctx context.Context, data []apiclient.AssignedRoleDetails) diag.Diagnostics {
-	if data == nil {
-		m.Roles = supertypes.NewSetNestedObjectValueOfNull[ProjectUserRoleAssignmentsDataSourceModelRolesItem](ctx)
-	} else {
-		items := make([]ProjectUserRoleAssignmentsDataSourceModelRolesItem, len(data))
-		for i, role := range data {
-			items[i] = ProjectUserRoleAssignmentsDataSourceModelRolesItem{
-				Id:             supertypes.NewStringValue(role.Id),
-				Name:           supertypes.NewStringValue(role.Name),
-				Description:    supertypes.NewStringPointerValue(role.Description),
-				Permissions:    supertypes.NewSetValueOfSlice(ctx, deduplicate(role.Permissions)),
-				PredefinedRole: supertypes.NewBoolValue(role.PredefinedRole),
-				ResourceType:   supertypes.NewStringValue(role.ResourceType),
-			}
+	items := make([]ProjectUserRoleAssignmentsDataSourceModelRolesItem, len(data))
+	for i, role := range data {
+		items[i] = ProjectUserRoleAssignmentsDataSourceModelRolesItem{
+			Id:             supertypes.NewStringValue(role.Id),
+			Name:           supertypes.NewStringValue(role.Name),
+			Description:    supertypes.NewStringPointerValue(role.Description),
+			Permissions:    supertypes.NewSetValueOfSlice(ctx, deduplicate(role.Permissions)),
+			PredefinedRole: supertypes.NewBoolValue(role.PredefinedRole),
+			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
-		m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	}
+	m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	return nil
 }

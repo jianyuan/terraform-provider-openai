@@ -9,22 +9,18 @@ import (
 )
 
 func (m *InvitesDataSourceModel) Fill(ctx context.Context, invites []apiclient.Invite) diag.Diagnostics {
-	if invites == nil {
-		m.Invites = supertypes.NewSetNestedObjectValueOfNull[InvitesDataSourceModelInvitesItem](ctx)
-	} else {
-		items := make([]InvitesDataSourceModelInvitesItem, len(invites))
-		for i, invite := range invites {
-			items[i] = InvitesDataSourceModelInvitesItem{
-				Id:         supertypes.NewStringValue(invite.Id),
-				Email:      supertypes.NewStringValue(invite.Email),
-				Role:       supertypes.NewStringValue(string(invite.Role)),
-				Status:     supertypes.NewStringValue(string(invite.Status)),
-				InvitedAt:  supertypes.NewInt64Value(invite.InvitedAt),
-				ExpiresAt:  supertypes.NewInt64Value(invite.ExpiresAt),
-				AcceptedAt: supertypes.NewInt64PointerValue(invite.AcceptedAt),
-			}
+	items := make([]InvitesDataSourceModelInvitesItem, len(invites))
+	for i, invite := range invites {
+		items[i] = InvitesDataSourceModelInvitesItem{
+			Id:         supertypes.NewStringValue(invite.Id),
+			Email:      supertypes.NewStringValue(invite.Email),
+			Role:       supertypes.NewStringValue(string(invite.Role)),
+			Status:     supertypes.NewStringValue(string(invite.Status)),
+			InvitedAt:  supertypes.NewInt64Value(invite.InvitedAt),
+			ExpiresAt:  supertypes.NewInt64Value(invite.ExpiresAt),
+			AcceptedAt: supertypes.NewInt64PointerValue(invite.AcceptedAt),
 		}
-		m.Invites = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	}
+	m.Invites = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	return nil
 }

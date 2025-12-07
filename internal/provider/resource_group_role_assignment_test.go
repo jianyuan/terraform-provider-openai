@@ -15,7 +15,6 @@ import (
 
 func TestAccGroupRoleAssignmentResource(t *testing.T) {
 	rn := "openai_group_role_assignment.test"
-	groupName := acctest.RandomWithPrefix("tf-group")
 	roleName := acctest.RandomWithPrefix("tf-role")
 
 	resource.Test(t, resource.TestCase{
@@ -23,9 +22,9 @@ func TestAccGroupRoleAssignmentResource(t *testing.T) {
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccGroupRoleAssignmentResourceConfig(groupName, roleName),
+				Config: testAccGroupRoleAssignmentResourceConfig(acctest.TestGroupId, roleName),
 				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("group_id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("group_id"), knownvalue.StringExact(acctest.TestGroupId)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("role_id"), knownvalue.NotNull()),
 				},
 			},
@@ -46,11 +45,11 @@ func TestAccGroupRoleAssignmentResource(t *testing.T) {
 	})
 }
 
-func testAccGroupRoleAssignmentResourceConfig(groupName, roleName string) string {
-	return testAccGroupResourceConfig(groupName) + testAccOrganizationRoleResourceConfig(roleName, "role description", `["api.groups.read"]`) + `
+func testAccGroupRoleAssignmentResourceConfig(groupId, roleName string) string {
+	return testAccOrganizationRoleResourceConfig(roleName, "role description", `["api.groups.read"]`) + fmt.Sprintf(`
 resource "openai_group_role_assignment" "test" {
-	group_id = openai_group.test.id
+	group_id = %[1]q
 	role_id  = openai_organization_role.test.id
-}
-`
+}	
+`, groupId)
 }
