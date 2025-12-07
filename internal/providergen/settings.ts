@@ -425,6 +425,72 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "project_roles",
+    description: "Lists the roles configured for a project.",
+    api: {
+      strategy: "paginate",
+      readMethod: "ListProjectRoles",
+      readRequestAttributes: ["project_id"],
+      model: "Role",
+      cursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description: "List of roles configured for a project.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
@@ -727,6 +793,58 @@ export const RESOURCES: Array<Resource> = [
         description:
           "The Unix timestamp (in seconds) of when the project was archived or `null`.",
         computedOptionalRequired: "computed",
+      },
+    ],
+  },
+  {
+    name: "project_role",
+    description: "Creates a custom role for a project.",
+    api: {
+      model: "Role",
+      createMethod: "CreateProjectRole",
+      createRequestAttributes: ["project_id"],
+      readMethod: "ListProjectRoles",
+      readRequestAttributes: ["project_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "UpdateProjectRole",
+      updateRequestAttributes: ["project_id", "id"],
+      deleteMethod: "DeleteProjectRole",
+      deleteRequestAttributes: ["project_id", "id"],
+    },
+    importStateAttributes: ["project_id", "id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "Identifier for the role.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to create the role for.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Unique name for the role.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Description of the role.",
+        computedOptionalRequired: "optional",
+      },
+      {
+        name: "permissions",
+        type: "set",
+        description: "Permissions to grant to the role.",
+        computedOptionalRequired: "required",
+        elementType: "string",
       },
     ],
   },
