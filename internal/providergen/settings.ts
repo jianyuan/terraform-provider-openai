@@ -687,6 +687,74 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_service_account",
+    description:
+      "Manage service accounts within a project. A service account is a bot user that is not associated with a user. If a user leaves an organization, their keys and membership in projects will no longer work. Service accounts do not have this limitation. However, service accounts can also be deleted from a project.",
+    api: {
+      createMethod: "CreateProjectServiceAccount",
+      createRequestAttributes: ["project_id"],
+      readMethod: "RetrieveProjectServiceAccount",
+      readRequestAttributes: ["project_id", "id"],
+      deleteMethod: "DeleteProjectServiceAccount",
+      deleteRequestAttributes: ["project_id", "id"],
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "The name of the service account being created.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the service account.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "role",
+        type: "string",
+        description:
+          "The role of the service account. Can be `owner` or `member`.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "created_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the service account was created.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["int64planmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "api_key_id",
+        type: "string",
+        description:
+          "Internal ID of the API key. This is a reference to the API key and not the actual key.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "api_key",
+        type: "string",
+        description:
+          "The API key that can be used to authenticate with the API.",
+        computedOptionalRequired: "computed",
+        sensitive: true,
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+    ],
+  },
+  {
     name: "project_user",
     description:
       "Adds a user to the project. Users must already be members of the organization to be added to a project.",
