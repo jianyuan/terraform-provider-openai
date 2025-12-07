@@ -11,6 +11,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "dedent": "^1.7.0",
     "inflection": "^3.0.2",
     "ts-pattern": "^5.9.0",
     "zod": "^4.1.13"
