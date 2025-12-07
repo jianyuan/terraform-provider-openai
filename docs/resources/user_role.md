@@ -4,11 +4,14 @@ page_title: "openai_user_role Resource - terraform-provider-openai"
 subcategory: ""
 description: |-
   Modifies a user's role in the organization.
+  Note: The new openai_user_role_assignment resource supports predefined roles like owner and reader as well as custom roles. This resource may be removed in a future release.
 ---
 
 # openai_user_role (Resource)
 
 Modifies a user's role in the organization.
+
+**Note**: The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.
 
 ## Example Usage
 

@@ -1199,7 +1199,8 @@ export const RESOURCES: Array<Resource> = [
   },
   {
     name: "user_role",
-    description: "Modifies a user's role in the organization.",
+    description:
+      "Modifies a user's role in the organization.\n\n**Note**: The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
     api: {
       createMethod: "ModifyUser",
       createRequestAttributes: ["user_id"],
@@ -1222,6 +1223,40 @@ export const RESOURCES: Array<Resource> = [
         description: "`owner` or `reader`.",
         computedOptionalRequired: "required",
         validators: ['stringvalidator.OneOf("owner", "reader")'],
+      },
+    ],
+  },
+  {
+    name: "user_role_assignment",
+    description:
+      "Assigns an organization role to a user within the organization.\n\nNote predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignUserRole",
+      createRequestAttributes: ["user_id"],
+      readMethod: "ListUserRoleAssignments",
+      readRequestAttributes: ["user_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "AssignUserRole",
+      updateRequestAttributes: ["user_id"],
+      deleteMethod: "UnassignUserRole",
+      deleteRequestAttributes: ["user_id", "role_id"],
+    },
+    importStateAttributes: ["user_id", "role_id"],
+    attributes: [
+      {
+        name: "user_id",
+        type: "string",
+        description:
+          "The ID of the user that should receive the organization role.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
+        computedOptionalRequired: "required",
       },
     ],
   },
