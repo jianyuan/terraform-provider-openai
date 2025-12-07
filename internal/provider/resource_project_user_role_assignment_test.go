@@ -49,7 +49,7 @@ func TestAccProjectUserRoleAssignmentResource(t *testing.T) {
 }
 
 func testAccProjectUserRoleAssignmentResourceConfig(projectName, roleName, userId string) string {
-	return testAccProjectRoleResourceConfig(projectName, roleName, "role dscription", `["api.organization.projects.api_keys.read"]`) + fmt.Sprintf(`
+	return testAccProjectRoleResourceConfig(projectName, roleName, "role description", `["api.organization.projects.api_keys.read"]`) + fmt.Sprintf(`
 resource "openai_project_user" "test" {
 	project_id = openai_project.test.id
 	user_id    = %[1]q

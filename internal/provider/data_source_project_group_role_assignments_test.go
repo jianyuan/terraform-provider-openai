@@ -18,6 +18,11 @@ func TestAccProjectGroupRoleAssignmentsDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"time": {
+				Source: "hashicorp/time",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProjectGroupRoleAssignmentsDataSourceConfig(projectName, acctest.TestGroupId, roleName),
@@ -40,9 +45,18 @@ func TestAccProjectGroupRoleAssignmentsDataSource(t *testing.T) {
 
 func testAccProjectGroupRoleAssignmentsDataSourceConfig(projectName, groupId, roleName string) string {
 	return testAccProjectGroupRoleAssignmentResourceConfig(projectName, groupId, roleName) + `
+resource "time_sleep" "wait" {
+	create_duration = "5s"
+
+	triggers = {
+		project_id = openai_project_group_role_assignment.test.project_id
+		group_id   = openai_project_group_role_assignment.test.group_id
+	}
+}
+
 data "openai_project_group_role_assignments" "test" {
-	project_id = openai_project_group_role_assignment.test.project_id
-	group_id = openai_project_group_role_assignment.test.group_id
+	project_id = time_sleep.wait.triggers.project_id
+	group_id   = time_sleep.wait.triggers.group_id
 }
 `
 }

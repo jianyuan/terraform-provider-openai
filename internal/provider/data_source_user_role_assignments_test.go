@@ -17,6 +17,11 @@ func TestAccUserRoleAssignmentsDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"time": {
+				Source: "hashicorp/time",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccUserRoleAssignmentsDataSourceConfig(acctest.TestUserId, roleName),
@@ -39,8 +44,16 @@ func TestAccUserRoleAssignmentsDataSource(t *testing.T) {
 
 func testAccUserRoleAssignmentsDataSourceConfig(userId, roleName string) string {
 	return testAccUserRoleAssignmentResourceConfig(userId, roleName) + `
+resource "time_sleep" "wait" {
+	create_duration = "5s"
+
+	triggers = {
+		user_id = openai_user_role_assignment.test.user_id
+	}
+}
+
 data "openai_user_role_assignments" "test" {
-	user_id = openai_user_role_assignment.test.user_id
+	user_id = time_sleep.wait.triggers.user_id
 }
 `
 }

@@ -63,7 +63,7 @@ func ensureTestGroupId(ctx context.Context) string {
 		httpResp := must.Get(SharedClient.ListGroupsWithResponse(ctx, params))
 
 		if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-			panic(fmt.Sprintf("failed to list groups: %v", httpResp.JSON200))
+			panic(fmt.Sprintf("failed to list groups: %v", string(httpResp.Body)))
 		}
 
 		for _, group := range httpResp.JSON200.Data {
