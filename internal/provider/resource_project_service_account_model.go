@@ -33,8 +33,8 @@ func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any)
 	}
 }
 
-func (r *ProjectServiceAccountResource) getCreateJSONRequestBody(data ProjectServiceAccountResourceModel) apiclient.ProjectServiceAccountCreateRequest {
+func (r *ProjectServiceAccountResource) getCreateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (apiclient.ProjectServiceAccountCreateRequest, diag.Diagnostics) {
 	return apiclient.CreateProjectServiceAccountJSONRequestBody{
 		Name: data.Name.ValueString(),
-	}
+	}, nil
 }

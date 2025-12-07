@@ -58,12 +58,18 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
-	httpResp, err := r.client.ModifyUserWithResponse(ctx, data.UserId.ValueString(), r.getCreateJSONRequestBody(data))
+	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	httpResp, err := r.client.ModifyUserWithResponse(ctx, data.UserId.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	} else if httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -91,14 +97,21 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	} else if httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	responseData := httpResp.JSON200
+
+	if responseData == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
+		return
+	}
+
+	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -107,7 +120,6 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 }
 
 func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
 	var data UserRoleResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -115,12 +127,18 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	httpResp, err := r.client.ModifyUserWithResponse(ctx, data.UserId.ValueString(), r.getUpdateJSONRequestBody(data))
+	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	httpResp, err := r.client.ModifyUserWithResponse(ctx, data.UserId.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	} else if httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
@@ -133,13 +151,10 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-
 }
 
 func (r *UserRoleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-
 	resp.Diagnostics.AddWarning("Not Supported", "Delete is not supported for this resource. Please manually delete the resource.")
-
 }
 
 func (r *UserRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

@@ -94,12 +94,18 @@ func (r *InviteResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	httpResp, err := r.client.InviteUserWithResponse(ctx, r.getCreateJSONRequestBody(data))
+	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	httpResp, err := r.client.InviteUserWithResponse(ctx, body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	} else if httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -127,14 +133,21 @@ func (r *InviteResource) Read(ctx context.Context, req resource.ReadRequest, res
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	} else if httpResp.JSON200 == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	responseData := httpResp.JSON200
+
+	if responseData == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
+		return
+	}
+
+	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -143,13 +156,10 @@ func (r *InviteResource) Read(ctx context.Context, req resource.ReadRequest, res
 }
 
 func (r *InviteResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
 	resp.Diagnostics.AddError("Not Supported", "Update is not supported for this resource")
-
 }
 
 func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-
 	var data InviteResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -164,10 +174,9 @@ func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	} else if httpResp.StatusCode() == http.StatusNotFound {
 		return
 	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code: %d", httpResp.StatusCode()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
-
 }
 
 func (r *InviteResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

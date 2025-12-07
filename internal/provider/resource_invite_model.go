@@ -19,9 +19,9 @@ func (m *InviteResourceModel) Fill(ctx context.Context, invite apiclient.Invite)
 	return nil
 }
 
-func (r *InviteResource) getCreateJSONRequestBody(data InviteResourceModel) apiclient.InviteUserJSONRequestBody {
+func (r *InviteResource) getCreateJSONRequestBody(ctx context.Context, data InviteResourceModel) (apiclient.InviteUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.InviteUserJSONRequestBody{
 		Email: data.Email.ValueString(),
 		Role:  apiclient.InviteRequestRole(data.Role.ValueString()),
-	}
+	}, nil
 }

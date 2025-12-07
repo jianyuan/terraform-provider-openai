@@ -14,15 +14,15 @@ func (m *ProjectUserResourceModel) Fill(ctx context.Context, data apiclient.Proj
 	return nil
 }
 
-func (r *ProjectUserResource) getCreateJSONRequestBody(data ProjectUserResourceModel) apiclient.CreateProjectUserJSONRequestBody {
+func (r *ProjectUserResource) getCreateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (apiclient.CreateProjectUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.CreateProjectUserJSONRequestBody{
 		Role:   apiclient.ProjectUserCreateRequestRole(data.Role.ValueString()),
 		UserId: data.UserId.ValueString(),
-	}
+	}, nil
 }
 
-func (r *ProjectUserResource) getUpdateJSONRequestBody(data ProjectUserResourceModel) apiclient.ModifyProjectUserJSONRequestBody {
+func (r *ProjectUserResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (apiclient.ModifyProjectUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.ModifyProjectUserJSONRequestBody{
 		Role: apiclient.ProjectUserUpdateRequestRole(data.Role.ValueString()),
-	}
+	}, nil
 }

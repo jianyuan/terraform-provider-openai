@@ -8,10 +8,10 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (r *AdminApiKeyResource) getCreateJSONRequestBody(data AdminApiKeyResourceModel) apiclient.AdminApiKeysCreateJSONRequestBody {
+func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data AdminApiKeyResourceModel) (apiclient.AdminApiKeysCreateJSONRequestBody, diag.Diagnostics) {
 	return apiclient.AdminApiKeysCreateJSONRequestBody{
 		Name: data.Name.ValueString(),
-	}
+	}, nil
 }
 
 func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data apiclient.AdminApiKey) diag.Diagnostics {

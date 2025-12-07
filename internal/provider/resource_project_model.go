@@ -18,15 +18,15 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project apiclient.Proje
 	return nil
 }
 
-func (r *ProjectResource) getCreateJSONRequestBody(data ProjectResourceModel) apiclient.CreateProjectJSONRequestBody {
+func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.CreateProjectJSONRequestBody, diag.Diagnostics) {
 	return apiclient.CreateProjectJSONRequestBody{
 		Name:          data.Name.ValueString(),
 		ExternalKeyId: data.ExternalKeyId.ValueStringPointer(),
-	}
+	}, nil
 }
 
-func (r *ProjectResource) getUpdateJSONRequestBody(data ProjectResourceModel) apiclient.ModifyProjectJSONRequestBody {
+func (r *ProjectResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.ModifyProjectJSONRequestBody, diag.Diagnostics) {
 	return apiclient.ModifyProjectJSONRequestBody{
 		Name: data.Name.ValueString(),
-	}
+	}, nil
 }
