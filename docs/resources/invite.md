@@ -43,7 +43,7 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 
 ```shell
 # Import an existing invite
-terraform import openai_invite.example invite-id
+terraform import openai_invite.example <invite_id>
 
 # Example
 terraform import openai_invite.example invite-000000000000000000000000

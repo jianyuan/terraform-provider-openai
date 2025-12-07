@@ -1034,6 +1034,44 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_group_role_assignment",
+    description: "Assigns a project role to a group within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignProjectGroupRole",
+      createRequestAttributes: ["project_id", "group_id"],
+      readMethod: "ListProjectGroupRoleAssignments",
+      readRequestAttributes: ["project_id", "group_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignProjectGroupRole",
+      deleteRequestAttributes: ["project_id", "group_id", "role_id"],
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "group_id",
+        type: "string",
+        description: "Identifier of the group to add to the project.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the project role to grant to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
+  {
     name: "project_rate_limit",
     description:
       "Manage rate limits per model for projects. Rate limits may be configured to be equal to or lower than the organization's rate limits.",

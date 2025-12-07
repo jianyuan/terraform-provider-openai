@@ -38,7 +38,7 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 
 ```shell
 # Import an organization user
-terraform import openai_user_role.example user-id
+terraform import openai_user_role.example <user_id>
 
 # Example
 terraform import openai_user_role.example user-000000000000000000000000
