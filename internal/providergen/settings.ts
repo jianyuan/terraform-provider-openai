@@ -731,6 +731,58 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_role",
+    description: "Creates a custom role for a project.",
+    api: {
+      model: "Role",
+      createMethod: "CreateProjectRole",
+      createRequestAttributes: ["project_id"],
+      readMethod: "ListProjectRoles",
+      readRequestAttributes: ["project_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "UpdateProjectRole",
+      updateRequestAttributes: ["project_id", "id"],
+      deleteMethod: "DeleteProjectRole",
+      deleteRequestAttributes: ["project_id", "id"],
+    },
+    importStateAttributes: ["project_id", "id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "Identifier for the role.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to create the role for.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Unique name for the role.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Description of the role.",
+        computedOptionalRequired: "optional",
+      },
+      {
+        name: "permissions",
+        type: "set",
+        description: "Permissions to grant to the role.",
+        computedOptionalRequired: "required",
+        elementType: "string",
+      },
+    ],
+  },
+  {
     name: "project_service_account",
     description:
       "Manage service accounts within a project. A service account is a bot user that is not associated with a user. If a user leaves an organization, their keys and membership in projects will no longer work. Service accounts do not have this limitation. However, service accounts can also be deleted from a project.",
