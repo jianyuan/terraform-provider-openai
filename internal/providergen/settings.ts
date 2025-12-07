@@ -1055,4 +1055,42 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "group",
+    description: "Creates a new group in the organization.",
+    api: {
+      model: "GroupResponse",
+      createMethod: "CreateGroup",
+      readMethod: "ListGroups",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "UpdateGroup",
+      updateRequestAttributes: ["id"],
+      deleteMethod: "DeleteGroup",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "name",
+        type: "string",
+        description: "Human readable name for the group.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Identifier for the group.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "created_at",
+        type: "int",
+        description:
+          "The Unix timestamp (in seconds) of when the project was created.",
+        computedOptionalRequired: "computed",
+      },
+    ],
+  },
 ];
