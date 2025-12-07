@@ -69,8 +69,7 @@ export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
   strategy: "simple";
 }
 
-export interface PaginateDataSourceApiStrategy
-  extends BaseDataSourceApiStrategy {
+export interface PaginateDataSourceApiStrategy extends BaseDataSourceApiStrategy {
   strategy: "paginate";
   cursorParam?: string;
   hooks?: {
@@ -88,10 +87,13 @@ export interface DataSource {
 }
 
 export interface ResourceApiStrategy {
+  model?: string;
   createMethod: string;
   createRequestAttributes?: Array<string>;
   readMethod: string;
   readRequestAttributes?: Array<string>;
+  readStrategy?: "paginate";
+  readCursorParam?: string;
   updateMethod?: string;
   updateRequestAttributes?: Array<string>;
   deleteMethod?: string;

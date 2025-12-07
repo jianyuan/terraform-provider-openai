@@ -629,6 +629,50 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "organization_role",
+    description: "Creates a custom role for the organization.",
+    api: {
+      model: "Role",
+      createMethod: "CreateRole",
+      readMethod: "ListRoles",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "UpdateRole",
+      updateRequestAttributes: ["id"],
+      deleteMethod: "DeleteRole",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "Identifier for the role.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Unique name for the role.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Description of the role.",
+        computedOptionalRequired: "optional",
+      },
+      {
+        name: "permissions",
+        type: "set",
+        description: "Permissions to grant to the role.",
+        computedOptionalRequired: "required",
+        elementType: "string",
+      },
+    ],
+  },
+  {
     name: "project",
     description: "Project resource.",
     api: {
