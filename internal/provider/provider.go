@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/go-retryablehttp"
@@ -92,6 +93,16 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	retryClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 	retryClient.Logger = nil
 	retryClient.RetryMax = 10
+
+	projectServiceAccountPathPattern := regexp.MustCompile(`^/v1/organization/projects/[^/]+/service_accounts/[^/]+$`)
+	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		// Retry on 404 for project service account. There's a small delay between creating a project service account and it being available.
+		if resp.Request.Method == http.MethodGet && resp.StatusCode == http.StatusNotFound && projectServiceAccountPathPattern.MatchString(resp.Request.URL.Path) {
+			return true, nil
+		}
+
+		return retryablehttp.ErrorPropagatedRetryPolicy(ctx, resp, err)
+	}
 
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
