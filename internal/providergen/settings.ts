@@ -1267,7 +1267,7 @@ export const RESOURCES: Array<Resource> = [
   {
     name: "user_role",
     description:
-      "Modifies a user's role in the organization.\n\n**Note**: The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
+      "Modifies a user's role in the organization.\n\n**NOTE:** The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
     api: {
       createMethod: "ModifyUser",
       createRequestAttributes: ["user_id"],
@@ -1296,7 +1296,7 @@ export const RESOURCES: Array<Resource> = [
   {
     name: "user_role_assignment",
     description:
-      "Assigns an organization role to a user within the organization.\n\nNote predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`.",
+      "Assigns an organization role to a user within the organization.\n\n**NOTE:** Predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`. You can use the `provider::openai::predefined_role_id(role, organization_id)` function to generate the role ID.",
     api: {
       model: "AssignedRoleDetails",
       createMethod: "AssignUserRole",

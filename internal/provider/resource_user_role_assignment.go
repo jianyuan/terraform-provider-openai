@@ -33,7 +33,7 @@ func (r *UserRoleAssignmentResource) Metadata(ctx context.Context, req resource.
 
 func (r *UserRoleAssignmentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Assigns an organization role to a user within the organization.\n\nNote predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`.",
+		MarkdownDescription: "Assigns an organization role to a user within the organization.\n\n**NOTE:** Predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`. You can use the `provider::openai::predefined_role_id(role, organization_id)` function to generate the role ID.",
 		Attributes: map[string]schema.Attribute{
 			"user_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the user that should receive the organization role.",
