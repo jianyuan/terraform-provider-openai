@@ -102,7 +102,6 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 		Limit: ptr.Ptr(int64(100)),
 	}
 
-done:
 	for {
 
 		httpResp, err := d.client.ListProjectRateLimitsWithResponse(ctx, data.ProjectId.ValueString(), params)
@@ -119,30 +118,12 @@ done:
 
 		modelInstances = append(modelInstances, httpResp.JSON200.Data...)
 
-		switch v := any(httpResp.JSON200.HasMore).(type) {
-		case bool:
-			if !v {
-				break done
-			}
-		case *bool:
-			if v == nil || !*v {
-				break done
-			}
-		default:
-			panic("unknown type")
+		if v := getBool(httpResp.JSON200.HasMore); !v {
+			break
 		}
 
-		switch v := any(httpResp.JSON200.LastId).(type) {
-		case string:
+		if v := getString(httpResp.JSON200.LastId); v != "" {
 			params.After = &v
-		case *string:
-			if v == nil {
-				params.After = nil
-			} else {
-				params.After = v
-			}
-		default:
-			panic("unknown type")
 		}
 
 	}

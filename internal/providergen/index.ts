@@ -312,7 +312,6 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
     ${api.hooks?.readInitLoop ?? ""}
 
-  done:
     for {
       ${api.hooks?.readPreIterate ?? ""}
 
@@ -332,30 +331,12 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
       modelInstances = append(modelInstances, httpResp.JSON200.Data...)
 
-      switch v := any(httpResp.JSON200.HasMore).(type) {
-      case bool:
-        if !v {
-          break done
-        }
-      case *bool:
-        if v == nil || !*v {
-          break done
-        }
-      default:
-        panic("unknown type")
+      if v := getBool(httpResp.JSON200.HasMore); !v {
+        break
       }
 
-      switch v := any(httpResp.JSON200.${api.cursorParam ?? "LastId"}).(type) {
-      case string:
+      if v := getString(httpResp.JSON200.${api.cursorParam ?? "LastId"}); v != "" {
         params.After = &v
-      case *string:
-        if v == nil {
-          params.After = nil
-        } else {
-          params.After = v
-        }
-      default:
-        panic("unknown type")
       }
 
       ${api.hooks?.readPostIterate ?? ""}

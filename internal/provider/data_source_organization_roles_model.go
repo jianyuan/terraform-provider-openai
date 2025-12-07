@@ -18,7 +18,7 @@ func (m *OrganizationRolesDataSourceModel) Fill(ctx context.Context, data []apic
 				Id:             supertypes.NewStringValue(role.Id),
 				Name:           supertypes.NewStringValue(role.Name),
 				Description:    supertypes.NewStringPointerValue(role.Description),
-				Permissions:    supertypes.NewSetValueOfSlice(ctx, Deduplicate(role.Permissions)), // For some reason, the API returns duplicate permissions
+				Permissions:    supertypes.NewSetValueOfSlice(ctx, deduplicate(role.Permissions)), // For some reason, the API returns duplicate permissions
 				PredefinedRole: supertypes.NewBoolValue(role.PredefinedRole),
 				ResourceType:   supertypes.NewStringValue(role.ResourceType),
 			}
