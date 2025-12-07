@@ -306,8 +306,8 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       { readStrategy: "paginate" },
       (api) => `
-    var modelInstances []apiclient.${dataSource.api.model}
-    params := &apiclient.${dataSource.api.readMethod}Params{
+    var modelInstances []apiclient.${api.readModel ?? api.model}
+    params := &apiclient.${api.readMethod}Params{
       Limit: ptr.Ptr(int64(100)),
     }
 
@@ -316,9 +316,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     for {
       ${api.readPreIterate ?? ""}
 
-      httpResp, err := d.client.${
-        dataSource.api.readMethod
-      }WithResponse(${readRequestParams.join(",")})
+      httpResp, err := d.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
         return
@@ -351,8 +349,8 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     )
     .with(
       { readStrategy: "simple" },
-      () => `
-    httpResp, err := d.client.${dataSource.api.readMethod}WithResponse(${readRequestParams.join(",")})
+      (api) => `
+    httpResp, err := d.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
     if err != nil {
       resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
       return
@@ -612,20 +610,20 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
     return
   }
 
-  ${match(resource.api.readStrategy)
+  ${match(resource.api)
     .with(
-      "paginate",
-      () => dedent`
-        var responseData *apiclient.${resource.api.model}
+      { readStrategy: "paginate" },
+      (api) => dedent`
+        var responseData *apiclient.${api.readModel ?? api.model}
 
         err := retry.Do(
           func() error {
-            params := &apiclient.${resource.api.readMethod}Params{
+            params := &apiclient.${api.readMethod}Params{
               Limit: ptr.Ptr(int64(100)),
             }
 
             for {
-              httpResp, err := r.client.${resource.api.readMethod}WithResponse(${readRequestParams.join(",")})
+              httpResp, err := r.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
               if err != nil {
                 return fmt.Errorf("Unable to read, got error: %s", err)
               } else if httpResp.StatusCode() != http.StatusOK {
@@ -645,7 +643,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
                 break
               }
 
-              if v := getString(httpResp.JSON200.${resource.api.readCursorParam ?? "LastId"}); v != "" {
+              if v := getString(httpResp.JSON200.${api.readCursorParam ?? "LastId"}); v != "" {
                 params.After = &v
               }
             }
@@ -665,8 +663,8 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
       `
     )
     .otherwise(
-      () => dedent`
-        httpResp, err := r.client.${resource.api.readMethod}WithResponse(${readRequestParams.join(",")})
+      (api) => dedent`
+        httpResp, err := r.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
         if err != nil {
           resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
           return

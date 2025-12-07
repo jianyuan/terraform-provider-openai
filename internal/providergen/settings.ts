@@ -1135,4 +1135,37 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "group_user",
+    description: "Adds a user to a group.",
+    api: {
+      model: "GroupUserAssignment",
+      createMethod: "AddGroupUser",
+      createRequestAttributes: ["group_id"],
+      readMethod: "ListGroupUsers",
+      readRequestAttributes: ["group_id"],
+      readModel: "User",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "RemoveGroupUser",
+      deleteRequestAttributes: ["group_id", "user_id"],
+    },
+    importStateAttributes: ["group_id", "user_id"],
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description: "The ID of the group to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "Identifier of the user to add to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
 ];

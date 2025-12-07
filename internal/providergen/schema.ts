@@ -71,6 +71,7 @@ export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
 
 export interface PaginateDataSourceApiStrategy extends BaseDataSourceApiStrategy {
   readStrategy: "paginate";
+  readModel?: string;
   readCursorParam?: string;
   readInitLoop?: string;
   readPreIterate?: string;
@@ -91,6 +92,7 @@ export interface ResourceApiStrategy {
   readMethod: string;
   readRequestAttributes?: Array<string>;
   readStrategy?: "paginate";
+  readModel?: string;
   readCursorParam?: string;
   updateMethod?: string;
   updateRequestAttributes?: Array<string>;
