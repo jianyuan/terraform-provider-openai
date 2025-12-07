@@ -106,6 +106,74 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "group_roles",
+    description:
+      "Lists the organization roles assigned to a group within the organization.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListGroupRoleAssignments",
+      readRequestAttributes: ["group_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description:
+          "The ID of the group whose organization role assignments you want to list.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description: "List of organization roles",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "invite",
     description: "Retrieves an invite.",
     api: {
