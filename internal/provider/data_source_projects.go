@@ -116,7 +116,6 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		}
 	}
 
-done:
 	for {
 
 		// Recalculate the limit for each request to ensure we don't exceed the desired limit
@@ -146,30 +145,12 @@ done:
 
 		modelInstances = append(modelInstances, httpResp.JSON200.Data...)
 
-		switch v := any(httpResp.JSON200.HasMore).(type) {
-		case bool:
-			if !v {
-				break done
-			}
-		case *bool:
-			if v == nil || !*v {
-				break done
-			}
-		default:
-			panic("unknown type")
+		if v := getBool(httpResp.JSON200.HasMore); !v {
+			break
 		}
 
-		switch v := any(httpResp.JSON200.LastId).(type) {
-		case string:
+		if v := getString(httpResp.JSON200.LastId); v != "" {
 			params.After = &v
-		case *string:
-			if v == nil {
-				params.After = nil
-			} else {
-				params.After = v
-			}
-		default:
-			panic("unknown type")
 		}
 
 		// If limit is set and we have enough projects, break.

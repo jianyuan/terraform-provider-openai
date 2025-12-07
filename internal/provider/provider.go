@@ -137,6 +137,7 @@ func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.Da
 	return []func() datasource.DataSource{
 		NewInviteDataSource,
 		NewInvitesDataSource,
+		NewOrganizationRolesDataSource,
 		NewProjectDataSource,
 		NewProjectRateLimitsDataSource,
 		NewProjectsDataSource,
