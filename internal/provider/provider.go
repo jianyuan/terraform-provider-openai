@@ -103,13 +103,13 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return retryablehttp.ErrorPropagatedRetryPolicy(ctx, resp, err)
 	}
 
-	retryClient.Backoff = func(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
+	retryClient.Backoff = func(durationMin, durationMax time.Duration, attemptNum int, resp *http.Response) time.Duration {
 		if resp != nil {
 			if v, ok := parseRateLimitHTTPResponse(resp); ok {
 				return v
 			}
 		}
-		return retryablehttp.DefaultBackoff(min, max, attemptNum, resp)
+		return retryablehttp.DefaultBackoff(durationMin, durationMax, attemptNum, resp)
 	}
 
 	client, err := apiclient.NewClientWithResponses(
