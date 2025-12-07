@@ -66,17 +66,15 @@ export type DataSourceApiStrategy =
   | PaginateDataSourceApiStrategy;
 
 export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
-  strategy: "simple";
+  readStrategy: "simple";
 }
 
 export interface PaginateDataSourceApiStrategy extends BaseDataSourceApiStrategy {
-  strategy: "paginate";
-  cursorParam?: string;
-  hooks?: {
-    readInitLoop?: string;
-    readPreIterate?: string;
-    readPostIterate?: string;
-  };
+  readStrategy: "paginate";
+  readCursorParam?: string;
+  readInitLoop?: string;
+  readPreIterate?: string;
+  readPostIterate?: string;
 }
 
 export interface DataSource {
@@ -98,7 +96,6 @@ export interface ResourceApiStrategy {
   updateRequestAttributes?: Array<string>;
   deleteMethod?: string;
   deleteRequestAttributes?: Array<string>;
-  hooks?: {};
 }
 
 export interface Resource {

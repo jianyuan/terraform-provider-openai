@@ -2,12 +2,57 @@ import type { DataSource, Resource } from "./schema";
 
 export const DATASOURCES: Array<DataSource> = [
   {
+    name: "groups",
+    description: "Lists all groups in the organization.",
+    api: {
+      model: "GroupResponse",
+      readStrategy: "paginate",
+      readMethod: "ListGroups",
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "groups",
+        type: "set_nested",
+        description: "List of groups.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the group.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Human readable name for the group.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "is_scim_managed",
+            type: "bool",
+            description: "Whether the group is managed through SCIM.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "created_at",
+            type: "int",
+            description:
+              "Unix timestamp (in seconds) when the group was created.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "invite",
     description: "Retrieves an invite.",
     api: {
-      strategy: "simple",
-      readMethod: "RetrieveInvite",
       model: "Invite",
+      readStrategy: "simple",
+      readMethod: "RetrieveInvite",
     },
     attributes: [
       {
@@ -62,9 +107,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "invites",
     description: "Lists all of the invites in the organization.",
     api: {
-      strategy: "paginate",
-      readMethod: "ListInvites",
       model: "Invite",
+      readStrategy: "paginate",
+      readMethod: "ListInvites",
     },
     attributes: [
       {
@@ -127,10 +172,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "organization_roles",
     description: "Lists the roles configured for the organization.",
     api: {
-      strategy: "paginate",
-      readMethod: "ListRoles",
       model: "Role",
-      cursorParam: "Next",
+      readStrategy: "paginate",
+      readMethod: "ListRoles",
+      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -186,9 +231,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project",
     description: "Retrieve a project by ID.",
     api: {
-      strategy: "simple",
-      readMethod: "RetrieveProject",
       model: "Project",
+      readStrategy: "simple",
+      readMethod: "RetrieveProject",
     },
     attributes: [
       {
@@ -238,47 +283,45 @@ export const DATASOURCES: Array<DataSource> = [
     name: "projects",
     description: "List all projects in an organization.",
     api: {
-      strategy: "paginate",
-      readMethod: "ListProjects",
       model: "Project",
-      hooks: {
-        readInitLoop: `
-          params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
+      readStrategy: "paginate",
+      readMethod: "ListProjects",
+      readInitLoop: `
+        params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
 
-          // Set the limit for the API request
-          if data.Limit.IsNull() {
+        // Set the limit for the API request
+        if data.Limit.IsNull() {
+          params.Limit = ptr.Ptr(int64(100))
+        } else {
+          requestLimit := data.Limit.ValueInt64()
+          if requestLimit > 100 {
             params.Limit = ptr.Ptr(int64(100))
           } else {
-            requestLimit := data.Limit.ValueInt64()
-            if requestLimit > 100 {
-              params.Limit = ptr.Ptr(int64(100))
-            } else {
-              params.Limit = ptr.Ptr(requestLimit)
-            }
+            params.Limit = ptr.Ptr(requestLimit)
           }
-        `,
-        readPreIterate: `
-          // Recalculate the limit for each request to ensure we don't exceed the desired limit
-          if !data.Limit.IsNull() {
-            remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
-            if remainingLimit <= 0 {
-              break
-            }
-            if remainingLimit > 100 {
-              params.Limit = ptr.Ptr(int64(100))
-            } else {
-              params.Limit = ptr.Ptr(remainingLimit)
-            }
-          }
-        `,
-        readPostIterate: `
-          // If limit is set and we have enough projects, break.
-          if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
-            modelInstances = modelInstances[:data.Limit.ValueInt64()]
+        }
+      `,
+      readPreIterate: `
+        // Recalculate the limit for each request to ensure we don't exceed the desired limit
+        if !data.Limit.IsNull() {
+          remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
+          if remainingLimit <= 0 {
             break
           }
-        `,
-      },
+          if remainingLimit > 100 {
+            params.Limit = ptr.Ptr(int64(100))
+          } else {
+            params.Limit = ptr.Ptr(remainingLimit)
+          }
+        }
+      `,
+      readPostIterate: `
+        // If limit is set and we have enough projects, break.
+        if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
+          modelInstances = modelInstances[:data.Limit.ValueInt64()]
+          break
+        }
+      `,
     },
     attributes: [
       {
@@ -350,10 +393,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_rate_limits",
     description: "Returns the rate limits per model for a project.",
     api: {
-      strategy: "paginate",
+      model: "ProjectRateLimit",
+      readStrategy: "paginate",
       readMethod: "ListProjectRateLimits",
       readRequestAttributes: ["project_id"],
-      model: "ProjectRateLimit",
     },
     attributes: [
       {
@@ -428,11 +471,11 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_roles",
     description: "Lists the roles configured for a project.",
     api: {
-      strategy: "paginate",
+      model: "Role",
+      readStrategy: "paginate",
       readMethod: "ListProjectRoles",
       readRequestAttributes: ["project_id"],
-      model: "Role",
-      cursorParam: "Next",
+      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -494,9 +537,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
-      strategy: "simple",
-      readMethod: "RetrieveUser",
       model: "User",
+      readStrategy: "simple",
+      readMethod: "RetrieveUser",
     },
     attributes: [
       {
@@ -536,9 +579,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "users",
     description: "Lists all of the users in the organization.",
     api: {
-      strategy: "paginate",
-      readMethod: "ListUsers",
       model: "User",
+      readStrategy: "paginate",
+      readMethod: "ListUsers",
     },
     attributes: [
       {
@@ -1052,6 +1095,43 @@ export const RESOURCES: Array<Resource> = [
         description: "`owner` or `reader`.",
         computedOptionalRequired: "required",
         validators: ['stringvalidator.OneOf("owner", "reader")'],
+      },
+    ],
+  },
+  {
+    name: "group",
+    description: "Creates a new group in the organization.",
+    api: {
+      model: "GroupResponse",
+      createMethod: "CreateGroup",
+      readMethod: "ListGroups",
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "UpdateGroup",
+      updateRequestAttributes: ["id"],
+      deleteMethod: "DeleteGroup",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "name",
+        type: "string",
+        description: "Human readable name for the group.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Identifier for the group.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "created_at",
+        type: "int",
+        description: "Unix timestamp (in seconds) when the group was created.",
+        computedOptionalRequired: "computed",
       },
     ],
   },
