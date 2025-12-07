@@ -22,6 +22,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewProjectRoleResource,
 		NewProjectServiceAccountResource,
 		NewProjectUserResource,
+		NewProjectUserRoleAssignmentResource,
 		NewUserRoleResource,
 		NewUserRoleAssignmentResource,
 	}

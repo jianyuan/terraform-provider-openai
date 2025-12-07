@@ -1047,6 +1047,7 @@ export const RESOURCES: Array<Resource> = [
       deleteMethod: "UnassignProjectGroupRole",
       deleteRequestAttributes: ["project_id", "group_id", "role_id"],
     },
+    importStateAttributes: ["project_id", "group_id", "role_id"],
     attributes: [
       {
         name: "project_id",
@@ -1066,6 +1067,45 @@ export const RESOURCES: Array<Resource> = [
         name: "role_id",
         type: "string",
         description: "Identifier of the project role to grant to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
+  {
+    name: "project_user_role_assignment",
+    description: "Assigns a project role to a user within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignProjectUserRole",
+      createRequestAttributes: ["project_id", "user_id"],
+      readMethod: "ListProjectUserRoleAssignments",
+      readRequestAttributes: ["project_id", "user_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignProjectUserRole",
+      deleteRequestAttributes: ["project_id", "user_id", "role_id"],
+    },
+    importStateAttributes: ["project_id", "user_id", "role_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user that should receive the project role.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
       },
