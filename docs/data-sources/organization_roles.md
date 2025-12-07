@@ -32,6 +32,6 @@ Read-Only:
 - `description` (String) Description of the role.
 - `id` (String) Identifier for the role.
 - `name` (String) Unique name for the role.
-- `permissions` (List of String) Permissions granted by the role.
+- `permissions` (Set of String) Permissions granted by the role.
 - `predefined_role` (Boolean) Whether the role is predefined and managed by OpenAI.
 - `resource_type` (String) Resource type the role is bound to (for example `api.organization` or `api.project`).
