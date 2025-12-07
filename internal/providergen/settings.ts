@@ -752,6 +752,73 @@ export const DATASOURCES: Array<DataSource> = [
       },
     ],
   },
+  {
+    name: "user_role_assignments",
+    description:
+      "Lists the organization roles assigned to a user within the organization.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListUserRoleAssignments",
+      readRequestAttributes: ["user_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description: "List of organization roles",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const RESOURCES: Array<Resource> = [
