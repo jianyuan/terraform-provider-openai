@@ -6,6 +6,9 @@ on:
     types: [opened, synchronize]
     paths-ignore:
       - "README.md"
+  push:
+    paths-ignore:
+      - "README.md"
 
 permissions:
   contents: read
