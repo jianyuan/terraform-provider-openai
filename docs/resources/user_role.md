@@ -4,11 +4,14 @@ page_title: "openai_user_role Resource - terraform-provider-openai"
 subcategory: ""
 description: |-
   Modifies a user's role in the organization.
+  NOTE: The new openai_user_role_assignment resource supports predefined roles like owner and reader as well as custom roles. This resource may be removed in a future release.
 ---
 
 # openai_user_role (Resource)
 
 Modifies a user's role in the organization.
+
+**NOTE:** The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.
 
 ## Example Usage
 
@@ -35,7 +38,7 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 
 ```shell
 # Import an organization user
-terraform import openai_user_role.example user-id
+terraform import openai_user_role.example <user_id>
 
 # Example
 terraform import openai_user_role.example user-000000000000000000000000

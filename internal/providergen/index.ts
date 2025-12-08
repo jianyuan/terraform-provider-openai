@@ -654,6 +654,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
 
             return nil
           },
+          retry.Delay(5*time.Second),
         )
 
         if err != nil {
@@ -785,6 +786,27 @@ ${match(resource.importStateAttributes)
           )...)
           resp.Diagnostics.Append(resp.State.SetAttribute(
             ctx, path.Root("${attributes[1]}"), second,
+          )...)
+        }
+      `;
+  })
+  .with([P.any, P.any, P.any], (attributes) => {
+    return `
+        func (r *${resourceName}) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+          first, second, third, err := tfutils.SplitThreePartId(req.ID, "${attributes[0]}", "${attributes[1]}", "${attributes[2]}")
+          if err != nil {
+            resp.Diagnostics.AddError("Invalid ID", fmt.Sprintf("Error parsing ID: %s", err.Error()))
+            return
+          }
+
+          resp.Diagnostics.Append(resp.State.SetAttribute(
+            ctx, path.Root("${attributes[0]}"), first,
+          )...)
+          resp.Diagnostics.Append(resp.State.SetAttribute(
+            ctx, path.Root("${attributes[1]}"), second,
+          )...)
+          resp.Diagnostics.Append(resp.State.SetAttribute(
+            ctx, path.Root("${attributes[2]}"), third,
           )...)
         }
       `;

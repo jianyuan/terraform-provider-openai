@@ -106,6 +106,74 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "group_role_assignments",
+    description:
+      "Lists the organization roles assigned to a group within the organization.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListGroupRoleAssignments",
+      readRequestAttributes: ["group_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description:
+          "The ID of the group whose organization role assignments you want to list.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description: "List of organization roles",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "invite",
     description: "Retrieves an invite.",
     api: {
@@ -593,6 +661,153 @@ export const DATASOURCES: Array<DataSource> = [
     ],
   },
   {
+    name: "project_group_role_assignments",
+    description:
+      "Lists the project roles assigned to a group within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListProjectGroupRoleAssignments",
+      readRequestAttributes: ["project_id", "group_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "group_id",
+        type: "string",
+        description: "The ID of the group to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description:
+          "List of project roles assigned to the group within the project.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "project_user_role_assignments",
+    description: "Lists the project roles assigned to a user within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListProjectUserRoleAssignments",
+      readRequestAttributes: ["project_id", "user_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description:
+          "List of project roles assigned to the group within the project.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
@@ -678,6 +893,73 @@ export const DATASOURCES: Array<DataSource> = [
             type: "int",
             description:
               "The Unix timestamp (in seconds) of when the user was added.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "user_role_assignments",
+    description:
+      "Lists the organization roles assigned to a user within the organization.",
+    api: {
+      model: "AssignedRoleDetails",
+      readStrategy: "paginate",
+      readMethod: "ListUserRoleAssignments",
+      readRequestAttributes: ["user_id"],
+      readCursorParam: "Next",
+    },
+    attributes: [
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user to inspect.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "roles",
+        type: "set_nested",
+        description: "List of organization roles",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "id",
+            type: "string",
+            description: "Identifier for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "name",
+            type: "string",
+            description: "Unique name for the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "description",
+            type: "string",
+            description: "Description of the role.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "permissions",
+            type: "set",
+            description: "Permissions granted by the role.",
+            computedOptionalRequired: "computed",
+            elementType: "string",
+          },
+          {
+            name: "predefined_role",
+            type: "bool",
+            description:
+              "Whether the role is predefined and managed by OpenAI.",
+            computedOptionalRequired: "computed",
+          },
+          {
+            name: "resource_type",
+            type: "string",
+            description:
+              "Resource type the role is bound to (for example `api.organization` or `api.project`).",
             computedOptionalRequired: "computed",
           },
         ],
@@ -895,6 +1177,84 @@ export const RESOURCES: Array<Resource> = [
         description:
           "The Unix timestamp (in seconds) of when the project was archived or `null`.",
         computedOptionalRequired: "computed",
+      },
+    ],
+  },
+  {
+    name: "project_group_role_assignment",
+    description: "Assigns a project role to a group within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignProjectGroupRole",
+      createRequestAttributes: ["project_id", "group_id"],
+      readMethod: "ListProjectGroupRoleAssignments",
+      readRequestAttributes: ["project_id", "group_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignProjectGroupRole",
+      deleteRequestAttributes: ["project_id", "group_id", "role_id"],
+    },
+    importStateAttributes: ["project_id", "group_id", "role_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "group_id",
+        type: "string",
+        description: "Identifier of the group to add to the project.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the project role to grant to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
+  {
+    name: "project_user_role_assignment",
+    description: "Assigns a project role to a user within a project.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignProjectUserRole",
+      createRequestAttributes: ["project_id", "user_id"],
+      readMethod: "ListProjectUserRoleAssignments",
+      readRequestAttributes: ["project_id", "user_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignProjectUserRole",
+      deleteRequestAttributes: ["project_id", "user_id", "role_id"],
+    },
+    importStateAttributes: ["project_id", "user_id", "role_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project to update.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "user_id",
+        type: "string",
+        description: "The ID of the user that should receive the project role.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
       },
     ],
   },
@@ -1131,7 +1491,8 @@ export const RESOURCES: Array<Resource> = [
   },
   {
     name: "user_role",
-    description: "Modifies a user's role in the organization.",
+    description:
+      "Modifies a user's role in the organization.\n\n**NOTE:** The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
     api: {
       createMethod: "ModifyUser",
       createRequestAttributes: ["user_id"],
@@ -1154,6 +1515,40 @@ export const RESOURCES: Array<Resource> = [
         description: "`owner` or `reader`.",
         computedOptionalRequired: "required",
         validators: ['stringvalidator.OneOf("owner", "reader")'],
+      },
+    ],
+  },
+  {
+    name: "user_role_assignment",
+    description:
+      "Assigns an organization role to a user within the organization.\n\n**NOTE:** Predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`. You can use the `provider::openai::predefined_role_id(role, organization_id)` function to generate the role ID.",
+    api: {
+      model: "AssignedRoleDetails",
+      createMethod: "AssignUserRole",
+      createRequestAttributes: ["user_id"],
+      readMethod: "ListUserRoleAssignments",
+      readRequestAttributes: ["user_id"],
+      readStrategy: "paginate",
+      readCursorParam: "Next",
+      updateMethod: "AssignUserRole",
+      updateRequestAttributes: ["user_id"],
+      deleteMethod: "UnassignUserRole",
+      deleteRequestAttributes: ["user_id", "role_id"],
+    },
+    importStateAttributes: ["user_id", "role_id"],
+    attributes: [
+      {
+        name: "user_id",
+        type: "string",
+        description:
+          "The ID of the user that should receive the organization role.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
+        computedOptionalRequired: "required",
       },
     ],
   },
@@ -1222,6 +1617,41 @@ export const RESOURCES: Array<Resource> = [
         name: "user_id",
         type: "string",
         description: "Identifier of the user to add to the group.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+    ],
+  },
+  {
+    name: "group_role_assignment",
+    description:
+      "Assigns an organization role to a group within the organization.",
+    api: {
+      model: "GroupRoleAssignment",
+      createMethod: "AssignGroupRole",
+      createRequestAttributes: ["group_id"],
+      readMethod: "ListGroupRoleAssignments",
+      readRequestAttributes: ["group_id"],
+      readStrategy: "paginate",
+      readModel: "AssignedRoleDetails",
+      readCursorParam: "Next",
+      deleteMethod: "UnassignGroupRole",
+      deleteRequestAttributes: ["group_id", "role_id"],
+    },
+    importStateAttributes: ["group_id", "role_id"],
+    attributes: [
+      {
+        name: "group_id",
+        type: "string",
+        description:
+          "The ID of the group that should receive the organization role.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "role_id",
+        type: "string",
+        description: "Identifier of the role to assign.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
       },

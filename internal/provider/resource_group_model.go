@@ -10,8 +10,6 @@ import (
 )
 
 func (m *GroupResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
-	var diag diag.Diagnostics
-
 	switch v := data.(type) {
 	case apiclient.GroupResponse:
 		m.Id = supertypes.NewStringValue(v.Id)
@@ -24,8 +22,9 @@ func (m *GroupResourceModel) Fill(ctx context.Context, data any) diag.Diagnostic
 		m.CreatedAt = supertypes.NewInt64Value(v.CreatedAt)
 		return nil
 	default:
-		diag.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
-		return diag
+		var diags diag.Diagnostics
+		diags.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
+		return diags
 	}
 }
 

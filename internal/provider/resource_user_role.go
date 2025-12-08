@@ -31,7 +31,7 @@ func (r *UserRoleResource) Metadata(ctx context.Context, req resource.MetadataRe
 
 func (r *UserRoleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Modifies a user's role in the organization.",
+		MarkdownDescription: "Modifies a user's role in the organization.\n\n**NOTE:** The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
 		Attributes: map[string]schema.Attribute{
 			"user_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the user.",

@@ -10,8 +10,6 @@ import (
 )
 
 func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
-	var diag diag.Diagnostics
-
 	switch data := data.(type) {
 	case apiclient.ProjectServiceAccountCreateResponse:
 		m.Id = supertypes.NewStringValue(data.Id)
@@ -28,8 +26,9 @@ func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any)
 		m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
 		return nil
 	default:
-		diag.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
-		return diag
+		var diags diag.Diagnostics
+		diags.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
+		return diags
 	}
 }
 

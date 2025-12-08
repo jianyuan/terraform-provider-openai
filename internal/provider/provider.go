@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"regexp"
@@ -13,7 +14,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/jianyuan/go-utils/must"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
@@ -100,23 +103,49 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			return true, nil
 		}
 
+		if v, ok := parseRateLimitHTTPResponse(resp); ok {
+			resp.Header.Set("X-Internal-Retry-After", v.String())
+		} else {
+			resp.Header.Set("X-Internal-Retry-After", "")
+		}
+
 		return retryablehttp.ErrorPropagatedRetryPolicy(ctx, resp, err)
 	}
 
 	retryClient.Backoff = func(durationMin, durationMax time.Duration, attemptNum int, resp *http.Response) time.Duration {
+		var backoff time.Duration
 		if resp != nil {
-			if v, ok := parseRateLimitHTTPResponse(resp); ok {
-				return v
+			retryAfter := resp.Header.Get("X-Internal-Retry-After")
+			if retryAfter != "" {
+				backoff = must.Get(time.ParseDuration(retryAfter))
 			}
 		}
-		return retryablehttp.DefaultBackoff(durationMin, durationMax, attemptNum, resp)
+
+		if backoff == 0 {
+			backoff = retryablehttp.DefaultBackoff(durationMin, durationMax, attemptNum, resp)
+		}
+
+		tflog.Debug(
+			resp.Request.Context(),
+			fmt.Sprintf(
+				"%s %s (status: %d): retrying in %s (%d left)",
+				resp.Request.Method,
+				resp.Request.URL.Redacted(),
+				resp.StatusCode,
+				backoff,
+				retryClient.RetryMax-attemptNum,
+			),
+		)
+
+		return backoff
 	}
 
 	client, err := apiclient.NewClientWithResponses(
 		baseUrl,
 		apiclient.WithHTTPClient(retryClient.StandardClient()),
-		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-			req.Header.Set("Authorization", "Bearer "+adminKey)
+		apiclient.WithRequestEditorFn(func(ctx context.Context, httpReq *http.Request) error {
+			httpReq.Header.Set("Authorization", "Bearer "+adminKey)
+			httpReq.Header.Set("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version))
 			return nil
 		}),
 	)
@@ -130,7 +159,9 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {
-	return []func() function.Function{}
+	return []func() function.Function{
+		NewPredefinedRoleIdFunction,
+	}
 }
 
 func New(version string) func() provider.Provider {

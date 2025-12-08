@@ -12,30 +12,38 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 	return []func() resource.Resource{
 		NewAdminApiKeyResource,
 		NewGroupResource,
+		NewGroupRoleAssignmentResource,
 		NewGroupUserResource,
 		NewInviteResource,
 		NewOrganizationRoleResource,
 		NewProjectResource,
+		NewProjectGroupRoleAssignmentResource,
 		NewProjectRateLimitResource,
 		NewProjectRoleResource,
 		NewProjectServiceAccountResource,
 		NewProjectUserResource,
+		NewProjectUserRoleAssignmentResource,
 		NewUserRoleResource,
+		NewUserRoleAssignmentResource,
 	}
 }
 
 func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewGroupRoleAssignmentsDataSource,
 		NewGroupUsersDataSource,
 		NewGroupsDataSource,
 		NewInviteDataSource,
 		NewInvitesDataSource,
 		NewOrganizationRolesDataSource,
 		NewProjectDataSource,
+		NewProjectGroupRoleAssignmentsDataSource,
 		NewProjectRateLimitsDataSource,
 		NewProjectRolesDataSource,
+		NewProjectUserRoleAssignmentsDataSource,
 		NewProjectsDataSource,
 		NewUserDataSource,
+		NewUserRoleAssignmentsDataSource,
 		NewUsersDataSource,
 	}
 }

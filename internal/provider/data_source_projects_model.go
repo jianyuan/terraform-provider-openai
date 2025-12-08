@@ -9,21 +9,17 @@ import (
 )
 
 func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []apiclient.Project) diag.Diagnostics {
-	if projects == nil {
-		m.Projects = supertypes.NewSetNestedObjectValueOfNull[ProjectsDataSourceModelProjectsItem](ctx)
-	} else {
-		items := make([]ProjectsDataSourceModelProjectsItem, len(projects))
-		for i, project := range projects {
-			items[i] = ProjectsDataSourceModelProjectsItem{
-				Id:            supertypes.NewStringValue(project.Id),
-				Name:          supertypes.NewStringValue(project.Name),
-				Status:        supertypes.NewStringValue(string(project.Status)),
-				ExternalKeyId: supertypes.NewStringPointerValue(project.ExternalKeyId),
-				CreatedAt:     supertypes.NewInt64Value(project.CreatedAt),
-				ArchivedAt:    supertypes.NewInt64PointerValue(project.ArchivedAt),
-			}
+	items := make([]ProjectsDataSourceModelProjectsItem, len(projects))
+	for i, project := range projects {
+		items[i] = ProjectsDataSourceModelProjectsItem{
+			Id:            supertypes.NewStringValue(project.Id),
+			Name:          supertypes.NewStringValue(project.Name),
+			Status:        supertypes.NewStringValue(string(project.Status)),
+			ExternalKeyId: supertypes.NewStringPointerValue(project.ExternalKeyId),
+			CreatedAt:     supertypes.NewInt64Value(project.CreatedAt),
+			ArchivedAt:    supertypes.NewInt64PointerValue(project.ArchivedAt),
 		}
-		m.Projects = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	}
+	m.Projects = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
 	return nil
 }

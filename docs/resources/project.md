@@ -44,7 +44,7 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 
 ```shell
 # Import an existing project
-terraform import openai_project.example project-id
+terraform import openai_project.example <project_id>
 
 # Example
 terraform import openai_project.example proj_000000000000000000000000
