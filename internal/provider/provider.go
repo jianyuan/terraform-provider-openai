@@ -160,6 +160,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {
 	return []func() function.Function{
+		NewPredefinedProjectRoleIdFunction,
 		NewPredefinedRoleIdFunction,
 	}
 }
