@@ -2,21 +2,13 @@ package provider
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 	"os"
-	"regexp"
 	"strings"
-	"time"
 
-	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
-	"github.com/jianyuan/go-utils/must"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
 
@@ -90,65 +82,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	retryClient := retryablehttp.NewClient()
-	retryClient.HTTPClient.Transport = logging.NewLoggingHTTPTransport(retryClient.HTTPClient.Transport)
-	retryClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
-	retryClient.Logger = nil
-	retryClient.RetryMax = 10
-
-	projectServiceAccountPathPattern := regexp.MustCompile(`^/v1/organization/projects/[^/]+/service_accounts/[^/]+$`)
-	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		// Retry on 404 for project service account. There's a small delay between creating a project service account and it being available.
-		if resp.Request.Method == http.MethodGet && resp.StatusCode == http.StatusNotFound && projectServiceAccountPathPattern.MatchString(resp.Request.URL.Path) {
-			return true, nil
-		}
-
-		if v, ok := parseRateLimitHTTPResponse(resp); ok {
-			resp.Header.Set("X-Internal-Retry-After", v.String())
-		} else {
-			resp.Header.Set("X-Internal-Retry-After", "")
-		}
-
-		return retryablehttp.ErrorPropagatedRetryPolicy(ctx, resp, err)
-	}
-
-	retryClient.Backoff = func(durationMin, durationMax time.Duration, attemptNum int, resp *http.Response) time.Duration {
-		var backoff time.Duration
-		if resp != nil {
-			retryAfter := resp.Header.Get("X-Internal-Retry-After")
-			if retryAfter != "" {
-				backoff = must.Get(time.ParseDuration(retryAfter))
-			}
-		}
-
-		if backoff == 0 {
-			backoff = retryablehttp.DefaultBackoff(durationMin, durationMax, attemptNum, resp)
-		}
-
-		tflog.Debug(
-			resp.Request.Context(),
-			fmt.Sprintf(
-				"%s %s (status: %d): retrying in %s (%d left)",
-				resp.Request.Method,
-				resp.Request.URL.Redacted(),
-				resp.StatusCode,
-				backoff,
-				retryClient.RetryMax-attemptNum,
-			),
-		)
-
-		return backoff
-	}
-
-	client, err := apiclient.NewClientWithResponses(
-		baseUrl,
-		apiclient.WithHTTPClient(retryClient.StandardClient()),
-		apiclient.WithRequestEditorFn(func(ctx context.Context, httpReq *http.Request) error {
-			httpReq.Header.Set("Authorization", "Bearer "+adminKey)
-			httpReq.Header.Set("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version))
-			return nil
-		}),
-	)
+	client, err := apiclient.New(baseUrl, req.TerraformVersion, p.version, adminKey)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create API client", err.Error())
 		return

@@ -24,13 +24,7 @@ var (
 )
 
 func init() {
-	SharedClient = must.Get(apiclient.NewClientWithResponses(
-		"https://api.openai.com/v1",
-		apiclient.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-			req.Header.Set("Authorization", "Bearer "+TestAdminKey)
-			return nil
-		}),
-	))
+	SharedClient = must.Get(apiclient.New("https://api.openai.com/v1", "", "", TestAdminKey))
 
 	ctx := context.Background()
 	TestGroupId = ensureTestGroupId(ctx)
