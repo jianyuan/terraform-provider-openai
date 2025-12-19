@@ -89,16 +89,17 @@ export async function insertDefaultProjectRateLimits({
 }: {
   projectId: string;
 }) {
-  await db.insert(schema.projectRateLimits).values({
-    project_id: projectId,
-    model: "ada",
-    batch_1_day_max_input_tokens: 1,
-    max_audio_megabytes_per_1_minute: 2,
-    max_images_per_1_minute: 3,
-    max_requests_per_1_day: 4,
-    max_requests_per_1_minute: 5,
-    max_tokens_per_1_minute: 6,
-  });
+  return await db
+    .insert(schema.projectRateLimits)
+    .values(
+      schema.defaultModels.map((model) => ({
+        id: `rl-${model.name}`,
+        project_id: projectId,
+        model: model.name,
+        ...model.rateLimits,
+      }))
+    )
+    .returning();
 }
 
 await applyMigrations();
