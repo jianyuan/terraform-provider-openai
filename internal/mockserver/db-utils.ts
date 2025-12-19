@@ -4,6 +4,6 @@ export function now() {
   return Math.floor(Date.now() / 1000);
 }
 
-export function idGenerator(prefix: string, separator: string = "_") {
-  return () => `${prefix}${separator}${createId()}`;
+export function idGenerator(prefix: string) {
+  return () => `${prefix}${createId()}`;
 }

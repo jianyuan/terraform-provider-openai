@@ -26,15 +26,15 @@ const role_id = text()
 
 export const adminApiKeys = sqliteTable("admin_api_keys", {
   object: objectColumn("organization.admin_api_key"),
-  id: text().primaryKey().$defaultFn(idGenerator("admin_api_key")),
+  id: text().primaryKey().$defaultFn(idGenerator("admin_api_key_")),
   name: text().notNull(),
-  value: text().notNull().$defaultFn(idGenerator("sk-admin", "-")),
+  value: text().notNull().$defaultFn(idGenerator("sk-admin-")),
   created_at,
 });
 
 export const users = sqliteTable("users", {
   object: objectColumn("organization.user"),
-  id: text().primaryKey().$defaultFn(idGenerator("user")),
+  id: text().primaryKey().$defaultFn(idGenerator("user_")),
   name: text().notNull(),
   email: text().notNull(),
   role: text({ enum: ["owner", "reader"] }).notNull(),
@@ -67,7 +67,7 @@ export const usersToRolesRelation = relations(usersToRoles, ({ one }) => ({
 
 export const groups = sqliteTable("groups", {
   object: objectColumn("group"),
-  id: text().primaryKey().$defaultFn(idGenerator("group")),
+  id: text().primaryKey().$defaultFn(idGenerator("group_")),
   name: text().notNull(),
   is_scim_managed: integer({ mode: "boolean" }).notNull().default(false),
   created_at,
@@ -80,7 +80,7 @@ export const groupsRelation = relations(groups, ({ many }) => ({
 
 export const roles = sqliteTable("roles", {
   object: objectColumn("role"),
-  id: text().primaryKey().$defaultFn(idGenerator("role")),
+  id: text().primaryKey().$defaultFn(idGenerator("role_")),
   name: text().notNull(),
   description: text().notNull(),
   permissions: text({ mode: "json" }).notNull().$type<string[]>(),
@@ -135,7 +135,7 @@ export const groupsToUsersRelation = relations(groupsToUsers, ({ one }) => ({
 
 export const invites = sqliteTable("invites", {
   object: objectColumn("organization.invite"),
-  id: text().primaryKey().$defaultFn(idGenerator("invite")),
+  id: text().primaryKey().$defaultFn(idGenerator("invite_")),
   email: text().notNull(),
   role: text({ enum: ["owner", "reader"] }).notNull(),
   status: text({ enum: ["accepted", "expired", "pending"] })
@@ -148,7 +148,7 @@ export const invites = sqliteTable("invites", {
 
 export const projects = sqliteTable("projects", {
   object: objectColumn("organization.project"),
-  id: text().primaryKey().$defaultFn(idGenerator("project")),
+  id: text().primaryKey().$defaultFn(idGenerator("project_")),
   name: text().notNull(),
   status: text({ enum: ["active", "archived"] })
     .notNull()
@@ -269,15 +269,54 @@ export const projectsToUsersToRolesRelation = relations(
   })
 );
 
-export const projectRateLimits = sqliteTable("project_rate_limits", {
-  object: objectColumn("project.rate_limit"),
-  id: text().primaryKey().$defaultFn(idGenerator("rl")),
+export const projectRateLimits = sqliteTable(
+  "project_rate_limits",
+  {
+    object: objectColumn("project.rate_limit"),
+    id: text().$defaultFn(idGenerator("rl-")),
+    project_id,
+    model: text().notNull(),
+    batch_1_day_max_input_tokens: integer(),
+    max_audio_megabytes_per_1_minute: integer(),
+    max_images_per_1_minute: integer(),
+    max_requests_per_1_day: integer(),
+    max_requests_per_1_minute: integer(),
+    max_tokens_per_1_minute: integer(),
+  },
+  (table) => [primaryKey({ columns: [table.id, table.project_id] })]
+);
+
+export const defaultModels = [
+  {
+    name: "text-embedding-3-small",
+    rateLimits: {
+      max_requests_per_1_day: 1,
+      max_requests_per_1_minute: 2,
+      max_tokens_per_1_minute: 3,
+    },
+  },
+];
+
+export const projectServiceAccounts = sqliteTable("service_accounts", {
+  object: objectColumn("organization.project.service_account"),
+  id: text().primaryKey().$defaultFn(idGenerator("svc_acct_")),
   project_id,
-  model: text().notNull(),
-  batch_1_day_max_input_tokens: integer().notNull(),
-  max_audio_megabytes_per_1_minute: integer().notNull(),
-  max_images_per_1_minute: integer().notNull(),
-  max_requests_per_1_day: integer().notNull(),
-  max_requests_per_1_minute: integer().notNull(),
-  max_tokens_per_1_minute: integer().notNull(),
+  name: text().notNull(),
+  role: text({ enum: ["member"] })
+    .notNull()
+    .default("member"),
+  created_at,
 });
+
+export const projectServiceAccountApiKeys = sqliteTable(
+  "service_account_api_keys",
+  {
+    object: objectColumn("organization.project.service_account.api_key"),
+    id: text().primaryKey().$defaultFn(idGenerator("svc_acct_api_key_")),
+    project_service_account_id: text()
+      .notNull()
+      .references(() => projectServiceAccounts.id, { onDelete: "cascade" }),
+    value: text().notNull().$defaultFn(idGenerator("sk-")),
+    created_at,
+  }
+);
