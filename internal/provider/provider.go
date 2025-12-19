@@ -40,7 +40,7 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 		MarkdownDescription: "The OpenAI provider enables you to configure resources and data sources for your OpenAI organization. It utilizes the official [Administration API](https://platform.openai.com/docs/api-reference/administration) to interact with the OpenAI platform.\n\nIf you find this provider useful, please consider supporting me through GitHub Sponsorship or Ko-Fi to help with its development.\n\n[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jianyuan)\n[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/L3L71DQEL)",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
-				MarkdownDescription: "Base URL for the OpenAI API. Defaults to `https://api.openai.com`.",
+				MarkdownDescription: "Base URL for the OpenAI API. It can also be set using the `OPENAI_BASE_URL` environment variable. Defaults to `https://api.openai.com/v1`.",
 				Optional:            true,
 			},
 			"admin_key": schema.StringAttribute{
@@ -64,6 +64,8 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	var baseUrl string
 	if !data.BaseUrl.IsNull() {
 		baseUrl = data.BaseUrl.ValueString()
+	} else if v := os.Getenv("OPENAI_BASE_URL"); v != "" {
+		baseUrl = v
 	} else {
 		baseUrl = "https://api.openai.com/v1"
 	}

@@ -16,6 +16,7 @@ import (
 )
 
 var (
+	TestBaseUrl  = os.Getenv("OPENAI_BASE_URL")
 	TestAdminKey = os.Getenv("OPENAI_ADMIN_KEY")
 	TestUserId   = os.Getenv("OPENAI_TEST_USER_ID")
 	TestGroupId  string
@@ -24,7 +25,11 @@ var (
 )
 
 func init() {
-	SharedClient = must.Get(apiclient.New("https://api.openai.com/v1", "", "", TestAdminKey))
+	if TestBaseUrl == "" {
+		TestBaseUrl = "https://api.openai.com/v1"
+	}
+
+	SharedClient = must.Get(apiclient.New(TestBaseUrl, "", "", TestAdminKey))
 
 	ctx := context.Background()
 	TestGroupId = ensureTestGroupId(ctx)

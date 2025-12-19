@@ -57,4 +57,4 @@ output "service_account_api_key" {
 ### Optional
 
 - `admin_key` (String, Sensitive) The OpenAI admin key can be obtained through the [API Platform Organization](https://platform.openai.com/settings/organization/admin-keys) overview page. It can also be set using the `OPENAI_ADMIN_KEY` environment variable. Note that the admin key must begin with `sk-admin-`.
-- `base_url` (String) Base URL for the OpenAI API. Defaults to `https://api.openai.com`.
+- `base_url` (String) Base URL for the OpenAI API. It can also be set using the `OPENAI_BASE_URL` environment variable. Defaults to `https://api.openai.com/v1`.
