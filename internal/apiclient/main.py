@@ -25,6 +25,7 @@ def fix_remove_non_administrative_endpoints(spec):
         for operation in operations.values():
             if (
                 "x-oaiMeta" in operation
+                and "group" in operation["x-oaiMeta"]
                 and operation["x-oaiMeta"]["group"] != "administration"
             ):
                 paths_to_remove.add(path)

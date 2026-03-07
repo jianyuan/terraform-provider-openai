@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 const (
@@ -25,6 +26,21 @@ const (
 	CertificateObjectCertificate                    CertificateObject = "certificate"
 	CertificateObjectOrganizationCertificate        CertificateObject = "organization.certificate"
 	CertificateObjectOrganizationProjectCertificate CertificateObject = "organization.project.certificate"
+)
+
+// Defines values for DeleteCertificateResponseObject.
+const (
+	CertificateDeleted DeleteCertificateResponseObject = "certificate.deleted"
+)
+
+// Defines values for DeletedSkillResourceObject.
+const (
+	SkillDeleted DeletedSkillResourceObject = "skill.deleted"
+)
+
+// Defines values for DeletedSkillVersionResourceObject.
+const (
+	SkillVersionDeleted DeletedSkillVersionResourceObject = "skill.version.deleted"
 )
 
 // Defines values for GroupObject.
@@ -106,6 +122,12 @@ const (
 // Defines values for ListCertificatesResponseObject.
 const (
 	ListCertificatesResponseObjectList ListCertificatesResponseObject = "list"
+)
+
+// Defines values for OrderEnum.
+const (
+	OrderEnumAsc  OrderEnum = "asc"
+	OrderEnumDesc OrderEnum = "desc"
 )
 
 // Defines values for ProjectObject.
@@ -266,6 +288,26 @@ const (
 	RoleListResourceObjectList RoleListResourceObject = "list"
 )
 
+// Defines values for SkillListResourceObject.
+const (
+	SkillListResourceObjectList SkillListResourceObject = "list"
+)
+
+// Defines values for SkillResourceObject.
+const (
+	Skill SkillResourceObject = "skill"
+)
+
+// Defines values for SkillVersionListResourceObject.
+const (
+	SkillVersionListResourceObjectList SkillVersionListResourceObject = "list"
+)
+
+// Defines values for SkillVersionResourceObject.
+const (
+	SkillVersion SkillVersionResourceObject = "skill.version"
+)
+
 // Defines values for UserObject.
 const (
 	OrganizationUser UserObject = "organization.user"
@@ -376,8 +418,8 @@ const (
 
 // Defines values for ListProjectUserRoleAssignmentsParamsOrder.
 const (
-	ListProjectUserRoleAssignmentsParamsOrderAsc  ListProjectUserRoleAssignmentsParamsOrder = "asc"
-	ListProjectUserRoleAssignmentsParamsOrderDesc ListProjectUserRoleAssignmentsParamsOrder = "desc"
+	Asc  ListProjectUserRoleAssignmentsParamsOrder = "asc"
+	Desc ListProjectUserRoleAssignmentsParamsOrder = "desc"
 )
 
 // AdminApiKey Represents an individual Admin API key in an org.
@@ -508,14 +550,51 @@ type CreateGroupUserBody struct {
 	UserId string `json:"user_id"`
 }
 
+// CreateSkillBody Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
+type CreateSkillBody struct {
+	Files CreateSkillBody_Files `json:"files"`
+}
+
+// CreateSkillBodyFiles0 Skill files to upload (directory upload) or a single zip file.
+type CreateSkillBodyFiles0 = []openapi_types.File
+
+// CreateSkillBodyFiles1 Skill zip file to upload.
+type CreateSkillBodyFiles1 = openapi_types.File
+
+// CreateSkillBody_Files defines model for CreateSkillBody.Files.
+type CreateSkillBody_Files struct {
+	union json.RawMessage
+}
+
+// CreateSkillVersionBody Uploads a new immutable version of a skill.
+type CreateSkillVersionBody struct {
+	// Default Whether to set this version as the default.
+	Default *bool                        `json:"default,omitempty"`
+	Files   CreateSkillVersionBody_Files `json:"files"`
+}
+
+// CreateSkillVersionBodyFiles0 Skill files to upload (directory upload) or a single zip file.
+type CreateSkillVersionBodyFiles0 = []openapi_types.File
+
+// CreateSkillVersionBodyFiles1 Skill zip file to upload.
+type CreateSkillVersionBodyFiles1 = openapi_types.File
+
+// CreateSkillVersionBody_Files defines model for CreateSkillVersionBody.Files.
+type CreateSkillVersionBody_Files struct {
+	union json.RawMessage
+}
+
 // DeleteCertificateResponse defines model for DeleteCertificateResponse.
 type DeleteCertificateResponse struct {
 	// Id The ID of the certificate that was deleted.
 	Id string `json:"id"`
 
 	// Object The object type, must be `certificate.deleted`.
-	Object interface{} `json:"object"`
+	Object DeleteCertificateResponseObject `json:"object"`
 }
+
+// DeleteCertificateResponseObject The object type, must be `certificate.deleted`.
+type DeleteCertificateResponseObject string
 
 // DeletedRoleAssignmentResource Confirmation payload returned after unassigning a role.
 type DeletedRoleAssignmentResource struct {
@@ -525,6 +604,29 @@ type DeletedRoleAssignmentResource struct {
 	// Object Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
 	Object string `json:"object"`
 }
+
+// DeletedSkillResource defines model for DeletedSkillResource.
+type DeletedSkillResource struct {
+	Deleted bool                       `json:"deleted"`
+	Id      string                     `json:"id"`
+	Object  DeletedSkillResourceObject `json:"object"`
+}
+
+// DeletedSkillResourceObject defines model for DeletedSkillResource.Object.
+type DeletedSkillResourceObject string
+
+// DeletedSkillVersionResource defines model for DeletedSkillVersionResource.
+type DeletedSkillVersionResource struct {
+	Deleted bool                              `json:"deleted"`
+	Id      string                            `json:"id"`
+	Object  DeletedSkillVersionResourceObject `json:"object"`
+
+	// Version The deleted skill version.
+	Version string `json:"version"`
+}
+
+// DeletedSkillVersionResourceObject defines model for DeletedSkillVersionResource.Object.
+type DeletedSkillVersionResourceObject string
 
 // Error defines model for Error.
 type Error struct {
@@ -794,6 +896,9 @@ type ModifyCertificateRequest struct {
 	Name string `json:"name"`
 }
 
+// OrderEnum defines model for OrderEnum.
+type OrderEnum string
+
 // Project Represents an individual project.
 type Project struct {
 	// ArchivedAt The Unix timestamp (in seconds) of when the project was archived or `null`.
@@ -888,14 +993,14 @@ type ProjectCreateRequest struct {
 	// ExternalKeyId The ID of the customer-managed encryption key for Enterprise Key Management (EKM).
 	ExternalKeyId *string `json:"external_key_id,omitempty"`
 
-	// Geography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+	// Geography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
 	Geography *ProjectCreateRequestGeography `json:"geography,omitempty"`
 
 	// Name The friendly name of the project, this name appears in reports.
 	Name string `json:"name"`
 }
 
-// ProjectCreateRequestGeography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+// ProjectCreateRequestGeography Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
 type ProjectCreateRequestGeography string
 
 // ProjectGroup Details about a group's membership in a project.
@@ -1279,6 +1384,108 @@ type RoleListResource struct {
 // RoleListResourceObject Always `list`.
 type RoleListResourceObject string
 
+// SetDefaultSkillVersionBody Updates the default version pointer for a skill.
+type SetDefaultSkillVersionBody struct {
+	// DefaultVersion The skill version number to set as default.
+	DefaultVersion string `json:"default_version"`
+}
+
+// SkillListResource defines model for SkillListResource.
+type SkillListResource struct {
+	// Data A list of items
+	Data []SkillResource `json:"data"`
+
+	// FirstId The ID of the first item in the list.
+	FirstId *string `json:"first_id"`
+
+	// HasMore Whether there are more items available.
+	HasMore bool `json:"has_more"`
+
+	// LastId The ID of the last item in the list.
+	LastId *string `json:"last_id"`
+
+	// Object The type of object returned, must be `list`.
+	Object SkillListResourceObject `json:"object"`
+}
+
+// SkillListResourceObject The type of object returned, must be `list`.
+type SkillListResourceObject string
+
+// SkillResource defines model for SkillResource.
+type SkillResource struct {
+	// CreatedAt Unix timestamp (seconds) for when the skill was created.
+	CreatedAt int64 `json:"created_at"`
+
+	// DefaultVersion Default version for the skill.
+	DefaultVersion string `json:"default_version"`
+
+	// Description Description of the skill.
+	Description string `json:"description"`
+
+	// Id Unique identifier for the skill.
+	Id string `json:"id"`
+
+	// LatestVersion Latest version for the skill.
+	LatestVersion string `json:"latest_version"`
+
+	// Name Name of the skill.
+	Name string `json:"name"`
+
+	// Object The object type, which is `skill`.
+	Object SkillResourceObject `json:"object"`
+}
+
+// SkillResourceObject The object type, which is `skill`.
+type SkillResourceObject string
+
+// SkillVersionListResource defines model for SkillVersionListResource.
+type SkillVersionListResource struct {
+	// Data A list of items
+	Data []SkillVersionResource `json:"data"`
+
+	// FirstId The ID of the first item in the list.
+	FirstId *string `json:"first_id"`
+
+	// HasMore Whether there are more items available.
+	HasMore bool `json:"has_more"`
+
+	// LastId The ID of the last item in the list.
+	LastId *string `json:"last_id"`
+
+	// Object The type of object returned, must be `list`.
+	Object SkillVersionListResourceObject `json:"object"`
+}
+
+// SkillVersionListResourceObject The type of object returned, must be `list`.
+type SkillVersionListResourceObject string
+
+// SkillVersionResource defines model for SkillVersionResource.
+type SkillVersionResource struct {
+	// CreatedAt Unix timestamp (seconds) for when the version was created.
+	CreatedAt int64 `json:"created_at"`
+
+	// Description Description of the skill version.
+	Description string `json:"description"`
+
+	// Id Unique identifier for the skill version.
+	Id string `json:"id"`
+
+	// Name Name of the skill version.
+	Name string `json:"name"`
+
+	// Object The object type, which is `skill.version`.
+	Object SkillVersionResourceObject `json:"object"`
+
+	// SkillId Identifier of the skill for this version.
+	SkillId string `json:"skill_id"`
+
+	// Version Version number for this skill.
+	Version string `json:"version"`
+}
+
+// SkillVersionResourceObject The object type, which is `skill.version`.
+type SkillVersionResourceObject string
+
 // ToggleCertificatesRequest defines model for ToggleCertificatesRequest.
 type ToggleCertificatesRequest struct {
 	CertificateIds []string `json:"certificate_ids"`
@@ -1649,6 +1856,30 @@ type ListProjectUserRoleAssignmentsParams struct {
 // ListProjectUserRoleAssignmentsParamsOrder defines parameters for ListProjectUserRoleAssignments.
 type ListProjectUserRoleAssignmentsParamsOrder string
 
+// ListSkillsParams defines parameters for ListSkills.
+type ListSkillsParams struct {
+	// Limit Number of items to retrieve
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order.
+	Order *OrderEnum `form:"order,omitempty" json:"order,omitempty"`
+
+	// After Identifier for the last item from the previous pagination request
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+}
+
+// ListSkillVersionsParams defines parameters for ListSkillVersions.
+type ListSkillVersionsParams struct {
+	// Limit Number of versions to retrieve.
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order of results by version number.
+	Order *OrderEnum `form:"order,omitempty" json:"order,omitempty"`
+
+	// After The skill version ID to start after.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+}
+
 // AdminApiKeysCreateJSONRequestBody defines body for AdminApiKeysCreate for application/json ContentType.
 type AdminApiKeysCreateJSONRequestBody AdminApiKeysCreateJSONBody
 
@@ -1729,6 +1960,148 @@ type UpdateProjectRoleJSONRequestBody = PublicUpdateOrganizationRoleBody
 
 // AssignProjectUserRoleJSONRequestBody defines body for AssignProjectUserRole for application/json ContentType.
 type AssignProjectUserRoleJSONRequestBody = PublicAssignOrganizationGroupRoleBody
+
+// CreateSkillJSONRequestBody defines body for CreateSkill for application/json ContentType.
+type CreateSkillJSONRequestBody = CreateSkillBody
+
+// CreateSkillMultipartRequestBody defines body for CreateSkill for multipart/form-data ContentType.
+type CreateSkillMultipartRequestBody = CreateSkillBody
+
+// UpdateSkillDefaultVersionJSONRequestBody defines body for UpdateSkillDefaultVersion for application/json ContentType.
+type UpdateSkillDefaultVersionJSONRequestBody = SetDefaultSkillVersionBody
+
+// UpdateSkillDefaultVersionFormdataRequestBody defines body for UpdateSkillDefaultVersion for application/x-www-form-urlencoded ContentType.
+type UpdateSkillDefaultVersionFormdataRequestBody = SetDefaultSkillVersionBody
+
+// CreateSkillVersionJSONRequestBody defines body for CreateSkillVersion for application/json ContentType.
+type CreateSkillVersionJSONRequestBody = CreateSkillVersionBody
+
+// CreateSkillVersionMultipartRequestBody defines body for CreateSkillVersion for multipart/form-data ContentType.
+type CreateSkillVersionMultipartRequestBody = CreateSkillVersionBody
+
+// AsCreateSkillBodyFiles0 returns the union data inside the CreateSkillBody_Files as a CreateSkillBodyFiles0
+func (t CreateSkillBody_Files) AsCreateSkillBodyFiles0() (CreateSkillBodyFiles0, error) {
+	var body CreateSkillBodyFiles0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateSkillBodyFiles0 overwrites any union data inside the CreateSkillBody_Files as the provided CreateSkillBodyFiles0
+func (t *CreateSkillBody_Files) FromCreateSkillBodyFiles0(v CreateSkillBodyFiles0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateSkillBodyFiles0 performs a merge with any union data inside the CreateSkillBody_Files, using the provided CreateSkillBodyFiles0
+func (t *CreateSkillBody_Files) MergeCreateSkillBodyFiles0(v CreateSkillBodyFiles0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateSkillBodyFiles1 returns the union data inside the CreateSkillBody_Files as a CreateSkillBodyFiles1
+func (t CreateSkillBody_Files) AsCreateSkillBodyFiles1() (CreateSkillBodyFiles1, error) {
+	var body CreateSkillBodyFiles1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateSkillBodyFiles1 overwrites any union data inside the CreateSkillBody_Files as the provided CreateSkillBodyFiles1
+func (t *CreateSkillBody_Files) FromCreateSkillBodyFiles1(v CreateSkillBodyFiles1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateSkillBodyFiles1 performs a merge with any union data inside the CreateSkillBody_Files, using the provided CreateSkillBodyFiles1
+func (t *CreateSkillBody_Files) MergeCreateSkillBodyFiles1(v CreateSkillBodyFiles1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateSkillBody_Files) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateSkillBody_Files) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCreateSkillVersionBodyFiles0 returns the union data inside the CreateSkillVersionBody_Files as a CreateSkillVersionBodyFiles0
+func (t CreateSkillVersionBody_Files) AsCreateSkillVersionBodyFiles0() (CreateSkillVersionBodyFiles0, error) {
+	var body CreateSkillVersionBodyFiles0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateSkillVersionBodyFiles0 overwrites any union data inside the CreateSkillVersionBody_Files as the provided CreateSkillVersionBodyFiles0
+func (t *CreateSkillVersionBody_Files) FromCreateSkillVersionBodyFiles0(v CreateSkillVersionBodyFiles0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateSkillVersionBodyFiles0 performs a merge with any union data inside the CreateSkillVersionBody_Files, using the provided CreateSkillVersionBodyFiles0
+func (t *CreateSkillVersionBody_Files) MergeCreateSkillVersionBodyFiles0(v CreateSkillVersionBodyFiles0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateSkillVersionBodyFiles1 returns the union data inside the CreateSkillVersionBody_Files as a CreateSkillVersionBodyFiles1
+func (t CreateSkillVersionBody_Files) AsCreateSkillVersionBodyFiles1() (CreateSkillVersionBodyFiles1, error) {
+	var body CreateSkillVersionBodyFiles1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateSkillVersionBodyFiles1 overwrites any union data inside the CreateSkillVersionBody_Files as the provided CreateSkillVersionBodyFiles1
+func (t *CreateSkillVersionBody_Files) FromCreateSkillVersionBodyFiles1(v CreateSkillVersionBodyFiles1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateSkillVersionBodyFiles1 performs a merge with any union data inside the CreateSkillVersionBody_Files, using the provided CreateSkillVersionBodyFiles1
+func (t *CreateSkillVersionBody_Files) MergeCreateSkillVersionBodyFiles1(v CreateSkillVersionBodyFiles1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateSkillVersionBody_Files) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateSkillVersionBody_Files) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -2069,6 +2442,47 @@ type ClientInterface interface {
 
 	// UnassignProjectUserRole request
 	UnassignProjectUserRole(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSkills request
+	ListSkills(ctx context.Context, params *ListSkillsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSkillWithBody request with any body
+	CreateSkillWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSkill(ctx context.Context, body CreateSkillJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSkill request
+	DeleteSkill(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSkill request
+	GetSkill(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSkillDefaultVersionWithBody request with any body
+	UpdateSkillDefaultVersionWithBody(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSkillDefaultVersion(ctx context.Context, skillId string, body UpdateSkillDefaultVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSkillDefaultVersionWithFormdataBody(ctx context.Context, skillId string, body UpdateSkillDefaultVersionFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSkillContent request
+	GetSkillContent(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSkillVersions request
+	ListSkillVersions(ctx context.Context, skillId string, params *ListSkillVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSkillVersionWithBody request with any body
+	CreateSkillVersionWithBody(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSkillVersion(ctx context.Context, skillId string, body CreateSkillVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSkillVersion request
+	DeleteSkillVersion(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSkillVersion request
+	GetSkillVersion(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSkillVersionContent request
+	GetSkillVersionContent(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) AdminApiKeysList(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -3237,6 +3651,186 @@ func (c *Client) AssignProjectUserRole(ctx context.Context, projectId string, us
 
 func (c *Client) UnassignProjectUserRole(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUnassignProjectUserRoleRequest(c.Server, projectId, userId, roleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListSkills(ctx context.Context, params *ListSkillsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSkillsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSkillWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSkillRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSkill(ctx context.Context, body CreateSkillJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSkillRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSkill(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSkillRequest(c.Server, skillId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSkill(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSkillRequest(c.Server, skillId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSkillDefaultVersionWithBody(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSkillDefaultVersionRequestWithBody(c.Server, skillId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSkillDefaultVersion(ctx context.Context, skillId string, body UpdateSkillDefaultVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSkillDefaultVersionRequest(c.Server, skillId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSkillDefaultVersionWithFormdataBody(ctx context.Context, skillId string, body UpdateSkillDefaultVersionFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSkillDefaultVersionRequestWithFormdataBody(c.Server, skillId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSkillContent(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSkillContentRequest(c.Server, skillId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListSkillVersions(ctx context.Context, skillId string, params *ListSkillVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSkillVersionsRequest(c.Server, skillId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSkillVersionWithBody(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSkillVersionRequestWithBody(c.Server, skillId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSkillVersion(ctx context.Context, skillId string, body CreateSkillVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSkillVersionRequest(c.Server, skillId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSkillVersion(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSkillVersionRequest(c.Server, skillId, version)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSkillVersion(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSkillVersionRequest(c.Server, skillId, version)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSkillVersionContent(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSkillVersionContentRequest(c.Server, skillId, version)
 	if err != nil {
 		return nil, err
 	}
@@ -7045,6 +7639,545 @@ func NewUnassignProjectUserRoleRequest(server string, projectId string, userId s
 	return req, nil
 }
 
+// NewListSkillsRequest generates requests for ListSkills
+func NewListSkillsRequest(server string, params *ListSkillsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSkillRequest calls the generic CreateSkill builder with application/json body
+func NewCreateSkillRequest(server string, body CreateSkillJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSkillRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateSkillRequestWithBody generates requests for CreateSkill with any type of body
+func NewCreateSkillRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSkillRequest generates requests for DeleteSkill
+func NewDeleteSkillRequest(server string, skillId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSkillRequest generates requests for GetSkill
+func NewGetSkillRequest(server string, skillId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateSkillDefaultVersionRequest calls the generic UpdateSkillDefaultVersion builder with application/json body
+func NewUpdateSkillDefaultVersionRequest(server string, skillId string, body UpdateSkillDefaultVersionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSkillDefaultVersionRequestWithBody(server, skillId, "application/json", bodyReader)
+}
+
+// NewUpdateSkillDefaultVersionRequestWithFormdataBody calls the generic UpdateSkillDefaultVersion builder with application/x-www-form-urlencoded body
+func NewUpdateSkillDefaultVersionRequestWithFormdataBody(server string, skillId string, body UpdateSkillDefaultVersionFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewUpdateSkillDefaultVersionRequestWithBody(server, skillId, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewUpdateSkillDefaultVersionRequestWithBody generates requests for UpdateSkillDefaultVersion with any type of body
+func NewUpdateSkillDefaultVersionRequestWithBody(server string, skillId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetSkillContentRequest generates requests for GetSkillContent
+func NewGetSkillContentRequest(server string, skillId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/content", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListSkillVersionsRequest generates requests for ListSkillVersions
+func NewListSkillVersionsRequest(server string, skillId string, params *ListSkillVersionsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/versions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "after", runtime.ParamLocationQuery, *params.After); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSkillVersionRequest calls the generic CreateSkillVersion builder with application/json body
+func NewCreateSkillVersionRequest(server string, skillId string, body CreateSkillVersionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSkillVersionRequestWithBody(server, skillId, "application/json", bodyReader)
+}
+
+// NewCreateSkillVersionRequestWithBody generates requests for CreateSkillVersion with any type of body
+func NewCreateSkillVersionRequestWithBody(server string, skillId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/versions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSkillVersionRequest generates requests for DeleteSkillVersion
+func NewDeleteSkillVersionRequest(server string, skillId string, version string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/versions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSkillVersionRequest generates requests for GetSkillVersion
+func NewGetSkillVersionRequest(server string, skillId string, version string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/versions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSkillVersionContentRequest generates requests for GetSkillVersionContent
+func NewGetSkillVersionContentRequest(server string, skillId string, version string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "skill_id", runtime.ParamLocationPath, skillId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "version", runtime.ParamLocationPath, version)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/skills/%s/versions/%s/content", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -7354,6 +8487,47 @@ type ClientWithResponsesInterface interface {
 
 	// UnassignProjectUserRoleWithResponse request
 	UnassignProjectUserRoleWithResponse(ctx context.Context, projectId string, userId string, roleId string, reqEditors ...RequestEditorFn) (*UnassignProjectUserRoleResp, error)
+
+	// ListSkillsWithResponse request
+	ListSkillsWithResponse(ctx context.Context, params *ListSkillsParams, reqEditors ...RequestEditorFn) (*ListSkillsResp, error)
+
+	// CreateSkillWithBodyWithResponse request with any body
+	CreateSkillWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSkillResp, error)
+
+	CreateSkillWithResponse(ctx context.Context, body CreateSkillJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSkillResp, error)
+
+	// DeleteSkillWithResponse request
+	DeleteSkillWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*DeleteSkillResp, error)
+
+	// GetSkillWithResponse request
+	GetSkillWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*GetSkillResp, error)
+
+	// UpdateSkillDefaultVersionWithBodyWithResponse request with any body
+	UpdateSkillDefaultVersionWithBodyWithResponse(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error)
+
+	UpdateSkillDefaultVersionWithResponse(ctx context.Context, skillId string, body UpdateSkillDefaultVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error)
+
+	UpdateSkillDefaultVersionWithFormdataBodyWithResponse(ctx context.Context, skillId string, body UpdateSkillDefaultVersionFormdataRequestBody, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error)
+
+	// GetSkillContentWithResponse request
+	GetSkillContentWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*GetSkillContentResp, error)
+
+	// ListSkillVersionsWithResponse request
+	ListSkillVersionsWithResponse(ctx context.Context, skillId string, params *ListSkillVersionsParams, reqEditors ...RequestEditorFn) (*ListSkillVersionsResp, error)
+
+	// CreateSkillVersionWithBodyWithResponse request with any body
+	CreateSkillVersionWithBodyWithResponse(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSkillVersionResp, error)
+
+	CreateSkillVersionWithResponse(ctx context.Context, skillId string, body CreateSkillVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSkillVersionResp, error)
+
+	// DeleteSkillVersionWithResponse request
+	DeleteSkillVersionWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*DeleteSkillVersionResp, error)
+
+	// GetSkillVersionWithResponse request
+	GetSkillVersionWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*GetSkillVersionResp, error)
+
+	// GetSkillVersionContentWithResponse request
+	GetSkillVersionContentWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*GetSkillVersionContentResp, error)
 }
 
 type AdminApiKeysListResp struct {
@@ -8931,6 +10105,248 @@ func (r UnassignProjectUserRoleResp) StatusCode() int {
 	return 0
 }
 
+type ListSkillsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSkillsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSkillsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSkillResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillResource
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSkillResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSkillResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSkillResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedSkillResource
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSkillResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSkillResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSkillResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillResource
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSkillResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSkillResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSkillDefaultVersionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillResource
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSkillDefaultVersionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSkillDefaultVersionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSkillContentResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *string
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSkillContentResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSkillContentResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListSkillVersionsResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillVersionListResource
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSkillVersionsResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSkillVersionsResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSkillVersionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillVersionResource
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSkillVersionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSkillVersionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSkillVersionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeletedSkillVersionResource
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSkillVersionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSkillVersionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSkillVersionResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SkillVersionResource
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSkillVersionResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSkillVersionResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSkillVersionContentResp struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *string
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSkillVersionContentResp) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSkillVersionContentResp) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // AdminApiKeysListWithResponse request returning *AdminApiKeysListResp
 func (c *ClientWithResponses) AdminApiKeysListWithResponse(ctx context.Context, params *AdminApiKeysListParams, reqEditors ...RequestEditorFn) (*AdminApiKeysListResp, error) {
 	rsp, err := c.AdminApiKeysList(ctx, params, reqEditors...)
@@ -9784,6 +11200,137 @@ func (c *ClientWithResponses) UnassignProjectUserRoleWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseUnassignProjectUserRoleResp(rsp)
+}
+
+// ListSkillsWithResponse request returning *ListSkillsResp
+func (c *ClientWithResponses) ListSkillsWithResponse(ctx context.Context, params *ListSkillsParams, reqEditors ...RequestEditorFn) (*ListSkillsResp, error) {
+	rsp, err := c.ListSkills(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSkillsResp(rsp)
+}
+
+// CreateSkillWithBodyWithResponse request with arbitrary body returning *CreateSkillResp
+func (c *ClientWithResponses) CreateSkillWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSkillResp, error) {
+	rsp, err := c.CreateSkillWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSkillResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateSkillWithResponse(ctx context.Context, body CreateSkillJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSkillResp, error) {
+	rsp, err := c.CreateSkill(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSkillResp(rsp)
+}
+
+// DeleteSkillWithResponse request returning *DeleteSkillResp
+func (c *ClientWithResponses) DeleteSkillWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*DeleteSkillResp, error) {
+	rsp, err := c.DeleteSkill(ctx, skillId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSkillResp(rsp)
+}
+
+// GetSkillWithResponse request returning *GetSkillResp
+func (c *ClientWithResponses) GetSkillWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*GetSkillResp, error) {
+	rsp, err := c.GetSkill(ctx, skillId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSkillResp(rsp)
+}
+
+// UpdateSkillDefaultVersionWithBodyWithResponse request with arbitrary body returning *UpdateSkillDefaultVersionResp
+func (c *ClientWithResponses) UpdateSkillDefaultVersionWithBodyWithResponse(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error) {
+	rsp, err := c.UpdateSkillDefaultVersionWithBody(ctx, skillId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSkillDefaultVersionResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSkillDefaultVersionWithResponse(ctx context.Context, skillId string, body UpdateSkillDefaultVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error) {
+	rsp, err := c.UpdateSkillDefaultVersion(ctx, skillId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSkillDefaultVersionResp(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSkillDefaultVersionWithFormdataBodyWithResponse(ctx context.Context, skillId string, body UpdateSkillDefaultVersionFormdataRequestBody, reqEditors ...RequestEditorFn) (*UpdateSkillDefaultVersionResp, error) {
+	rsp, err := c.UpdateSkillDefaultVersionWithFormdataBody(ctx, skillId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSkillDefaultVersionResp(rsp)
+}
+
+// GetSkillContentWithResponse request returning *GetSkillContentResp
+func (c *ClientWithResponses) GetSkillContentWithResponse(ctx context.Context, skillId string, reqEditors ...RequestEditorFn) (*GetSkillContentResp, error) {
+	rsp, err := c.GetSkillContent(ctx, skillId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSkillContentResp(rsp)
+}
+
+// ListSkillVersionsWithResponse request returning *ListSkillVersionsResp
+func (c *ClientWithResponses) ListSkillVersionsWithResponse(ctx context.Context, skillId string, params *ListSkillVersionsParams, reqEditors ...RequestEditorFn) (*ListSkillVersionsResp, error) {
+	rsp, err := c.ListSkillVersions(ctx, skillId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSkillVersionsResp(rsp)
+}
+
+// CreateSkillVersionWithBodyWithResponse request with arbitrary body returning *CreateSkillVersionResp
+func (c *ClientWithResponses) CreateSkillVersionWithBodyWithResponse(ctx context.Context, skillId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSkillVersionResp, error) {
+	rsp, err := c.CreateSkillVersionWithBody(ctx, skillId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSkillVersionResp(rsp)
+}
+
+func (c *ClientWithResponses) CreateSkillVersionWithResponse(ctx context.Context, skillId string, body CreateSkillVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSkillVersionResp, error) {
+	rsp, err := c.CreateSkillVersion(ctx, skillId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSkillVersionResp(rsp)
+}
+
+// DeleteSkillVersionWithResponse request returning *DeleteSkillVersionResp
+func (c *ClientWithResponses) DeleteSkillVersionWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*DeleteSkillVersionResp, error) {
+	rsp, err := c.DeleteSkillVersion(ctx, skillId, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSkillVersionResp(rsp)
+}
+
+// GetSkillVersionWithResponse request returning *GetSkillVersionResp
+func (c *ClientWithResponses) GetSkillVersionWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*GetSkillVersionResp, error) {
+	rsp, err := c.GetSkillVersion(ctx, skillId, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSkillVersionResp(rsp)
+}
+
+// GetSkillVersionContentWithResponse request returning *GetSkillVersionContentResp
+func (c *ClientWithResponses) GetSkillVersionContentWithResponse(ctx context.Context, skillId string, version string, reqEditors ...RequestEditorFn) (*GetSkillVersionContentResp, error) {
+	rsp, err := c.GetSkillVersionContent(ctx, skillId, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSkillVersionContentResp(rsp)
 }
 
 // ParseAdminApiKeysListResp parses an HTTP response from a AdminApiKeysListWithResponse call
@@ -11693,6 +13240,298 @@ func ParseUnassignProjectUserRoleResp(rsp *http.Response) (*UnassignProjectUserR
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSkillsResp parses an HTTP response from a ListSkillsWithResponse call
+func ParseListSkillsResp(rsp *http.Response) (*ListSkillsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSkillsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSkillResp parses an HTTP response from a CreateSkillWithResponse call
+func ParseCreateSkillResp(rsp *http.Response) (*CreateSkillResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSkillResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSkillResp parses an HTTP response from a DeleteSkillWithResponse call
+func ParseDeleteSkillResp(rsp *http.Response) (*DeleteSkillResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSkillResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedSkillResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSkillResp parses an HTTP response from a GetSkillWithResponse call
+func ParseGetSkillResp(rsp *http.Response) (*GetSkillResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSkillResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSkillDefaultVersionResp parses an HTTP response from a UpdateSkillDefaultVersionWithResponse call
+func ParseUpdateSkillDefaultVersionResp(rsp *http.Response) (*UpdateSkillDefaultVersionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSkillDefaultVersionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSkillContentResp parses an HTTP response from a GetSkillContentWithResponse call
+func ParseGetSkillContentResp(rsp *http.Response) (*GetSkillContentResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSkillContentResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 200:
+		// Content-type (application/zip) unsupported
+
+	}
+
+	return response, nil
+}
+
+// ParseListSkillVersionsResp parses an HTTP response from a ListSkillVersionsWithResponse call
+func ParseListSkillVersionsResp(rsp *http.Response) (*ListSkillVersionsResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSkillVersionsResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillVersionListResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSkillVersionResp parses an HTTP response from a CreateSkillVersionWithResponse call
+func ParseCreateSkillVersionResp(rsp *http.Response) (*CreateSkillVersionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSkillVersionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillVersionResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSkillVersionResp parses an HTTP response from a DeleteSkillVersionWithResponse call
+func ParseDeleteSkillVersionResp(rsp *http.Response) (*DeleteSkillVersionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSkillVersionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeletedSkillVersionResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSkillVersionResp parses an HTTP response from a GetSkillVersionWithResponse call
+func ParseGetSkillVersionResp(rsp *http.Response) (*GetSkillVersionResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSkillVersionResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SkillVersionResource
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSkillVersionContentResp parses an HTTP response from a GetSkillVersionContentWithResponse call
+func ParseGetSkillVersionContentResp(rsp *http.Response) (*GetSkillVersionContentResp, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSkillVersionContentResp{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 200:
+		// Content-type (application/zip) unsupported
 
 	}
 
