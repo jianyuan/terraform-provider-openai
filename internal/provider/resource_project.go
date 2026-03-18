@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -45,6 +47,17 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "The friendly name of the project, this name appears in reports.",
 				Required:            true,
 				CustomType:          supertypes.StringType{},
+			},
+			"geography": schema.StringAttribute{
+				MarkdownDescription: "Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use.",
+				Optional:            true,
+				CustomType:          supertypes.StringType{},
+				Validators: []validator.String{
+					stringvalidator.OneOf("US", "EU", "JP", "IN", "KR", "CA", "AU", "SG"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"status": schema.StringAttribute{
 				MarkdownDescription: "Status `active` or `archived`.",
@@ -203,6 +216,7 @@ func (r *ProjectResource) ImportState(ctx context.Context, req resource.ImportSt
 type ProjectResourceModel struct {
 	Id            supertypes.StringValue `tfsdk:"id"`
 	Name          supertypes.StringValue `tfsdk:"name"`
+	Geography     supertypes.StringValue `tfsdk:"geography"`
 	Status        supertypes.StringValue `tfsdk:"status"`
 	ExternalKeyId supertypes.StringValue `tfsdk:"external_key_id"`
 	CreatedAt     supertypes.Int64Value  `tfsdk:"created_at"`

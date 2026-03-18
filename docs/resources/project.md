@@ -15,6 +15,10 @@ Project resource.
 ```terraform
 resource "openai_project" "example" {
   name = "Example Project"
+
+  # Optional: Create the project with the specified data residency region.
+  # Valid values: US, EU, JP, IN, KR, CA, AU, SG
+  geography = "US"
 }
 ```
 
@@ -28,6 +32,7 @@ resource "openai_project" "example" {
 ### Optional
 
 - `external_key_id` (String) The ID of the customer-managed encryption key to use for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).
+- `geography` (String) Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use.
 
 ### Read-Only
 
