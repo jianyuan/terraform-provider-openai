@@ -19,10 +19,17 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project apiclient.Proje
 }
 
 func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.CreateProjectJSONRequestBody, diag.Diagnostics) {
-	return apiclient.CreateProjectJSONRequestBody{
+	body := apiclient.CreateProjectJSONRequestBody{
 		Name:          data.Name.ValueString(),
 		ExternalKeyId: data.ExternalKeyId.ValueStringPointer(),
-	}, nil
+	}
+
+	if !data.Geography.IsNull() && !data.Geography.IsUnknown() {
+		geo := apiclient.ProjectCreateRequestGeography(data.Geography.ValueString())
+		body.Geography = &geo
+	}
+
+	return body, nil
 }
 
 func (r *ProjectResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.ModifyProjectJSONRequestBody, diag.Diagnostics) {

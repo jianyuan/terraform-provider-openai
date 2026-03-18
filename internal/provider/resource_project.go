@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -57,6 +59,17 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				CustomType:          supertypes.StringType{},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"geography": schema.StringAttribute{
+				MarkdownDescription: "The data residency geography for the project. Can only be set at creation time. Valid values: `AU`, `CA`, `EU`, `IN`, `JP`, `KR`, `SG`, `US`. Your organization must have access to Data Residency functionality. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls).",
+				Optional:            true,
+				CustomType:          supertypes.StringType{},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.OneOf("AU", "CA", "EU", "IN", "JP", "KR", "SG", "US"),
 				},
 			},
 			"created_at": schema.Int64Attribute{
@@ -205,6 +218,7 @@ type ProjectResourceModel struct {
 	Name          supertypes.StringValue `tfsdk:"name"`
 	Status        supertypes.StringValue `tfsdk:"status"`
 	ExternalKeyId supertypes.StringValue `tfsdk:"external_key_id"`
+	Geography     supertypes.StringValue `tfsdk:"geography"`
 	CreatedAt     supertypes.Int64Value  `tfsdk:"created_at"`
 	ArchivedAt    supertypes.Int64Value  `tfsdk:"archived_at"`
 }
