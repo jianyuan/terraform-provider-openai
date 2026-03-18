@@ -1165,6 +1165,17 @@ export const RESOURCES: Array<Resource> = [
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
       },
       {
+        name: "geography",
+        type: "string",
+        description:
+          "The data residency geography for the project. Can only be set at creation time. Valid values: `AU`, `CA`, `EU`, `IN`, `JP`, `KR`, `SG`, `US`. Your organization must have access to Data Residency functionality. See [data residency controls](https://platform.openai.com/docs/guides/your-data#data-residency-controls).",
+        computedOptionalRequired: "optional",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        validators: [
+          'stringvalidator.OneOf("AU", "CA", "EU", "IN", "JP", "KR", "SG", "US")',
+        ],
+      },
+      {
         name: "created_at",
         type: "int",
         description:
