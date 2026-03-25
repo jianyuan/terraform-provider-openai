@@ -87,6 +87,7 @@ func TestAccProjectResource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("status"), knownvalue.StringExact("active")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("external_key_id"), knownvalue.Null()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("geography"), knownvalue.Null()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("archived_at"), knownvalue.Null()),
 				},
@@ -103,6 +104,47 @@ func TestAccProjectResource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName+"-updated")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("status"), knownvalue.StringExact("active")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("external_key_id"), knownvalue.Null()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("geography"), knownvalue.Null()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("archived_at"), knownvalue.Null()),
+				},
+			},
+		},
+	})
+}
+
+func TestAccProjectResource_WithGeography(t *testing.T) {
+	rn := "openai_project.test"
+	projectName := acctest.RandomWithPrefix("tf-project")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.TestAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccProjectResourceConfigWithGeography(projectName, "US"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName)),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("status"), knownvalue.StringExact("active")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("geography"), knownvalue.StringExact("US")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("archived_at"), knownvalue.Null()),
+				},
+			},
+			{
+				ResourceName:            rn,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"geography"},
+			},
+			{
+				Config: testAccProjectResourceConfigWithGeography(projectName+"-updated", "US"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("name"), knownvalue.StringExact(projectName+"-updated")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("status"), knownvalue.StringExact("active")),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("geography"), knownvalue.StringExact("US")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("created_at"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("archived_at"), knownvalue.Null()),
 				},
@@ -117,4 +159,13 @@ resource "openai_project" "test" {
 	name = %[1]q
 }
 `, name)
+}
+
+func testAccProjectResourceConfigWithGeography(name, geography string) string {
+	return fmt.Sprintf(`
+resource "openai_project" "test" {
+	name      = %[1]q
+	geography = %[2]q
+}
+`, name, geography)
 }
