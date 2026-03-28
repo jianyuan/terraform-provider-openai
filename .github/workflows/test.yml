@@ -43,7 +43,7 @@ jobs:
       - run: go mod download
       - run: go build -v .
       - name: Run linters
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           version: latest
 
@@ -70,7 +70,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
       - uses: astral-sh/setup-uv@v7
@@ -113,14 +113,20 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
+      - uses: oven-sh/setup-bun@v2
       - run: go mod download
+      - run: bun install
+        working-directory: ./internal/mockserver
+      - run: bun dev &
+        working-directory: ./internal/mockserver
       - env:
           TF_ACC: "1"
-          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
-          OPENAI_TEST_USER_ID: ${{ secrets.OPENAI_TEST_USER_ID }}
+          OPENAI_BASE_URL: http://localhost:3000
+          OPENAI_ADMIN_KEY: sk-admin-test
+          OPENAI_TEST_USER_ID: user_test
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 20
