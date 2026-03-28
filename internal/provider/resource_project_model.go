@@ -19,11 +19,9 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project apiclient.Proje
 }
 
 func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.CreateProjectJSONRequestBody, diag.Diagnostics) {
-	geographyStr := data.Geography.ValueStringPointer()
 	var geography *apiclient.ProjectCreateRequestGeography
-	if geographyStr != nil {
-		v := apiclient.ProjectCreateRequestGeography(*geographyStr)
-		geography = &v
+	if v := data.Geography.ValueStringPointer(); v != nil {
+		geography = new(apiclient.ProjectCreateRequestGeography(*v))
 	}
 
 	return apiclient.CreateProjectJSONRequestBody{
