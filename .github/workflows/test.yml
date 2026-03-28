@@ -117,10 +117,16 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
+      - uses: oven-sh/setup-bun@v2
       - run: go mod download
+      - run: bun install
+        working-directory: ./internal/mockserver
+      - run: bun dev &
+        working-directory: ./internal/mockserver
       - env:
           TF_ACC: "1"
-          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
-          OPENAI_TEST_USER_ID: ${{ secrets.OPENAI_TEST_USER_ID }}
+          OPENAI_BASE_URL: http://localhost:3000
+          OPENAI_ADMIN_KEY: sk-admin-test
+          OPENAI_TEST_USER_ID: user_test
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 20
