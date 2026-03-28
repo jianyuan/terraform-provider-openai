@@ -21,7 +21,7 @@ app.use(
       });
       return !!apiKey;
     },
-  })
+  }),
 );
 
 app.get("/", (c) => c.text("Hello World"));
@@ -46,7 +46,7 @@ app.post(
       ...apiKey,
       redacted_value: `sk-admin-***${apiKey.value.slice(-3)}`,
     });
-  }
+  },
 );
 
 app.get("/organization/admin_api_keys/:key_id", async (c) => {
@@ -104,7 +104,7 @@ app.post(
       permissions: z.array(z.string()),
       role_name: z.string(),
       description: z.string().default(""),
-    })
+    }),
   ),
   async (c) => {
     const { permissions, role_name: name, description } = c.req.valid("json");
@@ -120,7 +120,7 @@ app.post(
       .returning();
 
     return c.json(role);
-  }
+  },
 );
 
 app.post(
@@ -131,7 +131,7 @@ app.post(
       permissions: z.array(z.string()),
       role_name: z.string(),
       description: z.string().default(""),
-    })
+    }),
   ),
   async (c) => {
     const role_id = c.req.param("role_id");
@@ -147,8 +147,8 @@ app.post(
       .where(
         and(
           eq(schema.roles.id, role_id),
-          eq(schema.roles.resource_type, "api.organization")
-        )
+          eq(schema.roles.resource_type, "api.organization"),
+        ),
       )
       .returning();
     if (!updatedRole) {
@@ -156,7 +156,7 @@ app.post(
     }
 
     return c.json(updatedRole);
-  }
+  },
 );
 
 app.delete("/organization/roles/:role_id", async (c) => {
@@ -167,8 +167,8 @@ app.delete("/organization/roles/:role_id", async (c) => {
     .where(
       and(
         eq(schema.roles.id, role_id),
-        eq(schema.roles.resource_type, "api.organization")
-      )
+        eq(schema.roles.resource_type, "api.organization"),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -193,7 +193,7 @@ app.get(
       has_more: false,
       next: null,
     });
-  }
+  },
 );
 
 app.post(
@@ -210,7 +210,7 @@ app.post(
       .returning();
 
     return c.json(group);
-  }
+  },
 );
 
 app.post(
@@ -232,7 +232,7 @@ app.post(
     }
 
     return c.json(group);
-  }
+  },
 );
 
 app.delete("/organization/groups/:group_id", async (c) => {
@@ -281,7 +281,7 @@ app.get(
       has_more: false,
       next: null,
     });
-  }
+  },
 );
 
 app.post(
@@ -315,7 +315,7 @@ app.post(
       group,
       role,
     });
-  }
+  },
 );
 
 app.delete("/organization/groups/:group_id/roles/:role_id", async (c) => {
@@ -325,7 +325,7 @@ app.delete("/organization/groups/:group_id/roles/:role_id", async (c) => {
   const groupToRole = await db.query.groupsToRoles.findFirst({
     where: and(
       eq(schema.groupsToRoles.group_id, group_id),
-      eq(schema.groupsToRoles.role_id, role_id)
+      eq(schema.groupsToRoles.role_id, role_id),
     ),
   });
   if (!groupToRole) {
@@ -337,8 +337,8 @@ app.delete("/organization/groups/:group_id/roles/:role_id", async (c) => {
     .where(
       and(
         eq(schema.groupsToRoles.group_id, group_id),
-        eq(schema.groupsToRoles.role_id, role_id)
-      )
+        eq(schema.groupsToRoles.role_id, role_id),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -400,7 +400,7 @@ app.post(
       user_id: user.id,
       group_id: group.id,
     });
-  }
+  },
 );
 
 app.delete("/organization/groups/:group_id/users/:user_id", async (c) => {
@@ -410,7 +410,7 @@ app.delete("/organization/groups/:group_id/users/:user_id", async (c) => {
   const groupToUser = await db.query.groupsToUsers.findFirst({
     where: and(
       eq(schema.groupsToUsers.group_id, group_id),
-      eq(schema.groupsToUsers.user_id, user_id)
+      eq(schema.groupsToUsers.user_id, user_id),
     ),
   });
   if (!groupToUser) {
@@ -422,8 +422,8 @@ app.delete("/organization/groups/:group_id/users/:user_id", async (c) => {
     .where(
       and(
         eq(schema.groupsToUsers.group_id, group_id),
-        eq(schema.groupsToUsers.user_id, user_id)
-      )
+        eq(schema.groupsToUsers.user_id, user_id),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -485,8 +485,8 @@ app.post(
           inArray(schema.usersToRoles.role_id, [
             "role_organization_owner",
             "role_organization_reader",
-          ])
-        )
+          ]),
+        ),
       );
     await db.insert(schema.usersToRoles).values({
       user_id,
@@ -497,7 +497,7 @@ app.post(
     });
 
     return c.json(user);
-  }
+  },
 );
 
 app.get("/organization/users/:user_id/roles", async (c) => {
@@ -535,7 +535,7 @@ app.post(
     const role = await db.query.roles.findFirst({
       where: and(
         eq(schema.roles.id, role_id),
-        eq(schema.roles.resource_type, "api.organization")
+        eq(schema.roles.resource_type, "api.organization"),
       ),
     });
     if (!role) {
@@ -552,7 +552,7 @@ app.post(
       user,
       role,
     });
-  }
+  },
 );
 
 app.delete("/organization/users/:user_id/roles/:role_id", async (c) => {
@@ -564,8 +564,8 @@ app.delete("/organization/users/:user_id/roles/:role_id", async (c) => {
     .where(
       and(
         eq(schema.usersToRoles.user_id, user_id),
-        eq(schema.usersToRoles.role_id, role_id)
-      )
+        eq(schema.usersToRoles.role_id, role_id),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -594,7 +594,7 @@ app.post(
   "/organization/invites",
   zValidator(
     "json",
-    z.object({ email: z.string(), role: z.enum(["owner", "reader"]) })
+    z.object({ email: z.string(), role: z.enum(["owner", "reader"]) }),
   ),
   async (c) => {
     const { email, role } = c.req.valid("json");
@@ -608,7 +608,7 @@ app.post(
       .returning();
 
     return c.json(invite);
-  }
+  },
 );
 
 app.get("/organization/invites/:invite_id", async (c) => {
@@ -646,14 +646,14 @@ app.get(
   "/organization/projects",
   zValidator(
     "query",
-    z.object({ include_archived: z.coerce.boolean().default(false) })
+    z.object({ include_archived: z.coerce.boolean().default(false) }),
   ),
   async (c) => {
     const include_archived = c.req.valid("query").include_archived;
     const projects = await db.query.projects.findMany({
       where: or(
         eq(schema.projects.status, "active"),
-        include_archived ? eq(schema.projects.status, "archived") : undefined
+        include_archived ? eq(schema.projects.status, "archived") : undefined,
       ),
     });
 
@@ -664,19 +664,28 @@ app.get(
       first_id: projects.at(0)?.id,
       last_id: projects.at(-1)?.id,
     });
-  }
+  },
 );
 
 app.post(
   "/organization/projects",
-  zValidator("json", z.object({ name: z.string() })),
+  zValidator(
+    "json",
+    z.object({
+      name: z.string(),
+      geography: z
+        .enum(["US", "EU", "JP", "IN", "KR", "CA", "AU", "SG"])
+        .optional(),
+    }),
+  ),
   async (c) => {
-    const { name } = c.req.valid("json");
+    const { name, geography } = c.req.valid("json");
 
     const [project] = await db
       .insert(schema.projects)
       .values({
         name,
+        geography,
       })
       .returning();
     if (!project) {
@@ -686,7 +695,7 @@ app.post(
     await insertDefaultProjectRateLimits({ projectId: project.id });
 
     return c.json(project);
-  }
+  },
 );
 
 app.get("/organization/projects/:project_id", async (c) => {
@@ -719,7 +728,7 @@ app.post(
     }
 
     return c.json(result[0]);
-  }
+  },
 );
 
 app.post("/organization/projects/:project_id/archive", async (c) => {
@@ -763,7 +772,7 @@ app.post(
       permissions: z.array(z.string()),
       role_name: z.string(),
       description: z.string().default(""),
-    })
+    }),
   ),
   async (c) => {
     const project_id = c.req.param("project_id")!;
@@ -786,7 +795,7 @@ app.post(
     });
 
     return c.json(role);
-  }
+  },
 );
 
 app.post(
@@ -797,7 +806,7 @@ app.post(
       permissions: z.array(z.string()),
       role_name: z.string(),
       description: z.string().default(""),
-    })
+    }),
   ),
   async (c) => {
     const project_id = c.req.param("project_id");
@@ -807,7 +816,7 @@ app.post(
     const projectToRole = await db.query.projectsToRoles.findFirst({
       where: and(
         eq(schema.projectsToRoles.project_id, project_id),
-        eq(schema.projectsToRoles.role_id, role_id)
+        eq(schema.projectsToRoles.role_id, role_id),
       ),
     });
     if (!projectToRole) {
@@ -825,7 +834,7 @@ app.post(
       .returning();
 
     return c.json(role);
-  }
+  },
 );
 
 app.delete("/projects/:project_id/roles/:role_id", async (c) => {
@@ -837,8 +846,8 @@ app.delete("/projects/:project_id/roles/:role_id", async (c) => {
     .where(
       and(
         eq(schema.projectsToRoles.project_id, project_id),
-        eq(schema.projectsToRoles.role_id, role_id)
-      )
+        eq(schema.projectsToRoles.role_id, role_id),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -856,7 +865,7 @@ app.post(
   "/organization/projects/:project_id/users",
   zValidator(
     "json",
-    z.object({ user_id: z.string(), role: z.enum(["owner", "member"]) })
+    z.object({ user_id: z.string(), role: z.enum(["owner", "member"]) }),
   ),
   async (c) => {
     const project_id = c.req.param("project_id");
@@ -906,7 +915,7 @@ app.post(
       role: projectToUser.role,
       added_at: projectToUser.added_at,
     });
-  }
+  },
 );
 
 app.get("/organization/projects/:project_id/users/:user_id", async (c) => {
@@ -916,7 +925,7 @@ app.get("/organization/projects/:project_id/users/:user_id", async (c) => {
   const projectToUser = await db.query.projectsToUsers.findFirst({
     where: and(
       eq(schema.projectsToUsers.project_id, project_id),
-      eq(schema.projectsToUsers.user_id, user_id)
+      eq(schema.projectsToUsers.user_id, user_id),
     ),
     with: {
       user: true,
@@ -946,7 +955,7 @@ app.post(
     const projectToUser = await db.query.projectsToUsers.findFirst({
       where: and(
         eq(schema.projectsToUsers.project_id, project_id),
-        eq(schema.projectsToUsers.user_id, user_id)
+        eq(schema.projectsToUsers.user_id, user_id),
       ),
       with: {
         user: true,
@@ -962,8 +971,8 @@ app.post(
       .where(
         and(
           eq(schema.projectsToUsers.project_id, project_id),
-          eq(schema.projectsToUsers.user_id, user_id)
-        )
+          eq(schema.projectsToUsers.user_id, user_id),
+        ),
       )
       .returning();
     if (!updatedProjectToUser) {
@@ -980,8 +989,8 @@ app.post(
           inArray(schema.projectsToUsersToRoles.role_id, [
             "role_project_owner",
             "role_project_member",
-          ])
-        )
+          ]),
+        ),
       );
 
     await db
@@ -1001,7 +1010,7 @@ app.post(
       role: updatedProjectToUser.role,
       added_at: updatedProjectToUser.added_at,
     });
-  }
+  },
 );
 
 app.delete("/organization/projects/:project_id/users/:user_id", async (c) => {
@@ -1013,8 +1022,8 @@ app.delete("/organization/projects/:project_id/users/:user_id", async (c) => {
     .where(
       and(
         eq(schema.projectsToUsers.project_id, project_id),
-        eq(schema.projectsToUsers.user_id, user_id)
-      )
+        eq(schema.projectsToUsers.user_id, user_id),
+      ),
     )
     .returning();
   if (!result[0]) {
@@ -1067,7 +1076,7 @@ app.post(
       ...service_account,
       api_key,
     });
-  }
+  },
 );
 
 app.get(
@@ -1079,7 +1088,7 @@ app.get(
     const service_account = await db.query.projectServiceAccounts.findFirst({
       where: and(
         eq(schema.projectServiceAccounts.project_id, project_id),
-        eq(schema.projectServiceAccounts.id, service_account_id)
+        eq(schema.projectServiceAccounts.id, service_account_id),
       ),
     });
     if (!service_account) {
@@ -1087,7 +1096,7 @@ app.get(
     }
 
     return c.json(service_account);
-  }
+  },
 );
 
 app.delete(
@@ -1101,8 +1110,8 @@ app.delete(
       .where(
         and(
           eq(schema.projectServiceAccounts.project_id, project_id),
-          eq(schema.projectServiceAccounts.id, service_account_id)
-        )
+          eq(schema.projectServiceAccounts.id, service_account_id),
+        ),
       )
       .returning();
     if (!result[0]) {
@@ -1114,7 +1123,7 @@ app.delete(
       id: result[0].id,
       deleted: true,
     });
-  }
+  },
 );
 
 app.get("/organization/projects/:project_id/rate_limits", async (c) => {
@@ -1144,7 +1153,7 @@ app.post(
       max_requests_per_1_day: z.number().optional(),
       max_requests_per_1_minute: z.number().optional(),
       max_tokens_per_1_minute: z.number().optional(),
-    })
+    }),
   ),
   async (c) => {
     const project_id = c.req.param("project_id");
@@ -1156,8 +1165,8 @@ app.post(
       .where(
         and(
           eq(schema.projectRateLimits.project_id, project_id),
-          eq(schema.projectRateLimits.id, rate_limit_id)
-        )
+          eq(schema.projectRateLimits.id, rate_limit_id),
+        ),
       )
       .returning();
     if (!updatedRateLimit) {
@@ -1165,7 +1174,7 @@ app.post(
     }
 
     return c.json(updatedRateLimit);
-  }
+  },
 );
 
 app.get("/projects/:project_id/groups/:group_id/roles", async (c) => {
@@ -1175,7 +1184,7 @@ app.get("/projects/:project_id/groups/:group_id/roles", async (c) => {
   const roles = await db.query.projectsToGroupsToRoles.findMany({
     where: and(
       eq(schema.projectsToGroupsToRoles.project_id, project_id),
-      eq(schema.projectsToGroupsToRoles.group_id, group_id)
+      eq(schema.projectsToGroupsToRoles.group_id, group_id),
     ),
     with: {
       role: true,
@@ -1230,7 +1239,7 @@ app.post(
       group,
       role,
     });
-  }
+  },
 );
 
 app.delete(
@@ -1246,8 +1255,8 @@ app.delete(
         and(
           eq(schema.projectsToGroupsToRoles.project_id, project_id),
           eq(schema.projectsToGroupsToRoles.group_id, group_id),
-          eq(schema.projectsToGroupsToRoles.role_id, role_id)
-        )
+          eq(schema.projectsToGroupsToRoles.role_id, role_id),
+        ),
       )
       .returning();
     if (!result[0]) {
@@ -1258,7 +1267,7 @@ app.delete(
       object: "group.role.deleted",
       deleted: true,
     });
-  }
+  },
 );
 
 app.get("/projects/:project_id/users/:user_id/roles", async (c) => {
@@ -1268,7 +1277,7 @@ app.get("/projects/:project_id/users/:user_id/roles", async (c) => {
   const roles = await db.query.projectsToUsersToRoles.findMany({
     where: and(
       eq(schema.projectsToUsersToRoles.project_id, project_id),
-      eq(schema.projectsToUsersToRoles.user_id, user_id)
+      eq(schema.projectsToUsersToRoles.user_id, user_id),
     ),
     with: {
       role: true,
@@ -1323,7 +1332,7 @@ app.post(
       user,
       role,
     });
-  }
+  },
 );
 
 app.delete("/projects/:project_id/users/:user_id/roles/:role_id", async (c) => {
@@ -1337,8 +1346,8 @@ app.delete("/projects/:project_id/users/:user_id/roles/:role_id", async (c) => {
       and(
         eq(schema.projectsToUsersToRoles.project_id, project_id),
         eq(schema.projectsToUsersToRoles.user_id, user_id),
-        eq(schema.projectsToUsersToRoles.role_id, role_id)
-      )
+        eq(schema.projectsToUsersToRoles.role_id, role_id),
+      ),
     )
     .returning();
   if (!result[0]) {

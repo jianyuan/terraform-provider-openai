@@ -1151,6 +1151,17 @@ export const RESOURCES: Array<Resource> = [
         computedOptionalRequired: "required",
       },
       {
+        name: "geography",
+        type: "string",
+        description:
+          "Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use.",
+        computedOptionalRequired: "optional",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        validators: [
+          'stringvalidator.OneOf("US", "EU", "JP", "IN", "KR", "CA", "AU", "SG")',
+        ],
+      },
+      {
         name: "status",
         type: "string",
         description: "Status `active` or `archived`.",

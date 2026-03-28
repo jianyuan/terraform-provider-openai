@@ -51,7 +51,7 @@ export const usersToRoles = sqliteTable(
     user_id,
     role_id,
   },
-  (table) => [primaryKey({ columns: [table.user_id, table.role_id] })]
+  (table) => [primaryKey({ columns: [table.user_id, table.role_id] })],
 );
 
 export const usersToRolesRelation = relations(usersToRoles, ({ one }) => ({
@@ -99,7 +99,7 @@ export const groupsToRoles = sqliteTable(
     group_id: text().notNull(),
     role_id,
   },
-  (table) => [primaryKey({ columns: [table.group_id, table.role_id] })]
+  (table) => [primaryKey({ columns: [table.group_id, table.role_id] })],
 );
 
 export const groupsToRolesRelation = relations(groupsToRoles, ({ one }) => ({
@@ -119,7 +119,7 @@ export const groupsToUsers = sqliteTable(
     group_id: text().notNull(),
     user_id,
   },
-  (table) => [primaryKey({ columns: [table.group_id, table.user_id] })]
+  (table) => [primaryKey({ columns: [table.group_id, table.user_id] })],
 );
 
 export const groupsToUsersRelation = relations(groupsToUsers, ({ one }) => ({
@@ -153,6 +153,7 @@ export const projects = sqliteTable("projects", {
   status: text({ enum: ["active", "archived"] })
     .notNull()
     .default("active"),
+  geography: text(),
   archived_at: integer(),
   created_at,
 });
@@ -167,7 +168,7 @@ export const projectsToRoles = sqliteTable(
     project_id,
     role_id,
   },
-  (table) => [primaryKey({ columns: [table.project_id, table.role_id] })]
+  (table) => [primaryKey({ columns: [table.project_id, table.role_id] })],
 );
 
 export const projectsToRolesRelation = relations(
@@ -181,7 +182,7 @@ export const projectsToRolesRelation = relations(
       fields: [projectsToRoles.role_id],
       references: [roles.id],
     }),
-  })
+  }),
 );
 
 export const projectsToGroupsToRoles = sqliteTable(
@@ -193,7 +194,7 @@ export const projectsToGroupsToRoles = sqliteTable(
   },
   (table) => [
     primaryKey({ columns: [table.project_id, table.group_id, table.role_id] }),
-  ]
+  ],
 );
 
 export const projectsToGroupsToRolesRelation = relations(
@@ -211,7 +212,7 @@ export const projectsToGroupsToRolesRelation = relations(
       fields: [projectsToGroupsToRoles.role_id],
       references: [roles.id],
     }),
-  })
+  }),
 );
 
 export const projectsToUsers = sqliteTable(
@@ -222,7 +223,7 @@ export const projectsToUsers = sqliteTable(
     role: text({ enum: ["owner", "member"] }).notNull(),
     added_at: created_at,
   },
-  (table) => [primaryKey({ columns: [table.project_id, table.user_id] })]
+  (table) => [primaryKey({ columns: [table.project_id, table.user_id] })],
 );
 
 export const projectsToUsersRelation = relations(
@@ -236,7 +237,7 @@ export const projectsToUsersRelation = relations(
       fields: [projectsToUsers.user_id],
       references: [users.id],
     }),
-  })
+  }),
 );
 
 export const projectsToUsersToRoles = sqliteTable(
@@ -248,7 +249,7 @@ export const projectsToUsersToRoles = sqliteTable(
   },
   (table) => [
     primaryKey({ columns: [table.project_id, table.user_id, table.role_id] }),
-  ]
+  ],
 );
 
 export const projectsToUsersToRolesRelation = relations(
@@ -266,7 +267,7 @@ export const projectsToUsersToRolesRelation = relations(
       fields: [projectsToUsersToRoles.role_id],
       references: [roles.id],
     }),
-  })
+  }),
 );
 
 export const projectRateLimits = sqliteTable(
@@ -283,7 +284,7 @@ export const projectRateLimits = sqliteTable(
     max_requests_per_1_minute: integer(),
     max_tokens_per_1_minute: integer(),
   },
-  (table) => [primaryKey({ columns: [table.id, table.project_id] })]
+  (table) => [primaryKey({ columns: [table.id, table.project_id] })],
 );
 
 export const defaultModels = [
@@ -318,5 +319,5 @@ export const projectServiceAccountApiKeys = sqliteTable(
       .references(() => projectServiceAccounts.id, { onDelete: "cascade" }),
     value: text().notNull().$defaultFn(idGenerator("sk-")),
     created_at,
-  }
+  },
 );
