@@ -1,6 +1,6 @@
 module github.com/jianyuan/terraform-provider-openai
 
-go 1.25.3
+go 1.26.1
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.8
