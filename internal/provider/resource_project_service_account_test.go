@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/compare"
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -118,8 +119,8 @@ func init() {
 
 func TestAccProjectServiceAccountResource(t *testing.T) {
 	rn := "openai_project_service_account.test"
-	projectName := acctest.RandomWithPrefix("tf-project")
-	projectServiceAccountName := acctest.RandomWithPrefix("tf-service-account")
+	projectName := sdkacctest.RandomWithPrefix("tf-project")
+	projectServiceAccountName := sdkacctest.RandomWithPrefix("tf-service-account")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -67,7 +68,7 @@ func init() {
 
 func TestAccAdminApiKeyResource(t *testing.T) {
 	rn := "openai_admin_api_key.test"
-	name := acctest.RandomWithPrefix("tf")
+	name := sdkacctest.RandomWithPrefix("tf")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

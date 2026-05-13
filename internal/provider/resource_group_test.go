@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -76,7 +77,7 @@ func init() {
 
 func TestAccGroupResource(t *testing.T) {
 	rn := "openai_group.test"
-	groupName := acctest.RandomWithPrefix("tf-group")
+	groupName := sdkacctest.RandomWithPrefix("tf-group")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

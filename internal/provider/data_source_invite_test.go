@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/compare"
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
@@ -12,7 +13,7 @@ import (
 )
 
 func TestAccInviteDataSource(t *testing.T) {
-	email := fmt.Sprintf("tf-%d@example.com", acctest.RandInt())
+	email := fmt.Sprintf("tf-%d@example.com", sdkacctest.RandInt())
 	rn := "openai_invite.test"
 	dn := "data.openai_invite.test"
 

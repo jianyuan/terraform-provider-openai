@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -15,8 +16,8 @@ import (
 
 func TestAccProjectUserRoleAssignmentResource(t *testing.T) {
 	rn := "openai_project_user_role_assignment.test"
-	roleName := acctest.RandomWithPrefix("tf-role")
-	projectName := acctest.RandomWithPrefix("tf-project")
+	roleName := sdkacctest.RandomWithPrefix("tf-role")
+	projectName := sdkacctest.RandomWithPrefix("tf-project")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
