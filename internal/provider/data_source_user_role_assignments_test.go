@@ -3,6 +3,7 @@ package provider_test
 import (
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -12,7 +13,7 @@ import (
 
 func TestAccUserRoleAssignmentsDataSource(t *testing.T) {
 	rn := "data.openai_user_role_assignments.test"
-	roleName := acctest.RandomWithPrefix("tf-role")
+	roleName := sdkacctest.RandomWithPrefix("tf-role")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

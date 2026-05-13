@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -76,8 +77,8 @@ func init() {
 
 func TestAccOrganizationRoleResource(t *testing.T) {
 	rn := "openai_organization_role.test"
-	roleName := acctest.RandomWithPrefix("tf-role")
-	roleDescription := acctest.RandomWithPrefix("tf-role-description")
+	roleName := sdkacctest.RandomWithPrefix("tf-role")
+	roleDescription := sdkacctest.RandomWithPrefix("tf-role-description")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

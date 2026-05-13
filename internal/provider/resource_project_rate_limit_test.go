@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/compare"
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -14,7 +15,7 @@ import (
 
 func TestAccProjectRateLimitResource(t *testing.T) {
 	rn := "openai_project_rate_limit.test"
-	projectName := acctest.RandomWithPrefix("tf-project")
+	projectName := sdkacctest.RandomWithPrefix("tf-project")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
