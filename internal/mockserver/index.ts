@@ -83,6 +83,40 @@ app.delete("/organization/admin_api_keys/:key_id", async (c) => {
   });
 });
 
+app.get("/organization/data_retention", async (c) => {
+  const dataRetention = await db.query.dataRetention.findFirst();
+  if (!dataRetention) {
+    return c.json({ error: "Data retention not found" }, 404);
+  }
+
+  return c.json(dataRetention);
+});
+
+app.post(
+  "/organization/data_retention",
+  zValidator(
+    "json",
+    z.object({
+      retention_type: z.enum([
+        "zero_data_retention",
+        "modified_abuse_monitoring",
+        "enhanced_zero_data_retention",
+        "enhanced_modified_abuse_monitoring",
+      ]),
+    }),
+  ),
+  async (c) => {
+    const { retention_type: type } = c.req.valid("json");
+
+    const [dataRetention] = await db
+      .update(schema.dataRetention)
+      .set({ type })
+      .returning();
+
+    return c.json(dataRetention);
+  },
+);
+
 app.get("/organization/roles", async (c) => {
   const roles = await db.query.roles.findMany({
     where: eq(schema.roles.resource_type, "api.organization"),
