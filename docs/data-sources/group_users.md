@@ -34,8 +34,6 @@ data "openai_group_users" "example" {
 
 Read-Only:
 
-- `added_at` (Number) The Unix timestamp (in seconds) of when the user was added.
 - `email` (String) The email address of the user.
 - `id` (String) User ID.
 - `name` (String) The name of the user.
-- `role` (String) Role `owner` or `reader`.
