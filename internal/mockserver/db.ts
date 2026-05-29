@@ -20,6 +20,10 @@ async function seedDatabase() {
     value: "sk-admin-test",
   });
 
+  await db.insert(schema.dataRetention).values({
+    type: "modified_abuse_monitoring",
+  });
+
   await db.insert(schema.users).values({
     id: "user_test",
     name: "John Doe",
@@ -97,7 +101,7 @@ export async function insertDefaultProjectRateLimits({
         project_id: projectId,
         model: model.name,
         ...model.rateLimits,
-      }))
+      })),
     )
     .returning();
 }

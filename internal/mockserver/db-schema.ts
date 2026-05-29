@@ -321,3 +321,17 @@ export const projectServiceAccountApiKeys = sqliteTable(
     created_at,
   },
 );
+
+export const dataRetention = sqliteTable("data_retentions", {
+  object: objectColumn("organization.data_retention"),
+  type: text({
+    enum: [
+      "zero_data_retention",
+      "modified_abuse_monitoring",
+      "enhanced_zero_data_retention",
+      "enhanced_modified_abuse_monitoring",
+    ],
+  })
+    .notNull()
+    .default("modified_abuse_monitoring"),
+});

@@ -1655,4 +1655,27 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "organization_data_retention",
+    description: "Updates organization data retention controls.",
+    api: {
+      model: "DataRetention",
+      createMethod: "UpdateOrganizationDataRetention",
+      readMethod: "RetrieveOrganizationDataRetention",
+      readModel: "DataRetention",
+      updateMethod: "UpdateOrganizationDataRetention",
+    },
+    attributes: [
+      {
+        name: "type",
+        type: "string",
+        description:
+          "The desired organization data retention type. Must be one of `zero_data_retention`, `enhanced_zero_data_retention`, `modified_abuse_monitoring`, or `enhanced_modified_abuse_monitoring`.",
+        computedOptionalRequired: "required",
+        validators: [
+          'stringvalidator.OneOf("zero_data_retention", "modified_abuse_monitoring", "enhanced_zero_data_retention", "enhanced_modified_abuse_monitoring")',
+        ],
+      },
+    ],
+  },
 ];
