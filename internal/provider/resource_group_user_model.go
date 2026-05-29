@@ -15,7 +15,7 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 		m.GroupId = supertypes.NewStringValue(data.GroupId)
 		m.UserId = supertypes.NewStringValue(data.UserId)
 		return nil
-	case apiclient.User:
+	case apiclient.GroupUser:
 		m.UserId = supertypes.NewStringValue(data.Id)
 		return nil
 	default:

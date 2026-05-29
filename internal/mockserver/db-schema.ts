@@ -143,7 +143,7 @@ export const invites = sqliteTable("invites", {
     .default("pending"),
   accepted_at: integer(),
   expires_at: integer().$defaultFn(() => now() + 60 * 60 * 24),
-  invited_at: created_at,
+  created_at,
 });
 
 export const projects = sqliteTable("projects", {

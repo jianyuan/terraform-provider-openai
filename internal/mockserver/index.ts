@@ -357,7 +357,13 @@ app.get("/organization/groups/:group_id/users", async (c) => {
   const users = await db.query.groupsToUsers.findMany({
     where: eq(schema.groupsToUsers.group_id, group_id),
     with: {
-      user: true,
+      user: {
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 

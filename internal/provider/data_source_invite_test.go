@@ -28,7 +28,7 @@ func TestAccInviteDataSource(t *testing.T) {
 					statecheck.CompareValuePairs(rn, tfjsonpath.New("email"), dn, tfjsonpath.New("email"), compare.ValuesSame()),
 					statecheck.CompareValuePairs(rn, tfjsonpath.New("role"), dn, tfjsonpath.New("role"), compare.ValuesSame()),
 					statecheck.CompareValuePairs(rn, tfjsonpath.New("status"), dn, tfjsonpath.New("status"), compare.ValuesSame()),
-					statecheck.CompareValuePairs(rn, tfjsonpath.New("invited_at"), dn, tfjsonpath.New("invited_at"), compare.ValuesSame()),
+					statecheck.CompareValuePairs(rn, tfjsonpath.New("created_at"), dn, tfjsonpath.New("created_at"), compare.ValuesSame()),
 					statecheck.CompareValuePairs(rn, tfjsonpath.New("expires_at"), dn, tfjsonpath.New("expires_at"), compare.ValuesSame()),
 					statecheck.CompareValuePairs(rn, tfjsonpath.New("accepted_at"), dn, tfjsonpath.New("accepted_at"), compare.ValuesSame()),
 				},

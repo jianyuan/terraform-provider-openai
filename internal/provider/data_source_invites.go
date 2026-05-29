@@ -56,7 +56,7 @@ func (d *InvitesDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 							Computed:            true,
 							CustomType:          supertypes.StringType{},
 						},
-						"invited_at": schema.Int64Attribute{
+						"created_at": schema.Int64Attribute{
 							MarkdownDescription: "The Unix timestamp (in seconds) of when the invite was sent.",
 							Computed:            true,
 							CustomType:          supertypes.Int64Type{},
@@ -134,7 +134,7 @@ type InvitesDataSourceModelInvitesItem struct {
 	Email      supertypes.StringValue `tfsdk:"email"`
 	Role       supertypes.StringValue `tfsdk:"role"`
 	Status     supertypes.StringValue `tfsdk:"status"`
-	InvitedAt  supertypes.Int64Value  `tfsdk:"invited_at"`
+	CreatedAt  supertypes.Int64Value  `tfsdk:"created_at"`
 	ExpiresAt  supertypes.Int64Value  `tfsdk:"expires_at"`
 	AcceptedAt supertypes.Int64Value  `tfsdk:"accepted_at"`
 }

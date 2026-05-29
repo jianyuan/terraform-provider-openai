@@ -116,9 +116,7 @@ type GroupUsersDataSourceModel struct {
 }
 
 type GroupUsersDataSourceModelUsersItem struct {
-	Id      supertypes.StringValue `tfsdk:"id"`
-	Email   supertypes.StringValue `tfsdk:"email"`
-	Name    supertypes.StringValue `tfsdk:"name"`
-	Role    supertypes.StringValue `tfsdk:"role"`
-	AddedAt supertypes.Int64Value  `tfsdk:"added_at"`
+	Id    supertypes.StringValue `tfsdk:"id"`
+	Email supertypes.StringValue `tfsdk:"email"`
+	Name  supertypes.StringValue `tfsdk:"name"`
 }

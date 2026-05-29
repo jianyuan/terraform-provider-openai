@@ -16,7 +16,7 @@ func (m *InvitesDataSourceModel) Fill(ctx context.Context, invites []apiclient.I
 			Email:      supertypes.NewStringValue(invite.Email),
 			Role:       supertypes.NewStringValue(string(invite.Role)),
 			Status:     supertypes.NewStringValue(string(invite.Status)),
-			InvitedAt:  supertypes.NewInt64Value(invite.CreatedAt),
+			CreatedAt:  supertypes.NewInt64Value(invite.CreatedAt),
 			ExpiresAt:  supertypes.NewInt64PointerValue(invite.ExpiresAt),
 			AcceptedAt: supertypes.NewInt64PointerValue(invite.AcceptedAt),
 		}

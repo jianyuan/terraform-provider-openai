@@ -25,11 +25,9 @@ func TestAccGroupUsersDataSource(t *testing.T) {
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("group_id"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("users"), knownvalue.SetPartial([]knownvalue.Check{
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"id":       knownvalue.StringExact(acctest.TestUserId),
-							"email":    knownvalue.NotNull(),
-							"name":     knownvalue.NotNull(),
-							"role":     knownvalue.NotNull(),
-							"added_at": knownvalue.NotNull(),
+							"id":    knownvalue.StringExact(acctest.TestUserId),
+							"email": knownvalue.NotNull(),
+							"name":  knownvalue.NotNull(),
 						}),
 					})),
 				},
