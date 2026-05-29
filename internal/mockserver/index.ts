@@ -84,7 +84,7 @@ app.delete("/organization/admin_api_keys/:key_id", async (c) => {
 });
 
 app.get("/organization/data_retention", async (c) => {
-  const dataRetention = await db.query.dataRetention.findFirst();
+  const dataRetention = await db.query.dataRetentions.findFirst();
   if (!dataRetention) {
     return c.json({ error: "Data retention not found" }, 404);
   }
@@ -109,13 +109,113 @@ app.post(
     const { retention_type: type } = c.req.valid("json");
 
     const [dataRetention] = await db
-      .update(schema.dataRetention)
+      .update(schema.dataRetentions)
       .set({ type })
       .returning();
 
     return c.json(dataRetention);
   },
 );
+
+app.get("/organization/spend_alerts", async (c) => {
+  const spendAlerts = await db.query.spendAlerts.findMany();
+  return c.json({
+    object: "list",
+    data: spendAlerts,
+    has_more: false,
+    first_id: spendAlerts.at(0)?.id,
+    last_id: spendAlerts.at(-1)?.id,
+  });
+});
+
+app.post(
+  "/organization/spend_alerts",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+      notification_channel: z.object({
+        type: z.literal("email"),
+        recipients: z.array(z.string()),
+        subject_prefix: z.string().optional(),
+      }),
+    }),
+  ),
+  async (c) => {
+    const { currency, interval, threshold_amount, notification_channel } =
+      c.req.valid("json");
+
+    const [spendAlert] = await db
+      .insert(schema.spendAlerts)
+      .values({
+        currency,
+        interval,
+        threshold_amount,
+        notification_channel,
+      })
+      .returning();
+
+    return c.json(spendAlert);
+  },
+);
+
+app.post(
+  "/organization/spend_alerts/:alert_id",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+      notification_channel: z.object({
+        type: z.literal("email"),
+        recipients: z.array(z.string()),
+        subject_prefix: z.string().optional(),
+      }),
+    }),
+  ),
+  async (c) => {
+    const alert_id = c.req.param("alert_id");
+    const { currency, interval, threshold_amount, notification_channel } =
+      c.req.valid("json");
+
+    const [updatedSpendAlert] = await db
+      .update(schema.spendAlerts)
+      .set({
+        currency,
+        interval,
+        threshold_amount,
+        notification_channel,
+      })
+      .where(eq(schema.spendAlerts.id, alert_id))
+      .returning();
+    if (!updatedSpendAlert) {
+      return c.json({ error: "Spend alert not found" }, 404);
+    }
+
+    return c.json(updatedSpendAlert);
+  },
+);
+
+app.delete("/organization/spend_alerts/:alert_id", async (c) => {
+  const alert_id = c.req.param("alert_id");
+
+  const result = await db
+    .delete(schema.spendAlerts)
+    .where(eq(schema.spendAlerts.id, alert_id))
+    .returning();
+  if (!result[0]) {
+    return c.json({ error: "Spend alert not found" }, 404);
+  }
+
+  return c.json({
+    object: "spend_alert.deleted",
+    id: result[0].id,
+    deleted: true,
+  });
+});
 
 app.get("/organization/roles", async (c) => {
   const roles = await db.query.roles.findMany({

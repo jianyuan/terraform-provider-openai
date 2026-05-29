@@ -11,11 +11,11 @@ import (
 func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAdminApiKeyResource,
+		NewDataRetentionResource,
 		NewGroupResource,
 		NewGroupRoleAssignmentResource,
 		NewGroupUserResource,
 		NewInviteResource,
-		NewOrganizationDataRetentionResource,
 		NewOrganizationRoleResource,
 		NewProjectResource,
 		NewProjectGroupRoleAssignmentResource,
@@ -24,6 +24,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewProjectServiceAccountResource,
 		NewProjectUserResource,
 		NewProjectUserRoleAssignmentResource,
+		NewSpendAlertResource,
 		NewUserRoleResource,
 		NewUserRoleAssignmentResource,
 	}

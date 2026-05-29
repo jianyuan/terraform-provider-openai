@@ -20,7 +20,7 @@ async function seedDatabase() {
     value: "sk-admin-test",
   });
 
-  await db.insert(schema.dataRetention).values({
+  await db.insert(schema.dataRetentions).values({
     type: "modified_abuse_monitoring",
   });
 

@@ -322,7 +322,7 @@ export const projectServiceAccountApiKeys = sqliteTable(
   },
 );
 
-export const dataRetention = sqliteTable("data_retentions", {
+export const dataRetentions = sqliteTable("data_retentions", {
   object: objectColumn("organization.data_retention"),
   type: text({
     enum: [
@@ -334,4 +334,25 @@ export const dataRetention = sqliteTable("data_retentions", {
   })
     .notNull()
     .default("modified_abuse_monitoring"),
+});
+
+export const spendAlerts = sqliteTable("spend_alerts", {
+  object: objectColumn("organization.spend_alert"),
+  id: text().primaryKey().$defaultFn(idGenerator("alert_")),
+  currency: text({
+    enum: ["USD"],
+  })
+    .notNull()
+    .default("USD"),
+  interval: text({
+    enum: ["month"],
+  })
+    .notNull()
+    .default("month"),
+  threshold_amount: integer().notNull(),
+  notification_channel: text({ mode: "json" }).notNull().$type<{
+    type: "email";
+    recipients: string[];
+    subject_prefix?: string;
+  }>(),
 });

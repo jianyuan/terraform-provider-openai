@@ -13,21 +13,21 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-var _ resource.Resource = &OrganizationDataRetentionResource{}
+var _ resource.Resource = &DataRetentionResource{}
 
-func NewOrganizationDataRetentionResource() resource.Resource {
-	return &OrganizationDataRetentionResource{}
+func NewDataRetentionResource() resource.Resource {
+	return &DataRetentionResource{}
 }
 
-type OrganizationDataRetentionResource struct {
+type DataRetentionResource struct {
 	baseResource
 }
 
-func (r *OrganizationDataRetentionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_organization_data_retention"
+func (r *DataRetentionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_data_retention"
 }
 
-func (r *OrganizationDataRetentionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *DataRetentionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Updates organization data retention controls.",
 		Attributes: map[string]schema.Attribute{
@@ -43,8 +43,8 @@ func (r *OrganizationDataRetentionResource) Schema(ctx context.Context, req reso
 	}
 }
 
-func (r *OrganizationDataRetentionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data OrganizationDataRetentionResourceModel
+func (r *DataRetentionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data DataRetentionResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -77,8 +77,8 @@ func (r *OrganizationDataRetentionResource) Create(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *OrganizationDataRetentionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data OrganizationDataRetentionResourceModel
+func (r *DataRetentionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data DataRetentionResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -112,8 +112,8 @@ func (r *OrganizationDataRetentionResource) Read(ctx context.Context, req resour
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *OrganizationDataRetentionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data OrganizationDataRetentionResourceModel
+func (r *DataRetentionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var data DataRetentionResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
@@ -146,10 +146,10 @@ func (r *OrganizationDataRetentionResource) Update(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *OrganizationDataRetentionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *DataRetentionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	resp.Diagnostics.AddWarning("Not Supported", "Delete is not supported for this resource. Please manually delete the resource.")
 }
 
-type OrganizationDataRetentionResourceModel struct {
+type DataRetentionResourceModel struct {
 	Type supertypes.StringValue `tfsdk:"type"`
 }
