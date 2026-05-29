@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -30,7 +29,7 @@ func init() {
 			// List all projects
 			{
 				params := &apiclient.ListProjectsParams{
-					Limit: ptr.Ptr(int64(100)),
+					Limit: new(int64(100)),
 				}
 
 				for {
@@ -52,7 +51,7 @@ func init() {
 						break
 					}
 
-					params.After = &httpResp.JSON200.LastId
+					params.After = httpResp.JSON200.LastId
 				}
 			}
 
@@ -61,7 +60,7 @@ func init() {
 
 				var projectServiceAccounts []apiclient.ProjectServiceAccount
 				params := &apiclient.ListProjectServiceAccountsParams{
-					Limit: ptr.Ptr(int64(100)),
+					Limit: new(int64(100)),
 				}
 
 				for {
@@ -91,7 +90,7 @@ func init() {
 						break
 					}
 
-					params.After = &httpResp.JSON200.LastId
+					params.After = httpResp.JSON200.LastId
 				}
 
 				for _, sa := range projectServiceAccounts {

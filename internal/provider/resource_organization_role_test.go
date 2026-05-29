@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -25,7 +24,7 @@ func init() {
 			ctx := context.Background()
 
 			params := &apiclient.ListRolesParams{
-				Limit: ptr.Ptr(int64(100)),
+				Limit: new(int64(100)),
 			}
 
 			for {

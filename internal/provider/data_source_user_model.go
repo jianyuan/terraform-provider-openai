@@ -10,9 +10,9 @@ import (
 
 func (m *UserDataSourceModel) Fill(ctx context.Context, user apiclient.User) diag.Diagnostics {
 	m.Id = supertypes.NewStringValue(user.Id)
-	m.Email = supertypes.NewStringValue(user.Email)
-	m.Name = supertypes.NewStringValue(user.Name)
-	m.Role = supertypes.NewStringValue(string(user.Role))
+	m.Email = supertypes.NewStringPointerValue(user.Email)
+	m.Name = supertypes.NewStringPointerValue(user.Name)
+	m.Role = supertypes.NewStringPointerValue(user.Role)
 	m.AddedAt = supertypes.NewInt64Value(user.AddedAt)
 	return nil
 }

@@ -8,7 +8,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -94,7 +93,7 @@ func (d *ProjectGroupRoleAssignmentsDataSource) Read(ctx context.Context, req da
 
 	var modelInstances []apiclient.AssignedRoleDetails
 	params := &apiclient.ListProjectGroupRoleAssignmentsParams{
-		Limit: ptr.Ptr(int64(100)),
+		Limit: new(int64(100)),
 	}
 
 	for {

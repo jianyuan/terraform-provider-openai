@@ -10,19 +10,19 @@ import (
 
 func (m *ProjectUserResourceModel) Fill(ctx context.Context, data apiclient.ProjectUser) diag.Diagnostics {
 	m.UserId = supertypes.NewStringValue(data.Id)
-	m.Role = supertypes.NewStringValue(string(data.Role))
+	m.Role = supertypes.NewStringValue(data.Role)
 	return nil
 }
 
 func (r *ProjectUserResource) getCreateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (apiclient.CreateProjectUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.CreateProjectUserJSONRequestBody{
-		Role:   apiclient.ProjectUserCreateRequestRole(data.Role.ValueString()),
-		UserId: data.UserId.ValueString(),
+		Role:   data.Role.ValueString(),
+		UserId: data.UserId.ValueStringPointer(),
 	}, nil
 }
 
 func (r *ProjectUserResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (apiclient.ModifyProjectUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.ModifyProjectUserJSONRequestBody{
-		Role: apiclient.ProjectUserUpdateRequestRole(data.Role.ValueString()),
+		Role: data.Role.ValueStringPointer(),
 	}, nil
 }

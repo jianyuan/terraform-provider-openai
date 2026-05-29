@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/jianyuan/go-utils/must"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/jianyuan/terraform-provider-openai/internal/provider"
 )
@@ -55,7 +54,7 @@ var TestAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 
 func ensureTestGroupId(ctx context.Context) string {
 	params := &apiclient.ListGroupsParams{
-		Limit: ptr.Ptr(int64(100)),
+		Limit: new(int64(100)),
 	}
 
 	for {

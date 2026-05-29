@@ -95,7 +95,7 @@ func (r *AdminApiKeyResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.FillFromCreate(ctx, *httpResp.JSON200)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
@@ -113,7 +112,7 @@ func (r *ProjectGroupRoleAssignmentResource) Read(ctx context.Context, req resou
 	err := retry.Do(
 		func() error {
 			params := &apiclient.ListProjectGroupRoleAssignmentsParams{
-				Limit: ptr.Ptr(int64(100)),
+				Limit: new(int64(100)),
 			}
 
 			for {

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -34,7 +33,7 @@ func (r *ProjectRoleResource) getUpdateJSONRequestBody(ctx context.Context, data
 	var diags diag.Diagnostics
 	return apiclient.UpdateRoleJSONRequestBody{
 		RoleName:    data.Name.ValueStringPointer(),
-		Permissions: ptr.Ptr(mergeDiagnostics(data.Permissions.Get(ctx))(&diags)),
+		Permissions: new(mergeDiagnostics(data.Permissions.Get(ctx))(&diags)),
 		Description: data.Description.ValueStringPointer(),
 	}, diags
 }

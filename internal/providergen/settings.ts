@@ -418,13 +418,13 @@ export const DATASOURCES: Array<DataSource> = [
 
         // Set the limit for the API request
         if data.Limit.IsNull() {
-          params.Limit = ptr.Ptr(int64(100))
+          params.Limit = new(int64(100))
         } else {
           requestLimit := data.Limit.ValueInt64()
           if requestLimit > 100 {
-            params.Limit = ptr.Ptr(int64(100))
+            params.Limit = new(int64(100))
           } else {
-            params.Limit = ptr.Ptr(requestLimit)
+            params.Limit = new(requestLimit)
           }
         }
       `,
@@ -436,9 +436,9 @@ export const DATASOURCES: Array<DataSource> = [
             break
           }
           if remainingLimit > 100 {
-            params.Limit = ptr.Ptr(int64(100))
+            params.Limit = new(int64(100))
           } else {
-            params.Limit = ptr.Ptr(remainingLimit)
+            params.Limit = new(remainingLimit)
           }
         }
       `,

@@ -25,7 +25,7 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 	}
 }
 
-func (r *GroupUserResource) resourceMatch(data GroupUserResourceModel, user apiclient.User) bool {
+func (r *GroupUserResource) resourceMatch(data GroupUserResourceModel, user apiclient.GroupUser) bool {
 	return data.UserId.ValueString() == user.Id
 }
 

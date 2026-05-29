@@ -16,12 +16,15 @@ func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data
 
 func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data apiclient.AdminApiKey) diag.Diagnostics {
 	m.Id = supertypes.NewStringValue(data.Id)
-	m.Name = supertypes.NewStringValue(data.Name)
+	m.Name = supertypes.NewStringPointerValue(data.Name)
 	m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
+	return nil
+}
 
-	if data.Value != nil {
-		m.ApiKey = supertypes.NewStringPointerValue(data.Value)
-	}
-
+func (m *AdminApiKeyResourceModel) FillFromCreate(ctx context.Context, data apiclient.AdminApiKeyCreateResponse) diag.Diagnostics {
+	m.Id = supertypes.NewStringValue(data.Id)
+	m.Name = supertypes.NewStringPointerValue(data.Name)
+	m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
+	m.ApiKey = supertypes.NewStringValue(data.Value)
 	return nil
 }

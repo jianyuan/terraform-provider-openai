@@ -13,12 +13,12 @@ func (m UserRoleResourceModel) Fill(ctx context.Context, user apiclient.User) di
 
 func (r *UserRoleResource) getCreateJSONRequestBody(ctx context.Context, data UserRoleResourceModel) (apiclient.ModifyUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.ModifyUserJSONRequestBody{
-		Role: apiclient.UserRoleUpdateRequestRole(data.Role.ValueString()),
+		Role: data.Role.ValueStringPointer(),
 	}, nil
 }
 
 func (r *UserRoleResource) getUpdateJSONRequestBody(ctx context.Context, data UserRoleResourceModel) (apiclient.ModifyUserJSONRequestBody, diag.Diagnostics) {
 	return apiclient.ModifyUserJSONRequestBody{
-		Role: apiclient.UserRoleUpdateRequestRole(data.Role.ValueString()),
+		Role: data.Role.ValueStringPointer(),
 	}, nil
 }

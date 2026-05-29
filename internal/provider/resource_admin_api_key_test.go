@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 )
@@ -24,7 +23,7 @@ func init() {
 			ctx := context.Background()
 
 			params := &apiclient.AdminApiKeysListParams{
-				Limit: ptr.Ptr(int64(100)),
+				Limit: new(int64(100)),
 			}
 
 			for {
@@ -39,8 +38,8 @@ func init() {
 					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
 				}
 
-				for _, apiKey := range *httpResp.JSON200.Data {
-					if strings.HasPrefix(apiKey.Name, "tf-") {
+				for _, apiKey := range httpResp.JSON200.Data {
+					if apiKey.Name != nil && strings.HasPrefix(*apiKey.Name, "tf-") {
 						httpResp, err := acctest.SharedClient.AdminApiKeysDeleteWithResponse(
 							ctx,
 							apiKey.Id,
@@ -54,7 +53,7 @@ func init() {
 					}
 				}
 
-				if !ptr.Value(httpResp.JSON200.HasMore) {
+				if !httpResp.JSON200.HasMore {
 					break
 				}
 

@@ -10,8 +10,8 @@ import (
 
 func (m *ProjectDataSourceModel) Fill(ctx context.Context, project apiclient.Project) diag.Diagnostics {
 	m.Id = supertypes.NewStringValue(project.Id)
-	m.Name = supertypes.NewStringValue(project.Name)
-	m.Status = supertypes.NewStringValue(string(project.Status))
+	m.Name = supertypes.NewStringPointerValue(project.Name)
+	m.Status = supertypes.NewStringPointerValue(project.Status)
 	m.ExternalKeyId = supertypes.NewStringPointerValue(project.ExternalKeyId)
 	m.CreatedAt = supertypes.NewInt64Value(project.CreatedAt)
 	m.ArchivedAt = supertypes.NewInt64PointerValue(project.ArchivedAt)
