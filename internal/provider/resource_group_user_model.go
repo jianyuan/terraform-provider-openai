@@ -15,7 +15,7 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 		m.GroupId = supertypes.NewStringValue(data.GroupId)
 		m.UserId = supertypes.NewStringValue(data.UserId)
 		return nil
-	case apiclient.User:
+	case apiclient.GroupUser:
 		m.UserId = supertypes.NewStringValue(data.Id)
 		return nil
 	default:
@@ -25,7 +25,7 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 	}
 }
 
-func (r *GroupUserResource) resourceMatch(data GroupUserResourceModel, user apiclient.User) bool {
+func (r *GroupUserResource) resourceMatch(data GroupUserResourceModel, user apiclient.GroupUser) bool {
 	return data.UserId.ValueString() == user.Id
 }
 

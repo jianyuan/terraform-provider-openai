@@ -36,29 +36,19 @@ def fix_remove_non_administrative_endpoints(spec):
     return spec
 
 
-def fix_certificate_id_parameter(spec):
-    certificate_id_parameter = {
-        "name": "certificate_id",
-        "in": "path",
-        "description": "Unique ID of the certificate to retrieve.",
-        "required": True,
-        "schema": {"type": "string"},
-    }
-
-    path = spec["paths"]["/organization/certificates/{certificate_id}"]
-    path["post"]["parameters"] = [certificate_id_parameter]
-    path["delete"]["parameters"] = [certificate_id_parameter]
-
-    return spec
-
-
 def fix_any_of(spec):
     match spec:
-        case {"anyOf": [real_type, {"type": "null"}]}:
-            return {
-                **real_type,
-                "nullable": True,
-            }
+        case {"anyOf": [*real_types, {"type": "null"}]}:
+            if len(real_types) == 1:
+                return {
+                    **fix_any_of(real_types[0]),
+                    "nullable": True,
+                }
+            else:
+                return {
+                    "oneOf": [fix_any_of(real_type) for real_type in real_types],
+                    "nullable": True,
+                }
         case dict():
             return {k: fix_any_of(v) for k, v in spec.items()}
         case list():
@@ -83,37 +73,11 @@ def fix_number_format(spec):
             return spec
 
 
-def add_external_key_id_to_project(spec):
-    property_spec = {
-        "type": "string",
-        "description": "The ID of the customer-managed encryption key for Enterprise Key Management (EKM).",
-    }
-    spec["components"]["schemas"]["Project"]["properties"]["external_key_id"] = (
-        property_spec
-    )
-    spec["components"]["schemas"]["ProjectCreateRequest"]["properties"][
-        "external_key_id"
-    ] = property_spec
-
-    return spec
-
-
-def rename_user_role_assignment_object(spec):
-    spec["components"]["schemas"]["UserRoleAssignment"]["properties"]["object"][
-        "x-enum-varnames"
-    ] = ["UserRoleAssignmentObjectUserRole"]
-
-    return spec
-
-
 fix_funcs = [
     fix_openapi_version,
     fix_remove_non_administrative_endpoints,
-    fix_certificate_id_parameter,
     fix_any_of,
     fix_number_format,
-    add_external_key_id_to_project,
-    rename_user_role_assignment_object,
 ]
 
 

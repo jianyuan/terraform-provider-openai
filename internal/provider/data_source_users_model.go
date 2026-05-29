@@ -13,9 +13,9 @@ func (m *UsersDataSourceModel) Fill(ctx context.Context, users []apiclient.User)
 	for i, user := range users {
 		items[i] = UsersDataSourceModelUsersItem{
 			Id:      supertypes.NewStringValue(user.Id),
-			Email:   supertypes.NewStringValue(user.Email),
-			Name:    supertypes.NewStringValue(user.Name),
-			Role:    supertypes.NewStringValue(string(user.Role)),
+			Email:   supertypes.NewStringPointerValue(user.Email),
+			Name:    supertypes.NewStringPointerValue(user.Name),
+			Role:    supertypes.NewStringPointerValue(user.Role),
 			AddedAt: supertypes.NewInt64Value(user.AddedAt),
 		}
 	}

@@ -29,7 +29,7 @@ func TestAccInvitesDataSource(t *testing.T) {
 							"email":       knownvalue.StringExact(email),
 							"role":        knownvalue.StringExact("reader"),
 							"status":      knownvalue.NotNull(),
-							"invited_at":  knownvalue.NotNull(),
+							"created_at":  knownvalue.NotNull(),
 							"expires_at":  knownvalue.NotNull(),
 							"accepted_at": knownvalue.Null(),
 						}),

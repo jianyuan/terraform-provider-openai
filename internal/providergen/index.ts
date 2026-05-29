@@ -14,7 +14,7 @@ function generateTerraformAttribute({
 }) {
   const commonParts: string[] = [];
   commonParts.push(
-    `MarkdownDescription: ${JSON.stringify(attribute.description)},`
+    `MarkdownDescription: ${JSON.stringify(attribute.description)},`,
   );
   commonParts.push(
     match(attribute.computedOptionalRequired)
@@ -22,7 +22,7 @@ function generateTerraformAttribute({
       .with("computed", () => "Computed: true,")
       .with("computed_optional", () => "Optional: true,\nComputed: true,")
       .with("optional", () => "Optional: true,")
-      .exhaustive()
+      .exhaustive(),
   );
   if (attribute.sensitive) {
     commonParts.push("Sensitive: true,");
@@ -42,7 +42,7 @@ function generateTerraformAttribute({
       if (attribute.planModifiers) {
         parts.push("PlanModifiers: []planmodifier.String{");
         parts.push(
-          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+          ...attribute.planModifiers.map((modifier) => `${modifier},`),
         );
         parts.push("},");
       }
@@ -62,7 +62,7 @@ function generateTerraformAttribute({
       if (attribute.planModifiers) {
         parts.push("PlanModifiers: []planmodifier.Int64{");
         parts.push(
-          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+          ...attribute.planModifiers.map((modifier) => `${modifier},`),
         );
         parts.push("},");
       }
@@ -82,7 +82,7 @@ function generateTerraformAttribute({
       if (attribute.planModifiers) {
         parts.push("PlanModifiers: []planmodifier.Bool{");
         parts.push(
-          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+          ...attribute.planModifiers.map((modifier) => `${modifier},`),
         );
         parts.push("},");
       }
@@ -102,7 +102,7 @@ function generateTerraformAttribute({
       if (attribute.planModifiers) {
         parts.push("PlanModifiers: []planmodifier.List{");
         parts.push(
-          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+          ...attribute.planModifiers.map((modifier) => `${modifier},`),
         );
         parts.push("},");
       }
@@ -122,7 +122,7 @@ function generateTerraformAttribute({
       if (attribute.planModifiers) {
         parts.push("PlanModifiers: []planmodifier.Set{");
         parts.push(
-          ...attribute.planModifiers.map((modifier) => `${modifier},`)
+          ...attribute.planModifiers.map((modifier) => `${modifier},`),
         );
         parts.push("},");
       }
@@ -135,8 +135,8 @@ function generateTerraformAttribute({
       parts.push(...commonParts);
       parts.push(
         `CustomType: supertypes.NewSetNestedObjectTypeOf[${parent}${camelize(
-          attribute.name
-        )}Item](ctx),`
+          attribute.name,
+        )}Item](ctx),`,
       );
       parts.push("NestedObject: schema.NestedAttributeObject{");
       parts.push("Attributes: map[string]schema.Attribute{");
@@ -145,7 +145,7 @@ function generateTerraformAttribute({
           `"${nestedAttribute.name}": ${generateTerraformAttribute({
             parent: attribute.name,
             attribute: nestedAttribute,
-          })},`
+          })},`,
         );
       }
       parts.push("},");
@@ -169,18 +169,18 @@ function generateTerraformValueType({
     .with({ type: "bool" }, () => "supertypes.BoolValue")
     .with(
       { type: "list", elementType: "string" },
-      () => "supertypes.ListValueOf[string]"
+      () => "supertypes.ListValueOf[string]",
     )
     .with(
       { type: "set", elementType: "string" },
-      () => "supertypes.SetValueOf[string]"
+      () => "supertypes.SetValueOf[string]",
     )
     .with(
       { type: "set_nested" },
       () =>
         `supertypes.SetNestedObjectValueOf[${parent}${camelize(
-          attribute.name
-        )}Item]`
+          attribute.name,
+        )}Item]`,
     )
     .exhaustive();
 }
@@ -215,7 +215,7 @@ function generateModel({
       `${camelize(attribute.name)} ${generateTerraformValueType({
         parent: name,
         attribute,
-      })} \`tfsdk:"${attribute.name}"\``
+      })} \`tfsdk:"${attribute.name}"\``,
     );
 
     extras.push(
@@ -226,7 +226,7 @@ function generateModel({
             attributes: attribute.attributes,
           }),
         ])
-        .otherwise(() => [])
+        .otherwise(() => []),
     );
   }
 
@@ -259,7 +259,7 @@ function generateDataSourceSchemaAttributes({
       `"${attribute.name}": ${generateTerraformAttribute({
         parent: `${camelize(dataSource.name)}DataSourceModel`,
         attribute,
-      })},`
+      })},`,
     );
   }
 
@@ -281,25 +281,25 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
           parts.push(
             ...api.readRequestAttributes.map((param) => {
               const attribute = dataSource.attributes.find(
-                (attribute) => attribute.name === param
+                (attribute) => attribute.name === param,
               );
               if (!attribute) {
                 throw new Error(
-                  `Attribute ${param} not found in data source ${dataSource.name}`
+                  `Attribute ${param} not found in data source ${dataSource.name}`,
                 );
               }
               return generateTerraformToPrimitive({
                 attribute,
                 srcVar: "data",
               });
-            })
+            }),
           );
         }
         parts.push("params");
         return parts;
       })
       .with({ readStrategy: "simple" }, () => ["data.Id.ValueString()"])
-      .exhaustive()
+      .exhaustive(),
   );
 
   const read = match(dataSource.api)
@@ -308,7 +308,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
       (api) => `
     var modelInstances []apiclient.${api.readModel ?? api.model}
     params := &apiclient.${api.readMethod}Params{
-      Limit: ptr.Ptr(int64(100)),
+      Limit: new(int64(100)),
     }
 
     ${api.readInitLoop ?? ""}
@@ -345,7 +345,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     if resp.Diagnostics.HasError() {
       return
     }
-    `
+    `,
     )
     .with(
       { readStrategy: "simple" },
@@ -366,7 +366,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     if resp.Diagnostics.HasError() {
       return
     }
-    `
+    `,
     )
     .exhaustive();
 
@@ -438,7 +438,7 @@ function generateResourceSchemaAttributes({
       `"${attribute.name}": ${generateTerraformAttribute({
         parent: `${camelize(resource.name)}ResourceModel`,
         attribute,
-      })},`
+      })},`,
     );
   }
 
@@ -456,18 +456,18 @@ function generateResource({ resource }: { resource: Resource }) {
     createRequestParams.push(
       ...resource.api.createRequestAttributes.map((param) => {
         const attribute = resource.attributes.find(
-          (attribute) => attribute.name === param
+          (attribute) => attribute.name === param,
         );
         if (!attribute) {
           throw new Error(
-            `Attribute ${param} not found in resource ${resource.name}`
+            `Attribute ${param} not found in resource ${resource.name}`,
           );
         }
         return generateTerraformToPrimitive({
           attribute,
           srcVar: "data",
         });
-      })
+      }),
     );
   }
   createRequestParams.push("body");
@@ -477,18 +477,18 @@ function generateResource({ resource }: { resource: Resource }) {
     readRequestParams.push(
       ...resource.api.readRequestAttributes.map((param) => {
         const attribute = resource.attributes.find(
-          (attribute) => attribute.name === param
+          (attribute) => attribute.name === param,
         );
         if (!attribute) {
           throw new Error(
-            `Attribute ${param} not found in resource ${resource.name}`
+            `Attribute ${param} not found in resource ${resource.name}`,
           );
         }
         return generateTerraformToPrimitive({
           attribute,
           srcVar: "data",
         });
-      })
+      }),
     );
   }
   if (resource.api.readStrategy === "paginate") {
@@ -500,18 +500,18 @@ function generateResource({ resource }: { resource: Resource }) {
     updateRequestParams.push(
       ...resource.api.updateRequestAttributes.map((param) => {
         const attribute = resource.attributes.find(
-          (attribute) => attribute.name === param
+          (attribute) => attribute.name === param,
         );
         if (!attribute) {
           throw new Error(
-            `Attribute ${param} not found in resource ${resource.name}`
+            `Attribute ${param} not found in resource ${resource.name}`,
           );
         }
         return generateTerraformToPrimitive({
           attribute,
           srcVar: "data",
         });
-      })
+      }),
     );
   }
   updateRequestParams.push("body");
@@ -521,18 +521,18 @@ function generateResource({ resource }: { resource: Resource }) {
     deleteRequestParams.push(
       ...resource.api.deleteRequestAttributes.map((param) => {
         const attribute = resource.attributes.find(
-          (attribute) => attribute.name === param
+          (attribute) => attribute.name === param,
         );
         if (!attribute) {
           throw new Error(
-            `Attribute ${param} not found in resource ${resource.name}`
+            `Attribute ${param} not found in resource ${resource.name}`,
           );
         }
         return generateTerraformToPrimitive({
           attribute,
           srcVar: "data",
         });
-      })
+      }),
     );
   }
 
@@ -619,7 +619,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
         err := retry.Do(
           func() error {
             params := &apiclient.${api.readMethod}Params{
-              Limit: ptr.Ptr(int64(100)),
+              Limit: new(int64(100)),
             }
 
             for {
@@ -661,7 +661,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
           resp.Diagnostics.AddError("Client Error", err.Error())
           return
         }
-      `
+      `,
     )
     .otherwise(
       (api) => dedent`
@@ -678,7 +678,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
         }
 
         responseData := httpResp.JSON200
-      `
+      `,
     )}
 
   if responseData == nil {
@@ -875,7 +875,7 @@ async function main() {
     const code = generateDataSource({ dataSource });
     await writeAndFormatGoFile(
       new URL(`../provider/data_source_${dataSource.name}.go`, import.meta.url),
-      code
+      code,
     );
   }
 
@@ -888,7 +888,7 @@ async function main() {
     const code = generateResource({ resource });
     await writeAndFormatGoFile(
       new URL(`../provider/resource_${resource.name}.go`, import.meta.url),
-      code
+      code,
     );
   }
 
@@ -900,7 +900,7 @@ async function main() {
     });
     await writeAndFormatGoFile(
       new URL(`../provider/provider_gen.go`, import.meta.url),
-      code
+      code,
     );
   }
 }

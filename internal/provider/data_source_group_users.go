@@ -8,7 +8,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -57,16 +56,6 @@ func (d *GroupUsersDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:            true,
 							CustomType:          supertypes.StringType{},
 						},
-						"role": schema.StringAttribute{
-							MarkdownDescription: "Role `owner` or `reader`.",
-							Computed:            true,
-							CustomType:          supertypes.StringType{},
-						},
-						"added_at": schema.Int64Attribute{
-							MarkdownDescription: "The Unix timestamp (in seconds) of when the user was added.",
-							Computed:            true,
-							CustomType:          supertypes.Int64Type{},
-						},
 					},
 				},
 			},
@@ -82,9 +71,9 @@ func (d *GroupUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	var modelInstances []apiclient.User
+	var modelInstances []apiclient.GroupUser
 	params := &apiclient.ListGroupUsersParams{
-		Limit: ptr.Ptr(int64(100)),
+		Limit: new(int64(100)),
 	}
 
 	for {
@@ -127,9 +116,7 @@ type GroupUsersDataSourceModel struct {
 }
 
 type GroupUsersDataSourceModelUsersItem struct {
-	Id      supertypes.StringValue `tfsdk:"id"`
-	Email   supertypes.StringValue `tfsdk:"email"`
-	Name    supertypes.StringValue `tfsdk:"name"`
-	Role    supertypes.StringValue `tfsdk:"role"`
-	AddedAt supertypes.Int64Value  `tfsdk:"added_at"`
+	Id    supertypes.StringValue `tfsdk:"id"`
+	Email supertypes.StringValue `tfsdk:"email"`
+	Name  supertypes.StringValue `tfsdk:"name"`
 }

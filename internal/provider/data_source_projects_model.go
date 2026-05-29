@@ -13,8 +13,8 @@ func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []apiclient
 	for i, project := range projects {
 		items[i] = ProjectsDataSourceModelProjectsItem{
 			Id:            supertypes.NewStringValue(project.Id),
-			Name:          supertypes.NewStringValue(project.Name),
-			Status:        supertypes.NewStringValue(string(project.Status)),
+			Name:          supertypes.NewStringPointerValue(project.Name),
+			Status:        supertypes.NewStringPointerValue(project.Status),
 			ExternalKeyId: supertypes.NewStringPointerValue(project.ExternalKeyId),
 			CreatedAt:     supertypes.NewInt64Value(project.CreatedAt),
 			ArchivedAt:    supertypes.NewInt64PointerValue(project.ArchivedAt),

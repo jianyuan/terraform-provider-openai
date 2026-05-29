@@ -53,7 +53,7 @@ export const DATASOURCES: Array<DataSource> = [
       model: "GroupUserAssignment",
       readMethod: "ListGroupUsers",
       readRequestAttributes: ["group_id"],
-      readModel: "User",
+      readModel: "GroupUser",
       readStrategy: "paginate",
       readCursorParam: "Next",
     },
@@ -86,19 +86,6 @@ export const DATASOURCES: Array<DataSource> = [
             name: "name",
             type: "string",
             description: "The name of the user.",
-            computedOptionalRequired: "computed",
-          },
-          {
-            name: "role",
-            type: "string",
-            description: "Role `owner` or `reader`.",
-            computedOptionalRequired: "computed",
-          },
-          {
-            name: "added_at",
-            type: "int",
-            description:
-              "The Unix timestamp (in seconds) of when the user was added.",
             computedOptionalRequired: "computed",
           },
         ],
@@ -208,7 +195,7 @@ export const DATASOURCES: Array<DataSource> = [
         computedOptionalRequired: "computed",
       },
       {
-        name: "invited_at",
+        name: "created_at",
         type: "int",
         description:
           "The Unix timestamp (in seconds) of when the invite was sent.",
@@ -271,7 +258,7 @@ export const DATASOURCES: Array<DataSource> = [
             computedOptionalRequired: "computed",
           },
           {
-            name: "invited_at",
+            name: "created_at",
             type: "int",
             description:
               "The Unix timestamp (in seconds) of when the invite was sent.",
@@ -418,13 +405,13 @@ export const DATASOURCES: Array<DataSource> = [
 
         // Set the limit for the API request
         if data.Limit.IsNull() {
-          params.Limit = ptr.Ptr(int64(100))
+          params.Limit = new(int64(100))
         } else {
           requestLimit := data.Limit.ValueInt64()
           if requestLimit > 100 {
-            params.Limit = ptr.Ptr(int64(100))
+            params.Limit = new(int64(100))
           } else {
-            params.Limit = ptr.Ptr(requestLimit)
+            params.Limit = new(requestLimit)
           }
         }
       `,
@@ -436,9 +423,9 @@ export const DATASOURCES: Array<DataSource> = [
             break
           }
           if remainingLimit > 100 {
-            params.Limit = ptr.Ptr(int64(100))
+            params.Limit = new(int64(100))
           } else {
-            params.Limit = ptr.Ptr(remainingLimit)
+            params.Limit = new(remainingLimit)
           }
         }
       `,
@@ -1056,7 +1043,7 @@ export const RESOURCES: Array<Resource> = [
         computedOptionalRequired: "computed",
       },
       {
-        name: "invited_at",
+        name: "created_at",
         type: "int",
         description:
           "The Unix timestamp (in seconds) of when the invite was sent.",
@@ -1609,7 +1596,7 @@ export const RESOURCES: Array<Resource> = [
       createRequestAttributes: ["group_id"],
       readMethod: "ListGroupUsers",
       readRequestAttributes: ["group_id"],
-      readModel: "User",
+      readModel: "GroupUser",
       readStrategy: "paginate",
       readCursorParam: "Next",
       deleteMethod: "RemoveGroupUser",

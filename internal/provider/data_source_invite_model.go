@@ -13,8 +13,8 @@ func (m *InviteDataSourceModel) Fill(ctx context.Context, invite apiclient.Invit
 	m.Email = supertypes.NewStringValue(invite.Email)
 	m.Role = supertypes.NewStringValue(string(invite.Role))
 	m.Status = supertypes.NewStringValue(string(invite.Status))
-	m.InvitedAt = supertypes.NewInt64Value(invite.InvitedAt)
-	m.ExpiresAt = supertypes.NewInt64Value(invite.ExpiresAt)
+	m.CreatedAt = supertypes.NewInt64Value(invite.CreatedAt)
+	m.ExpiresAt = supertypes.NewInt64PointerValue(invite.ExpiresAt)
 	m.AcceptedAt = supertypes.NewInt64PointerValue(invite.AcceptedAt)
 	return nil
 }

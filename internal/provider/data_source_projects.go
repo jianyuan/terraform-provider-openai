@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -99,20 +98,20 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	var modelInstances []apiclient.Project
 	params := &apiclient.ListProjectsParams{
-		Limit: ptr.Ptr(int64(100)),
+		Limit: new(int64(100)),
 	}
 
 	params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
 
 	// Set the limit for the API request
 	if data.Limit.IsNull() {
-		params.Limit = ptr.Ptr(int64(100))
+		params.Limit = new(int64(100))
 	} else {
 		requestLimit := data.Limit.ValueInt64()
 		if requestLimit > 100 {
-			params.Limit = ptr.Ptr(int64(100))
+			params.Limit = new(int64(100))
 		} else {
-			params.Limit = ptr.Ptr(requestLimit)
+			params.Limit = new(requestLimit)
 		}
 	}
 
@@ -125,9 +124,9 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 				break
 			}
 			if remainingLimit > 100 {
-				params.Limit = ptr.Ptr(int64(100))
+				params.Limit = new(int64(100))
 			} else {
-				params.Limit = ptr.Ptr(remainingLimit)
+				params.Limit = new(remainingLimit)
 			}
 		}
 

@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/jianyuan/go-utils/ptr"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
@@ -97,7 +96,7 @@ func (r *UserRoleAssignmentResource) Read(ctx context.Context, req resource.Read
 	err := retry.Do(
 		func() error {
 			params := &apiclient.ListUserRoleAssignmentsParams{
-				Limit: ptr.Ptr(int64(100)),
+				Limit: new(int64(100)),
 			}
 
 			for {

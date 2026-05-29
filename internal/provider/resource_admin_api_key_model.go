@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
@@ -14,14 +15,21 @@ func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data
 	}, nil
 }
 
-func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data apiclient.AdminApiKey) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(data.Id)
-	m.Name = supertypes.NewStringValue(data.Name)
-	m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
-
-	if data.Value != nil {
-		m.ApiKey = supertypes.NewStringPointerValue(data.Value)
+func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
+	switch v := data.(type) {
+	case apiclient.AdminApiKey:
+		m.Id = supertypes.NewStringValue(v.Id)
+		m.Name = supertypes.NewStringPointerValue(v.Name)
+		m.CreatedAt = supertypes.NewInt64Value(v.CreatedAt)
+	case apiclient.AdminApiKeyCreateResponse:
+		m.Id = supertypes.NewStringValue(v.Id)
+		m.Name = supertypes.NewStringPointerValue(v.Name)
+		m.CreatedAt = supertypes.NewInt64Value(v.CreatedAt)
+		m.ApiKey = supertypes.NewStringValue(v.Value)
+	default:
+		var diags diag.Diagnostics
+		diags.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
+		return diags
 	}
-
 	return nil
 }

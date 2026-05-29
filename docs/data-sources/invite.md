@@ -28,8 +28,8 @@ data "openai_invite" "example" {
 ### Read-Only
 
 - `accepted_at` (Number) The Unix timestamp (in seconds) of when the invite was accepted.
+- `created_at` (Number) The Unix timestamp (in seconds) of when the invite was sent.
 - `email` (String) The email address of the individual to whom the invite was sent.
 - `expires_at` (Number) The Unix timestamp (in seconds) of when the invite expires.
-- `invited_at` (Number) The Unix timestamp (in seconds) of when the invite was sent.
 - `role` (String) `owner` or `reader`.
 - `status` (String) `accepted`, `expired`, or `pending`.
