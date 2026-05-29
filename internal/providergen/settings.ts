@@ -1656,7 +1656,7 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
-    name: "organization_data_retention",
+    name: "data_retention",
     description: "Updates organization data retention controls.",
     api: {
       model: "DataRetention",
