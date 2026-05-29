@@ -1678,4 +1678,77 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "spend_alert",
+    description: "Creates an organization spend alert.",
+    api: {
+      model: "OrganizationSpendAlert",
+      createMethod: "CreateOrganizationSpendAlert",
+      readStrategy: "paginate",
+      readMethod: "ListOrganizationSpendAlerts",
+      readModel: "OrganizationSpendAlert",
+      updateMethod: "UpdateOrganizationSpendAlert",
+      updateRequestAttributes: ["id"],
+      deleteMethod: "DeleteOrganizationSpendAlert",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "Spend alert ID.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "currency",
+        type: "string",
+        description: "The currency for the threshold amount (e.g. `USD`).",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "interval",
+        type: "string",
+        description: "The interval for the spend alert (e.g. `month`).",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "notification_channel",
+        type: "single_nested",
+        description: "Email notification settings for a spend alert.",
+        computedOptionalRequired: "required",
+        attributes: [
+          {
+            name: "type",
+            type: "string",
+            description:
+              "The notification channel type. Currently only `email` is supported.",
+            computedOptionalRequired: "required",
+            validators: ['stringvalidator.OneOf("email")'],
+          },
+          {
+            name: "recipients",
+            type: "set",
+            description:
+              "Email addresses that receive the spend alert notification.",
+            computedOptionalRequired: "required",
+            elementType: "string",
+          },
+          {
+            name: "subject_prefix",
+            type: "string",
+            description: "Optional subject prefix for alert emails.",
+            computedOptionalRequired: "optional",
+          },
+        ],
+      },
+      {
+        name: "threshold_amount",
+        type: "int",
+        description: "The alert threshold amount, in cents.",
+        computedOptionalRequired: "required",
+      },
+    ],
+  },
 ];
