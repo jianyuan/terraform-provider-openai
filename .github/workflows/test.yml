@@ -2,8 +2,7 @@
 name: Tests
 
 on:
-  pull_request_target:
-    types: [opened, synchronize]
+  pull_request:
     paths-ignore:
       - "README.md"
   push:
@@ -20,22 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
@@ -50,22 +34,7 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
@@ -91,24 +60,9 @@ jobs:
       max-parallel: 1
       matrix:
         terraform:
-          - "1.13.*"
+          - "1.15.*"
     steps:
-      - id: check-access
-        if: github.event_name == 'pull_request_target'
-        uses: actions-cool/check-user-permission@v2
-        with:
-          require: write
-          username: ${{ github.triggering_actor }}
-      - name: Check User Permission
-        if: github.event_name == 'pull_request_target' && steps.check-access.outputs.require-result != 'true'
-        run: |
-          echo "User ${{ github.triggering_actor }} lacks the necessary rights on this repository."
-          echo "Their current access level: ${{ steps.checkAccess.outputs.user-permission }}"
-          echo "Initial trigger for this job: ${{ github.actor }}"
-          exit 1
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
