@@ -168,6 +168,18 @@ app.post(
   },
 );
 
+app.delete("/organization/spend_limit", async (c) => {
+  const [spendLimit] = await db.delete(schema.spendLimits).returning();
+  if (!spendLimit) {
+    return c.json({ error: "Spend limit not found" }, 404);
+  }
+
+  return c.json({
+    object: "organization.spend_limit.deleted",
+    deleted: true,
+  });
+});
+
 app.get("/organization/spend_alerts", async (c) => {
   const spendAlerts = await db.query.spendAlerts.findMany();
   return c.json({

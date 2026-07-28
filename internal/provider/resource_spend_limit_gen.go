@@ -176,7 +176,23 @@ func (r *SpendLimitResource) Update(ctx context.Context, req resource.UpdateRequ
 }
 
 func (r *SpendLimitResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	resp.Diagnostics.AddWarning("Not Supported", "Delete is not supported for this resource. Please manually delete the resource.")
+	var data SpendLimitResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	httpResp, err := r.client.DeleteOrganizationSpendLimitWithResponse(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		return
+	} else if httpResp.StatusCode() == http.StatusNotFound {
+		return
+	} else if httpResp.StatusCode() != http.StatusOK {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
+		return
+	}
 }
 
 type SpendLimitResourceModel struct {

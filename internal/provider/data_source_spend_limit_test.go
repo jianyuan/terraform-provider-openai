@@ -22,7 +22,7 @@ func TestAccSpendLimitDataSource(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("currency"), knownvalue.StringExact("USD")),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("interval"), knownvalue.StringExact("month")),
-					statecheck.ExpectKnownValue(rn, tfjsonpath.New("threshold_amount"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue(rn, tfjsonpath.New("threshold_amount"), knownvalue.Int64Exact(100)),
 					statecheck.ExpectKnownValue(rn, tfjsonpath.New("enforcement"), knownvalue.ObjectExact(map[string]knownvalue.Check{
 						"status": knownvalue.StringExact("enforcing"),
 					})),
@@ -33,6 +33,13 @@ func TestAccSpendLimitDataSource(t *testing.T) {
 }
 
 var testAccSpendLimitDataSourceConfig = `
+resource "openai_spend_limit" "test" {
+	currency = "USD"
+	interval = "month"
+	threshold_amount = 100
+}
+
 data "openai_spend_limit" "test" {
+	depends_on = [openai_spend_limit.test]
 }
 `

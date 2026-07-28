@@ -1732,6 +1732,7 @@ export const RESOURCES: Array<Resource> = [
       readMethod: "RetrieveOrganizationSpendLimit",
       readModel: "SpendLimit",
       updateMethod: "UpdateOrganizationSpendLimit",
+      deleteMethod: "DeleteOrganizationSpendLimit",
     },
     attributes: [
       {
