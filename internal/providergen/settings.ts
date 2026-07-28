@@ -958,10 +958,63 @@ export const DATASOURCES: Array<DataSource> = [
     description: "Retrieves organization spend limit.",
     api: {
       model: "SpendLimit",
-      readStrategy: "static",
+      readStrategy: "simple",
       readMethod: "RetrieveOrganizationSpendLimit",
+      readRequestAttributes: [],
     },
     attributes: [
+      {
+        name: "currency",
+        type: "string",
+        description:
+          "The currency for the threshold amount. Currently, only `USD` is supported.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "interval",
+        type: "string",
+        description:
+          "The time interval for evaluating spend against the threshold. Currently, only `month` is supported.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "threshold_amount",
+        type: "int",
+        description: "The hard spend limit amount, in cents.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "enforcement",
+        type: "single_nested",
+        description: "The current enforcement state of the hard spend limit.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "status",
+            type: "string",
+            description: "Whether the hard spend limit is currently enforcing.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "project_spend_limit",
+    description: "Retrieves project spend limit.",
+    api: {
+      model: "SpendLimit",
+      readStrategy: "simple",
+      readMethod: "RetrieveProjectSpendLimit",
+      readRequestAttributes: ["project_id"],
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project.",
+        computedOptionalRequired: "required",
+      },
       {
         name: "currency",
         type: "string",
@@ -1735,6 +1788,70 @@ export const RESOURCES: Array<Resource> = [
       deleteMethod: "DeleteOrganizationSpendLimit",
     },
     attributes: [
+      {
+        name: "currency",
+        type: "string",
+        description:
+          "The currency for the threshold amount. Currently, only `USD` is supported.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("USD")'],
+      },
+      {
+        name: "interval",
+        type: "string",
+        description:
+          "The time interval for evaluating spend against the threshold. Currently, only `month` is supported.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("month")'],
+      },
+      {
+        name: "threshold_amount",
+        type: "int",
+        description: "The hard spend limit amount, in cents.",
+        computedOptionalRequired: "required",
+        validators: ["int64validator.AtLeast(1)"],
+      },
+      {
+        name: "enforcement",
+        type: "single_nested",
+        description: "The current enforcement state of the hard spend limit.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "status",
+            type: "string",
+            description: "Whether the hard spend limit is currently enforcing.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "project_spend_limit",
+    description: "Updates project spend limit.",
+    api: {
+      model: "ProjectSpendLimit",
+      createMethod: "UpdateProjectSpendLimit",
+      createRequestAttributes: ["project_id"],
+      readMethod: "RetrieveProjectSpendLimit",
+      readRequestAttributes: ["project_id"],
+      readModel: "ProjectSpendLimit",
+      updateMethod: "UpdateProjectSpendLimit",
+      updateRequestAttributes: ["project_id"],
+      deleteMethod: "DeleteProjectSpendLimit",
+      deleteRequestAttributes: ["project_id"],
+    },
+    importStateAttributes: ["project_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description:
+          "The ID of the project for which the spend limit is being set.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
       {
         name: "currency",
         type: "string",
