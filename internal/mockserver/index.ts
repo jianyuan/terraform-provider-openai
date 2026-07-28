@@ -180,6 +180,91 @@ app.delete("/organization/spend_limit", async (c) => {
   });
 });
 
+app.get("/organization/projects/:project_id/spend_limit", async (c) => {
+  const project_id = c.req.param("project_id");
+
+  const spendLimit = await db.query.projectSpendLimits.findFirst({
+    where: eq(schema.projectSpendLimits.project_id, project_id),
+  });
+  if (!spendLimit) {
+    return c.json({ error: "Spend limit not found" }, 404);
+  }
+
+  return c.json(spendLimit);
+});
+
+app.post(
+  "/organization/projects/:project_id/spend_limit",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+    }),
+  ),
+  async (c) => {
+    const project_id = c.req.param("project_id");
+    const { currency, interval, threshold_amount } = c.req.valid("json");
+
+    const project = await db.query.projects.findFirst({
+      where: eq(schema.projects.id, project_id),
+    });
+    if (!project) {
+      return c.json({ error: "Project not found" }, 404);
+    }
+
+    const [spendLimit] = await db
+      .insert(schema.projectSpendLimits)
+      .values({
+        project_id,
+        currency,
+        interval,
+        threshold_amount,
+        enforcement: {
+          status: "enforcing",
+        },
+      })
+      .onConflictDoUpdate({
+        target: schema.projectSpendLimits.project_id,
+        set: {
+          currency: sql.raw(
+            `excluded.${schema.projectSpendLimits.currency.name}`,
+          ),
+          interval: sql.raw(
+            `excluded.${schema.projectSpendLimits.interval.name}`,
+          ),
+          threshold_amount: sql.raw(
+            `excluded.${schema.projectSpendLimits.threshold_amount.name}`,
+          ),
+          enforcement: sql.raw(
+            `excluded.${schema.spendLimits.enforcement.name}`,
+          ),
+        },
+      })
+      .returning();
+
+    return c.json(spendLimit);
+  },
+);
+
+app.delete("/organization/projects/:project_id/spend_limit", async (c) => {
+  const project_id = c.req.param("project_id");
+
+  const [spendLimit] = await db
+    .delete(schema.projectSpendLimits)
+    .where(eq(schema.projectSpendLimits.project_id, project_id))
+    .returning();
+  if (!spendLimit) {
+    return c.json({ error: "Spend limit not found" }, 404);
+  }
+
+  return c.json({
+    object: "project.spend_limit.deleted",
+    deleted: true,
+  });
+});
+
 app.get("/organization/spend_alerts", async (c) => {
   const spendAlerts = await db.query.spendAlerts.findMany();
   return c.json({

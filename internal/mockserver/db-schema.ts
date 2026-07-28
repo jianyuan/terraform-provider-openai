@@ -354,6 +354,25 @@ export const spendLimits = sqliteTable("spend_limits", {
   }>(),
 });
 
+export const projectSpendLimits = sqliteTable("project_spend_limits", {
+  object: objectColumn("project.spend_limit"),
+  project_id: project_id.primaryKey(),
+  currency: text({
+    enum: ["USD"],
+  })
+    .notNull()
+    .default("USD"),
+  interval: text({
+    enum: ["month"],
+  })
+    .notNull()
+    .default("month"),
+  threshold_amount: integer().notNull(),
+  enforcement: text({ mode: "json" }).notNull().$type<{
+    status: "active" | "enforcing";
+  }>(),
+});
+
 export const spendAlerts = sqliteTable("spend_alerts", {
   object: objectColumn("organization.spend_alert"),
   id: text().primaryKey().$defaultFn(idGenerator("alert_")),

@@ -338,8 +338,31 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
         parts.push("params");
         return parts;
       })
-      .with({ readStrategy: "simple" }, () => ["data.Id.ValueString()"])
-      .with({ readStrategy: "static" }, () => [])
+      .with({ readStrategy: "simple" }, (api) => {
+        const parts: string[] = [];
+        const readRequestAttributes = Array.isArray(api.readRequestAttributes)
+          ? api.readRequestAttributes
+          : ["id"];
+        if (readRequestAttributes) {
+          parts.push(
+            ...readRequestAttributes.map((param) => {
+              const attribute = dataSource.attributes.find(
+                (attribute) => attribute.name === param,
+              );
+              if (!attribute) {
+                throw new Error(
+                  `Attribute ${param} not found in data source ${dataSource.name}`,
+                );
+              }
+              return generateTerraformToPrimitive({
+                attribute,
+                srcVar: "data",
+              });
+            }),
+          );
+        }
+        return parts;
+      })
       .exhaustive(),
   );
 
@@ -390,7 +413,6 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     )
     .with(
       { readStrategy: "simple" },
-      { readStrategy: "static" },
       (api) => `
     httpResp, err := d.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
     if err != nil {
