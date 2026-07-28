@@ -20,7 +20,8 @@ sweep: ## Run sweepers
 	@echo "WARNING: This will destroy infrastructure. Use only in development accounts."
 	$(GO_VER) test ./... -v -sweep=$(SWEEP) $(SWEEPARGS) -timeout $(SWEEP_TIMEOUT)
 
-.PHONY: sweeper
-sweeper: ## Run sweepers with failures allowed
-	@echo "WARNING: This will destroy infrastructure. Use only in development accounts."
-	$(GO_VER) test ./... -v -tags=sweep -sweep=$(SWEEP) -sweep-allow-failures -timeout $(SWEEP_TIMEOUT)
+.PHONY: generate
+generate:
+	go generate ./internal/apiclient
+	go generate ./internal/providergen
+	go generate ./
