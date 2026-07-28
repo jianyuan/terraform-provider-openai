@@ -18,7 +18,7 @@ def fix_openapi_version(spec):
     return spec
 
 
-def fix_remove_non_administrative_endpoints(spec):
+def remove_non_administrative_endpoints(spec):
     paths_to_remove = set()
 
     for path, operations in spec["paths"].items():
@@ -32,6 +32,12 @@ def fix_remove_non_administrative_endpoints(spec):
 
     for path in paths_to_remove:
         del spec["paths"][path]
+
+    return spec
+
+
+def remove_webhooks(spec):
+    del spec["webhooks"]
 
     return spec
 
@@ -73,11 +79,31 @@ def fix_number_format(spec):
             return spec
 
 
+def fix_operation_id(spec):
+    fixes = {
+        "Getorganizationspendlimit": "retrieve-organization-spend-limit",
+        "Updateorganizationspendlimit": "update-organization-spend-limit",
+        "Deleteorganizationspendlimit": "delete-organization-spend-limit",
+        "Getprojectspendlimit": "retrieve-project-spend-limit",
+        "Updateprojectspendlimit": "update-project-spend-limit",
+        "Deleteprojectspendlimit": "delete-project-spend-limit",
+    }
+
+    for operations in spec["paths"].values():
+        for operation in operations.values():
+            if operation["operationId"] in fixes:
+                operation["operationId"] = fixes[operation["operationId"]]
+
+    return spec
+
+
 fix_funcs = [
     fix_openapi_version,
-    fix_remove_non_administrative_endpoints,
+    remove_non_administrative_endpoints,
+    remove_webhooks,
     fix_any_of,
     fix_number_format,
+    fix_operation_id,
 ]
 
 

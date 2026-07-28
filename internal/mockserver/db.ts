@@ -86,6 +86,15 @@ async function seedDatabase() {
     })
     .returning();
   await insertDefaultProjectRateLimits({ projectId: archivedProject!.id });
+
+  await db.insert(schema.spendLimits).values({
+    currency: "USD",
+    interval: "month",
+    threshold_amount: 10000,
+    enforcement: {
+      status: "enforcing",
+    },
+  });
 }
 
 export async function insertDefaultProjectRateLimits({

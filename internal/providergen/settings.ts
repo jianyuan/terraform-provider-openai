@@ -1679,6 +1679,56 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "spend_limit",
+    description: "Updates organization spend limit.",
+    api: {
+      model: "SpendLimit",
+      createMethod: "UpdateOrganizationSpendLimit",
+      readMethod: "RetrieveOrganizationSpendLimit",
+      readModel: "SpendLimit",
+      updateMethod: "UpdateOrganizationSpendLimit",
+    },
+    attributes: [
+      {
+        name: "currency",
+        type: "string",
+        description:
+          "The currency for the threshold amount. Currently, only `USD` is supported.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("USD")'],
+      },
+      {
+        name: "interval",
+        type: "string",
+        description:
+          "The time interval for evaluating spend against the threshold. Currently, only `month` is supported.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("month")'],
+      },
+      {
+        name: "threshold_amount",
+        type: "int",
+        description: "The hard spend limit amount, in cents.",
+        computedOptionalRequired: "required",
+        validators: ["int64validator.AtLeast(1)"],
+      },
+      {
+        name: "enforcement",
+        type: "single_nested",
+        description: "The current enforcement state of the hard spend limit.",
+        computedOptionalRequired: "computed",
+        attributes: [
+          {
+            name: "status",
+            type: "string",
+            description: "Whether the hard spend limit is currently enforcing.",
+            computedOptionalRequired: "computed",
+          },
+        ],
+      },
+    ],
+  },
+  {
     name: "spend_alert",
     description: "Creates an organization spend alert.",
     api: {
