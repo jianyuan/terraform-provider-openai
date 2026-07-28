@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { bearerAuth } from "hono/bearer-auth";
 import { logger } from "hono/logger";
@@ -114,6 +114,57 @@ app.post(
       .returning();
 
     return c.json(dataRetention);
+  },
+);
+
+app.get("/organization/spend_limit", async (c) => {
+  const spendLimit = await db.query.spendLimits.findFirst();
+  if (!spendLimit) {
+    return c.json({ error: "Spend limit not found" }, 404);
+  }
+
+  return c.json(spendLimit);
+});
+
+app.post(
+  "/organization/spend_limit",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+    }),
+  ),
+  async (c) => {
+    const { currency, interval, threshold_amount } = c.req.valid("json");
+
+    const [spendLimit] = await db
+      .insert(schema.spendLimits)
+      .values({
+        currency,
+        interval,
+        threshold_amount,
+        enforcement: {
+          status: "enforcing",
+        },
+      })
+      .onConflictDoUpdate({
+        target: schema.spendLimits.object,
+        set: {
+          currency: sql.raw(`excluded.${schema.spendLimits.currency.name}`),
+          interval: sql.raw(`excluded.${schema.spendLimits.interval.name}`),
+          threshold_amount: sql.raw(
+            `excluded.${schema.spendLimits.threshold_amount.name}`,
+          ),
+          enforcement: sql.raw(
+            `excluded.${schema.spendLimits.enforcement.name}`,
+          ),
+        },
+      })
+      .returning();
+
+    return c.json(spendLimit);
   },
 );
 

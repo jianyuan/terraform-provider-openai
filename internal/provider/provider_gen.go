@@ -25,6 +25,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewProjectUserResource,
 		NewProjectUserRoleAssignmentResource,
 		NewSpendAlertResource,
+		NewSpendLimitResource,
 		NewUserRoleResource,
 		NewUserRoleAssignmentResource,
 	}
@@ -44,6 +45,7 @@ func (p *OpenAIProvider) DataSources(ctx context.Context) []func() datasource.Da
 		NewProjectRolesDataSource,
 		NewProjectUserRoleAssignmentsDataSource,
 		NewProjectsDataSource,
+		NewSpendLimitDataSource,
 		NewUserDataSource,
 		NewUserRoleAssignmentsDataSource,
 		NewUsersDataSource,

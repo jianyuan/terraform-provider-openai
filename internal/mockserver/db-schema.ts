@@ -336,6 +336,24 @@ export const dataRetentions = sqliteTable("data_retentions", {
     .default("modified_abuse_monitoring"),
 });
 
+export const spendLimits = sqliteTable("spend_limits", {
+  object: objectColumn("organization.spend_limit").primaryKey(),
+  currency: text({
+    enum: ["USD"],
+  })
+    .notNull()
+    .default("USD"),
+  interval: text({
+    enum: ["month"],
+  })
+    .notNull()
+    .default("month"),
+  threshold_amount: integer().notNull(),
+  enforcement: text({ mode: "json" }).notNull().$type<{
+    status: "active" | "enforcing";
+  }>(),
+});
+
 export const spendAlerts = sqliteTable("spend_alerts", {
   object: objectColumn("organization.spend_alert"),
   id: text().primaryKey().$defaultFn(idGenerator("alert_")),

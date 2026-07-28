@@ -69,8 +69,13 @@ export interface BaseDataSourceApiStrategy {
 }
 
 export type DataSourceApiStrategy =
+  | StaticDataSourceApiStrategy
   | SimpleDataSourceApiStrategy
   | PaginateDataSourceApiStrategy;
+
+export interface StaticDataSourceApiStrategy extends BaseDataSourceApiStrategy {
+  readStrategy: "static";
+}
 
 export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
   readStrategy: "simple";
