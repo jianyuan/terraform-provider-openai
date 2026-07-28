@@ -339,6 +339,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
         return parts;
       })
       .with({ readStrategy: "simple" }, () => ["data.Id.ValueString()"])
+      .with({ readStrategy: "static" }, () => [])
       .exhaustive(),
   );
 
@@ -389,6 +390,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     )
     .with(
       { readStrategy: "simple" },
+      { readStrategy: "static" },
       (api) => `
     httpResp, err := d.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
     if err != nil {
