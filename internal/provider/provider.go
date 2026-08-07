@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -90,6 +91,8 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		option.WithBaseURL(baseUrl),
 		option.WithAdminAPIKey(adminKey),
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version)),
+		option.WithRequestTimeout(10*time.Second),
+		option.WithMaxRetries(5),
 	))
 
 	pd := &providerData{

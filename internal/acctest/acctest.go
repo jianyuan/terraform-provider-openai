@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -32,6 +33,8 @@ func init() {
 		option.WithBaseURL(TestBaseUrl),
 		option.WithAdminAPIKey(TestAdminKey),
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", "dev", "dev")),
+		option.WithRequestTimeout(10*time.Second),
+		option.WithMaxRetries(5),
 	))
 
 	ctx := context.Background()
