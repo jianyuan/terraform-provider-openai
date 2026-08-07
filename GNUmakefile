@@ -22,6 +22,5 @@ sweep: ## Run sweepers
 
 .PHONY: generate
 generate:
-	go generate ./internal/apiclient
 	go generate ./internal/providergen
 	go generate ./
