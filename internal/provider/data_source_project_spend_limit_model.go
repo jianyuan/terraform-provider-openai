@@ -13,7 +13,7 @@ func (m *ProjectSpendLimitDataSourceModel) Fill(ctx context.Context, data openai
 	m.Interval = supertypes.NewStringValue(string(data.Interval))
 	m.ThresholdAmount = supertypes.NewInt64Value(data.ThresholdAmount)
 	m.Enforcement = supertypes.NewSingleNestedObjectValueOf(ctx, &ProjectSpendLimitDataSourceModelEnforcement{
-		Status: supertypes.NewStringValue(string(data.Enforcement.Status)),
+		Status: supertypes.NewStringValue(data.Enforcement.Status),
 	})
 
 	return nil

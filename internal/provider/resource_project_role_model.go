@@ -17,10 +17,6 @@ func (m *ProjectRoleResourceModel) Fill(ctx context.Context, role openai.Role) d
 	return nil
 }
 
-func (r *ProjectRoleResource) resourceMatch(data ProjectRoleResourceModel, role openai.Role) bool {
-	return data.Id.ValueString() == role.ID
-}
-
 func (r *ProjectRoleResource) getCreateJSONRequestBody(ctx context.Context, data ProjectRoleResourceModel) (*openai.AdminOrganizationProjectRoleNewParams, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	return &openai.AdminOrganizationProjectRoleNewParams{
