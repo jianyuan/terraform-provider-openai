@@ -4,17 +4,28 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *InviteDataSourceModel) Fill(ctx context.Context, invite apiclient.Invite) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(invite.Id)
+func (m *InviteDataSourceModel) Fill(ctx context.Context, invite openai.Invite) diag.Diagnostics {
+	m.Id = supertypes.NewStringValue(invite.ID)
 	m.Email = supertypes.NewStringValue(invite.Email)
 	m.Role = supertypes.NewStringValue(string(invite.Role))
 	m.Status = supertypes.NewStringValue(string(invite.Status))
 	m.CreatedAt = supertypes.NewInt64Value(invite.CreatedAt)
-	m.ExpiresAt = supertypes.NewInt64PointerValue(invite.ExpiresAt)
-	m.AcceptedAt = supertypes.NewInt64PointerValue(invite.AcceptedAt)
+
+	if invite.JSON.ExpiresAt.Valid() {
+		m.ExpiresAt = supertypes.NewInt64Value(invite.ExpiresAt)
+	} else {
+		m.ExpiresAt = supertypes.NewInt64Null()
+	}
+
+	if invite.JSON.AcceptedAt.Valid() {
+		m.AcceptedAt = supertypes.NewInt64Value(invite.AcceptedAt)
+	} else {
+		m.AcceptedAt = supertypes.NewInt64Null()
+	}
+
 	return nil
 }

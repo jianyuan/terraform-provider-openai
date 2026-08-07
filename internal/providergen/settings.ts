@@ -165,7 +165,7 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Invite",
       readStrategy: "simple",
-      readMethod: "RetrieveInvite",
+      readMethod: "Admin.Organization.Invites.Get",
     },
     attributes: [
       {
@@ -347,7 +347,7 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Project",
       readStrategy: "simple",
-      readMethod: "RetrieveProject",
+      readMethod: "Admin.Organization.Projects.Get",
     },
     attributes: [
       {
@@ -790,9 +790,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
-      model: "User",
+      model: "OrganizationUser",
       readStrategy: "simple",
-      readMethod: "RetrieveUser",
+      readMethod: "Admin.Organization.Users.Get",
     },
     attributes: [
       {
@@ -950,9 +950,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "spend_limit",
     description: "Retrieves organization spend limit.",
     api: {
-      model: "SpendLimit",
+      model: "OrganizationSpendLimit",
       readStrategy: "simple",
-      readMethod: "RetrieveOrganizationSpendLimit",
+      readMethod: "Admin.Organization.SpendLimit.Get",
       readRequestAttributes: [],
     },
     attributes: [
@@ -996,9 +996,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_spend_limit",
     description: "Retrieves project spend limit.",
     api: {
-      model: "SpendLimit",
+      model: "ProjectSpendLimit",
       readStrategy: "simple",
-      readMethod: "RetrieveProjectSpendLimit",
+      readMethod: "Admin.Organization.Projects.SpendLimit.Get",
       readRequestAttributes: ["project_id"],
     },
     attributes: [

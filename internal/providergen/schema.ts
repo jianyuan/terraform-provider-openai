@@ -65,7 +65,6 @@ export interface SingleNestedAttribute extends BaseAttribute {
 export interface BaseDataSourceApiStrategy {
   model: string;
   readMethod: string;
-  readMethodParamsStruct: string;
   readPagingMethod?: string;
   readRequestAttributes?: Array<string>;
 }
@@ -80,8 +79,8 @@ export interface SimpleDataSourceApiStrategy extends BaseDataSourceApiStrategy {
 
 export interface PaginateDataSourceApiStrategy extends BaseDataSourceApiStrategy {
   readStrategy: "paginate";
+  readMethodParamsStruct: string;
   readModel?: string;
-  readCursorParam?: string;
   readInitLoop?: string;
   readPreIterate?: string;
   readPostIterate?: string;
