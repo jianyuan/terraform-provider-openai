@@ -370,39 +370,26 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       { readStrategy: "paginate" },
       (api) => `
-    var modelInstances []apiclient.${api.readModel ?? api.model}
-    params := &apiclient.${api.readMethod}Params{
-      Limit: new(int64(100)),
+    params := openai.${api.readMethodParamsStruct}{
+      Limit: openai.Int(100),
     }
 
     ${api.readInitLoop ?? ""}
 
-    for {
+    iter := d.clientV2.${api.readMethod}.${api.readPagingMethod ?? "ListAutoPaging"}(${readRequestParams.join(",")})
+
+    var modelInstances []openai.${api.readModel ?? api.model}
+    for iter.Next() {
       ${api.readPreIterate ?? ""}
 
-      httpResp, err := d.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
-      if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-        return
-      } else if httpResp.StatusCode() != http.StatusOK {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-        return
-      } else if httpResp.JSON200 == nil {
-        resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-        return
-      }
-
-      modelInstances = append(modelInstances, httpResp.JSON200.Data...)
-
-      if v := getBool(httpResp.JSON200.HasMore); !v {
-        break
-      }
-
-      if v := getString(httpResp.JSON200.${api.readCursorParam ?? "LastId"}); v != "" {
-        params.After = &v
-      }
+      modelInstances = append(modelInstances, iter.Current())
 
       ${api.readPostIterate ?? ""}
+    }
+
+    if err := iter.Err(); err != nil {
+      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+      return
     }
 
     resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)
@@ -440,6 +427,7 @@ package provider
 
 import (
   "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+  "github.com/openai/openai-go/v3"
 )
 
 var _ datasource.DataSource = &${dataSourceName}{}
@@ -606,6 +594,7 @@ package provider
 
 import (
   "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+  "github.com/openai/openai-go/v3"
 )
 
 var _ resource.Resource = &${resourceName}{}

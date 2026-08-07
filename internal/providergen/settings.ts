@@ -5,10 +5,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "groups",
     description: "Lists all groups in the organization.",
     api: {
-      model: "GroupResponse",
+      model: "Group",
       readStrategy: "paginate",
-      readMethod: "ListGroups",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Groups",
+      readMethodParamsStruct: "AdminOrganizationGroupListParams",
     },
     attributes: [
       {
@@ -50,12 +50,11 @@ export const DATASOURCES: Array<DataSource> = [
     name: "group_users",
     description: "Lists the users assigned to a group.",
     api: {
-      model: "GroupUserAssignment",
-      readMethod: "ListGroupUsers",
-      readRequestAttributes: ["group_id"],
-      readModel: "GroupUser",
+      model: "OrganizationGroupUser",
       readStrategy: "paginate",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Groups.Users",
+      readMethodParamsStruct: "AdminOrganizationGroupUserListParams",
+      readRequestAttributes: ["group_id"],
     },
     attributes: [
       {
@@ -97,11 +96,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a group within the organization.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListGroupRoleAssignments",
+      readMethod: "Admin.Organization.Groups.Roles",
+      readMethodParamsStruct: "AdminOrganizationGroupRoleListParams",
       readRequestAttributes: ["group_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -223,7 +222,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Invite",
       readStrategy: "paginate",
-      readMethod: "ListInvites",
+      readMethod: "Admin.Organization.Invites",
+      readMethodParamsStruct: "AdminOrganizationInviteListParams",
     },
     attributes: [
       {
@@ -288,8 +288,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "ListRoles",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Roles",
+      readMethodParamsStruct: "AdminOrganizationRoleListParams",
     },
     attributes: [
       {
@@ -399,39 +399,28 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Project",
       readStrategy: "paginate",
-      readMethod: "ListProjects",
+      readMethod: "Admin.Organization.Projects",
+      readMethodParamsStruct: "AdminOrganizationProjectListParams",
       readInitLoop: `
-        params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
+        if data.IncludeArchived.IsKnown() {
+          params.IncludeArchived = openai.Bool(data.IncludeArchived.ValueBool())
+        }
 
         // Set the limit for the API request
-        if data.Limit.IsNull() {
-          params.Limit = new(int64(100))
-        } else {
+        if data.Limit.IsKnown() {
           requestLimit := data.Limit.ValueInt64()
           if requestLimit > 100 {
-            params.Limit = new(int64(100))
+            params.Limit = openai.Int(100)
           } else {
-            params.Limit = new(requestLimit)
+            params.Limit = openai.Int(requestLimit)
           }
-        }
-      `,
-      readPreIterate: `
-        // Recalculate the limit for each request to ensure we don't exceed the desired limit
-        if !data.Limit.IsNull() {
-          remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
-          if remainingLimit <= 0 {
-            break
-          }
-          if remainingLimit > 100 {
-            params.Limit = new(int64(100))
-          } else {
-            params.Limit = new(remainingLimit)
-          }
+        } else {
+          params.Limit = openai.Int(100)
         }
       `,
       readPostIterate: `
         // If limit is set and we have enough projects, break.
-        if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
+        if data.Limit.IsKnown() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
           modelInstances = modelInstances[:data.Limit.ValueInt64()]
           break
         }
@@ -509,8 +498,11 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "ProjectRateLimit",
       readStrategy: "paginate",
-      readMethod: "ListProjectRateLimits",
+      readMethod: "Admin.Organization.Projects.RateLimits",
+      readPagingMethod: "ListRateLimitsAutoPaging",
       readRequestAttributes: ["project_id"],
+      readMethodParamsStruct:
+        "AdminOrganizationProjectRateLimitListRateLimitsParams",
     },
     attributes: [
       {
@@ -587,9 +579,9 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "ListProjectRoles",
+      readMethod: "Admin.Organization.Projects.Roles",
       readRequestAttributes: ["project_id"],
-      readCursorParam: "Next",
+      readMethodParamsStruct: "AdminOrganizationProjectRoleListParams",
     },
     attributes: [
       {
@@ -652,11 +644,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the project roles assigned to a group within a project.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationProjectGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListProjectGroupRoleAssignments",
+      readMethod: "Admin.Organization.Projects.Groups.Roles",
+      readMethodParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
       readRequestAttributes: ["project_id", "group_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -725,11 +717,11 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_user_role_assignments",
     description: "Lists the project roles assigned to a user within a project.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationProjectUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListProjectUserRoleAssignments",
+      readMethod: "Admin.Organization.Projects.Users.Roles",
+      readMethodParamsStruct: "AdminOrganizationProjectUserRoleListParams",
       readRequestAttributes: ["project_id", "user_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -840,9 +832,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "users",
     description: "Lists all of the users in the organization.",
     api: {
-      model: "User",
+      model: "OrganizationUser",
       readStrategy: "paginate",
-      readMethod: "ListUsers",
+      readMethod: "Admin.Organization.Users",
+      readMethodParamsStruct: "AdminOrganizationUserListParams",
     },
     attributes: [
       {
@@ -891,11 +884,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a user within the organization.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListUserRoleAssignments",
+      readMethod: "Admin.Organization.Users.Roles",
+      readMethodParamsStruct: "AdminOrganizationUserRoleListParams",
       readRequestAttributes: ["user_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {

@@ -4,24 +4,46 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
-func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits []apiclient.ProjectRateLimit) diag.Diagnostics {
-	items := make([]ProjectRateLimitsDataSourceModelRateLimitsItem, len(rateLimits))
-	for i, rl := range rateLimits {
-		items[i] = ProjectRateLimitsDataSourceModelRateLimitsItem{
-			Id:                          supertypes.NewStringValue(rl.Id),
-			Model:                       supertypes.NewStringValue(rl.Model),
-			MaxRequestsPer1Minute:       supertypes.NewInt64Value(rl.MaxRequestsPer1Minute),
-			MaxTokensPer1Minute:         supertypes.NewInt64Value(rl.MaxTokensPer1Minute),
-			MaxImagesPer1Minute:         supertypes.NewInt64PointerValue(rl.MaxImagesPer1Minute),
-			MaxAudioMegabytesPer1Minute: supertypes.NewInt64PointerValue(rl.MaxAudioMegabytesPer1Minute),
-			MaxRequestsPer1Day:          supertypes.NewInt64PointerValue(rl.MaxRequestsPer1Day),
-			Batch1DayMaxInputTokens:     supertypes.NewInt64PointerValue(rl.Batch1DayMaxInputTokens),
+func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits []openai.ProjectRateLimit) diag.Diagnostics {
+	m.RateLimits = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(rateLimits, func(rl openai.ProjectRateLimit, _ int) ProjectRateLimitsDataSourceModelRateLimitsItem {
+		item := ProjectRateLimitsDataSourceModelRateLimitsItem{
+			Id:                    supertypes.NewStringValue(rl.ID),
+			Model:                 supertypes.NewStringValue(rl.Model),
+			MaxRequestsPer1Minute: supertypes.NewInt64Value(rl.MaxRequestsPer1Minute),
+			MaxTokensPer1Minute:   supertypes.NewInt64Value(rl.MaxTokensPer1Minute),
 		}
-	}
-	m.RateLimits = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
+
+		if rl.JSON.MaxImagesPer1Minute.Valid() {
+			item.MaxImagesPer1Minute = supertypes.NewInt64Value(rl.MaxImagesPer1Minute)
+		} else {
+			item.MaxImagesPer1Minute = supertypes.NewInt64Null()
+		}
+
+		if rl.JSON.MaxAudioMegabytesPer1Minute.Valid() {
+			item.MaxAudioMegabytesPer1Minute = supertypes.NewInt64Value(rl.MaxAudioMegabytesPer1Minute)
+		} else {
+			item.MaxAudioMegabytesPer1Minute = supertypes.NewInt64Null()
+		}
+
+		if rl.JSON.MaxRequestsPer1Day.Valid() {
+			item.MaxRequestsPer1Day = supertypes.NewInt64Value(rl.MaxRequestsPer1Day)
+		} else {
+			item.MaxRequestsPer1Day = supertypes.NewInt64Null()
+		}
+
+		if rl.JSON.Batch1DayMaxInputTokens.Valid() {
+			item.Batch1DayMaxInputTokens = supertypes.NewInt64Value(rl.Batch1DayMaxInputTokens)
+		} else {
+			item.Batch1DayMaxInputTokens = supertypes.NewInt64Null()
+		}
+
+		return item
+	}))
+
 	return nil
 }

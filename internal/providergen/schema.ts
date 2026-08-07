@@ -65,6 +65,8 @@ export interface SingleNestedAttribute extends BaseAttribute {
 export interface BaseDataSourceApiStrategy {
   model: string;
   readMethod: string;
+  readMethodParamsStruct: string;
+  readPagingMethod?: string;
   readRequestAttributes?: Array<string>;
 }
 

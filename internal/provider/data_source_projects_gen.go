@@ -4,13 +4,12 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -96,68 +95,44 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
-	var modelInstances []apiclient.Project
-	params := &apiclient.ListProjectsParams{
-		Limit: new(int64(100)),
+	params := openai.AdminOrganizationProjectListParams{
+		Limit: openai.Int(100),
 	}
 
-	params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
+	if data.IncludeArchived.IsKnown() {
+		params.IncludeArchived = openai.Bool(data.IncludeArchived.ValueBool())
+	}
 
 	// Set the limit for the API request
-	if data.Limit.IsNull() {
-		params.Limit = new(int64(100))
-	} else {
+	if data.Limit.IsKnown() {
 		requestLimit := data.Limit.ValueInt64()
 		if requestLimit > 100 {
-			params.Limit = new(int64(100))
+			params.Limit = openai.Int(100)
 		} else {
-			params.Limit = new(requestLimit)
+			params.Limit = openai.Int(requestLimit)
 		}
+	} else {
+		params.Limit = openai.Int(100)
 	}
 
-	for {
+	iter := d.clientV2.Admin.Organization.Projects.ListAutoPaging(ctx, params)
 
-		// Recalculate the limit for each request to ensure we don't exceed the desired limit
-		if !data.Limit.IsNull() {
-			remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
-			if remainingLimit <= 0 {
-				break
-			}
-			if remainingLimit > 100 {
-				params.Limit = new(int64(100))
-			} else {
-				params.Limit = new(remainingLimit)
-			}
-		}
+	var modelInstances []openai.Project
+	for iter.Next() {
 
-		httpResp, err := d.client.ListProjectsWithResponse(ctx, params)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-			return
-		} else if httpResp.StatusCode() != http.StatusOK {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-			return
-		} else if httpResp.JSON200 == nil {
-			resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-			return
-		}
-
-		modelInstances = append(modelInstances, httpResp.JSON200.Data...)
-
-		if v := getBool(httpResp.JSON200.HasMore); !v {
-			break
-		}
-
-		if v := getString(httpResp.JSON200.LastId); v != "" {
-			params.After = &v
-		}
+		modelInstances = append(modelInstances, iter.Current())
 
 		// If limit is set and we have enough projects, break.
-		if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
+		if data.Limit.IsKnown() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
 			modelInstances = modelInstances[:data.Limit.ValueInt64()]
 			break
 		}
 
+	}
+
+	if err := iter.Err(); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		return
 	}
 
 	resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)

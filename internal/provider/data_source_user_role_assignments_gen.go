@@ -4,11 +4,10 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -86,35 +85,22 @@ func (d *UserRoleAssignmentsDataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
-	var modelInstances []apiclient.AssignedRoleDetails
-	params := &apiclient.ListUserRoleAssignmentsParams{
-		Limit: new(int64(100)),
+	params := openai.AdminOrganizationUserRoleListParams{
+		Limit: openai.Int(100),
 	}
 
-	for {
+	iter := d.clientV2.Admin.Organization.Users.Roles.ListAutoPaging(ctx, data.UserId.ValueString(), params)
 
-		httpResp, err := d.client.ListUserRoleAssignmentsWithResponse(ctx, data.UserId.ValueString(), params)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
-			return
-		} else if httpResp.StatusCode() != http.StatusOK {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-			return
-		} else if httpResp.JSON200 == nil {
-			resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
-			return
-		}
+	var modelInstances []openai.AdminOrganizationUserRoleListResponse
+	for iter.Next() {
 
-		modelInstances = append(modelInstances, httpResp.JSON200.Data...)
+		modelInstances = append(modelInstances, iter.Current())
 
-		if v := getBool(httpResp.JSON200.HasMore); !v {
-			break
-		}
+	}
 
-		if v := getString(httpResp.JSON200.Next); v != "" {
-			params.After = &v
-		}
-
+	if err := iter.Err(); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		return
 	}
 
 	resp.Diagnostics.Append(data.Fill(ctx, modelInstances)...)

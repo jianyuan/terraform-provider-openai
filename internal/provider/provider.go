@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
 )
 
 // Ensure OpenAIProvider satisfies various provider interfaces.
@@ -90,8 +93,19 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	clientV2 := new(openai.NewClient(
+		option.WithBaseURL(baseUrl),
+		option.WithAdminAPIKey(adminKey),
+		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version)),
+	))
+
+	pd := &providerData{
+		client:   client,
+		clientV2: clientV2,
+	}
+
+	resp.DataSourceData = pd
+	resp.ResourceData = pd
 }
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {
