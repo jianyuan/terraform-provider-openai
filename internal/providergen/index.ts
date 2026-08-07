@@ -519,7 +519,7 @@ function generateResource({ resource }: { resource: Resource }) {
       }),
     );
   }
-  createRequestParams.push("body");
+  createRequestParams.push("*body");
 
   const readRequestParams = ["ctx"];
   if (resource.api.readRequestAttributes) {
@@ -563,7 +563,7 @@ function generateResource({ resource }: { resource: Resource }) {
       }),
     );
   }
-  updateRequestParams.push("body");
+  updateRequestParams.push("*body");
 
   const deleteRequestParams = ["ctx"];
   if (resource.api.deleteRequestAttributes) {
@@ -632,19 +632,16 @@ func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest
     return
   }
 
-  httpResp, err := r.client.${resource.api.createMethod}WithResponse(${createRequestParams.join(",")})
+  modelInstance, err := r.clientV2.${resource.api.method}.${resource.api.createMethod}(${createRequestParams.join(",")})
   if err != nil {
     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
     return
-  } else if httpResp.StatusCode() != http.StatusOK {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-    return
-  } else if httpResp.JSON200 == nil {
+  } else if modelInstance == nil {
     resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
     return
   }
 
-  resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+  resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
   if resp.Diagnostics.HasError() {
     return
   }
@@ -663,80 +660,45 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
   ${match(resource.api)
     .with(
       { readStrategy: "paginate" },
-      (api) => dedent`
-        var responseData *apiclient.${api.readModel ?? api.model}
+      (api) => `
+        params := openai.${api.readRequestParamsStruct}{
+          Limit: openai.Int(100),
+        }
 
-        err := retry.Do(
-          func() error {
-            params := &apiclient.${api.readMethod}Params{
-              Limit: new(int64(100)),
-            }
+        var modelInstance *openai.${api.readModel ?? api.model}
 
-            for {
-              httpResp, err := r.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
-              if err != nil {
-                return fmt.Errorf("Unable to read, got error: %s", err)
-              } else if httpResp.StatusCode() != http.StatusOK {
-                return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-              } else if httpResp.JSON200 == nil {
-                return fmt.Errorf("Unable to read, got empty response body")
-              }
+        iter := r.clientV2.${api.method}.${api.readMethod}(${readRequestParams.join(",")})
+        for iter.Next() {
+          currentModelInstance := iter.Current()
+          if r.resourceMatch(data, currentModelInstance){
+            modelInstance = new(currentModelInstance)
+            break
+          }
+        }
 
-              for _, responseDataItem := range httpResp.JSON200.Data {
-                if r.resourceMatch(data, responseDataItem) {
-                  responseData = &responseDataItem
-                  break
-                }
-              }
-
-              if v := getBool(httpResp.JSON200.HasMore); !v {
-                break
-              }
-
-              if v := getString(httpResp.JSON200.${api.readCursorParam ?? "LastId"}); v != "" {
-                params.After = &v
-              }
-            }
-
-            if responseData == nil {
-              return fmt.Errorf("Unable to read, could not find resource in the list")
-            }
-
-            return nil
-          },
-          retry.Delay(5*time.Second),
-        )
-
-        if err != nil {
-          resp.Diagnostics.AddError("Client Error", err.Error())
+        if err := iter.Err(); err != nil {
+          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+          return
+        } else if modelInstance == nil {
+          resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
           return
         }
       `,
     )
     .otherwise(
-      (api) => dedent`
-        httpResp, err := r.client.${api.readMethod}WithResponse(${readRequestParams.join(",")})
+      (api) => `
+        modelInstance, err := r.clientV2.${api.method}.Get(${readRequestParams.join(",")})
         if err != nil {
           resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
           return
-        } else if httpResp.StatusCode() != http.StatusOK {
-          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-          return
-        } else if httpResp.JSON200 == nil {
+        } else if modelInstance == nil {
           resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
           return
         }
-
-        responseData := httpResp.JSON200
       `,
     )}
 
-  if responseData == nil {
-    resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-    return
-  }
-
-  resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+  resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
   if resp.Diagnostics.HasError() {
     return
   }
@@ -761,19 +723,16 @@ func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest
         return
       }
 
-      httpResp, err := r.client.${resource.api.updateMethod}WithResponse(${updateRequestParams.join(",")})
+      modelInstance, err := r.clientV2.${resource.api.method}.${resource.api.updateMethod}(${updateRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
         return
-      } else if httpResp.StatusCode() != http.StatusOK {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-        return
-      } else if httpResp.JSON200 == nil {
+      } else if modelInstance == nil {
         resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
         return
       }
 
-      resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+      resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
       if resp.Diagnostics.HasError() {
         return
       }
@@ -797,14 +756,9 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
         return
       }
 
-      httpResp, err := r.client.${resource.api.deleteMethod}WithResponse(${deleteRequestParams.join(",")})
+      _, err := r.clientV2.${resource.api.method}.${resource.api.deleteMethod}(${deleteRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-        return
-      } else if httpResp.StatusCode() == http.StatusNotFound {
-        return
-      } else if httpResp.StatusCode() != http.StatusOK {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
         return
       }
       `

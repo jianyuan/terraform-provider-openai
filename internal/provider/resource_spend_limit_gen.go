@@ -4,7 +4,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -86,19 +85,16 @@ func (r *SpendLimitResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	httpResp, err := r.client.UpdateOrganizationSpendLimitWithResponse(ctx, body)
+	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -114,26 +110,16 @@ func (r *SpendLimitResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	httpResp, err := r.client.RetrieveOrganizationSpendLimitWithResponse(ctx)
+	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Get(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	responseData := httpResp.JSON200
-
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -155,19 +141,16 @@ func (r *SpendLimitResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	httpResp, err := r.client.UpdateOrganizationSpendLimitWithResponse(ctx, body)
+	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -183,14 +166,9 @@ func (r *SpendLimitResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	httpResp, err := r.client.DeleteOrganizationSpendLimitWithResponse(ctx)
+	_, err := r.clientV2.Admin.Organization.SpendLimit.Delete(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

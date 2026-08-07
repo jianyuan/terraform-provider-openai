@@ -4,16 +4,12 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"time"
 
-	"github.com/avast/retry-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/jianyuan/terraform-provider-openai/internal/tfutils"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -79,19 +75,16 @@ func (r *ProjectGroupRoleAssignmentResource) Create(ctx context.Context, req res
 		return
 	}
 
-	httpResp, err := r.client.AssignProjectGroupRoleWithResponse(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), body)
+	modelInstance, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.New(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -107,60 +100,16 @@ func (r *ProjectGroupRoleAssignmentResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	var responseData *apiclient.AssignedRoleDetails
-
-	err := retry.Do(
-		func() error {
-			params := &apiclient.ListProjectGroupRoleAssignmentsParams{
-				Limit: new(int64(100)),
-			}
-
-			for {
-				httpResp, err := r.client.ListProjectGroupRoleAssignmentsWithResponse(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), params)
-				if err != nil {
-					return fmt.Errorf("Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK {
-					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-				} else if httpResp.JSON200 == nil {
-					return fmt.Errorf("Unable to read, got empty response body")
-				}
-
-				for _, responseDataItem := range httpResp.JSON200.Data {
-					if r.resourceMatch(data, responseDataItem) {
-						responseData = &responseDataItem
-						break
-					}
-				}
-
-				if v := getBool(httpResp.JSON200.HasMore); !v {
-					break
-				}
-
-				if v := getString(httpResp.JSON200.Next); v != "" {
-					params.After = &v
-				}
-			}
-
-			if responseData == nil {
-				return fmt.Errorf("Unable to read, could not find resource in the list")
-			}
-
-			return nil
-		},
-		retry.Delay(5*time.Second),
-	)
-
+	modelInstance, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.Get(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", err.Error())
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		return
+	} else if modelInstance == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -180,14 +129,9 @@ func (r *ProjectGroupRoleAssignmentResource) Delete(ctx context.Context, req res
 		return
 	}
 
-	httpResp, err := r.client.UnassignProjectGroupRoleWithResponse(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
+	_, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.Delete(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

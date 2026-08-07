@@ -94,10 +94,12 @@ export interface DataSource {
 
 export interface ResourceApiStrategy {
   model?: string;
+  method?: string;
   createMethod: string;
   createRequestAttributes?: Array<string>;
   readMethod: string;
   readRequestAttributes?: Array<string>;
+  readRequestParamsStruct?: string;
   readStrategy?: "paginate";
   readModel?: string;
   readCursorParam?: string;

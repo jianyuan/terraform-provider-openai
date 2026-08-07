@@ -14,18 +14,18 @@ func (m *InviteDataSourceModel) Fill(ctx context.Context, invite openai.Invite) 
 	m.Role = supertypes.NewStringValue(string(invite.Role))
 	m.Status = supertypes.NewStringValue(string(invite.Status))
 	m.CreatedAt = supertypes.NewInt64Value(invite.CreatedAt)
-
-	if invite.JSON.ExpiresAt.Valid() {
-		m.ExpiresAt = supertypes.NewInt64Value(invite.ExpiresAt)
-	} else {
-		m.ExpiresAt = supertypes.NewInt64Null()
-	}
-
-	if invite.JSON.AcceptedAt.Valid() {
-		m.AcceptedAt = supertypes.NewInt64Value(invite.AcceptedAt)
-	} else {
-		m.AcceptedAt = supertypes.NewInt64Null()
-	}
+	m.ExpiresAt = (func() supertypes.Int64Value {
+		if invite.JSON.ExpiresAt.Valid() {
+			return supertypes.NewInt64Value(invite.ExpiresAt)
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.AcceptedAt = (func() supertypes.Int64Value {
+		if invite.JSON.AcceptedAt.Valid() {
+			return supertypes.NewInt64Value(invite.AcceptedAt)
+		}
+		return supertypes.NewInt64Null()
+	}())
 
 	return nil
 }

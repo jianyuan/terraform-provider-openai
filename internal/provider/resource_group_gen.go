@@ -4,16 +4,12 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"time"
 
-	"github.com/avast/retry-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -72,19 +68,16 @@ func (r *GroupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	httpResp, err := r.client.CreateGroupWithResponse(ctx, body)
+	modelInstance, err := r.clientV2.Admin.Organization.Groups.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -100,60 +93,16 @@ func (r *GroupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	var responseData *apiclient.GroupResponse
-
-	err := retry.Do(
-		func() error {
-			params := &apiclient.ListGroupsParams{
-				Limit: new(int64(100)),
-			}
-
-			for {
-				httpResp, err := r.client.ListGroupsWithResponse(ctx, params)
-				if err != nil {
-					return fmt.Errorf("Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK {
-					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-				} else if httpResp.JSON200 == nil {
-					return fmt.Errorf("Unable to read, got empty response body")
-				}
-
-				for _, responseDataItem := range httpResp.JSON200.Data {
-					if r.resourceMatch(data, responseDataItem) {
-						responseData = &responseDataItem
-						break
-					}
-				}
-
-				if v := getBool(httpResp.JSON200.HasMore); !v {
-					break
-				}
-
-				if v := getString(httpResp.JSON200.Next); v != "" {
-					params.After = &v
-				}
-			}
-
-			if responseData == nil {
-				return fmt.Errorf("Unable to read, could not find resource in the list")
-			}
-
-			return nil
-		},
-		retry.Delay(5*time.Second),
-	)
-
+	modelInstance, err := r.clientV2.Admin.Organization.Groups.Get(ctx, data.Id.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", err.Error())
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		return
+	} else if modelInstance == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -175,19 +124,16 @@ func (r *GroupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	httpResp, err := r.client.UpdateGroupWithResponse(ctx, data.Id.ValueString(), body)
+	modelInstance, err := r.clientV2.Admin.Organization.Groups.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -203,14 +149,9 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 
-	httpResp, err := r.client.DeleteGroupWithResponse(ctx, data.Id.ValueString())
+	_, err := r.clientV2.Admin.Organization.Groups.Delete(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

@@ -4,36 +4,37 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
-func (m *ProjectRoleResourceModel) Fill(ctx context.Context, role apiclient.Role) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(role.Id)
+func (m *ProjectRoleResourceModel) Fill(ctx context.Context, role openai.Role) diag.Diagnostics {
+	m.Id = supertypes.NewStringValue(role.ID)
 	m.Name = supertypes.NewStringValue(role.Name)
-	m.Description = supertypes.NewStringPointerValue(role.Description)
-	m.Permissions = supertypes.NewSetValueOfSlice(ctx, deduplicate(role.Permissions))
+	m.Description = supertypes.NewStringValue(role.Description)
+	m.Permissions = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(role.Permissions))
 	return nil
 }
 
-func (r *ProjectRoleResource) resourceMatch(data ProjectRoleResourceModel, role apiclient.Role) bool {
-	return data.Id.ValueString() == role.Id
+func (r *ProjectRoleResource) resourceMatch(data ProjectRoleResourceModel, role openai.Role) bool {
+	return data.Id.ValueString() == role.ID
 }
 
-func (r *ProjectRoleResource) getCreateJSONRequestBody(ctx context.Context, data ProjectRoleResourceModel) (apiclient.CreateRoleJSONRequestBody, diag.Diagnostics) {
+func (r *ProjectRoleResource) getCreateJSONRequestBody(ctx context.Context, data ProjectRoleResourceModel) (*openai.AdminOrganizationProjectRoleNewParams, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	return apiclient.CreateRoleJSONRequestBody{
+	return &openai.AdminOrganizationProjectRoleNewParams{
 		RoleName:    data.Name.ValueString(),
 		Permissions: mergeDiagnostics(data.Permissions.Get(ctx))(&diags),
-		Description: data.Description.ValueStringPointer(),
+		Description: openai.String(data.Description.ValueString()),
 	}, diags
 }
 
-func (r *ProjectRoleResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectRoleResourceModel) (apiclient.UpdateRoleJSONRequestBody, diag.Diagnostics) {
+func (r *ProjectRoleResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectRoleResourceModel) (*openai.AdminOrganizationProjectRoleUpdateParams, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	return apiclient.UpdateRoleJSONRequestBody{
-		RoleName:    data.Name.ValueStringPointer(),
-		Permissions: new(mergeDiagnostics(data.Permissions.Get(ctx))(&diags)),
-		Description: data.Description.ValueStringPointer(),
+	return &openai.AdminOrganizationProjectRoleUpdateParams{
+		RoleName:    openai.String(data.Name.ValueString()),
+		Permissions: mergeDiagnostics(data.Permissions.Get(ctx))(&diags),
+		Description: openai.String(data.Description.ValueString()),
 	}, diags
 }

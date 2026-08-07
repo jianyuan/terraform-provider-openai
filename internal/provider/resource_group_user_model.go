@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
-	case apiclient.GroupUserAssignment:
-		m.GroupId = supertypes.NewStringValue(data.GroupId)
-		m.UserId = supertypes.NewStringValue(data.UserId)
+	case openai.AdminOrganizationGroupUserNewResponse:
+		m.GroupId = supertypes.NewStringValue(data.GroupID)
+		m.UserId = supertypes.NewStringValue(data.UserID)
 		return nil
-	case apiclient.GroupUser:
-		m.UserId = supertypes.NewStringValue(data.Id)
+	case openai.AdminOrganizationGroupUserGetResponse:
+		m.UserId = supertypes.NewStringValue(data.ID)
 		return nil
 	default:
 		var diags diag.Diagnostics
@@ -25,12 +25,8 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 	}
 }
 
-func (r *GroupUserResource) resourceMatch(data GroupUserResourceModel, user apiclient.GroupUser) bool {
-	return data.UserId.ValueString() == user.Id
-}
-
-func (r *GroupUserResource) getCreateJSONRequestBody(ctx context.Context, data GroupUserResourceModel) (apiclient.AddGroupUserJSONRequestBody, diag.Diagnostics) {
-	return apiclient.AddGroupUserJSONRequestBody{
-		UserId: data.UserId.ValueString(),
+func (r *GroupUserResource) getCreateJSONRequestBody(ctx context.Context, data GroupUserResourceModel) (*openai.AdminOrganizationGroupUserNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationGroupUserNewParams{
+		UserID: data.UserId.ValueString(),
 	}, nil
 }

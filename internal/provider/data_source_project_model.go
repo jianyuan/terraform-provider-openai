@@ -12,20 +12,19 @@ func (m *ProjectDataSourceModel) Fill(ctx context.Context, project openai.Projec
 	m.Id = supertypes.NewStringValue(project.ID)
 	m.Name = supertypes.NewStringValue(project.Name)
 	m.Status = supertypes.NewStringValue(project.Status)
-
-	if project.JSON.ExternalKeyID.Valid() {
-		m.ExternalKeyId = supertypes.NewStringValue(project.ExternalKeyID)
-	} else {
-		m.ExternalKeyId = supertypes.NewStringNull()
-	}
-
+	m.ExternalKeyId = (func() supertypes.StringValue {
+		if project.JSON.ExternalKeyID.Valid() {
+			return supertypes.NewStringValue(project.ExternalKeyID)
+		}
+		return supertypes.NewStringNull()
+	})()
 	m.CreatedAt = supertypes.NewInt64Value(project.CreatedAt)
-
-	if project.JSON.ArchivedAt.Valid() {
-		m.ArchivedAt = supertypes.NewInt64Value(project.ArchivedAt)
-	} else {
-		m.ArchivedAt = supertypes.NewInt64Null()
-	}
+	m.ArchivedAt = (func() supertypes.Int64Value {
+		if project.JSON.ArchivedAt.Valid() {
+			return supertypes.NewInt64Value(project.ArchivedAt)
+		}
+		return supertypes.NewInt64Null()
+	})()
 
 	return nil
 }

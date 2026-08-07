@@ -11,38 +11,36 @@ import (
 
 func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits []openai.ProjectRateLimit) diag.Diagnostics {
 	m.RateLimits = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(rateLimits, func(rl openai.ProjectRateLimit, _ int) ProjectRateLimitsDataSourceModelRateLimitsItem {
-		item := ProjectRateLimitsDataSourceModelRateLimitsItem{
+		return ProjectRateLimitsDataSourceModelRateLimitsItem{
 			Id:                    supertypes.NewStringValue(rl.ID),
 			Model:                 supertypes.NewStringValue(rl.Model),
 			MaxRequestsPer1Minute: supertypes.NewInt64Value(rl.MaxRequestsPer1Minute),
 			MaxTokensPer1Minute:   supertypes.NewInt64Value(rl.MaxTokensPer1Minute),
+			MaxImagesPer1Minute: (func() supertypes.Int64Value {
+				if rl.JSON.MaxImagesPer1Minute.Valid() {
+					return supertypes.NewInt64Value(rl.MaxImagesPer1Minute)
+				}
+				return supertypes.NewInt64Null()
+			})(),
+			MaxAudioMegabytesPer1Minute: (func() supertypes.Int64Value {
+				if rl.JSON.MaxAudioMegabytesPer1Minute.Valid() {
+					return supertypes.NewInt64Value(rl.MaxAudioMegabytesPer1Minute)
+				}
+				return supertypes.NewInt64Null()
+			})(),
+			MaxRequestsPer1Day: (func() supertypes.Int64Value {
+				if rl.JSON.MaxRequestsPer1Day.Valid() {
+					return supertypes.NewInt64Value(rl.MaxRequestsPer1Day)
+				}
+				return supertypes.NewInt64Null()
+			})(),
+			Batch1DayMaxInputTokens: (func() supertypes.Int64Value {
+				if rl.JSON.Batch1DayMaxInputTokens.Valid() {
+					return supertypes.NewInt64Value(rl.Batch1DayMaxInputTokens)
+				}
+				return supertypes.NewInt64Null()
+			})(),
 		}
-
-		if rl.JSON.MaxImagesPer1Minute.Valid() {
-			item.MaxImagesPer1Minute = supertypes.NewInt64Value(rl.MaxImagesPer1Minute)
-		} else {
-			item.MaxImagesPer1Minute = supertypes.NewInt64Null()
-		}
-
-		if rl.JSON.MaxAudioMegabytesPer1Minute.Valid() {
-			item.MaxAudioMegabytesPer1Minute = supertypes.NewInt64Value(rl.MaxAudioMegabytesPer1Minute)
-		} else {
-			item.MaxAudioMegabytesPer1Minute = supertypes.NewInt64Null()
-		}
-
-		if rl.JSON.MaxRequestsPer1Day.Valid() {
-			item.MaxRequestsPer1Day = supertypes.NewInt64Value(rl.MaxRequestsPer1Day)
-		} else {
-			item.MaxRequestsPer1Day = supertypes.NewInt64Null()
-		}
-
-		if rl.JSON.Batch1DayMaxInputTokens.Valid() {
-			item.Batch1DayMaxInputTokens = supertypes.NewInt64Value(rl.Batch1DayMaxInputTokens)
-		} else {
-			item.Batch1DayMaxInputTokens = supertypes.NewInt64Null()
-		}
-
-		return item
 	}))
 
 	return nil

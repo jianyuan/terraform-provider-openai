@@ -309,6 +309,18 @@ app.post(
   },
 );
 
+app.get("/organization/spend_alerts/:alert_id", async (c) => {
+  const alert_id = c.req.param("alert_id");
+  const spendAlert = await db.query.spendAlerts.findFirst({
+    where: eq(schema.spendAlerts.id, alert_id),
+  });
+  if (!spendAlert) {
+    return c.json({ error: "Spend alert not found" }, 404);
+  }
+
+  return c.json(spendAlert);
+});
+
 app.post(
   "/organization/spend_alerts/:alert_id",
   zValidator(
@@ -405,6 +417,18 @@ app.post(
   },
 );
 
+app.get("/organization/roles/:role_id", async (c) => {
+  const role_id = c.req.param("role_id");
+  const role = await db.query.roles.findFirst({
+    where: eq(schema.roles.id, role_id),
+  });
+  if (!role) {
+    return c.json({ error: "Role not found" }, 404);
+  }
+
+  return c.json(role);
+});
+
 app.post(
   "/organization/roles/:role_id",
   zValidator(
@@ -494,6 +518,18 @@ app.post(
     return c.json(group);
   },
 );
+
+app.get("/organization/groups/:group_id", async (c) => {
+  const group_id = c.req.param("group_id");
+  const group = await db.query.groups.findFirst({
+    where: eq(schema.groups.id, group_id),
+  });
+  if (!group) {
+    return c.json({ error: "Group not found" }, 404);
+  }
+
+  return c.json(group);
+});
 
 app.post(
   "/organization/groups/:group_id",
@@ -600,6 +636,26 @@ app.post(
   },
 );
 
+app.get("/organization/groups/:group_id/roles/:role_id", async (c) => {
+  const group_id = c.req.param("group_id");
+  const role_id = c.req.param("role_id");
+
+  const groupToRole = await db.query.groupsToRoles.findFirst({
+    where: and(
+      eq(schema.groupsToRoles.group_id, group_id),
+      eq(schema.groupsToRoles.role_id, role_id),
+    ),
+    with: {
+      role: true,
+    },
+  });
+  if (!groupToRole) {
+    return c.json({ error: "Group to role not found" }, 404);
+  }
+
+  return c.json(groupToRole.role);
+});
+
 app.delete("/organization/groups/:group_id/roles/:role_id", async (c) => {
   const group_id = c.req.param("group_id");
   const role_id = c.req.param("role_id");
@@ -690,6 +746,26 @@ app.post(
     });
   },
 );
+
+app.get("/organization/groups/:group_id/users/:user_id", async (c) => {
+  const group_id = c.req.param("group_id");
+  const user_id = c.req.param("user_id");
+
+  const groupToUser = await db.query.groupsToUsers.findFirst({
+    where: and(
+      eq(schema.groupsToUsers.group_id, group_id),
+      eq(schema.groupsToUsers.user_id, user_id),
+    ),
+    with: {
+      user: true,
+    },
+  });
+  if (!groupToUser) {
+    return c.json({ error: "Group to user not found" }, 404);
+  }
+
+  return c.json(groupToUser.user);
+});
 
 app.delete("/organization/groups/:group_id/users/:user_id", async (c) => {
   const group_id = c.req.param("group_id");
@@ -842,6 +918,26 @@ app.post(
     });
   },
 );
+
+app.get("/organization/users/:user_id/roles/:role_id", async (c) => {
+  const user_id = c.req.param("user_id");
+  const role_id = c.req.param("role_id");
+
+  const userToRole = await db.query.usersToRoles.findFirst({
+    where: and(
+      eq(schema.usersToRoles.user_id, user_id),
+      eq(schema.usersToRoles.role_id, role_id),
+    ),
+    with: {
+      role: true,
+    },
+  });
+  if (!userToRole) {
+    return c.json({ error: "User to role not found" }, 404);
+  }
+
+  return c.json(userToRole.role);
+});
 
 app.delete("/organization/users/:user_id/roles/:role_id", async (c) => {
   const user_id = c.req.param("user_id");
@@ -1085,6 +1181,26 @@ app.post(
     return c.json(role);
   },
 );
+
+app.get("/projects/:project_id/roles/:role_id", async (c) => {
+  const project_id = c.req.param("project_id")!;
+  const role_id = c.req.param("role_id")!;
+
+  const role = await db.query.projectsToRoles.findFirst({
+    where: and(
+      eq(schema.projectsToRoles.project_id, project_id),
+      eq(schema.projectsToRoles.role_id, role_id),
+    ),
+    with: {
+      role: true,
+    },
+  });
+  if (!role) {
+    return c.json({ error: "Role not found" }, 404);
+  }
+
+  return c.json(role.role);
+});
 
 app.post(
   "/projects/:project_id/roles/:role_id",
@@ -1530,6 +1646,28 @@ app.post(
   },
 );
 
+app.get("/projects/:project_id/groups/:group_id/roles/:role_id", async (c) => {
+  const project_id = c.req.param("project_id");
+  const group_id = c.req.param("group_id");
+  const role_id = c.req.param("role_id");
+
+  const groupToRole = await db.query.projectsToGroupsToRoles.findFirst({
+    where: and(
+      eq(schema.projectsToGroupsToRoles.project_id, project_id),
+      eq(schema.projectsToGroupsToRoles.group_id, group_id),
+      eq(schema.projectsToGroupsToRoles.role_id, role_id),
+    ),
+    with: {
+      role: true,
+    },
+  });
+  if (!groupToRole) {
+    return c.json({ error: "Group to role not found" }, 404);
+  }
+
+  return c.json(groupToRole.role);
+});
+
 app.delete(
   "/projects/:project_id/groups/:group_id/roles/:role_id",
   async (c) => {
@@ -1622,6 +1760,28 @@ app.post(
     });
   },
 );
+
+app.get("/projects/:project_id/users/:user_id/roles/:role_id", async (c) => {
+  const project_id = c.req.param("project_id");
+  const user_id = c.req.param("user_id");
+  const role_id = c.req.param("role_id");
+
+  const userToRole = await db.query.projectsToUsersToRoles.findFirst({
+    where: and(
+      eq(schema.projectsToUsersToRoles.project_id, project_id),
+      eq(schema.projectsToUsersToRoles.user_id, user_id),
+      eq(schema.projectsToUsersToRoles.role_id, role_id),
+    ),
+    with: {
+      role: true,
+    },
+  });
+  if (!userToRole) {
+    return c.json({ error: "User to role not found" }, 404);
+  }
+
+  return c.json(userToRole.role);
+});
 
 app.delete("/projects/:project_id/users/:user_id/roles/:role_id", async (c) => {
   const project_id = c.req.param("project_id");

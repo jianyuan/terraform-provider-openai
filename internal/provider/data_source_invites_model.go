@@ -11,27 +11,25 @@ import (
 
 func (m *InvitesDataSourceModel) Fill(ctx context.Context, invites []openai.Invite) diag.Diagnostics {
 	m.Invites = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(invites, func(invite openai.Invite, _ int) InvitesDataSourceModelInvitesItem {
-		item := InvitesDataSourceModelInvitesItem{
+		return InvitesDataSourceModelInvitesItem{
 			Id:        supertypes.NewStringValue(invite.ID),
 			Email:     supertypes.NewStringValue(invite.Email),
 			Role:      supertypes.NewStringValue(string(invite.Role)),
 			Status:    supertypes.NewStringValue(string(invite.Status)),
 			CreatedAt: supertypes.NewInt64Value(invite.CreatedAt),
+			ExpiresAt: (func() supertypes.Int64Value {
+				if invite.JSON.ExpiresAt.Valid() {
+					return supertypes.NewInt64Value(invite.ExpiresAt)
+				}
+				return supertypes.NewInt64Null()
+			})(),
+			AcceptedAt: (func() supertypes.Int64Value {
+				if invite.JSON.AcceptedAt.Valid() {
+					return supertypes.NewInt64Value(invite.AcceptedAt)
+				}
+				return supertypes.NewInt64Null()
+			})(),
 		}
-
-		if invite.JSON.ExpiresAt.Valid() {
-			item.ExpiresAt = supertypes.NewInt64Value(invite.ExpiresAt)
-		} else {
-			item.ExpiresAt = supertypes.NewInt64Null()
-		}
-
-		if invite.JSON.AcceptedAt.Valid() {
-			item.AcceptedAt = supertypes.NewInt64Value(invite.AcceptedAt)
-		} else {
-			item.AcceptedAt = supertypes.NewInt64Null()
-		}
-
-		return item
 	}))
 
 	return nil

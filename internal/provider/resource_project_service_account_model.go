@@ -5,22 +5,22 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
-	case apiclient.ProjectServiceAccountCreateResponse:
-		m.Id = supertypes.NewStringValue(data.Id)
+	case openai.AdminOrganizationProjectServiceAccountNewResponse:
+		m.Id = supertypes.NewStringValue(data.ID)
 		m.Name = supertypes.NewStringValue(data.Name)
 		m.Role = supertypes.NewStringValue(string(data.Role))
 		m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
-		m.ApiKeyId = supertypes.NewStringValue(data.ApiKey.Id)
-		m.ApiKey = supertypes.NewStringValue(data.ApiKey.Value)
+		m.ApiKeyId = supertypes.NewStringValue(data.APIKey.ID)
+		m.ApiKey = supertypes.NewStringValue(data.APIKey.Value)
 		return nil
-	case apiclient.ProjectServiceAccount:
-		m.Id = supertypes.NewStringValue(data.Id)
+	case openai.ProjectServiceAccount:
+		m.Id = supertypes.NewStringValue(data.ID)
 		m.Name = supertypes.NewStringValue(data.Name)
 		m.Role = supertypes.NewStringValue(string(data.Role))
 		m.CreatedAt = supertypes.NewInt64Value(data.CreatedAt)
@@ -32,8 +32,14 @@ func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any)
 	}
 }
 
-func (r *ProjectServiceAccountResource) getCreateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (apiclient.ProjectServiceAccountCreateRequest, diag.Diagnostics) {
-	return apiclient.CreateProjectServiceAccountJSONRequestBody{
+func (r *ProjectServiceAccountResource) getCreateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationProjectServiceAccountNewParams{
 		Name: data.Name.ValueString(),
+	}, nil
+}
+
+func (r *ProjectServiceAccountResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountUpdateParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationProjectServiceAccountUpdateParams{
+		Name: openai.String(data.Name.ValueString()),
 	}, nil
 }
