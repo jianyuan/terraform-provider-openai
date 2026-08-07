@@ -42,8 +42,10 @@ jobs:
       - uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
-      - uses: astral-sh/setup-uv@v9.0.0
-      - run: go generate ./
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: make generate
       - name: git diff
         run: |
           git diff --compact-summary --exit-code || \
@@ -72,6 +74,8 @@ jobs:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - run: go mod download
       - run: bun install
         working-directory: ./internal/mockserver

@@ -1192,6 +1192,14 @@ components:
           - high
           - xhigh
           type: string
+        keywords:
+          description: 'Words or phrases to guide transcription of the input audio.
+            Supported by `gpt-transcribe` and `gpt-live-transcribe`.
+
+            '
+          items:
+            type: string
+          type: array
         language:
           description: 'The language of the input audio. Supplying the input language
             in
@@ -1203,11 +1211,22 @@ components:
 
             '
           type: string
+        languages:
+          description: 'Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+            format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
+
+            '
+          items:
+            type: string
+          minItems: 1
+          type: array
         model:
           anyOf:
           - type: string
           - enum:
             - whisper-1
+            - gpt-transcribe
+            - gpt-live-transcribe
             - gpt-4o-mini-transcribe
             - gpt-4o-mini-transcribe-2025-12-15
             - gpt-4o-transcribe
@@ -1215,9 +1234,10 @@ components:
             - gpt-realtime-whisper
             type: string
           description: 'The model to use for transcription. Current options are `whisper-1`,
-            `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`,
-            `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize`
-            when you need diarization with speaker labels.
+            `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`,
+            `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
+            Use `gpt-4o-transcribe-diarize` when you need diarization with speaker
+            labels.
 
             '
         prompt:
@@ -1244,11 +1264,23 @@ components:
 
             '
           type: string
+        languages:
+          description: 'The possible input audio languages configured for transcription,
+            in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+            format.
+
+            '
+          items:
+            type: string
+          minItems: 1
+          type: array
         model:
           anyOf:
           - type: string
           - enum:
             - whisper-1
+            - gpt-transcribe
+            - gpt-live-transcribe
             - gpt-4o-mini-transcribe
             - gpt-4o-mini-transcribe-2025-12-15
             - gpt-4o-transcribe
@@ -1256,8 +1288,8 @@ components:
             - gpt-realtime-whisper
             type: string
           description: 'The model used for transcription. Current options are `whisper-1`,
-            `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`,
-            `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
+            `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`,
+            `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
 
             '
         prompt:
@@ -20869,6 +20901,14 @@ components:
           items:
             $ref: '#/components/schemas/TranscriptionInclude'
           type: array
+        keywords:
+          description: 'Words or phrases to guide transcription of the input audio.
+            Supported by `gpt-transcribe`.
+
+            '
+          items:
+            type: string
+          type: array
         known_speaker_names:
           description: 'Optional list of speaker names that correspond to the audio
             samples provided in `known_speaker_references[]`. Each entry should be
@@ -20898,20 +20938,31 @@ components:
 
             '
           type: string
+        languages:
+          description: 'Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+            format. Supported by `gpt-transcribe`.
+
+            '
+          items:
+            type: string
+          minItems: 1
+          type: array
         model:
           anyOf:
           - type: string
           - enum:
             - whisper-1
+            - gpt-transcribe
             - gpt-4o-transcribe
             - gpt-4o-mini-transcribe
             - gpt-4o-mini-transcribe-2025-12-15
             - gpt-4o-transcribe-diarize
             type: string
             x-stainless-const: true
-          description: 'ID of the model to use. The options are `gpt-4o-transcribe`,
-            `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `whisper-1`
-            (which is powered by our open source Whisper V2 model), and `gpt-4o-transcribe-diarize`.
+          description: 'ID of the model to use. The options are `gpt-transcribe`,
+            `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`,
+            `whisper-1` (which is powered by our open source Whisper V2 model), and
+            `gpt-4o-transcribe-diarize`.
 
             '
           example: gpt-4o-transcribe
@@ -21034,6 +21085,14 @@ components:
       description: Represents a transcription response returned by model, based on
         the provided input.
       properties:
+        languages:
+          description: 'The languages detected in the audio. Returned by `gpt-transcribe`.
+            An empty array indicates that no language could be reliably detected.
+
+            '
+          items:
+            $ref: '#/components/schemas/TranscriptionLanguage'
+          type: array
         logprobs:
           description: 'The log probabilities of the tokens in the transcription.
             Only returned with the models `gpt-4o-transcribe` and `gpt-4o-mini-transcribe`
@@ -33332,6 +33391,14 @@ components:
         item_id:
           description: The ID of the user message item containing the audio.
           type: string
+        languages:
+          description: 'The languages detected in the audio. Returned by `gpt-transcribe`.
+            An empty array indicates that no language could be reliably detected.
+
+            '
+          items:
+            $ref: '#/components/schemas/TranscriptionLanguage'
+          type: array
         logprobs:
           description: The log probabilities of the transcription.
           items:
@@ -36920,6 +36987,14 @@ components:
         item_id:
           description: The ID of the item containing the audio that is being transcribed.
           type: string
+        languages:
+          description: 'The languages detected in the audio. Returned by `gpt-transcribe`.
+            An empty array indicates that no language could be reliably detected.
+
+            '
+          items:
+            $ref: '#/components/schemas/TranscriptionLanguage'
+          type: array
         logprobs:
           description: The log probabilities of the transcription.
           items:
@@ -48012,6 +48087,14 @@ components:
         transcription text. Only emitted when you [create a transcription](/docs/api-reference/audio/create-transcription)
         with the `Stream` parameter set to `true`.
       properties:
+        languages:
+          description: 'The languages detected in the audio. Returned by `gpt-transcribe`.
+            An empty array indicates that no language could be reliably detected.
+
+            '
+          items:
+            $ref: '#/components/schemas/TranscriptionLanguage'
+          type: array
         logprobs:
           description: 'The log probabilities of the individual tokens in the transcription.
             Only included if you [create a transcription](/docs/api-reference/audio/create-transcription)
@@ -48238,6 +48321,15 @@ components:
       enum:
       - logprobs
       type: string
+    TranscriptionLanguage:
+      description: A language detected in transcribed audio.
+      properties:
+        code:
+          description: The code of a language detected in the audio.
+          type: string
+      required:
+      - code
+      type: object
     TranscriptionSegment:
       properties:
         avg_logprob:
@@ -51445,8 +51537,107 @@ components:
           \n  }\n} \n"
         group: webhook-events
         name: fine_tuning.job.succeeded
+    WebhookLiveCallIncoming:
+      description: 'Sent when an incoming API SIP session is available for Live acceptance.
+        The
+
+        same pending session can also emit `realtime.call.incoming`; the first
+
+        successful Realtime or Live accept endpoint selects the runtime surface.
+
+        '
+      properties:
+        created_at:
+          description: 'The Unix timestamp (in seconds) of when the event was created.
+
+            '
+          format: int64
+          type: integer
+        data:
+          description: 'Event data payload.
+
+            '
+          properties:
+            session_id:
+              description: 'The Transceiver `rtc_...` ID of the pending SIP session.
+                The same
+
+                value appears as `call_id` in `realtime.call.incoming`.
+
+                '
+              type: string
+            sip_headers:
+              description: 'Headers from the SIP Invite.
+
+                '
+              items:
+                description: 'A header from the SIP Invite.
+
+                  '
+                properties:
+                  name:
+                    description: 'Name of the SIP Header.
+
+                      '
+                    type: string
+                  value:
+                    description: 'Value of the SIP Header.
+
+                      '
+                    type: string
+                required:
+                - name
+                - value
+                type: object
+              type: array
+          required:
+          - session_id
+          - sip_headers
+          type: object
+        id:
+          description: 'The unique ID of the event.
+
+            '
+          type: string
+        object:
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          type: string
+          x-stainless-const: true
+        type:
+          description: 'The type of the event. Always `live.call.incoming`.
+
+            '
+          enum:
+          - live.call.incoming
+          type: string
+          x-stainless-const: true
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      title: live.call.incoming
+      type: object
+      x-oaiMeta:
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"live.call.incoming\"\
+          ,\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"session_id\": \"\
+          rtc_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_headers\": [\n      {\"\
+          name\": \"Max-Forwards\", \"value\": \"63\"},\n      {\"name\": \"CSeq\"\
+          , \"value\": \"851287 INVITE\"},\n      {\"name\": \"Content-Type\", \"\
+          value\": \"application/sdp\"},\n    ]\n  }\n}\n"
+        group: webhook-events
+        name: live.call.incoming
     WebhookRealtimeCallIncoming:
-      description: 'Sent when Realtime API Receives a incoming SIP call.
+      description: 'Sent when an incoming API SIP session is available for Realtime
+        acceptance.
+
+        The same pending session can also emit `live.call.incoming`; the first
+
+        successful Realtime or Live accept endpoint selects the runtime surface.
 
         '
       properties:
@@ -51463,7 +51654,10 @@ components:
             '
           properties:
             call_id:
-              description: 'The unique ID of this call.
+              description: 'The Transceiver `rtc_...` ID of the pending SIP session.
+                The same
+
+                value appears as `session_id` in `live.call.incoming`.
 
                 '
               type: string
@@ -61751,6 +61945,9 @@ x-oaiMeta:
       path: <auto>
       type: object
     - key: WebhookRealtimeCallIncoming
+      path: <auto>
+      type: object
+    - key: WebhookLiveCallIncoming
       path: <auto>
       type: object
     title: Webhook Events
