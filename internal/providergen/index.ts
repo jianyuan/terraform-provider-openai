@@ -665,7 +665,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
           Limit: openai.Int(100),
         }
 
-        var modelInstance *openai.${api.readModel ?? api.model}
+        var modelInstance *openai.${api.readModel}
 
         iter := r.client.${api.method}.${api.readMethod}(${readRequestParams.join(",")})
         for iter.Next() {

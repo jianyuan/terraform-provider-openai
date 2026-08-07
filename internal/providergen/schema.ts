@@ -92,22 +92,31 @@ export interface DataSource {
   attributes: Array<Attribute>;
 }
 
-export interface ResourceApiStrategy {
-  model?: string;
+export interface BaseResourceApiStrategy {
   method?: string;
   createMethod: string;
   createRequestAttributes?: Array<string>;
   readMethod: string;
   readRequestAttributes?: Array<string>;
   readRequestParamsStruct?: string;
-  readStrategy?: "paginate";
-  readModel?: string;
-  readCursorParam?: string;
   updateMethod?: string;
   updateRequestAttributes?: Array<string>;
   deleteMethod?: string;
   deleteRequestAttributes?: Array<string>;
 }
+
+export interface SimpleResourceApiStrategy extends BaseResourceApiStrategy {
+  readStrategy?: never;
+}
+
+export interface PaginateResourceApiStrategy extends BaseResourceApiStrategy {
+  readStrategy: "paginate";
+  readModel: string;
+}
+
+export type ResourceApiStrategy =
+  | SimpleResourceApiStrategy
+  | PaginateResourceApiStrategy;
 
 export interface Resource {
   name: string;

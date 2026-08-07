@@ -1163,7 +1163,6 @@ export const RESOURCES: Array<Resource> = [
     description: "Creates a custom role for the organization.",
     api: {
       method: "Admin.Organization.Roles",
-      model: "Role",
       createMethod: "New",
       readMethod: "Get",
       readRequestAttributes: ["id"],
@@ -1352,14 +1351,14 @@ export const RESOURCES: Array<Resource> = [
       "Manage rate limits per model for projects. Rate limits may be configured to be equal to or lower than the organization's rate limits.",
     api: {
       method: "Admin.Organization.Projects.RateLimits",
-      model: "ProjectRateLimit",
       createMethod: "UpdateRateLimit",
       createRequestAttributes: ["project_id", "rate_limit_id"],
+      readStrategy: "paginate",
+      readModel: "ProjectRateLimit",
       readMethod: "ListRateLimitsAutoPaging",
       readRequestAttributes: ["project_id"],
       readRequestParamsStruct:
         "AdminOrganizationProjectRateLimitListRateLimitsParams",
-      readStrategy: "paginate",
       updateMethod: "UpdateRateLimit",
       updateRequestAttributes: ["project_id", "rate_limit_id"],
     },
@@ -1426,7 +1425,6 @@ export const RESOURCES: Array<Resource> = [
     description: "Creates a custom role for a project.",
     api: {
       method: "Admin.Organization.Projects.Roles",
-      model: "Role",
       createMethod: "New",
       createRequestAttributes: ["project_id"],
       readMethod: "Get",
@@ -1649,7 +1647,6 @@ export const RESOURCES: Array<Resource> = [
     name: "group",
     description: "Creates a new group in the organization.",
     api: {
-      model: "GroupResponse",
       method: "Admin.Organization.Groups",
       createMethod: "New",
       readMethod: "Get",
@@ -1686,7 +1683,6 @@ export const RESOURCES: Array<Resource> = [
     name: "group_user",
     description: "Adds a user to a group.",
     api: {
-      model: "GroupUserAssignment",
       method: "Admin.Organization.Groups.Users",
       createMethod: "New",
       createRequestAttributes: ["group_id"],
@@ -1718,11 +1714,10 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Assigns an organization role to a group within the organization.",
     api: {
-      model: "GroupRoleAssignment",
       method: "Admin.Organization.Groups.Roles",
       createMethod: "New",
       createRequestAttributes: ["group_id"],
-      readModel: "Get",
+      readMethod: "Get",
       readRequestAttributes: ["group_id", "role_id"],
       deleteMethod: "Delete",
       deleteRequestAttributes: ["group_id", "role_id"],
@@ -1750,7 +1745,6 @@ export const RESOURCES: Array<Resource> = [
     name: "data_retention",
     description: "Updates organization data retention controls.",
     api: {
-      model: "DataRetention",
       method: "Admin.Organization.DataRetention",
       createMethod: "Update",
       readMethod: "Get",
@@ -1824,7 +1818,6 @@ export const RESOURCES: Array<Resource> = [
     description: "Updates project spend limit.",
     api: {
       method: "Admin.Organization.Projects.SpendLimit",
-      model: "ProjectSpendLimit",
       createMethod: "Update",
       createRequestAttributes: ["project_id"],
       readMethod: "Get",
