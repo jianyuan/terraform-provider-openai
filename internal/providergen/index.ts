@@ -680,7 +680,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
           resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
           return
         } else if modelInstance == nil {
-          resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
+          resp.State.RemoveResource(ctx)
           return
         }
       `,
@@ -689,6 +689,11 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
       (api) => `
         modelInstance, err := r.client.${api.method}.Get(${readRequestParams.join(",")})
         if err != nil {
+          if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+            resp.State.RemoveResource(ctx)
+            return
+          }
+
           resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
           return
         } else if modelInstance == nil {
