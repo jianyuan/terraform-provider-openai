@@ -115,7 +115,7 @@ func (d *ProjectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		params.Limit = openai.Int(100)
 	}
 
-	iter := d.clientV2.Admin.Organization.Projects.ListAutoPaging(ctx, params)
+	iter := d.client.Admin.Organization.Projects.ListAutoPaging(ctx, params)
 
 	var modelInstances []openai.Project
 	for iter.Next() {

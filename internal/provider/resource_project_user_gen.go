@@ -77,7 +77,7 @@ func (r *ProjectUserResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Users.New(ctx, data.ProjectId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Users.New(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -102,7 +102,7 @@ func (r *ProjectUserResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Users.Get(ctx, data.ProjectId.ValueString(), data.UserId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.Users.Get(ctx, data.ProjectId.ValueString(), data.UserId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -133,7 +133,7 @@ func (r *ProjectUserResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Users.Update(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Users.Update(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -158,7 +158,7 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.Users.Delete(ctx, data.ProjectId.ValueString(), data.UserId.ValueString())
+	_, err := r.client.Admin.Organization.Projects.Users.Delete(ctx, data.ProjectId.ValueString(), data.UserId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

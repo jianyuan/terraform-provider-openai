@@ -89,7 +89,7 @@ func (d *GroupRoleAssignmentsDataSource) Read(ctx context.Context, req datasourc
 		Limit: openai.Int(100),
 	}
 
-	iter := d.clientV2.Admin.Organization.Groups.Roles.ListAutoPaging(ctx, data.GroupId.ValueString(), params)
+	iter := d.client.Admin.Organization.Groups.Roles.ListAutoPaging(ctx, data.GroupId.ValueString(), params)
 
 	var modelInstances []openai.AdminOrganizationGroupRoleListResponse
 	for iter.Next() {

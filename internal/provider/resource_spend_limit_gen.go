@@ -85,7 +85,7 @@ func (r *SpendLimitResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Update(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.SpendLimit.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -110,7 +110,7 @@ func (r *SpendLimitResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Get(ctx)
+	modelInstance, err := r.client.Admin.Organization.SpendLimit.Get(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -141,7 +141,7 @@ func (r *SpendLimitResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendLimit.Update(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.SpendLimit.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -166,7 +166,7 @@ func (r *SpendLimitResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.SpendLimit.Delete(ctx)
+	_, err := r.client.Admin.Organization.SpendLimit.Delete(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

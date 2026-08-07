@@ -84,7 +84,7 @@ func (d *OrganizationRolesDataSource) Read(ctx context.Context, req datasource.R
 		Limit: openai.Int(100),
 	}
 
-	iter := d.clientV2.Admin.Organization.Roles.ListAutoPaging(ctx, params)
+	iter := d.client.Admin.Organization.Roles.ListAutoPaging(ctx, params)
 
 	var modelInstances []openai.Role
 	for iter.Next() {

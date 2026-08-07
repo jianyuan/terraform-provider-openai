@@ -67,7 +67,7 @@ func (d *SpendLimitDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	modelInstance, err := d.clientV2.Admin.Organization.SpendLimit.Get(ctx)
+	modelInstance, err := d.client.Admin.Organization.SpendLimit.Get(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return

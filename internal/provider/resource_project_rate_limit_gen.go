@@ -101,7 +101,7 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -132,7 +132,7 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 
 	var modelInstance *openai.ProjectRateLimit
 
-	iter := r.clientV2.Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging(ctx, data.ProjectId.ValueString(), params)
+	iter := r.client.Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging(ctx, data.ProjectId.ValueString(), params)
 	for iter.Next() {
 		currentModelInstance := iter.Current()
 		if r.resourceMatch(data, currentModelInstance) {
@@ -171,7 +171,7 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return

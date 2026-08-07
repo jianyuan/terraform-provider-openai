@@ -56,7 +56,7 @@ func (r *DataRetentionResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.DataRetention.Update(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.DataRetention.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -81,7 +81,7 @@ func (r *DataRetentionResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.DataRetention.Get(ctx)
+	modelInstance, err := r.client.Admin.Organization.DataRetention.Get(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -112,7 +112,7 @@ func (r *DataRetentionResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.DataRetention.Update(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.DataRetention.Update(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return

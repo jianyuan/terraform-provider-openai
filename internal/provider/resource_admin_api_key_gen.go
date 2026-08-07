@@ -82,7 +82,7 @@ func (r *AdminApiKeyResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.AdminAPIKeys.New(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.AdminAPIKeys.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -107,7 +107,7 @@ func (r *AdminApiKeyResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.AdminAPIKeys.Get(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.AdminAPIKeys.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -136,7 +136,7 @@ func (r *AdminApiKeyResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.AdminAPIKeys.Delete(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.AdminAPIKeys.Delete(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

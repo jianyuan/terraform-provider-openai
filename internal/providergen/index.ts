@@ -376,7 +376,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
     ${api.readInitLoop ?? ""}
 
-    iter := d.clientV2.${api.readMethod}(${readRequestParams.join(",")})
+    iter := d.client.${api.readMethod}(${readRequestParams.join(",")})
 
     var modelInstances []openai.${api.readModel ?? api.model}
     for iter.Next() {
@@ -401,7 +401,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       { readStrategy: "simple" },
       (api) => `
-    modelInstance, err := d.clientV2.${api.readMethod}(${readRequestParams.join(",")})
+    modelInstance, err := d.client.${api.readMethod}(${readRequestParams.join(",")})
     if err != nil {
       resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
       return
@@ -632,7 +632,7 @@ func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest
     return
   }
 
-  modelInstance, err := r.clientV2.${resource.api.method}.${resource.api.createMethod}(${createRequestParams.join(",")})
+  modelInstance, err := r.client.${resource.api.method}.${resource.api.createMethod}(${createRequestParams.join(",")})
   if err != nil {
     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
     return
@@ -667,7 +667,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
 
         var modelInstance *openai.${api.readModel ?? api.model}
 
-        iter := r.clientV2.${api.method}.${api.readMethod}(${readRequestParams.join(",")})
+        iter := r.client.${api.method}.${api.readMethod}(${readRequestParams.join(",")})
         for iter.Next() {
           currentModelInstance := iter.Current()
           if r.resourceMatch(data, currentModelInstance){
@@ -687,7 +687,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
     )
     .otherwise(
       (api) => `
-        modelInstance, err := r.clientV2.${api.method}.Get(${readRequestParams.join(",")})
+        modelInstance, err := r.client.${api.method}.Get(${readRequestParams.join(",")})
         if err != nil {
           resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
           return
@@ -723,7 +723,7 @@ func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest
         return
       }
 
-      modelInstance, err := r.clientV2.${resource.api.method}.${resource.api.updateMethod}(${updateRequestParams.join(",")})
+      modelInstance, err := r.client.${resource.api.method}.${resource.api.updateMethod}(${updateRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
         return
@@ -756,7 +756,7 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
         return
       }
 
-      _, err := r.clientV2.${resource.api.method}.${resource.api.deleteMethod}(${deleteRequestParams.join(",")})
+      _, err := r.client.${resource.api.method}.${resource.api.deleteMethod}(${deleteRequestParams.join(",")})
       if err != nil {
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
         return

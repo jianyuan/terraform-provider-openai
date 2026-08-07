@@ -72,7 +72,7 @@ func (d *ProjectSpendLimitDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	modelInstance, err := d.clientV2.Admin.Organization.Projects.SpendLimit.Get(ctx, data.ProjectId.ValueString())
+	modelInstance, err := d.client.Admin.Organization.Projects.SpendLimit.Get(ctx, data.ProjectId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return

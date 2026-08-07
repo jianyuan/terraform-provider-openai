@@ -67,7 +67,7 @@ func (r *GroupUserResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Groups.Users.New(ctx, data.GroupId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Groups.Users.New(ctx, data.GroupId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -92,7 +92,7 @@ func (r *GroupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Groups.Users.Get(ctx, data.GroupId.ValueString(), data.UserId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Groups.Users.Get(ctx, data.GroupId.ValueString(), data.UserId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -121,7 +121,7 @@ func (r *GroupUserResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Groups.Users.Delete(ctx, data.GroupId.ValueString(), data.UserId.ValueString())
+	_, err := r.client.Admin.Organization.Groups.Users.Delete(ctx, data.GroupId.ValueString(), data.UserId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

@@ -103,7 +103,7 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.ServiceAccounts.New(ctx, data.ProjectId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.New(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -128,7 +128,7 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.ServiceAccounts.Get(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.Get(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -159,7 +159,7 @@ func (r *ProjectServiceAccountResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.ServiceAccounts.Update(ctx, data.ProjectId.ValueString(), data.Id.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.Update(ctx, data.ProjectId.ValueString(), data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -184,7 +184,7 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.ServiceAccounts.Delete(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Projects.ServiceAccounts.Delete(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

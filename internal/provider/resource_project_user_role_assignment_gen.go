@@ -75,7 +75,7 @@ func (r *ProjectUserRoleAssignmentResource) Create(ctx context.Context, req reso
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Users.Roles.New(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Users.Roles.New(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -100,7 +100,7 @@ func (r *ProjectUserRoleAssignmentResource) Read(ctx context.Context, req resour
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Users.Roles.Get(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), data.RoleId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.Users.Roles.Get(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -129,7 +129,7 @@ func (r *ProjectUserRoleAssignmentResource) Delete(ctx context.Context, req reso
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.Users.Roles.Delete(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), data.RoleId.ValueString())
+	_, err := r.client.Admin.Organization.Projects.Users.Roles.Delete(ctx, data.ProjectId.ValueString(), data.UserId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

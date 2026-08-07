@@ -97,7 +97,7 @@ func (r *ProjectSpendLimitResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.SpendLimit.Update(ctx, data.ProjectId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.SpendLimit.Update(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -122,7 +122,7 @@ func (r *ProjectSpendLimitResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.SpendLimit.Get(ctx, data.ProjectId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.SpendLimit.Get(ctx, data.ProjectId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -153,7 +153,7 @@ func (r *ProjectSpendLimitResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.SpendLimit.Update(ctx, data.ProjectId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.SpendLimit.Update(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -178,7 +178,7 @@ func (r *ProjectSpendLimitResource) Delete(ctx context.Context, req resource.Del
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.SpendLimit.Delete(ctx, data.ProjectId.ValueString())
+	_, err := r.client.Admin.Organization.Projects.SpendLimit.Delete(ctx, data.ProjectId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

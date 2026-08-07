@@ -63,7 +63,7 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -88,7 +88,7 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Get(ctx, data.UserId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Users.Get(ctx, data.UserId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -119,7 +119,7 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return

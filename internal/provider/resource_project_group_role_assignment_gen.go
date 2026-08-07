@@ -75,7 +75,7 @@ func (r *ProjectGroupRoleAssignmentResource) Create(ctx context.Context, req res
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.New(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Groups.Roles.New(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -100,7 +100,7 @@ func (r *ProjectGroupRoleAssignmentResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.Get(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.Groups.Roles.Get(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -129,7 +129,7 @@ func (r *ProjectGroupRoleAssignmentResource) Delete(ctx context.Context, req res
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.Groups.Roles.Delete(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
+	_, err := r.client.Admin.Organization.Projects.Groups.Roles.Delete(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

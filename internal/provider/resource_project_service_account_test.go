@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"strings"
 	"testing"
 
@@ -15,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 )
 
 func init() {
@@ -24,90 +23,46 @@ func init() {
 		F: func(r string) error {
 			ctx := context.Background()
 
-			var projects []apiclient.Project
-
-			// List all projects
-			{
-				params := &apiclient.ListProjectsParams{
-					Limit: new(int64(100)),
-				}
-
-				for {
-					httpResp, err := acctest.SharedClient.ListProjectsWithResponse(
-						ctx,
-						params,
-					)
-					if err != nil {
-						return fmt.Errorf("Unable to read, got error: %s", err)
-					}
-
-					if httpResp.StatusCode() != http.StatusOK {
-						return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-					}
-
-					projects = append(projects, httpResp.JSON200.Data...)
-
-					if !httpResp.JSON200.HasMore {
-						break
-					}
-
-					params.After = httpResp.JSON200.LastId
-				}
+			params := openai.AdminOrganizationProjectListParams{
+				Limit: openai.Int(100),
 			}
 
-			for _, project := range projects {
-				log.Printf("[INFO] Listing project service accounts for project %s", project.Id)
+			var projectIds []string
 
-				var projectServiceAccounts []apiclient.ProjectServiceAccount
-				params := &apiclient.ListProjectServiceAccountsParams{
-					Limit: new(int64(100)),
+			iter := acctest.SharedClient.Admin.Organization.Projects.ListAutoPaging(ctx, params)
+			for iter.Next() {
+				item := iter.Current()
+				projectIds = append(projectIds, item.ID)
+			}
+
+			for _, projectId := range projectIds {
+				log.Printf("[INFO] Listing project service accounts for project %s", projectId)
+
+				params := openai.AdminOrganizationProjectServiceAccountListParams{
+					Limit: openai.Int(100),
 				}
 
-				for {
-					httpResp, err := acctest.SharedClient.ListProjectServiceAccountsWithResponse(
-						ctx,
-						project.Id,
-						params,
-					)
+				var ids []string
 
-					if err != nil {
-						return fmt.Errorf("Unable to read, got error: %s", err)
+				iter := acctest.SharedClient.Admin.Organization.Projects.ServiceAccounts.ListAutoPaging(ctx, projectId, params)
+				for iter.Next() {
+					item := iter.Current()
+					if strings.HasPrefix(item.Name, "tf-") || strings.HasPrefix(item.Name, "test-") {
+						ids = append(ids, item.ID)
 					}
-
-					if httpResp.StatusCode() != http.StatusOK {
-						return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-					}
-
-					for _, sa := range httpResp.JSON200.Data {
-						if !strings.HasPrefix(sa.Id, "tf-") && !strings.HasPrefix(sa.Name, "test-") {
-							continue
-						}
-
-						projectServiceAccounts = append(projectServiceAccounts, sa)
-					}
-
-					if !httpResp.JSON200.HasMore {
-						break
-					}
-
-					params.After = httpResp.JSON200.LastId
 				}
 
-				for _, sa := range projectServiceAccounts {
-					log.Printf("[INFO] Destroying project service account %s", sa.Id)
+				for _, id := range ids {
+					log.Printf("[INFO] Destroying project service account %s", id)
 
-					_, err := acctest.SharedClient.DeleteProjectServiceAccountWithResponse(
-						ctx,
-						project.Id,
-						sa.Id,
-					)
+					_, err := acctest.SharedClient.Admin.Organization.Projects.ServiceAccounts.Delete(ctx, projectId, id)
 
 					if err != nil {
-						log.Printf("[ERROR] Unable to delete project service account %s: %s", sa.Id, err)
+						log.Printf("[ERROR] Unable to delete project service account %s: %s", id, err)
 						continue
 					}
 
-					log.Printf("[INFO] Deleted project service account %s", sa.Id)
+					log.Printf("[INFO] Deleted project service account %s", id)
 				}
 			}
 

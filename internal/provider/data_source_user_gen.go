@@ -65,7 +65,7 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	modelInstance, err := d.clientV2.Admin.Organization.Users.Get(ctx, data.Id.ValueString())
+	modelInstance, err := d.client.Admin.Organization.Users.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return

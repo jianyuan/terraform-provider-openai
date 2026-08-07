@@ -99,7 +99,7 @@ func (r *InviteResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Invites.New(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.Invites.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -124,7 +124,7 @@ func (r *InviteResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Invites.Get(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Invites.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -153,7 +153,7 @@ func (r *InviteResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Invites.Delete(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Invites.Delete(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

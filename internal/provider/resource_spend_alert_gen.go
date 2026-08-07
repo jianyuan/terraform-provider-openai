@@ -100,7 +100,7 @@ func (r *SpendAlertResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendAlerts.New(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -125,7 +125,7 @@ func (r *SpendAlertResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendAlerts.Get(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -156,7 +156,7 @@ func (r *SpendAlertResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.SpendAlerts.Update(ctx, data.Id.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -181,7 +181,7 @@ func (r *SpendAlertResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.SpendAlerts.Delete(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.SpendAlerts.Delete(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

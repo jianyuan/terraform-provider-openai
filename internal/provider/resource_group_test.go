@@ -3,8 +3,6 @@ package provider_test
 import (
 	"context"
 	"fmt"
-	"log"
-	"net/http"
 	"strings"
 	"testing"
 
@@ -14,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 )
 
 func init() {
@@ -23,50 +21,25 @@ func init() {
 		F: func(r string) error {
 			ctx := context.Background()
 
-			params := &apiclient.ListGroupsParams{
-				Limit: new(int64(100)),
+			params := openai.AdminOrganizationGroupListParams{
+				Limit: openai.Int(100),
 			}
 
-			for {
-				httpResp, err := acctest.SharedClient.ListGroupsWithResponse(
-					ctx,
-					params,
-				)
+			var ids []string
 
+			iter := acctest.SharedClient.Admin.Organization.Groups.ListAutoPaging(ctx, params)
+			for iter.Next() {
+				item := iter.Current()
+				if strings.HasPrefix(item.Name, "tf-") {
+					ids = append(ids, item.ID)
+				}
+			}
+
+			for _, apiKeyId := range ids {
+				_, err := acctest.SharedClient.Admin.Organization.Groups.Delete(ctx, apiKeyId)
 				if err != nil {
-					return fmt.Errorf("[ERROR] Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-					return fmt.Errorf("[ERROR] Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
+					return fmt.Errorf("Unable to delete, got error: %w", err)
 				}
-
-				for _, group := range httpResp.JSON200.Data {
-					if !strings.HasPrefix(group.Name, "tf-") {
-						continue
-					}
-
-					log.Printf("[INFO] Found group %s (ID: %s)", group.Name, group.Id)
-
-					httpResp, err := acctest.SharedClient.DeleteGroupWithResponse(
-						ctx,
-						group.Id,
-					)
-
-					if err != nil {
-						log.Printf("[ERROR] Unable to delete, got error: %s", err)
-						continue
-					} else if httpResp.StatusCode() != http.StatusOK {
-						log.Printf("[ERROR] Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-						continue
-					}
-
-					log.Printf("[INFO] Deleted group %s (ID: %s)", group.Name, group.Id)
-				}
-
-				if httpResp.JSON200.Next == nil {
-					break
-				}
-
-				params.After = httpResp.JSON200.Next
 			}
 
 			return nil

@@ -74,7 +74,7 @@ func (d *GroupUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		Limit: openai.Int(100),
 	}
 
-	iter := d.clientV2.Admin.Organization.Groups.Users.ListAutoPaging(ctx, data.GroupId.ValueString(), params)
+	iter := d.client.Admin.Organization.Groups.Users.ListAutoPaging(ctx, data.GroupId.ValueString(), params)
 
 	var modelInstances []openai.OrganizationGroupUser
 	for iter.Next() {

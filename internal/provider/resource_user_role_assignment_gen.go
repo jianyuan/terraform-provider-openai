@@ -59,7 +59,7 @@ func (r *UserRoleAssignmentResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Roles.New(ctx, data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Users.Roles.New(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -84,7 +84,7 @@ func (r *UserRoleAssignmentResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Roles.Get(ctx, data.UserId.ValueString(), data.RoleId.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Users.Roles.Get(ctx, data.UserId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -115,7 +115,7 @@ func (r *UserRoleAssignmentResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Users.Roles.New(ctx, data.UserId.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Users.Roles.New(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -140,7 +140,7 @@ func (r *UserRoleAssignmentResource) Delete(ctx context.Context, req resource.De
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Users.Roles.Delete(ctx, data.UserId.ValueString(), data.RoleId.ValueString())
+	_, err := r.client.Admin.Organization.Users.Roles.Delete(ctx, data.UserId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

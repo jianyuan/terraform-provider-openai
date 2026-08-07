@@ -3,7 +3,6 @@ package provider_test
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"strings"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 )
 
 func init() {
@@ -22,42 +21,25 @@ func init() {
 		F: func(r string) error {
 			ctx := context.Background()
 
-			params := &apiclient.AdminApiKeysListParams{
-				Limit: new(int64(100)),
+			params := openai.AdminOrganizationAdminAPIKeyListParams{
+				Limit: openai.Int(100),
 			}
 
-			for {
-				httpResp, err := acctest.SharedClient.AdminApiKeysListWithResponse(
-					ctx,
-					params,
-				)
+			var ids []string
 
+			iter := acctest.SharedClient.Admin.Organization.AdminAPIKeys.ListAutoPaging(ctx, params)
+			for iter.Next() {
+				item := iter.Current()
+				if strings.HasPrefix(item.Name, "tf-") {
+					ids = append(ids, item.ID)
+				}
+			}
+
+			for _, apiKeyId := range ids {
+				_, err := acctest.SharedClient.Admin.Organization.AdminAPIKeys.Delete(ctx, apiKeyId)
 				if err != nil {
-					return fmt.Errorf("Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
+					return fmt.Errorf("Unable to delete, got error: %w", err)
 				}
-
-				for _, apiKey := range httpResp.JSON200.Data {
-					if apiKey.Name != nil && strings.HasPrefix(*apiKey.Name, "tf-") {
-						httpResp, err := acctest.SharedClient.AdminApiKeysDeleteWithResponse(
-							ctx,
-							apiKey.Id,
-						)
-
-						if err != nil {
-							return fmt.Errorf("Unable to delete, got error: %s", err)
-						} else if httpResp.StatusCode() != http.StatusOK {
-							return fmt.Errorf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-						}
-					}
-				}
-
-				if !httpResp.JSON200.HasMore {
-					break
-				}
-
-				params.After = httpResp.JSON200.LastId
 			}
 
 			return nil

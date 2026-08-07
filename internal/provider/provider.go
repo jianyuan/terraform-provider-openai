@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
 )
@@ -87,21 +86,14 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	client, err := apiclient.New(baseUrl, req.TerraformVersion, p.version, adminKey)
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to create API client", err.Error())
-		return
-	}
-
-	clientV2 := new(openai.NewClient(
+	client := new(openai.NewClient(
 		option.WithBaseURL(baseUrl),
 		option.WithAdminAPIKey(adminKey),
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version)),
 	))
 
 	pd := &providerData{
-		client:   client,
-		clientV2: clientV2,
+		client: client,
 	}
 
 	resp.DataSourceData = pd

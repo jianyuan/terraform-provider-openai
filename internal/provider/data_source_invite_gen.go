@@ -75,7 +75,7 @@ func (d *InviteDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	modelInstance, err := d.clientV2.Admin.Organization.Invites.Get(ctx, data.Id.ValueString())
+	modelInstance, err := d.client.Admin.Organization.Invites.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return

@@ -99,7 +99,7 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.New(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -124,7 +124,7 @@ func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Get(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -155,7 +155,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Projects.Update(ctx, data.Id.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -180,7 +180,7 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Projects.Archive(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Projects.Archive(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

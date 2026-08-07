@@ -99,7 +99,7 @@ func (d *ProjectRateLimitsDataSource) Read(ctx context.Context, req datasource.R
 		Limit: openai.Int(100),
 	}
 
-	iter := d.clientV2.Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging(ctx, data.ProjectId.ValueString(), params)
+	iter := d.client.Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging(ctx, data.ProjectId.ValueString(), params)
 
 	var modelInstances []openai.ProjectRateLimit
 	for iter.Next() {

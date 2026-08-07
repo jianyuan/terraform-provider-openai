@@ -73,7 +73,7 @@ func (r *OrganizationRoleResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Roles.New(ctx, *body)
+	modelInstance, err := r.client.Admin.Organization.Roles.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
@@ -98,7 +98,7 @@ func (r *OrganizationRoleResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Roles.Get(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Roles.Get(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
@@ -129,7 +129,7 @@ func (r *OrganizationRoleResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	modelInstance, err := r.clientV2.Admin.Organization.Roles.Update(ctx, data.Id.ValueString(), *body)
+	modelInstance, err := r.client.Admin.Organization.Roles.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
@@ -154,7 +154,7 @@ func (r *OrganizationRoleResource) Delete(ctx context.Context, req resource.Dele
 		return
 	}
 
-	_, err := r.clientV2.Admin.Organization.Roles.Delete(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Roles.Delete(ctx, data.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return

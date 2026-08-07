@@ -89,7 +89,7 @@ func (d *InvitesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		Limit: openai.Int(100),
 	}
 
-	iter := d.clientV2.Admin.Organization.Invites.ListAutoPaging(ctx, params)
+	iter := d.client.Admin.Organization.Invites.ListAutoPaging(ctx, params)
 
 	var modelInstances []openai.Invite
 	for iter.Next() {
