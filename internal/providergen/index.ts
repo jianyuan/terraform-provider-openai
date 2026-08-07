@@ -370,13 +370,13 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     .with(
       { readStrategy: "paginate" },
       (api) => `
-    params := openai.${api.readMethodParamsStruct}{
+    params := openai.${api.readRequestParamsStruct}{
       Limit: openai.Int(100),
     }
 
     ${api.readInitLoop ?? ""}
 
-    iter := d.clientV2.${api.readMethod}.${api.readPagingMethod ?? "ListAutoPaging"}(${readRequestParams.join(",")})
+    iter := d.clientV2.${api.readMethod}(${readRequestParams.join(",")})
 
     var modelInstances []openai.${api.readModel ?? api.model}
     for iter.Next() {

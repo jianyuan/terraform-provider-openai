@@ -7,8 +7,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Group",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Groups",
-      readMethodParamsStruct: "AdminOrganizationGroupListParams",
+      readMethod: "Admin.Organization.Groups.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupListParams",
     },
     attributes: [
       {
@@ -52,8 +52,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "OrganizationGroupUser",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Groups.Users",
-      readMethodParamsStruct: "AdminOrganizationGroupUserListParams",
+      readMethod: "Admin.Organization.Groups.Users.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupUserListParams",
       readRequestAttributes: ["group_id"],
     },
     attributes: [
@@ -98,8 +98,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "AdminOrganizationGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Groups.Roles",
-      readMethodParamsStruct: "AdminOrganizationGroupRoleListParams",
+      readMethod: "Admin.Organization.Groups.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupRoleListParams",
       readRequestAttributes: ["group_id"],
     },
     attributes: [
@@ -222,8 +222,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Invite",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Invites",
-      readMethodParamsStruct: "AdminOrganizationInviteListParams",
+      readMethod: "Admin.Organization.Invites.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationInviteListParams",
     },
     attributes: [
       {
@@ -288,8 +288,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Roles",
-      readMethodParamsStruct: "AdminOrganizationRoleListParams",
+      readMethod: "Admin.Organization.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationRoleListParams",
     },
     attributes: [
       {
@@ -399,8 +399,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Project",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Projects",
-      readMethodParamsStruct: "AdminOrganizationProjectListParams",
+      readMethod: "Admin.Organization.Projects.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectListParams",
       readInitLoop: `
         if data.IncludeArchived.IsKnown() {
           params.IncludeArchived = openai.Bool(data.IncludeArchived.ValueBool())
@@ -498,10 +498,10 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "ProjectRateLimit",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Projects.RateLimits",
-      readPagingMethod: "ListRateLimitsAutoPaging",
+      readMethod:
+        "Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging",
       readRequestAttributes: ["project_id"],
-      readMethodParamsStruct:
+      readRequestParamsStruct:
         "AdminOrganizationProjectRateLimitListRateLimitsParams",
     },
     attributes: [
@@ -579,9 +579,9 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Projects.Roles",
+      readMethod: "Admin.Organization.Projects.Roles.ListAutoPaging",
       readRequestAttributes: ["project_id"],
-      readMethodParamsStruct: "AdminOrganizationProjectRoleListParams",
+      readRequestParamsStruct: "AdminOrganizationProjectRoleListParams",
     },
     attributes: [
       {
@@ -646,8 +646,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "AdminOrganizationProjectGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Projects.Groups.Roles",
-      readMethodParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
+      readMethod: "Admin.Organization.Projects.Groups.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
       readRequestAttributes: ["project_id", "group_id"],
     },
     attributes: [
@@ -719,8 +719,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "AdminOrganizationProjectUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Projects.Users.Roles",
-      readMethodParamsStruct: "AdminOrganizationProjectUserRoleListParams",
+      readMethod: "Admin.Organization.Projects.Users.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectUserRoleListParams",
       readRequestAttributes: ["project_id", "user_id"],
     },
     attributes: [
@@ -834,8 +834,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "OrganizationUser",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Users",
-      readMethodParamsStruct: "AdminOrganizationUserListParams",
+      readMethod: "Admin.Organization.Users.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationUserListParams",
     },
     attributes: [
       {
@@ -886,8 +886,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "AdminOrganizationUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "Admin.Organization.Users.Roles",
-      readMethodParamsStruct: "AdminOrganizationUserRoleListParams",
+      readMethod: "Admin.Organization.Users.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationUserRoleListParams",
       readRequestAttributes: ["user_id"],
     },
     attributes: [
