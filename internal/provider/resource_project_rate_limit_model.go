@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
 	"github.com/openai/openai-go/v3"
-	"github.com/openai/openai-go/v3/packages/param"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -49,41 +49,11 @@ func (r *ProjectRateLimitResource) getNewParams(ctx context.Context, data Projec
 
 func (r *ProjectRateLimitResource) getUpdateParams(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams{
-		Batch1DayMaxInputTokens: (func() param.Opt[int64] {
-			if data.Batch1DayMaxInputTokens.IsKnown() {
-				return openai.Int(data.Batch1DayMaxInputTokens.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
-		MaxAudioMegabytesPer1Minute: (func() param.Opt[int64] {
-			if data.MaxAudioMegabytesPer1Minute.IsKnown() {
-				return openai.Int(data.MaxAudioMegabytesPer1Minute.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
-		MaxImagesPer1Minute: (func() param.Opt[int64] {
-			if data.MaxImagesPer1Minute.IsKnown() {
-				return openai.Int(data.MaxImagesPer1Minute.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
-		MaxRequestsPer1Day: (func() param.Opt[int64] {
-			if data.MaxRequestsPer1Day.IsKnown() {
-				return openai.Int(data.MaxRequestsPer1Day.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
-		MaxRequestsPer1Minute: (func() param.Opt[int64] {
-			if data.MaxRequestsPer1Minute.IsKnown() {
-				return openai.Int(data.MaxRequestsPer1Minute.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
-		MaxTokensPer1Minute: (func() param.Opt[int64] {
-			if data.MaxTokensPer1Minute.IsKnown() {
-				return openai.Int(data.MaxTokensPer1Minute.ValueInt64())
-			}
-			return param.Opt[int64]{}
-		})(),
+		Batch1DayMaxInputTokens:     openaiparam.FromInt64(data.Batch1DayMaxInputTokens),
+		MaxAudioMegabytesPer1Minute: openaiparam.FromInt64(data.MaxAudioMegabytesPer1Minute),
+		MaxImagesPer1Minute:         openaiparam.FromInt64(data.MaxImagesPer1Minute),
+		MaxRequestsPer1Day:          openaiparam.FromInt64(data.MaxRequestsPer1Day),
+		MaxRequestsPer1Minute:       openaiparam.FromInt64(data.MaxRequestsPer1Minute),
+		MaxTokensPer1Minute:         openaiparam.FromInt64(data.MaxTokensPer1Minute),
 	}, nil
 }

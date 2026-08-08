@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
 	"github.com/openai/openai-go/v3"
-	"github.com/openai/openai-go/v3/packages/param"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -31,19 +31,9 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project openai.Project)
 
 func (r *ProjectResource) getNewParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectNewParams, diag.Diagnostics) {
 	body := &openai.AdminOrganizationProjectNewParams{
-		Name: data.Name.ValueString(),
-		ExternalKeyID: (func() param.Opt[string] {
-			if data.ExternalKeyId.IsKnown() {
-				return openai.String(data.ExternalKeyId.ValueString())
-			}
-			return param.Opt[string]{}
-		})(),
-		Geography: (func() param.Opt[string] {
-			if data.Geography.IsKnown() {
-				return openai.String(data.Geography.ValueString())
-			}
-			return param.Opt[string]{}
-		})(),
+		Name:          data.Name.ValueString(),
+		ExternalKeyID: openaiparam.FromString(data.ExternalKeyId),
+		Geography:     openaiparam.FromString(data.Geography),
 	}
 
 	return body, nil
@@ -51,13 +41,8 @@ func (r *ProjectResource) getNewParams(ctx context.Context, data ProjectResource
 
 func (r *ProjectResource) getUpdateParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectUpdateParams, diag.Diagnostics) {
 	body := &openai.AdminOrganizationProjectUpdateParams{
-		Name: openai.String(data.Name.ValueString()),
-		ExternalKeyID: (func() param.Opt[string] {
-			if data.ExternalKeyId.IsKnown() {
-				return openai.String(data.ExternalKeyId.ValueString())
-			}
-			return param.Opt[string]{}
-		})(),
+		Name:          openai.String(data.Name.ValueString()),
+		ExternalKeyID: openaiparam.FromString(data.ExternalKeyId),
 	}
 
 	return body, nil

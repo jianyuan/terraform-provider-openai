@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
 	"github.com/openai/openai-go/v3"
-	"github.com/openai/openai-go/v3/packages/param"
 	"github.com/openai/openai-go/v3/shared/constant"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
@@ -44,14 +44,9 @@ func (r *SpendAlertResource) getNewParams(ctx context.Context, data SpendAlertRe
 		Interval:        openai.AdminOrganizationSpendAlertNewParamsInterval(data.Interval.ValueString()),
 		ThresholdAmount: data.ThresholdAmount.ValueInt64(),
 		NotificationChannel: openai.AdminOrganizationSpendAlertNewParamsNotificationChannel{
-			Type:       constant.Email(notificationChannel.Type.ValueString()),
-			Recipients: notificationChannelRecipients,
-			SubjectPrefix: (func() param.Opt[string] {
-				if notificationChannel.SubjectPrefix.IsKnown() {
-					return openai.String(notificationChannel.SubjectPrefix.ValueString())
-				}
-				return param.Opt[string]{}
-			})(),
+			Type:          constant.Email(notificationChannel.Type.ValueString()),
+			Recipients:    notificationChannelRecipients,
+			SubjectPrefix: openaiparam.FromString(notificationChannel.SubjectPrefix),
 		},
 	}, nil
 }
@@ -72,14 +67,9 @@ func (r *SpendAlertResource) getUpdateParams(ctx context.Context, data SpendAler
 		Interval:        openai.AdminOrganizationSpendAlertUpdateParamsInterval(data.Interval.ValueString()),
 		ThresholdAmount: data.ThresholdAmount.ValueInt64(),
 		NotificationChannel: openai.AdminOrganizationSpendAlertUpdateParamsNotificationChannel{
-			Type:       constant.Email(notificationChannel.Type.ValueString()),
-			Recipients: notificationChannelRecipients,
-			SubjectPrefix: (func() param.Opt[string] {
-				if notificationChannel.SubjectPrefix.IsKnown() {
-					return openai.String(notificationChannel.SubjectPrefix.ValueString())
-				}
-				return param.Opt[string]{}
-			})(),
+			Type:          constant.Email(notificationChannel.Type.ValueString()),
+			Recipients:    notificationChannelRecipients,
+			SubjectPrefix: openaiparam.FromString(notificationChannel.SubjectPrefix),
 		},
 	}, nil
 }
