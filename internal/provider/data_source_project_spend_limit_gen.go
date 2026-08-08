@@ -4,7 +4,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -73,19 +72,16 @@ func (d *ProjectSpendLimitDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	httpResp, err := d.client.RetrieveProjectSpendLimitWithResponse(ctx, data.ProjectId.ValueString())
+	modelInstance, err := d.client.Admin.Organization.Projects.SpendLimit.Get(ctx, data.ProjectId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *GroupResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch v := data.(type) {
-	case apiclient.GroupResponse:
-		m.Id = supertypes.NewStringValue(v.Id)
+	case openai.Group:
+		m.Id = supertypes.NewStringValue(v.ID)
 		m.Name = supertypes.NewStringValue(v.Name)
 		m.CreatedAt = supertypes.NewInt64Value(v.CreatedAt)
 		return nil
-	case apiclient.GroupResourceWithSuccess:
-		m.Id = supertypes.NewStringValue(v.Id)
+	case openai.AdminOrganizationGroupUpdateResponse:
+		m.Id = supertypes.NewStringValue(v.ID)
 		m.Name = supertypes.NewStringValue(v.Name)
 		m.CreatedAt = supertypes.NewInt64Value(v.CreatedAt)
 		return nil
@@ -28,18 +28,14 @@ func (m *GroupResourceModel) Fill(ctx context.Context, data any) diag.Diagnostic
 	}
 }
 
-func (r *GroupResource) resourceMatch(data GroupResourceModel, group apiclient.GroupResponse) bool {
-	return data.Id.ValueString() == group.Id
-}
-
-func (r *GroupResource) getCreateJSONRequestBody(ctx context.Context, data GroupResourceModel) (apiclient.CreateGroupJSONRequestBody, diag.Diagnostics) {
-	return apiclient.CreateGroupJSONRequestBody{
+func (r *GroupResource) getNewParams(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationGroupNewParams{
 		Name: data.Name.ValueString(),
 	}, nil
 }
 
-func (r *GroupResource) getUpdateJSONRequestBody(ctx context.Context, data GroupResourceModel) (apiclient.UpdateGroupJSONRequestBody, diag.Diagnostics) {
-	return apiclient.UpdateGroupJSONRequestBody{
+func (r *GroupResource) getUpdateParams(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupUpdateParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationGroupUpdateParams{
 		Name: data.Name.ValueString(),
 	}, nil
 }

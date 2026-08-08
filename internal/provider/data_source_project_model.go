@@ -4,16 +4,26 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *ProjectDataSourceModel) Fill(ctx context.Context, project apiclient.Project) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(project.Id)
-	m.Name = supertypes.NewStringPointerValue(project.Name)
-	m.Status = supertypes.NewStringPointerValue(project.Status)
-	m.ExternalKeyId = supertypes.NewStringPointerValue(project.ExternalKeyId)
+func (m *ProjectDataSourceModel) Fill(ctx context.Context, project openai.Project) diag.Diagnostics {
+	m.Id = supertypes.NewStringValue(project.ID)
+	m.Name = supertypes.NewStringValue(project.Name)
+	m.Status = supertypes.NewStringValue(project.Status)
+	m.ExternalKeyId = (func() supertypes.StringValue {
+		if project.JSON.ExternalKeyID.Valid() {
+			return supertypes.NewStringValue(project.ExternalKeyID)
+		}
+		return supertypes.NewStringNull()
+	})()
 	m.CreatedAt = supertypes.NewInt64Value(project.CreatedAt)
-	m.ArchivedAt = supertypes.NewInt64PointerValue(project.ArchivedAt)
+	m.ArchivedAt = (func() supertypes.Int64Value {
+		if project.JSON.ArchivedAt.Valid() {
+			return supertypes.NewInt64Value(project.ArchivedAt)
+		}
+		return supertypes.NewInt64Null()
+	})()
 	return nil
 }

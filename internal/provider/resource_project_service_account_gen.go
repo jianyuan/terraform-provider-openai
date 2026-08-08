@@ -3,6 +3,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -98,25 +100,22 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	httpResp, err := r.client.CreateProjectServiceAccountWithResponse(ctx, data.ProjectId.ValueString(), body)
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.New(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -132,26 +131,21 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	httpResp, err := r.client.RetrieveProjectServiceAccountWithResponse(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.Get(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	responseData := httpResp.JSON200
-
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -160,7 +154,34 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 }
 
 func (r *ProjectServiceAccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	resp.Diagnostics.AddError("Not Supported", "Update is not supported for this resource")
+	var data ProjectServiceAccountResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.getUpdateParams(ctx, data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.Update(ctx, data.ProjectId.ValueString(), data.Id.ValueString(), *body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		return
+	} else if modelInstance == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
+		return
+	}
+
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -171,14 +192,13 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 		return
 	}
 
-	httpResp, err := r.client.DeleteProjectServiceAccountWithResponse(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Projects.ServiceAccounts.Delete(ctx, data.ProjectId.ValueString(), data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

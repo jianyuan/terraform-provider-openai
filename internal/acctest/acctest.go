@@ -3,15 +3,16 @@ package acctest
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/jianyuan/go-utils/must"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
 	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	inttflog "github.com/jianyuan/terraform-provider-openai/internal/tflog"
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
 )
 
 var (
@@ -20,7 +21,7 @@ var (
 	TestUserId   = os.Getenv("OPENAI_TEST_USER_ID")
 	TestGroupId  string
 
-	SharedClient *apiclient.ClientWithResponses
+	SharedClient *openai.Client
 )
 
 func init() {
@@ -28,10 +29,16 @@ func init() {
 		TestBaseUrl = "https://api.openai.com/v1"
 	}
 
-	SharedClient = must.Get(apiclient.New(TestBaseUrl, "", "", TestAdminKey))
+	SharedClient = new(openai.NewClient(
+		option.WithBaseURL(TestBaseUrl),
+		option.WithAdminAPIKey(TestAdminKey),
+		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", "dev", "dev")),
+		option.WithRequestTimeout(60*time.Second),
+		option.WithMaxRetries(5),
+		option.WithDebugLog(inttflog.StandardLogger(context.Background())),
+	))
 
-	ctx := context.Background()
-	TestGroupId = ensureTestGroupId(ctx)
+	TestGroupId = ensureTestGroupId(context.Background())
 }
 
 func PreCheck(t *testing.T) {
@@ -53,37 +60,24 @@ var TestAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 }
 
 func ensureTestGroupId(ctx context.Context) string {
-	params := &apiclient.ListGroupsParams{
-		Limit: new(int64(100)),
+	params := openai.AdminOrganizationGroupListParams{
+		Limit: openai.Int(100),
 	}
 
-	for {
-		httpResp := must.Get(SharedClient.ListGroupsWithResponse(ctx, params))
-
-		if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-			panic(fmt.Sprintf("failed to list groups: %v", string(httpResp.Body)))
+	iter := SharedClient.Admin.Organization.Groups.ListAutoPaging(ctx, params)
+	for iter.Next() {
+		group := iter.Current()
+		if group.Name == "acc-tf-group" {
+			return group.ID
 		}
-
-		for _, group := range httpResp.JSON200.Data {
-			if group.Name == "acc-tf-group" {
-				return group.Id
-			}
-		}
-
-		if !httpResp.JSON200.HasMore {
-			break
-		}
-
-		params.After = httpResp.JSON200.Next
 	}
 
-	httpResp := must.Get(SharedClient.CreateGroupWithResponse(ctx, apiclient.CreateGroupJSONRequestBody{
+	group, err := SharedClient.Admin.Organization.Groups.New(ctx, openai.AdminOrganizationGroupNewParams{
 		Name: "acc-tf-group",
-	}))
-
-	if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-		panic(fmt.Sprintf("failed to create group: %v", httpResp.JSON200))
+	})
+	if err != nil {
+		panic(err)
 	}
 
-	return httpResp.JSON200.Id
+	return group.ID
 }

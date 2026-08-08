@@ -3,7 +3,6 @@ package provider_test
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"strings"
 	"testing"
 
@@ -13,55 +12,30 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	"github.com/jianyuan/terraform-provider-openai/internal/sweep"
+	"github.com/openai/openai-go/v3"
 )
 
 func init() {
-	resource.AddTestSweepers("openai_admin_api_key", &resource.Sweeper{
-		Name: "openai_admin_api_key",
-		F: func(r string) error {
-			ctx := context.Background()
+	sweep.Register("openai_admin_api_key", func(ctx context.Context, client *openai.Client) ([]sweep.Sweepable, error) {
+		params := openai.AdminOrganizationAdminAPIKeyListParams{
+			Limit: openai.Int(100),
+		}
 
-			params := &apiclient.AdminApiKeysListParams{
-				Limit: new(int64(100)),
+		var sweepables []sweep.Sweepable
+
+		iter := acctest.SharedClient.Admin.Organization.AdminAPIKeys.ListAutoPaging(ctx, params)
+		for iter.Next() {
+			item := iter.Current()
+			if strings.HasPrefix(item.Name, "tf-") {
+				sweepables = append(sweepables, sweep.NewSweepResource(provider.NewAdminApiKeyResource, acctest.SharedClient, map[string]any{
+					"id": item.ID,
+				}))
 			}
+		}
 
-			for {
-				httpResp, err := acctest.SharedClient.AdminApiKeysListWithResponse(
-					ctx,
-					params,
-				)
-
-				if err != nil {
-					return fmt.Errorf("Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-				}
-
-				for _, apiKey := range httpResp.JSON200.Data {
-					if apiKey.Name != nil && strings.HasPrefix(*apiKey.Name, "tf-") {
-						httpResp, err := acctest.SharedClient.AdminApiKeysDeleteWithResponse(
-							ctx,
-							apiKey.Id,
-						)
-
-						if err != nil {
-							return fmt.Errorf("Unable to delete, got error: %s", err)
-						} else if httpResp.StatusCode() != http.StatusOK {
-							return fmt.Errorf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-						}
-					}
-				}
-
-				if !httpResp.JSON200.HasMore {
-					break
-				}
-
-				params.After = httpResp.JSON200.LastId
-			}
-
-			return nil
-		},
+		return sweepables, nil
 	})
 }
 

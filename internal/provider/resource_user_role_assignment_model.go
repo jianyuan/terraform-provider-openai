@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *UserRoleAssignmentResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
-	case apiclient.UserRoleAssignment:
-		m.UserId = supertypes.NewStringValue(data.User.Id)
-		m.RoleId = supertypes.NewStringValue(data.Role.Id)
+	case openai.AdminOrganizationUserRoleNewResponse:
+		m.UserId = supertypes.NewStringValue(data.User.ID)
+		m.RoleId = supertypes.NewStringValue(data.Role.ID)
 		return nil
-	case apiclient.AssignedRoleDetails:
-		m.RoleId = supertypes.NewStringValue(data.Id)
+	case openai.AdminOrganizationUserRoleGetResponse:
+		m.RoleId = supertypes.NewStringValue(data.ID)
 		return nil
 	default:
 		var diags diag.Diagnostics
@@ -25,18 +25,12 @@ func (m *UserRoleAssignmentResourceModel) Fill(ctx context.Context, data any) di
 	}
 }
 
-func (r *UserRoleAssignmentResource) resourceMatch(data UserRoleAssignmentResourceModel, roleAssignment apiclient.AssignedRoleDetails) bool {
-	return data.RoleId.ValueString() == roleAssignment.Id
-}
-
-func (r *UserRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data UserRoleAssignmentResourceModel) (apiclient.AssignUserRoleJSONRequestBody, diag.Diagnostics) {
-	return apiclient.AssignUserRoleJSONRequestBody{
-		RoleId: data.RoleId.ValueString(),
+func (r *UserRoleAssignmentResource) getNewParams(ctx context.Context, data UserRoleAssignmentResourceModel) (*openai.AdminOrganizationUserRoleNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationUserRoleNewParams{
+		RoleID: data.RoleId.ValueString(),
 	}, nil
 }
 
-func (r *UserRoleAssignmentResource) getUpdateJSONRequestBody(ctx context.Context, data UserRoleAssignmentResourceModel) (apiclient.AssignUserRoleJSONRequestBody, diag.Diagnostics) {
-	return apiclient.AssignUserRoleJSONRequestBody{
-		RoleId: data.RoleId.ValueString(),
-	}, nil
+func (r *UserRoleAssignmentResource) getUpdateParams(ctx context.Context, data UserRoleAssignmentResourceModel) (*openai.AdminOrganizationUserRoleNewParams, diag.Diagnostics) {
+	return r.getNewParams(ctx, data)
 }

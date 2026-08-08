@@ -4,22 +4,31 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
-func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []apiclient.Project) diag.Diagnostics {
-	items := make([]ProjectsDataSourceModelProjectsItem, len(projects))
-	for i, project := range projects {
-		items[i] = ProjectsDataSourceModelProjectsItem{
-			Id:            supertypes.NewStringValue(project.Id),
-			Name:          supertypes.NewStringPointerValue(project.Name),
-			Status:        supertypes.NewStringPointerValue(project.Status),
-			ExternalKeyId: supertypes.NewStringPointerValue(project.ExternalKeyId),
-			CreatedAt:     supertypes.NewInt64Value(project.CreatedAt),
-			ArchivedAt:    supertypes.NewInt64PointerValue(project.ArchivedAt),
+func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []openai.Project) diag.Diagnostics {
+	m.Projects = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(projects, func(project openai.Project, _ int) ProjectsDataSourceModelProjectsItem {
+		return ProjectsDataSourceModelProjectsItem{
+			Id:        supertypes.NewStringValue(project.ID),
+			Name:      supertypes.NewStringValue(project.Name),
+			Status:    supertypes.NewStringValue(project.Status),
+			CreatedAt: supertypes.NewInt64Value(project.CreatedAt),
+			ExternalKeyId: (func() supertypes.StringValue {
+				if project.JSON.ExternalKeyID.Valid() {
+					return supertypes.NewStringValue(project.ExternalKeyID)
+				}
+				return supertypes.NewStringNull()
+			})(),
+			ArchivedAt: (func() supertypes.Int64Value {
+				if project.JSON.ArchivedAt.Valid() {
+					return supertypes.NewInt64Value(project.ArchivedAt)
+				}
+				return supertypes.NewInt64Null()
+			})(),
 		}
-	}
-	m.Projects = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
+	}))
 	return nil
 }

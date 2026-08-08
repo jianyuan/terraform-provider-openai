@@ -4,30 +4,46 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *ProjectResourceModel) Fill(ctx context.Context, project apiclient.Project) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(project.Id)
-	m.Name = supertypes.NewStringPointerValue(project.Name)
-	m.Status = supertypes.NewStringPointerValue(project.Status)
-	m.ExternalKeyId = supertypes.NewStringPointerValue(project.ExternalKeyId)
+func (m *ProjectResourceModel) Fill(ctx context.Context, project openai.Project) diag.Diagnostics {
+	m.Id = supertypes.NewStringValue(project.ID)
+	m.Name = supertypes.NewStringValue(project.Name)
+	m.Status = supertypes.NewStringValue(project.Status)
+	m.ExternalKeyId = (func() supertypes.StringValue {
+		if project.JSON.ExternalKeyID.Valid() {
+			return supertypes.NewStringValue(project.ExternalKeyID)
+		}
+		return supertypes.NewStringNull()
+	})()
 	m.CreatedAt = supertypes.NewInt64Value(project.CreatedAt)
-	m.ArchivedAt = supertypes.NewInt64PointerValue(project.ArchivedAt)
+	m.ArchivedAt = (func() supertypes.Int64Value {
+		if project.JSON.ArchivedAt.Valid() {
+			return supertypes.NewInt64Value(project.ArchivedAt)
+		}
+		return supertypes.NewInt64Null()
+	})()
 	return nil
 }
 
-func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.CreateProjectJSONRequestBody, diag.Diagnostics) {
-	return apiclient.CreateProjectJSONRequestBody{
+func (r *ProjectResource) getNewParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectNewParams, diag.Diagnostics) {
+	body := &openai.AdminOrganizationProjectNewParams{
 		Name:          data.Name.ValueString(),
-		ExternalKeyId: data.ExternalKeyId.ValueStringPointer(),
-		Geography:     data.Geography.ValueStringPointer(),
-	}, nil
+		ExternalKeyID: openaiparam.FromString(data.ExternalKeyId),
+		Geography:     openaiparam.FromString(data.Geography),
+	}
+
+	return body, nil
 }
 
-func (r *ProjectResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (apiclient.ModifyProjectJSONRequestBody, diag.Diagnostics) {
-	return apiclient.ModifyProjectJSONRequestBody{
-		Name: data.Name.ValueStringPointer(),
-	}, nil
+func (r *ProjectResource) getUpdateParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectUpdateParams, diag.Diagnostics) {
+	body := &openai.AdminOrganizationProjectUpdateParams{
+		Name:          openai.String(data.Name.ValueString()),
+		ExternalKeyID: openaiparam.FromString(data.ExternalKeyId),
+	}
+
+	return body, nil
 }

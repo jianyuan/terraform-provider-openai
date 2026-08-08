@@ -4,42 +4,56 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, data apiclient.ProjectRateLimit) diag.Diagnostics {
-	m.Batch1DayMaxInputTokens = supertypes.NewInt64PointerValue(data.Batch1DayMaxInputTokens)
-	m.MaxAudioMegabytesPer1Minute = supertypes.NewInt64PointerValue(data.MaxAudioMegabytesPer1Minute)
-	m.MaxImagesPer1Minute = supertypes.NewInt64PointerValue(data.MaxImagesPer1Minute)
-	m.MaxRequestsPer1Day = supertypes.NewInt64PointerValue(data.MaxRequestsPer1Day)
+func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, data openai.ProjectRateLimit) diag.Diagnostics {
+	m.Batch1DayMaxInputTokens = (func() supertypes.Int64Value {
+		if data.JSON.Batch1DayMaxInputTokens.Valid() {
+			return supertypes.NewInt64Value(data.Batch1DayMaxInputTokens)
+		}
+		return supertypes.NewInt64Null()
+	})()
+	m.MaxAudioMegabytesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxAudioMegabytesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(data.MaxAudioMegabytesPer1Minute)
+		}
+		return supertypes.NewInt64Null()
+	})()
+	m.MaxImagesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxImagesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(data.MaxImagesPer1Minute)
+		}
+		return supertypes.NewInt64Null()
+	})()
+	m.MaxRequestsPer1Day = (func() supertypes.Int64Value {
+		if data.JSON.MaxRequestsPer1Day.Valid() {
+			return supertypes.NewInt64Value(data.MaxRequestsPer1Day)
+		}
+		return supertypes.NewInt64Null()
+	})()
 	m.MaxRequestsPer1Minute = supertypes.NewInt64Value(data.MaxRequestsPer1Minute)
 	m.MaxTokensPer1Minute = supertypes.NewInt64Value(data.MaxTokensPer1Minute)
 	return nil
 }
 
-func (r *ProjectRateLimitResource) resourceMatch(data ProjectRateLimitResourceModel, rateLimit apiclient.ProjectRateLimit) bool {
-	return data.RateLimitId.ValueString() == rateLimit.Id
+func (r *ProjectRateLimitResource) resourceMatch(data ProjectRateLimitResourceModel, rateLimit openai.ProjectRateLimit) bool {
+	return data.RateLimitId.ValueString() == rateLimit.ID
 }
 
-func (r *ProjectRateLimitResource) getCreateJSONRequestBody(ctx context.Context, data ProjectRateLimitResourceModel) (apiclient.UpdateProjectRateLimitsJSONRequestBody, diag.Diagnostics) {
-	return apiclient.UpdateProjectRateLimitsJSONRequestBody{
-		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.GetInt64Ptr(),
-		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.GetInt64Ptr(),
-		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.GetInt64Ptr(),
-		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.GetInt64Ptr(),
-		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.GetInt64Ptr(),
-		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.GetInt64Ptr(),
-	}, nil
+func (r *ProjectRateLimitResource) getNewParams(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *ProjectRateLimitResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectRateLimitResourceModel) (apiclient.UpdateProjectRateLimitsJSONRequestBody, diag.Diagnostics) {
-	return apiclient.UpdateProjectRateLimitsJSONRequestBody{
-		Batch1DayMaxInputTokens:     data.Batch1DayMaxInputTokens.GetInt64Ptr(),
-		MaxAudioMegabytesPer1Minute: data.MaxAudioMegabytesPer1Minute.GetInt64Ptr(),
-		MaxImagesPer1Minute:         data.MaxImagesPer1Minute.GetInt64Ptr(),
-		MaxRequestsPer1Day:          data.MaxRequestsPer1Day.GetInt64Ptr(),
-		MaxRequestsPer1Minute:       data.MaxRequestsPer1Minute.GetInt64Ptr(),
-		MaxTokensPer1Minute:         data.MaxTokensPer1Minute.GetInt64Ptr(),
+func (r *ProjectRateLimitResource) getUpdateParams(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams{
+		Batch1DayMaxInputTokens:     openaiparam.FromInt64(data.Batch1DayMaxInputTokens),
+		MaxAudioMegabytesPer1Minute: openaiparam.FromInt64(data.MaxAudioMegabytesPer1Minute),
+		MaxImagesPer1Minute:         openaiparam.FromInt64(data.MaxImagesPer1Minute),
+		MaxRequestsPer1Day:          openaiparam.FromInt64(data.MaxRequestsPer1Day),
+		MaxRequestsPer1Minute:       openaiparam.FromInt64(data.MaxRequestsPer1Minute),
+		MaxTokensPer1Minute:         openaiparam.FromInt64(data.MaxTokensPer1Minute),
 	}, nil
 }

@@ -3,8 +3,6 @@ package provider_test
 import (
 	"context"
 	"fmt"
-	"log"
-	"net/http"
 	"strings"
 	"testing"
 
@@ -14,63 +12,30 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	"github.com/jianyuan/terraform-provider-openai/internal/sweep"
+	"github.com/openai/openai-go/v3"
 )
 
 func init() {
-	resource.AddTestSweepers("openai_group", &resource.Sweeper{
-		Name: "openai_group",
-		F: func(r string) error {
-			ctx := context.Background()
+	sweep.Register("openai_group", func(ctx context.Context, client *openai.Client) ([]sweep.Sweepable, error) {
+		params := openai.AdminOrganizationGroupListParams{
+			Limit: openai.Int(100),
+		}
 
-			params := &apiclient.ListGroupsParams{
-				Limit: new(int64(100)),
+		var sweepables []sweep.Sweepable
+
+		iter := acctest.SharedClient.Admin.Organization.Groups.ListAutoPaging(ctx, params)
+		for iter.Next() {
+			item := iter.Current()
+			if strings.HasPrefix(item.Name, "tf-") {
+				sweepables = append(sweepables, sweep.NewSweepResource(provider.NewGroupResource, acctest.SharedClient, map[string]any{
+					"id": item.ID,
+				}))
 			}
+		}
 
-			for {
-				httpResp, err := acctest.SharedClient.ListGroupsWithResponse(
-					ctx,
-					params,
-				)
-
-				if err != nil {
-					return fmt.Errorf("[ERROR] Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK || httpResp.JSON200 == nil {
-					return fmt.Errorf("[ERROR] Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-				}
-
-				for _, group := range httpResp.JSON200.Data {
-					if !strings.HasPrefix(group.Name, "tf-") {
-						continue
-					}
-
-					log.Printf("[INFO] Found group %s (ID: %s)", group.Name, group.Id)
-
-					httpResp, err := acctest.SharedClient.DeleteGroupWithResponse(
-						ctx,
-						group.Id,
-					)
-
-					if err != nil {
-						log.Printf("[ERROR] Unable to delete, got error: %s", err)
-						continue
-					} else if httpResp.StatusCode() != http.StatusOK {
-						log.Printf("[ERROR] Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-						continue
-					}
-
-					log.Printf("[INFO] Deleted group %s (ID: %s)", group.Name, group.Id)
-				}
-
-				if httpResp.JSON200.Next == nil {
-					break
-				}
-
-				params.After = httpResp.JSON200.Next
-			}
-
-			return nil
-		},
+		return sweepables, nil
 	})
 }
 

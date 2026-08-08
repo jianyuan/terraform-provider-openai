@@ -3,6 +3,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -94,25 +96,22 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	httpResp, err := r.client.CreateProjectWithResponse(ctx, body)
+	modelInstance, err := r.client.Admin.Organization.Projects.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -128,26 +127,21 @@ func (r *ProjectResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	httpResp, err := r.client.RetrieveProjectWithResponse(ctx, data.Id.ValueString())
+	modelInstance, err := r.client.Admin.Organization.Projects.Get(ctx, data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	responseData := httpResp.JSON200
-
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -163,25 +157,22 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	body, diags := r.getUpdateParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	httpResp, err := r.client.ModifyProjectWithResponse(ctx, data.Id.ValueString(), body)
+	modelInstance, err := r.client.Admin.Organization.Projects.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -197,14 +188,13 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
-	httpResp, err := r.client.ArchiveProjectWithResponse(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.Projects.Archive(ctx, data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

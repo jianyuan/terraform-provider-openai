@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *ProjectUserRoleAssignmentResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
-	case apiclient.UserRoleAssignment:
-		m.UserId = supertypes.NewStringValue(data.User.Id)
-		m.RoleId = supertypes.NewStringValue(data.Role.Id)
+	case openai.AdminOrganizationProjectUserRoleNewResponse:
+		m.UserId = supertypes.NewStringValue(data.User.ID)
+		m.RoleId = supertypes.NewStringValue(data.Role.ID)
 		return nil
-	case apiclient.AssignedRoleDetails:
-		m.RoleId = supertypes.NewStringValue(data.Id)
+	case openai.AdminOrganizationProjectUserRoleGetResponse:
+		m.RoleId = supertypes.NewStringValue(data.ID)
 		return nil
 	default:
 		var diags diag.Diagnostics
@@ -25,12 +25,8 @@ func (m *ProjectUserRoleAssignmentResourceModel) Fill(ctx context.Context, data 
 	}
 }
 
-func (r *ProjectUserRoleAssignmentResource) resourceMatch(data ProjectUserRoleAssignmentResourceModel, roleAssignment apiclient.AssignedRoleDetails) bool {
-	return data.RoleId.ValueString() == roleAssignment.Id
-}
-
-func (r *ProjectUserRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data ProjectUserRoleAssignmentResourceModel) (apiclient.AssignProjectUserRoleJSONRequestBody, diag.Diagnostics) {
-	return apiclient.AssignProjectUserRoleJSONRequestBody{
-		RoleId: data.RoleId.ValueString(),
+func (r *ProjectUserRoleAssignmentResource) getNewParams(ctx context.Context, data ProjectUserRoleAssignmentResourceModel) (*openai.AdminOrganizationProjectUserRoleNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationProjectUserRoleNewParams{
+		RoleID: data.RoleId.ValueString(),
 	}, nil
 }
