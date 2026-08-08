@@ -55,11 +55,11 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 				Sensitive:           true,
 			},
 			"max_retries": schema.Int64Attribute{
-				MarkdownDescription: "Maximum number of retries for failed requests. It can also be set using the `OPENAI_MAX_RETRIES` environment variable. Defaults to `5` retries.",
+				MarkdownDescription: "Maximum number of retries for failed requests. It can also be set using the `OPENAI_MAX_RETRIES` environment variable. Defaults to `3` retries.",
 				Optional:            true,
 			},
 			"request_timeout_seconds": schema.Int64Attribute{
-				MarkdownDescription: "Timeout for each request in seconds. It can also be set using the `OPENAI_REQUEST_TIMEOUT_SECONDS` environment variable. Defaults to `10` seconds.",
+				MarkdownDescription: "Timeout for each request in seconds. It can also be set using the `OPENAI_REQUEST_TIMEOUT_SECONDS` environment variable. Defaults to `60` seconds.",
 				Optional:            true,
 			},
 		},
@@ -99,7 +99,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	maxRetries := 5
+	maxRetries := 3
 	if !data.MaxRetries.IsNull() {
 		maxRetries = int(data.MaxRetries.ValueInt64())
 	} else if v := os.Getenv("OPENAI_MAX_RETRIES"); v != "" {
@@ -110,7 +110,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		}
 	}
 
-	requestTimeoutSeconds := 10
+	requestTimeoutSeconds := 60
 	if !data.RequestTimeoutSeconds.IsNull() {
 		requestTimeoutSeconds = int(data.RequestTimeoutSeconds.ValueInt64())
 	} else if v := os.Getenv("OPENAI_REQUEST_TIMEOUT_SECONDS"); v != "" {

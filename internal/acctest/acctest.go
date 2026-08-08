@@ -32,8 +32,9 @@ func init() {
 		option.WithBaseURL(TestBaseUrl),
 		option.WithAdminAPIKey(TestAdminKey),
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", "dev", "dev")),
-		option.WithRequestTimeout(10*time.Second),
+		option.WithRequestTimeout(60*time.Second),
 		option.WithMaxRetries(5),
+		option.WithDebugLog(nil),
 	))
 
 	ctx := context.Background()
