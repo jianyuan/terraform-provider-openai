@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -29,8 +30,10 @@ type OpenAIProvider struct {
 
 // OpenAIProviderModel describes the provider data model.
 type OpenAIProviderModel struct {
-	BaseUrl  types.String `tfsdk:"base_url"`
-	AdminKey types.String `tfsdk:"admin_key"`
+	BaseUrl               types.String `tfsdk:"base_url"`
+	AdminKey              types.String `tfsdk:"admin_key"`
+	MaxRetries            types.Int64  `tfsdk:"max_retries"`
+	RequestTimeoutSeconds types.Int64  `tfsdk:"request_timeout_seconds"`
 }
 
 func (p *OpenAIProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -51,12 +54,21 @@ func (p *OpenAIProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 				Optional:            true,
 				Sensitive:           true,
 			},
+			"max_retries": schema.Int64Attribute{
+				MarkdownDescription: "Maximum number of retries for failed requests. It can also be set using the `OPENAI_MAX_RETRIES` environment variable. Defaults to `5` retries.",
+				Optional:            true,
+			},
+			"request_timeout_seconds": schema.Int64Attribute{
+				MarkdownDescription: "Timeout for each request in seconds. It can also be set using the `OPENAI_REQUEST_TIMEOUT_SECONDS` environment variable. Defaults to `10` seconds.",
+				Optional:            true,
+			},
 		},
 	}
 }
 
 func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var data OpenAIProviderModel
+	var err error
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
@@ -87,12 +99,34 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
+	maxRetries := 5
+	if !data.MaxRetries.IsNull() {
+		maxRetries = int(data.MaxRetries.ValueInt64())
+	} else if v := os.Getenv("OPENAI_MAX_RETRIES"); v != "" {
+		maxRetries, err = strconv.Atoi(v)
+		if err != nil {
+			resp.Diagnostics.AddError("invalid max_retries", "max_retries must be an integer")
+			return
+		}
+	}
+
+	requestTimeoutSeconds := 10
+	if !data.RequestTimeoutSeconds.IsNull() {
+		requestTimeoutSeconds = int(data.RequestTimeoutSeconds.ValueInt64())
+	} else if v := os.Getenv("OPENAI_REQUEST_TIMEOUT_SECONDS"); v != "" {
+		requestTimeoutSeconds, err = strconv.Atoi(v)
+		if err != nil {
+			resp.Diagnostics.AddError("invalid request_timeout_seconds", "request_timeout_seconds must be an integer")
+			return
+		}
+	}
+
 	client := new(openai.NewClient(
 		option.WithBaseURL(baseUrl),
 		option.WithAdminAPIKey(adminKey),
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version)),
-		option.WithRequestTimeout(10*time.Second),
-		option.WithMaxRetries(5),
+		option.WithMaxRetries(maxRetries),
+		option.WithRequestTimeout(time.Duration(requestTimeoutSeconds)*time.Second),
 	))
 
 	pd := &providerData{
