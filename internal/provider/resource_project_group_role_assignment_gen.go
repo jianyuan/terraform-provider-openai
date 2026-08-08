@@ -139,6 +139,10 @@ func (r *ProjectGroupRoleAssignmentResource) Delete(ctx context.Context, req res
 
 	_, err := r.client.Admin.Organization.Projects.Groups.Roles.Delete(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

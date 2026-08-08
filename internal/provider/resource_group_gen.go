@@ -159,6 +159,10 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 
 	_, err := r.client.Admin.Organization.Groups.Delete(ctx, data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

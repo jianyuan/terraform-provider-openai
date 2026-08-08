@@ -131,12 +131,8 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		option.WithDebugLog(inttflog.StandardLogger(ctx)),
 	))
 
-	pd := &providerData{
-		client: client,
-	}
-
-	resp.DataSourceData = pd
-	resp.ResourceData = pd
+	resp.DataSourceData = client
+	resp.ResourceData = client
 }
 
 func (p *OpenAIProvider) Functions(ctx context.Context) []func() function.Function {

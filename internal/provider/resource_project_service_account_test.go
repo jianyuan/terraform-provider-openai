@@ -14,60 +14,51 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
+	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	"github.com/jianyuan/terraform-provider-openai/internal/sweep"
 	"github.com/openai/openai-go/v3"
 )
 
 func init() {
-	resource.AddTestSweepers("openai_project_service_account", &resource.Sweeper{
-		Name: "openai_project_service_account",
-		F: func(r string) error {
-			ctx := context.Background()
+	sweep.Register("openai_project_service_account", func(ctx context.Context, client *openai.Client) ([]sweep.Sweepable, error) {
+		var sweepables []sweep.Sweepable
 
-			params := openai.AdminOrganizationProjectListParams{
+		params := openai.AdminOrganizationProjectListParams{
+			Limit: openai.Int(100),
+		}
+		var projectIds []string
+		iter := acctest.SharedClient.Admin.Organization.Projects.ListAutoPaging(ctx, params)
+		for iter.Next() {
+			item := iter.Current()
+			projectIds = append(projectIds, item.ID)
+		}
+
+		for _, projectId := range projectIds {
+			log.Printf("[INFO] Listing project service accounts for project %s", projectId)
+
+			params := openai.AdminOrganizationProjectServiceAccountListParams{
 				Limit: openai.Int(100),
 			}
 
-			var projectIds []string
+			var ids []string
 
-			iter := acctest.SharedClient.Admin.Organization.Projects.ListAutoPaging(ctx, params)
+			iter := acctest.SharedClient.Admin.Organization.Projects.ServiceAccounts.ListAutoPaging(ctx, projectId, params)
 			for iter.Next() {
 				item := iter.Current()
-				projectIds = append(projectIds, item.ID)
-			}
-
-			for _, projectId := range projectIds {
-				log.Printf("[INFO] Listing project service accounts for project %s", projectId)
-
-				params := openai.AdminOrganizationProjectServiceAccountListParams{
-					Limit: openai.Int(100),
-				}
-
-				var ids []string
-
-				iter := acctest.SharedClient.Admin.Organization.Projects.ServiceAccounts.ListAutoPaging(ctx, projectId, params)
-				for iter.Next() {
-					item := iter.Current()
-					if strings.HasPrefix(item.Name, "tf-") || strings.HasPrefix(item.Name, "test-") {
-						ids = append(ids, item.ID)
-					}
-				}
-
-				for _, id := range ids {
-					log.Printf("[INFO] Destroying project service account %s", id)
-
-					_, err := acctest.SharedClient.Admin.Organization.Projects.ServiceAccounts.Delete(ctx, projectId, id)
-
-					if err != nil {
-						log.Printf("[ERROR] Unable to delete project service account %s: %s", id, err)
-						continue
-					}
-
-					log.Printf("[INFO] Deleted project service account %s", id)
+				if strings.HasPrefix(item.Name, "tf-") || strings.HasPrefix(item.Name, "test-") {
+					ids = append(ids, item.ID)
 				}
 			}
 
-			return nil
-		},
+			for _, id := range ids {
+				sweepables = append(sweepables, sweep.NewSweepResource(provider.NewProjectServiceAccountResource, acctest.SharedClient, map[string]any{
+					"project_id": projectId,
+					"id":         id,
+				}))
+			}
+		}
+
+		return sweepables, nil
 	})
 }
 

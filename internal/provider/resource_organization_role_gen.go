@@ -164,6 +164,10 @@ func (r *OrganizationRoleResource) Delete(ctx context.Context, req resource.Dele
 
 	_, err := r.client.Admin.Organization.Roles.Delete(ctx, data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

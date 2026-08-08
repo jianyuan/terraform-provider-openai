@@ -12,38 +12,30 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/jianyuan/terraform-provider-openai/internal/acctest"
+	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	"github.com/jianyuan/terraform-provider-openai/internal/sweep"
 	"github.com/openai/openai-go/v3"
 )
 
 func init() {
-	resource.AddTestSweepers("openai_project", &resource.Sweeper{
-		Name: "openai_project",
-		F: func(r string) error {
-			ctx := context.Background()
+	sweep.Register("openai_project", func(ctx context.Context, client *openai.Client) ([]sweep.Sweepable, error) {
+		params := openai.AdminOrganizationProjectListParams{
+			Limit: openai.Int(100),
+		}
 
-			params := openai.AdminOrganizationProjectListParams{
-				Limit: openai.Int(100),
+		var sweepables []sweep.Sweepable
+
+		iter := acctest.SharedClient.Admin.Organization.Projects.ListAutoPaging(ctx, params)
+		for iter.Next() {
+			item := iter.Current()
+			if strings.HasPrefix(item.Name, "tf-") {
+				sweepables = append(sweepables, sweep.NewSweepResource(provider.NewProjectResource, acctest.SharedClient, map[string]any{
+					"id": item.ID,
+				}))
 			}
+		}
 
-			var ids []string
-
-			iter := acctest.SharedClient.Admin.Organization.Projects.ListAutoPaging(ctx, params)
-			for iter.Next() {
-				item := iter.Current()
-				if strings.HasPrefix(item.Name, "tf-") {
-					ids = append(ids, item.ID)
-				}
-			}
-
-			for _, id := range ids {
-				_, err := acctest.SharedClient.Admin.Organization.Projects.Archive(ctx, id)
-				if err != nil {
-					return fmt.Errorf("Unable to delete, got error: %w", err)
-				}
-			}
-
-			return nil
-		},
+		return sweepables, nil
 	})
 }
 

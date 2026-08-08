@@ -150,6 +150,10 @@ func (r *UserRoleAssignmentResource) Delete(ctx context.Context, req resource.De
 
 	_, err := r.client.Admin.Organization.Users.Roles.Delete(ctx, data.UserId.ValueString(), data.RoleId.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

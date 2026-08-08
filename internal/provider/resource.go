@@ -18,16 +18,16 @@ func (r *baseResource) Configure(ctx context.Context, req resource.ConfigureRequ
 		return
 	}
 
-	data, ok := req.ProviderData.(*providerData)
+	client, ok := req.ProviderData.(*openai.Client)
 
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *providerData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *openai.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
 	}
 
-	r.client = data.client
+	r.client = client
 }

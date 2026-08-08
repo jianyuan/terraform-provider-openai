@@ -168,6 +168,10 @@ func (r *ProjectUserResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	_, err := r.client.Admin.Organization.Projects.Users.Delete(ctx, data.ProjectId.ValueString(), data.UserId.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

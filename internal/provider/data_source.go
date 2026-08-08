@@ -18,16 +18,16 @@ func (d *baseDataSource) Configure(ctx context.Context, req datasource.Configure
 		return
 	}
 
-	data, ok := req.ProviderData.(*providerData)
+	client, ok := req.ProviderData.(*openai.Client)
 
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *providerData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *openai.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
 	}
 
-	d.client = data.client
+	d.client = client
 }

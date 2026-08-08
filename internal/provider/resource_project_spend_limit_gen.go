@@ -188,6 +188,10 @@ func (r *ProjectSpendLimitResource) Delete(ctx context.Context, req resource.Del
 
 	_, err := r.client.Admin.Organization.Projects.SpendLimit.Delete(ctx, data.ProjectId.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
 		return
 	}

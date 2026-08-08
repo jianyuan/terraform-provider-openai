@@ -763,6 +763,10 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
 
       _, err := r.client.${resource.api.method}.${resource.api.deleteMethod}(${deleteRequestParams.join(",")})
       if err != nil {
+        if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+          return
+        }
+
         resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
         return
       }
