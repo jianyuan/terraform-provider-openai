@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/jianyuan/terraform-provider-openai/internal/provider"
+	inttflog "github.com/jianyuan/terraform-provider-openai/internal/tflog"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
 )
@@ -34,11 +35,10 @@ func init() {
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", "dev", "dev")),
 		option.WithRequestTimeout(60*time.Second),
 		option.WithMaxRetries(5),
-		option.WithDebugLog(nil),
+		option.WithDebugLog(inttflog.StandardLogger(context.Background())),
 	))
 
-	ctx := context.Background()
-	TestGroupId = ensureTestGroupId(ctx)
+	TestGroupId = ensureTestGroupId(context.Background())
 }
 
 func PreCheck(t *testing.T) {
