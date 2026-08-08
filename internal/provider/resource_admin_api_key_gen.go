@@ -79,7 +79,7 @@ func (r *AdminApiKeyResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

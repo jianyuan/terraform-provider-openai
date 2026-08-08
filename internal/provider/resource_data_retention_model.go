@@ -13,11 +13,11 @@ func (m *DataRetentionResourceModel) Fill(ctx context.Context, dr openai.Organiz
 	return nil
 }
 
-func (r *DataRetentionResource) getCreateJSONRequestBody(ctx context.Context, data DataRetentionResourceModel) (*openai.AdminOrganizationDataRetentionUpdateParams, diag.Diagnostics) {
-	return r.getUpdateJSONRequestBody(ctx, data)
+func (r *DataRetentionResource) getNewParams(ctx context.Context, data DataRetentionResourceModel) (*openai.AdminOrganizationDataRetentionUpdateParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *DataRetentionResource) getUpdateJSONRequestBody(ctx context.Context, data DataRetentionResourceModel) (*openai.AdminOrganizationDataRetentionUpdateParams, diag.Diagnostics) {
+func (r *DataRetentionResource) getUpdateParams(ctx context.Context, data DataRetentionResourceModel) (*openai.AdminOrganizationDataRetentionUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationDataRetentionUpdateParams{
 		RetentionType: openai.AdminOrganizationDataRetentionUpdateParamsRetentionType(data.Type.ValueString()),
 	}, nil

@@ -25,7 +25,7 @@ func (m *GroupUserResourceModel) Fill(ctx context.Context, data any) diag.Diagno
 	}
 }
 
-func (r *GroupUserResource) getCreateJSONRequestBody(ctx context.Context, data GroupUserResourceModel) (*openai.AdminOrganizationGroupUserNewParams, diag.Diagnostics) {
+func (r *GroupUserResource) getNewParams(ctx context.Context, data GroupUserResourceModel) (*openai.AdminOrganizationGroupUserNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationGroupUserNewParams{
 		UserID: data.UserId.ValueString(),
 	}, nil

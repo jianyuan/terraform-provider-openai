@@ -14,14 +14,14 @@ func (m *ProjectUserResourceModel) Fill(ctx context.Context, data openai.Project
 	return nil
 }
 
-func (r *ProjectUserResource) getCreateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (*openai.AdminOrganizationProjectUserNewParams, diag.Diagnostics) {
+func (r *ProjectUserResource) getNewParams(ctx context.Context, data ProjectUserResourceModel) (*openai.AdminOrganizationProjectUserNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectUserNewParams{
 		Role:   data.Role.ValueString(),
 		UserID: openai.String(data.UserId.ValueString()),
 	}, nil
 }
 
-func (r *ProjectUserResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectUserResourceModel) (*openai.AdminOrganizationProjectUserUpdateParams, diag.Diagnostics) {
+func (r *ProjectUserResource) getUpdateParams(ctx context.Context, data ProjectUserResourceModel) (*openai.AdminOrganizationProjectUserUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectUserUpdateParams{
 		Role: openai.String(data.Role.ValueString()),
 	}, nil

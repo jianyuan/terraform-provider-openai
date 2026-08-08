@@ -18,11 +18,11 @@ func (m *SpendLimitResourceModel) Fill(ctx context.Context, data openai.Organiza
 	return nil
 }
 
-func (r *SpendLimitResource) getCreateJSONRequestBody(ctx context.Context, data SpendLimitResourceModel) (*openai.AdminOrganizationSpendLimitUpdateParams, diag.Diagnostics) {
-	return r.getUpdateJSONRequestBody(ctx, data)
+func (r *SpendLimitResource) getNewParams(ctx context.Context, data SpendLimitResourceModel) (*openai.AdminOrganizationSpendLimitUpdateParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *SpendLimitResource) getUpdateJSONRequestBody(ctx context.Context, data SpendLimitResourceModel) (*openai.AdminOrganizationSpendLimitUpdateParams, diag.Diagnostics) {
+func (r *SpendLimitResource) getUpdateParams(ctx context.Context, data SpendLimitResourceModel) (*openai.AdminOrganizationSpendLimitUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationSpendLimitUpdateParams{
 		Currency:        openai.AdminOrganizationSpendLimitUpdateParamsCurrency(data.Currency.ValueString()),
 		Interval:        openai.AdminOrganizationSpendLimitUpdateParamsInterval(data.Interval.ValueString()),

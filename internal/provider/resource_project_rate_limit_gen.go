@@ -95,7 +95,7 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -145,7 +145,7 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
 		return
 	} else if modelInstance == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -165,7 +165,7 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	body, diags := r.getUpdateParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

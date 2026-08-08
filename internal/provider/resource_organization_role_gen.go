@@ -70,7 +70,7 @@ func (r *OrganizationRoleResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -131,7 +131,7 @@ func (r *OrganizationRoleResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	body, diags := r.getUpdateParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

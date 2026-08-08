@@ -25,7 +25,7 @@ func (m *ProjectUserRoleAssignmentResourceModel) Fill(ctx context.Context, data 
 	}
 }
 
-func (r *ProjectUserRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data ProjectUserRoleAssignmentResourceModel) (*openai.AdminOrganizationProjectUserRoleNewParams, diag.Diagnostics) {
+func (r *ProjectUserRoleAssignmentResource) getNewParams(ctx context.Context, data ProjectUserRoleAssignmentResourceModel) (*openai.AdminOrganizationProjectUserRoleNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectUserRoleNewParams{
 		RoleID: data.RoleId.ValueString(),
 	}, nil

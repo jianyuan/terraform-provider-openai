@@ -82,7 +82,7 @@ func (r *SpendLimitResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -143,7 +143,7 @@ func (r *SpendLimitResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	body, diags := r.getUpdateParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

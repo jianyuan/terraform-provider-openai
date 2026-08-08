@@ -28,7 +28,7 @@ func (m *SpendAlertResourceModel) Fill(ctx context.Context, data openai.Organiza
 	return nil
 }
 
-func (r *SpendAlertResource) getCreateJSONRequestBody(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertNewParams, diag.Diagnostics) {
+func (r *SpendAlertResource) getNewParams(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertNewParams, diag.Diagnostics) {
 	notificationChannel, diags := data.NotificationChannel.Get(ctx)
 	if diags.HasError() {
 		return nil, diags
@@ -56,7 +56,7 @@ func (r *SpendAlertResource) getCreateJSONRequestBody(ctx context.Context, data 
 	}, nil
 }
 
-func (r *SpendAlertResource) getUpdateJSONRequestBody(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertUpdateParams, diag.Diagnostics) {
+func (r *SpendAlertResource) getUpdateParams(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertUpdateParams, diag.Diagnostics) {
 	notificationChannel, diags := data.NotificationChannel.Get(ctx)
 	if diags.HasError() {
 		return nil, diags

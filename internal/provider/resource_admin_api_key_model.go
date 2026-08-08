@@ -28,7 +28,7 @@ func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data any) diag.Diag
 	return nil
 }
 
-func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data AdminApiKeyResourceModel) (*openai.AdminOrganizationAdminAPIKeyNewParams, diag.Diagnostics) {
+func (r *AdminApiKeyResource) getNewParams(ctx context.Context, data AdminApiKeyResourceModel) (*openai.AdminOrganizationAdminAPIKeyNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationAdminAPIKeyNewParams{
 		Name: data.Name.ValueString(),
 	}, nil

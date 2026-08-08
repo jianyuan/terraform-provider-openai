@@ -64,7 +64,7 @@ func (r *GroupRoleAssignmentResource) Create(ctx context.Context, req resource.C
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

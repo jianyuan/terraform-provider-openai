@@ -64,7 +64,7 @@ func (r *GroupUserResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

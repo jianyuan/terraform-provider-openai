@@ -19,11 +19,11 @@ func (m *ProjectSpendLimitResourceModel) Fill(ctx context.Context, data openai.P
 	return diags
 }
 
-func (r *ProjectSpendLimitResource) getCreateJSONRequestBody(ctx context.Context, data ProjectSpendLimitResourceModel) (*openai.AdminOrganizationProjectSpendLimitUpdateParams, diag.Diagnostics) {
-	return r.getUpdateJSONRequestBody(ctx, data)
+func (r *ProjectSpendLimitResource) getNewParams(ctx context.Context, data ProjectSpendLimitResourceModel) (*openai.AdminOrganizationProjectSpendLimitUpdateParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *ProjectSpendLimitResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectSpendLimitResourceModel) (*openai.AdminOrganizationProjectSpendLimitUpdateParams, diag.Diagnostics) {
+func (r *ProjectSpendLimitResource) getUpdateParams(ctx context.Context, data ProjectSpendLimitResourceModel) (*openai.AdminOrganizationProjectSpendLimitUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectSpendLimitUpdateParams{
 		Currency:        openai.AdminOrganizationProjectSpendLimitUpdateParamsCurrency(data.Currency.ValueString()),
 		Interval:        openai.AdminOrganizationProjectSpendLimitUpdateParamsInterval(data.Interval.ValueString()),

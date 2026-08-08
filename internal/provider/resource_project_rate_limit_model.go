@@ -43,11 +43,11 @@ func (r *ProjectRateLimitResource) resourceMatch(data ProjectRateLimitResourceMo
 	return data.RateLimitId.ValueString() == rateLimit.ID
 }
 
-func (r *ProjectRateLimitResource) getCreateJSONRequestBody(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
-	return r.getUpdateJSONRequestBody(ctx, data)
+func (r *ProjectRateLimitResource) getNewParams(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *ProjectRateLimitResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
+func (r *ProjectRateLimitResource) getUpdateParams(ctx context.Context, data ProjectRateLimitResourceModel) (*openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectRateLimitUpdateRateLimitParams{
 		Batch1DayMaxInputTokens: (func() param.Opt[int64] {
 			if data.Batch1DayMaxInputTokens.IsKnown() {

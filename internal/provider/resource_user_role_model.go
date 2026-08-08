@@ -11,11 +11,11 @@ func (m UserRoleResourceModel) Fill(ctx context.Context, user openai.Organizatio
 	return nil
 }
 
-func (r *UserRoleResource) getCreateJSONRequestBody(ctx context.Context, data UserRoleResourceModel) (*openai.AdminOrganizationUserUpdateParams, diag.Diagnostics) {
-	return r.getUpdateJSONRequestBody(ctx, data)
+func (r *UserRoleResource) getNewParams(ctx context.Context, data UserRoleResourceModel) (*openai.AdminOrganizationUserUpdateParams, diag.Diagnostics) {
+	return r.getUpdateParams(ctx, data)
 }
 
-func (r *UserRoleResource) getUpdateJSONRequestBody(ctx context.Context, data UserRoleResourceModel) (*openai.AdminOrganizationUserUpdateParams, diag.Diagnostics) {
+func (r *UserRoleResource) getUpdateParams(ctx context.Context, data UserRoleResourceModel) (*openai.AdminOrganizationUserUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationUserUpdateParams{
 		Role: openai.String(data.Role.ValueString()),
 	}, nil

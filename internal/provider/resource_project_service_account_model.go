@@ -32,13 +32,13 @@ func (m *ProjectServiceAccountResourceModel) Fill(ctx context.Context, data any)
 	}
 }
 
-func (r *ProjectServiceAccountResource) getCreateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountNewParams, diag.Diagnostics) {
+func (r *ProjectServiceAccountResource) getNewParams(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectServiceAccountNewParams{
 		Name: data.Name.ValueString(),
 	}, nil
 }
 
-func (r *ProjectServiceAccountResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountUpdateParams, diag.Diagnostics) {
+func (r *ProjectServiceAccountResource) getUpdateParams(ctx context.Context, data ProjectServiceAccountResourceModel) (*openai.AdminOrganizationProjectServiceAccountUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationProjectServiceAccountUpdateParams{
 		Name: openai.String(data.Name.ValueString()),
 	}, nil

@@ -28,13 +28,13 @@ func (m *GroupResourceModel) Fill(ctx context.Context, data any) diag.Diagnostic
 	}
 }
 
-func (r *GroupResource) getCreateJSONRequestBody(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupNewParams, diag.Diagnostics) {
+func (r *GroupResource) getNewParams(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationGroupNewParams{
 		Name: data.Name.ValueString(),
 	}, nil
 }
 
-func (r *GroupResource) getUpdateJSONRequestBody(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupUpdateParams, diag.Diagnostics) {
+func (r *GroupResource) getUpdateParams(ctx context.Context, data GroupResourceModel) (*openai.AdminOrganizationGroupUpdateParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationGroupUpdateParams{
 		Name: data.Name.ValueString(),
 	}, nil

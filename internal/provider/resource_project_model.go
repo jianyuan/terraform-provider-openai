@@ -29,7 +29,7 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project openai.Project)
 	return nil
 }
 
-func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectNewParams, diag.Diagnostics) {
+func (r *ProjectResource) getNewParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectNewParams, diag.Diagnostics) {
 	body := &openai.AdminOrganizationProjectNewParams{
 		Name: data.Name.ValueString(),
 		ExternalKeyID: (func() param.Opt[string] {
@@ -49,7 +49,7 @@ func (r *ProjectResource) getCreateJSONRequestBody(ctx context.Context, data Pro
 	return body, nil
 }
 
-func (r *ProjectResource) getUpdateJSONRequestBody(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectUpdateParams, diag.Diagnostics) {
+func (r *ProjectResource) getUpdateParams(ctx context.Context, data ProjectResourceModel) (*openai.AdminOrganizationProjectUpdateParams, diag.Diagnostics) {
 	body := &openai.AdminOrganizationProjectUpdateParams{
 		Name: openai.String(data.Name.ValueString()),
 		ExternalKeyID: (func() param.Opt[string] {

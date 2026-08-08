@@ -25,7 +25,7 @@ func (m *GroupRoleAssignmentResourceModel) Fill(ctx context.Context, data any) d
 	}
 }
 
-func (r *GroupRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data GroupRoleAssignmentResourceModel) (*openai.AdminOrganizationGroupRoleNewParams, diag.Diagnostics) {
+func (r *GroupRoleAssignmentResource) getNewParams(ctx context.Context, data GroupRoleAssignmentResourceModel) (*openai.AdminOrganizationGroupRoleNewParams, diag.Diagnostics) {
 	return &openai.AdminOrganizationGroupRoleNewParams{
 		RoleID: data.RoleId.ValueString(),
 	}, nil

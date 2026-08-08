@@ -17,7 +17,7 @@ func (m *OrganizationRoleResourceModel) Fill(ctx context.Context, role openai.Ro
 	return nil
 }
 
-func (r *OrganizationRoleResource) getCreateJSONRequestBody(ctx context.Context, data OrganizationRoleResourceModel) (*openai.AdminOrganizationRoleNewParams, diag.Diagnostics) {
+func (r *OrganizationRoleResource) getNewParams(ctx context.Context, data OrganizationRoleResourceModel) (*openai.AdminOrganizationRoleNewParams, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	return &openai.AdminOrganizationRoleNewParams{
 		RoleName:    data.Name.ValueString(),
@@ -26,7 +26,7 @@ func (r *OrganizationRoleResource) getCreateJSONRequestBody(ctx context.Context,
 	}, diags
 }
 
-func (r *OrganizationRoleResource) getUpdateJSONRequestBody(ctx context.Context, data OrganizationRoleResourceModel) (*openai.AdminOrganizationRoleUpdateParams, diag.Diagnostics) {
+func (r *OrganizationRoleResource) getUpdateParams(ctx context.Context, data OrganizationRoleResourceModel) (*openai.AdminOrganizationRoleUpdateParams, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	return &openai.AdminOrganizationRoleUpdateParams{
 		RoleName:    openai.String(data.Name.ValueString()),
