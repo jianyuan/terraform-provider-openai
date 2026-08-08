@@ -9,7 +9,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/jianyuan/go-utils/must"
 	"github.com/jianyuan/terraform-provider-openai/internal/provider"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
@@ -72,9 +71,12 @@ func ensureTestGroupId(ctx context.Context) string {
 		}
 	}
 
-	group := must.Get(SharedClient.Admin.Organization.Groups.New(ctx, openai.AdminOrganizationGroupNewParams{
+	group, err := SharedClient.Admin.Organization.Groups.New(ctx, openai.AdminOrganizationGroupNewParams{
 		Name: "acc-tf-group",
-	}))
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	return group.ID
 }

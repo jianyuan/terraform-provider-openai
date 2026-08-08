@@ -7,7 +7,6 @@ require (
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-go v0.31.0
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
-	github.com/jianyuan/go-utils v0.0.0-20250223213401-62c93a9e0b6c
 	github.com/openai/openai-go/v3 v3.50.0
 	github.com/orange-cloudavenue/terraform-plugin-framework-supertypes v1.2.0
 	github.com/samber/lo v1.53.0
