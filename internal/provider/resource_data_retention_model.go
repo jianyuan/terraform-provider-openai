@@ -10,7 +10,6 @@ import (
 
 func (m *DataRetentionResourceModel) Fill(ctx context.Context, dr openai.OrganizationDataRetention) diag.Diagnostics {
 	m.Type = supertypes.NewStringValue(string(dr.Type))
-
 	return nil
 }
 

@@ -18,6 +18,5 @@ func (m *GroupsDataSourceModel) Fill(ctx context.Context, groups []openai.Group)
 			CreatedAt:     supertypes.NewInt64Value(group.CreatedAt),
 		}
 	}))
-
 	return nil
 }

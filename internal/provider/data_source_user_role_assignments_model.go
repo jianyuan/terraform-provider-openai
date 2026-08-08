@@ -20,6 +20,5 @@ func (m *UserRoleAssignmentsDataSourceModel) Fill(ctx context.Context, roles []o
 			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
 	}))
-
 	return nil
 }

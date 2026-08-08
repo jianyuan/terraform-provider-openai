@@ -20,6 +20,5 @@ func (m *ProjectGroupRoleAssignmentsDataSourceModel) Fill(ctx context.Context, r
 			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
 	}))
-
 	return nil
 }

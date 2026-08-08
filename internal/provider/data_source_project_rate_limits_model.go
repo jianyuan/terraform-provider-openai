@@ -42,6 +42,5 @@ func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, rateLimits 
 			})(),
 		}
 	}))
-
 	return nil
 }

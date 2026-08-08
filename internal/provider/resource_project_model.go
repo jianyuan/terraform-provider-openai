@@ -26,7 +26,6 @@ func (m *ProjectResourceModel) Fill(ctx context.Context, project openai.Project)
 		}
 		return supertypes.NewInt64Null()
 	})()
-
 	return nil
 }
 

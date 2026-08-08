@@ -15,6 +15,5 @@ func (m *SpendLimitDataSourceModel) Fill(ctx context.Context, data openai.Organi
 	m.Enforcement = supertypes.NewSingleNestedObjectValueOf(ctx, &SpendLimitDataSourceModelEnforcement{
 		Status: supertypes.NewStringValue(data.Enforcement.Status),
 	})
-
 	return nil
 }

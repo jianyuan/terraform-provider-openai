@@ -30,6 +30,5 @@ func (m *ProjectsDataSourceModel) Fill(ctx context.Context, projects []openai.Pr
 			})(),
 		}
 	}))
-
 	return nil
 }

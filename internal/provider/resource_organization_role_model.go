@@ -22,7 +22,7 @@ func (r *OrganizationRoleResource) getCreateJSONRequestBody(ctx context.Context,
 	return &openai.AdminOrganizationRoleNewParams{
 		RoleName:    data.Name.ValueString(),
 		Permissions: mergeDiagnostics(data.Permissions.Get(ctx))(&diags),
-		Description: openai.String(data.Description.Get()),
+		Description: openai.String(data.Description.ValueString()),
 	}, diags
 }
 
@@ -31,6 +31,6 @@ func (r *OrganizationRoleResource) getUpdateJSONRequestBody(ctx context.Context,
 	return &openai.AdminOrganizationRoleUpdateParams{
 		RoleName:    openai.String(data.Name.ValueString()),
 		Permissions: mergeDiagnostics(data.Permissions.Get(ctx))(&diags),
-		Description: openai.String(data.Description.Get()),
+		Description: openai.String(data.Description.ValueString()),
 	}, diags
 }

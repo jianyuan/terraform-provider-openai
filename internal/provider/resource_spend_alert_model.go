@@ -39,7 +39,7 @@ func (r *SpendAlertResource) getCreateJSONRequestBody(ctx context.Context, data 
 		return nil, diags
 	}
 
-	body := &openai.AdminOrganizationSpendAlertNewParams{
+	return &openai.AdminOrganizationSpendAlertNewParams{
 		Currency:        openai.AdminOrganizationSpendAlertNewParamsCurrency(data.Currency.ValueString()),
 		Interval:        openai.AdminOrganizationSpendAlertNewParamsInterval(data.Interval.ValueString()),
 		ThresholdAmount: data.ThresholdAmount.ValueInt64(),
@@ -53,9 +53,7 @@ func (r *SpendAlertResource) getCreateJSONRequestBody(ctx context.Context, data 
 				return param.Opt[string]{}
 			})(),
 		},
-	}
-
-	return body, nil
+	}, nil
 }
 
 func (r *SpendAlertResource) getUpdateJSONRequestBody(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertUpdateParams, diag.Diagnostics) {

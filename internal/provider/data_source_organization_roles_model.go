@@ -20,6 +20,5 @@ func (m *OrganizationRolesDataSourceModel) Fill(ctx context.Context, roles []ope
 			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
 	}))
-
 	return nil
 }

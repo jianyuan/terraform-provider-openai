@@ -26,6 +26,5 @@ func (m *InviteDataSourceModel) Fill(ctx context.Context, invite openai.Invite) 
 		}
 		return supertypes.NewInt64Null()
 	}())
-
 	return nil
 }

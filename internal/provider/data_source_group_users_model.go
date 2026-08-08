@@ -17,6 +17,5 @@ func (m *GroupUsersDataSourceModel) Fill(ctx context.Context, users []openai.Org
 			Name:  supertypes.NewStringValue(user.Name),
 		}
 	}))
-
 	return nil
 }

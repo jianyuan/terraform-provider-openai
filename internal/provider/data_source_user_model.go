@@ -14,6 +14,5 @@ func (m *UserDataSourceModel) Fill(ctx context.Context, user openai.Organization
 	m.Name = supertypes.NewStringValue(user.Name)
 	m.Role = supertypes.NewStringValue(user.Role)
 	m.AddedAt = supertypes.NewInt64Value(user.AddedAt)
-
 	return nil
 }

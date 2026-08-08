@@ -20,6 +20,5 @@ func (m *ProjectRolesDataSourceModel) Fill(ctx context.Context, roles []openai.R
 			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
 	}))
-
 	return nil
 }

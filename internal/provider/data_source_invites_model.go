@@ -31,6 +31,5 @@ func (m *InvitesDataSourceModel) Fill(ctx context.Context, invites []openai.Invi
 			})(),
 		}
 	}))
-
 	return nil
 }

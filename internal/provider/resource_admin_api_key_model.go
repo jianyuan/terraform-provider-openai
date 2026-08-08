@@ -9,12 +9,6 @@ import (
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
-func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data AdminApiKeyResourceModel) (*openai.AdminOrganizationAdminAPIKeyNewParams, diag.Diagnostics) {
-	return &openai.AdminOrganizationAdminAPIKeyNewParams{
-		Name: data.Name.ValueString(),
-	}, nil
-}
-
 func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch v := data.(type) {
 	case openai.AdminAPIKey:
@@ -31,6 +25,11 @@ func (m *AdminApiKeyResourceModel) Fill(ctx context.Context, data any) diag.Diag
 		diags.AddError("Unknown type", fmt.Sprintf("Unknown type: %T", data))
 		return diags
 	}
-
 	return nil
+}
+
+func (r *AdminApiKeyResource) getCreateJSONRequestBody(ctx context.Context, data AdminApiKeyResourceModel) (*openai.AdminOrganizationAdminAPIKeyNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationAdminAPIKeyNewParams{
+		Name: data.Name.ValueString(),
+	}, nil
 }

@@ -36,7 +36,6 @@ func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, data openai.Pr
 	})()
 	m.MaxRequestsPer1Minute = supertypes.NewInt64Value(data.MaxRequestsPer1Minute)
 	m.MaxTokensPer1Minute = supertypes.NewInt64Value(data.MaxTokensPer1Minute)
-
 	return nil
 }
 

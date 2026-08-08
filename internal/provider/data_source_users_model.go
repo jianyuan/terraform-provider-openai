@@ -19,6 +19,5 @@ func (m *UsersDataSourceModel) Fill(ctx context.Context, users []openai.Organiza
 			AddedAt: supertypes.NewInt64Value(user.AddedAt),
 		}
 	}))
-
 	return nil
 }
