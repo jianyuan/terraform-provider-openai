@@ -378,7 +378,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
 
     iter := d.client.${api.readMethod}(${readRequestParams.join(",")})
 
-    var modelInstances []openai.${api.readModel ?? api.model}
+    var modelInstances []openai.${api.readModel}
     for iter.Next() {
       ${api.readPreIterate ?? ""}
 
