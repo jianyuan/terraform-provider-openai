@@ -5,8 +5,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "groups",
     description: "Lists all groups in the organization.",
     api: {
-      model: "Group",
       readStrategy: "paginate",
+      readModel: "Group",
       readMethod: "Admin.Organization.Groups.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationGroupListParams",
     },
@@ -50,8 +50,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "group_users",
     description: "Lists the users assigned to a group.",
     api: {
-      model: "OrganizationGroupUser",
       readStrategy: "paginate",
+      readModel: "OrganizationGroupUser",
       readMethod: "Admin.Organization.Groups.Users.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationGroupUserListParams",
       readRequestAttributes: ["group_id"],
@@ -96,8 +96,8 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a group within the organization.",
     api: {
-      model: "AdminOrganizationGroupRoleListResponse",
       readStrategy: "paginate",
+      readModel: "AdminOrganizationGroupRoleListResponse",
       readMethod: "Admin.Organization.Groups.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationGroupRoleListParams",
       readRequestAttributes: ["group_id"],
@@ -163,7 +163,6 @@ export const DATASOURCES: Array<DataSource> = [
     name: "invite",
     description: "Retrieves an invite.",
     api: {
-      model: "Invite",
       readStrategy: "simple",
       readMethod: "Admin.Organization.Invites.Get",
     },
@@ -220,8 +219,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "invites",
     description: "Lists all of the invites in the organization.",
     api: {
-      model: "Invite",
       readStrategy: "paginate",
+      readModel: "Invite",
       readMethod: "Admin.Organization.Invites.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationInviteListParams",
     },
@@ -286,8 +285,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "organization_roles",
     description: "Lists the roles configured for the organization.",
     api: {
-      model: "Role",
       readStrategy: "paginate",
+      readModel: "Role",
       readMethod: "Admin.Organization.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationRoleListParams",
     },
@@ -345,7 +344,6 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project",
     description: "Retrieve a project by ID.",
     api: {
-      model: "Project",
       readStrategy: "simple",
       readMethod: "Admin.Organization.Projects.Get",
     },
@@ -397,8 +395,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "projects",
     description: "List all projects in an organization.",
     api: {
-      model: "Project",
       readStrategy: "paginate",
+      readModel: "Project",
       readMethod: "Admin.Organization.Projects.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationProjectListParams",
       readInitLoop: `
@@ -496,8 +494,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_rate_limits",
     description: "Returns the rate limits per model for a project.",
     api: {
-      model: "ProjectRateLimit",
       readStrategy: "paginate",
+      readModel: "ProjectRateLimit",
       readMethod:
         "Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging",
       readRequestAttributes: ["project_id"],
@@ -577,8 +575,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_roles",
     description: "Lists the roles configured for a project.",
     api: {
-      model: "Role",
       readStrategy: "paginate",
+      readModel: "Role",
       readMethod: "Admin.Organization.Projects.Roles.ListAutoPaging",
       readRequestAttributes: ["project_id"],
       readRequestParamsStruct: "AdminOrganizationProjectRoleListParams",
@@ -644,8 +642,8 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the project roles assigned to a group within a project.",
     api: {
-      model: "AdminOrganizationProjectGroupRoleListResponse",
       readStrategy: "paginate",
+      readModel: "AdminOrganizationProjectGroupRoleListResponse",
       readMethod: "Admin.Organization.Projects.Groups.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
       readRequestAttributes: ["project_id", "group_id"],
@@ -717,8 +715,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_user_role_assignments",
     description: "Lists the project roles assigned to a user within a project.",
     api: {
-      model: "AdminOrganizationProjectUserRoleListResponse",
       readStrategy: "paginate",
+      readModel: "AdminOrganizationProjectUserRoleListResponse",
       readMethod: "Admin.Organization.Projects.Users.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationProjectUserRoleListParams",
       readRequestAttributes: ["project_id", "user_id"],
@@ -790,7 +788,6 @@ export const DATASOURCES: Array<DataSource> = [
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
-      model: "OrganizationUser",
       readStrategy: "simple",
       readMethod: "Admin.Organization.Users.Get",
     },
@@ -832,8 +829,8 @@ export const DATASOURCES: Array<DataSource> = [
     name: "users",
     description: "Lists all of the users in the organization.",
     api: {
-      model: "OrganizationUser",
       readStrategy: "paginate",
+      readModel: "OrganizationUser",
       readMethod: "Admin.Organization.Users.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationUserListParams",
     },
@@ -884,8 +881,8 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a user within the organization.",
     api: {
-      model: "AdminOrganizationUserRoleListResponse",
       readStrategy: "paginate",
+      readModel: "AdminOrganizationUserRoleListResponse",
       readMethod: "Admin.Organization.Users.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationUserRoleListParams",
       readRequestAttributes: ["user_id"],
@@ -950,7 +947,6 @@ export const DATASOURCES: Array<DataSource> = [
     name: "spend_limit",
     description: "Retrieves organization spend limit.",
     api: {
-      model: "OrganizationSpendLimit",
       readStrategy: "simple",
       readMethod: "Admin.Organization.SpendLimit.Get",
       readRequestAttributes: [],
@@ -996,7 +992,6 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_spend_limit",
     description: "Retrieves project spend limit.",
     api: {
-      model: "ProjectSpendLimit",
       readStrategy: "simple",
       readMethod: "Admin.Organization.Projects.SpendLimit.Get",
       readRequestAttributes: ["project_id"],
@@ -1041,6 +1036,38 @@ export const DATASOURCES: Array<DataSource> = [
             computedOptionalRequired: "computed",
           },
         ],
+      },
+    ],
+  },
+  {
+    name: "project_model_permissions",
+    description: "Retrieves model access permissions for a project.",
+    api: {
+      readStrategy: "simple",
+      readMethod: "Admin.Organization.Projects.ModelPermissions.Get",
+      readRequestAttributes: ["project_id"],
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description:
+          "The ID of the project for which model permissions are being set.",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "mode",
+        type: "string",
+        description:
+          "The model permissions mode to apply. One of `allow_list` or `deny_list`.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "model_ids",
+        type: "set",
+        elementType: "string",
+        description: "The model IDs included in this permissions policy.",
+        computedOptionalRequired: "computed",
       },
     ],
   },
@@ -1877,6 +1904,47 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_model_permissions",
+    description: "Updates model access permissions for a project.",
+    api: {
+      method: "Admin.Organization.Projects.ModelPermissions",
+      createMethod: "Update",
+      createRequestAttributes: ["project_id"],
+      updateMethod: "Update",
+      updateRequestAttributes: ["project_id"],
+      readMethod: "Get",
+      readRequestAttributes: ["project_id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["project_id"],
+    },
+    importStateAttributes: ["project_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description:
+          "The ID of the project for which model permissions are being set.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "mode",
+        type: "string",
+        description:
+          "The model permissions mode to apply. One of `allow_list` or `deny_list`.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("allow_list","deny_list")'],
+      },
+      {
+        name: "model_ids",
+        type: "set",
+        elementType: "string",
+        description: "The model IDs included in this permissions policy.",
+        computedOptionalRequired: "required",
+      },
+    ],
+  },
+  {
     name: "spend_alert",
     description: "Creates an organization spend alert.",
     api: {
@@ -1944,47 +2012,6 @@ export const RESOURCES: Array<Resource> = [
         name: "threshold_amount",
         type: "int",
         description: "The alert threshold amount, in cents.",
-        computedOptionalRequired: "required",
-      },
-    ],
-  },
-  {
-    name: "project_model_permissions",
-    description: "Updates model access permissions for a project.",
-    api: {
-      method: "Admin.Organization.Projects.ModelPermissions",
-      createMethod: "Update",
-      createRequestAttributes: ["project_id"],
-      updateMethod: "Update",
-      updateRequestAttributes: ["project_id"],
-      readMethod: "Get",
-      readRequestAttributes: ["project_id"],
-      deleteMethod: "Delete",
-      deleteRequestAttributes: ["project_id"],
-    },
-    importStateAttributes: ["project_id"],
-    attributes: [
-      {
-        name: "project_id",
-        type: "string",
-        description:
-          "The ID of the project for which model permissions are being set.",
-        computedOptionalRequired: "required",
-        planModifiers: ["stringplanmodifier.RequiresReplace()"],
-      },
-      {
-        name: "mode",
-        type: "string",
-        description:
-          "The model permissions mode to apply. One of `allow_list` or `deny_list`.",
-        computedOptionalRequired: "required",
-        validators: ['stringvalidator.OneOf("allow_list","deny_list")'],
-      },
-      {
-        name: "model_ids",
-        type: "set",
-        elementType: "string",
-        description: "The model IDs included in this permissions policy.",
         computedOptionalRequired: "required",
       },
     ],
