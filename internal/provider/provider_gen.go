@@ -23,6 +23,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewProjectRateLimitResource,
 		NewProjectRoleResource,
 		NewProjectServiceAccountResource,
+		NewProjectSpendAlertResource,
 		NewProjectSpendLimitResource,
 		NewProjectUserResource,
 		NewProjectUserRoleAssignmentResource,

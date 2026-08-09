@@ -394,6 +394,28 @@ export const spendAlerts = sqliteTable("spend_alerts", {
   }>(),
 });
 
+export const projectSpendAlerts = sqliteTable("project_spend_alerts", {
+  object: objectColumn("project.spend_alert"),
+  id: text().$defaultFn(idGenerator("alert_")),
+  project_id: project_id.primaryKey(),
+  currency: text({
+    enum: ["USD"],
+  })
+    .notNull()
+    .default("USD"),
+  interval: text({
+    enum: ["month"],
+  })
+    .notNull()
+    .default("month"),
+  threshold_amount: integer().notNull(),
+  notification_channel: text({ mode: "json" }).notNull().$type<{
+    type: "email";
+    recipients: string[];
+    subject_prefix?: string;
+  }>(),
+});
+
 export const projectModelPermissions = sqliteTable(
   "project_model_permissions",
   {
