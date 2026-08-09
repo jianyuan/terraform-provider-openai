@@ -393,3 +393,13 @@ export const spendAlerts = sqliteTable("spend_alerts", {
     subject_prefix?: string;
   }>(),
 });
+
+export const projectModelPermissions = sqliteTable(
+  "project_model_permissions",
+  {
+    object: objectColumn("project.model_permissions"),
+    project_id: project_id.primaryKey(),
+    mode: text({ enum: ["allow_list", "deny_list"] }).notNull(),
+    model_ids: text({ mode: "json" }).notNull().$type<string[]>(),
+  },
+);
