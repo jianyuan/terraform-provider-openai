@@ -1948,4 +1948,45 @@ export const RESOURCES: Array<Resource> = [
       },
     ],
   },
+  {
+    name: "project_model_permissions",
+    description: "Updates model access permissions for a project.",
+    api: {
+      method: "Admin.Organization.Projects.ModelPermissions",
+      createMethod: "Update",
+      createRequestAttributes: ["project_id"],
+      updateMethod: "Update",
+      updateRequestAttributes: ["project_id"],
+      readMethod: "Get",
+      readRequestAttributes: ["project_id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["project_id"],
+    },
+    importStateAttributes: ["project_id"],
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description:
+          "The ID of the project for which model permissions are being set.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "mode",
+        type: "string",
+        description:
+          "The model permissions mode to apply. One of `allow_list` or `deny_list`.",
+        computedOptionalRequired: "required",
+        validators: ['stringvalidator.OneOf("allow_list","deny_list")'],
+      },
+      {
+        name: "model_ids",
+        type: "set",
+        elementType: "string",
+        description: "The model IDs included in this permissions policy.",
+        computedOptionalRequired: "required",
+      },
+    ],
+  },
 ];

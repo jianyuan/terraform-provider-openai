@@ -1581,6 +1581,77 @@ app.post(
   },
 );
 
+app.get("/organization/projects/:project_id/model_permissions", async (c) => {
+  const project_id = c.req.param("project_id");
+
+  const modelPermissions = await db.query.projectModelPermissions.findFirst({
+    where: eq(schema.projectModelPermissions.project_id, project_id),
+  });
+  if (!modelPermissions) {
+    return c.json({ error: "Model permissions not found" }, 404);
+  }
+
+  return c.json(modelPermissions);
+});
+
+app.post(
+  "/organization/projects/:project_id/model_permissions",
+  zValidator(
+    "json",
+    z.object({
+      mode: z.enum(["allow_list", "deny_list"]),
+      model_ids: z.array(z.string()),
+    }),
+  ),
+  async (c) => {
+    const project_id = c.req.param("project_id");
+    const { mode, model_ids } = c.req.valid("json");
+
+    const [updatedModelPermissions] = await db
+      .insert(schema.projectModelPermissions)
+      .values({
+        project_id,
+        mode,
+        model_ids,
+      })
+      .onConflictDoUpdate({
+        target: schema.projectModelPermissions.project_id,
+        set: {
+          mode: sql.raw(`excluded.${schema.projectModelPermissions.mode.name}`),
+          model_ids: sql.raw(
+            `excluded.${schema.projectModelPermissions.model_ids.name}`,
+          ),
+        },
+      })
+      .returning();
+    if (!updatedModelPermissions) {
+      return c.json({ error: "Model permissions not found" }, 404);
+    }
+
+    return c.json(updatedModelPermissions);
+  },
+);
+
+app.delete(
+  "/organization/projects/:project_id/model_permissions",
+  async (c) => {
+    const project_id = c.req.param("project_id");
+
+    const result = await db
+      .delete(schema.projectModelPermissions)
+      .where(eq(schema.projectModelPermissions.project_id, project_id))
+      .returning();
+    if (!result[0]) {
+      return c.json({ error: "Model permissions not found" }, 404);
+    }
+
+    return c.json({
+      object: "project.model_permissions.deleted",
+      deleted: true,
+    });
+  },
+);
+
 app.get("/projects/:project_id/groups/:group_id/roles", async (c) => {
   const project_id = c.req.param("project_id");
   const group_id = c.req.param("group_id");
