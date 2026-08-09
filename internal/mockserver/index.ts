@@ -265,6 +265,154 @@ app.delete("/organization/projects/:project_id/spend_limit", async (c) => {
   });
 });
 
+app.get("/organization/projects/:project_id/spend_alerts", async (c) => {
+  const project_id = c.req.param("project_id");
+
+  const spendAlerts = await db.query.projectSpendAlerts.findMany({
+    where: eq(schema.projectSpendAlerts.project_id, project_id),
+  });
+
+  return c.json({
+    object: "list",
+    data: spendAlerts,
+    has_more: false,
+    first_id: spendAlerts.at(0)?.id,
+    last_id: spendAlerts.at(-1)?.id,
+  });
+});
+
+app.post(
+  "/organization/projects/:project_id/spend_alerts",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+      notification_channel: z.object({
+        type: z.literal("email"),
+        recipients: z.array(z.string()),
+        subject_prefix: z.string().optional(),
+      }),
+    }),
+  ),
+  async (c) => {
+    const project_id = c.req.param("project_id");
+    const { currency, interval, threshold_amount, notification_channel } =
+      c.req.valid("json");
+
+    const [spendAlert] = await db
+      .insert(schema.projectSpendAlerts)
+      .values({
+        project_id,
+        currency,
+        interval,
+        threshold_amount,
+        notification_channel,
+      })
+      .onConflictDoUpdate({
+        target: schema.projectSpendAlerts.project_id,
+        set: {
+          currency: sql.raw(
+            `excluded.${schema.projectSpendAlerts.currency.name}`,
+          ),
+          interval: sql.raw(
+            `excluded.${schema.projectSpendAlerts.interval.name}`,
+          ),
+          threshold_amount: sql.raw(
+            `excluded.${schema.projectSpendAlerts.threshold_amount.name}`,
+          ),
+          notification_channel: sql.raw(
+            `excluded.${schema.projectSpendAlerts.notification_channel.name}`,
+          ),
+        },
+      })
+      .returning();
+
+    return c.json(spendAlert);
+  },
+);
+
+app.get(
+  "/organization/projects/:project_id/spend_alerts/:alert_id",
+  async (c) => {
+    const alert_id = c.req.param("alert_id");
+
+    const spendAlert = await db.query.projectSpendAlerts.findFirst({
+      where: eq(schema.projectSpendAlerts.id, alert_id),
+    });
+    if (!spendAlert) {
+      return c.json({ error: "Spend alert not found" }, 404);
+    }
+
+    return c.json(spendAlert);
+  },
+);
+
+app.post(
+  "/organization/projects/:project_id/spend_alerts/:alert_id",
+  zValidator(
+    "json",
+    z.object({
+      currency: z.enum(["USD"]),
+      interval: z.enum(["month"]),
+      threshold_amount: z.number(),
+      notification_channel: z.object({
+        type: z.literal("email"),
+        recipients: z.array(z.string()),
+        subject_prefix: z.string().optional(),
+      }),
+    }),
+  ),
+  async (c) => {
+    const project_id = c.req.param("project_id");
+    const alert_id = c.req.param("alert_id");
+    const { currency, interval, threshold_amount, notification_channel } =
+      c.req.valid("json");
+
+    const [spendAlert] = await db
+      .update(schema.projectSpendAlerts)
+      .set({
+        currency,
+        interval,
+        threshold_amount,
+        notification_channel,
+      })
+      .where(
+        and(
+          eq(schema.projectSpendAlerts.id, alert_id),
+          eq(schema.projectSpendAlerts.project_id, project_id),
+        ),
+      )
+      .returning();
+    if (!spendAlert) {
+      return c.json({ error: "Spend alert not found" }, 404);
+    }
+
+    return c.json(spendAlert);
+  },
+);
+
+app.delete(
+  "/organization/projects/:project_id/spend_alerts/:alert_id",
+  async (c) => {
+    const alert_id = c.req.param("alert_id");
+
+    const [spendAlert] = await db
+      .delete(schema.projectSpendAlerts)
+      .where(eq(schema.projectSpendAlerts.id, alert_id))
+      .returning();
+    if (!spendAlert) {
+      return c.json({ error: "Spend alert not found" }, 404);
+    }
+
+    return c.json({
+      object: "project.spend_alert.deleted",
+      deleted: true,
+    });
+  },
+);
+
 app.get("/organization/spend_alerts", async (c) => {
   const spendAlerts = await db.query.spendAlerts.findMany();
   return c.json({

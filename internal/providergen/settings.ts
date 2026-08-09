@@ -2200,6 +2200,98 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "project_spend_alert",
+    description: "Creates a project spend alert.",
+    api: {
+      method: "Admin.Organization.Projects.SpendAlerts",
+      createMethod: "New",
+      createRequestAttributes: ["project_id"],
+      readMethod: "Get",
+      readRequestAttributes: ["project_id", "id"],
+      updateMethod: "Update",
+      updateRequestAttributes: ["project_id", "id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["project_id", "id"],
+    },
+    importStateAttributes: ["project_id", "id"],
+    filler: {
+      model: "openai.ProjectSpendAlert",
+    },
+    attributes: [
+      {
+        name: "project_id",
+        type: "string",
+        description:
+          "The ID of the project for which spend alert is being set.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Spend alert ID.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
+      },
+      {
+        name: "currency",
+        type: "string",
+        description: "The currency for the threshold amount (e.g. `USD`).",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "interval",
+        type: "string",
+        description: "The interval for the spend alert (e.g. `month`).",
+        computedOptionalRequired: "required",
+      },
+      {
+        name: "notification_channel",
+        type: "single_nested",
+        description: "Email notification settings for a spend alert.",
+        computedOptionalRequired: "required",
+        filler: {
+          model: "openai.ProjectSpendAlertNotificationChannel",
+        },
+        attributes: [
+          {
+            name: "type",
+            type: "string",
+            description:
+              "The notification channel type. Currently only `email` is supported.",
+            computedOptionalRequired: "required",
+            validators: ['stringvalidator.OneOf("email")'],
+          },
+          {
+            name: "recipients",
+            type: "set",
+            description:
+              "Email addresses that receive the spend alert notification.",
+            computedOptionalRequired: "required",
+            elementType: "string",
+          },
+          {
+            name: "subject_prefix",
+            type: "string",
+            description: "Optional subject prefix for alert emails.",
+            computedOptionalRequired: "optional",
+            nullable: true,
+          },
+        ],
+      },
+      {
+        name: "threshold_amount",
+        type: "int64",
+        description: "The alert threshold amount, in cents.",
+        computedOptionalRequired: "required",
+      },
+    ],
+  },
+  {
     name: "spend_alert",
     description: "Creates an organization spend alert.",
     api: {
