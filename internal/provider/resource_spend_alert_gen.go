@@ -3,11 +3,10 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/avast/retry-go"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -15,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -98,25 +97,22 @@ func (r *SpendAlertResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	body, diags := r.getCreateJSONRequestBody(ctx, data)
+	body, diags := r.getNewParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	httpResp, err := r.client.CreateOrganizationSpendAlertWithResponse(ctx, body)
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.New(ctx, *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -132,60 +128,21 @@ func (r *SpendAlertResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	var responseData *apiclient.OrganizationSpendAlert
-
-	err := retry.Do(
-		func() error {
-			params := &apiclient.ListOrganizationSpendAlertsParams{
-				Limit: new(int64(100)),
-			}
-
-			for {
-				httpResp, err := r.client.ListOrganizationSpendAlertsWithResponse(ctx, params)
-				if err != nil {
-					return fmt.Errorf("Unable to read, got error: %s", err)
-				} else if httpResp.StatusCode() != http.StatusOK {
-					return fmt.Errorf("Unable to read, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body))
-				} else if httpResp.JSON200 == nil {
-					return fmt.Errorf("Unable to read, got empty response body")
-				}
-
-				for _, responseDataItem := range httpResp.JSON200.Data {
-					if r.resourceMatch(data, responseDataItem) {
-						responseData = &responseDataItem
-						break
-					}
-				}
-
-				if v := getBool(httpResp.JSON200.HasMore); !v {
-					break
-				}
-
-				if v := getString(httpResp.JSON200.LastId); v != "" {
-					params.After = &v
-				}
-			}
-
-			if responseData == nil {
-				return fmt.Errorf("Unable to read, could not find resource in the list")
-			}
-
-			return nil
-		},
-		retry.Delay(5*time.Second),
-	)
-
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.Get(ctx, data.Id.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", err.Error())
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		return
+	} else if modelInstance == nil {
+		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
 		return
 	}
 
-	if responseData == nil {
-		resp.Diagnostics.AddError("Client Error", "Unable to read, could not find resource in the list")
-		return
-	}
-
-	resp.Diagnostics.Append(data.Fill(ctx, *responseData)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -201,25 +158,22 @@ func (r *SpendAlertResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	body, diags := r.getUpdateJSONRequestBody(ctx, data)
+	body, diags := r.getUpdateParams(ctx, data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	httpResp, err := r.client.UpdateOrganizationSpendAlertWithResponse(ctx, data.Id.ValueString(), body)
+	modelInstance, err := r.client.Admin.Organization.SpendAlerts.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
 		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
-		return
-	} else if httpResp.JSON200 == nil {
+	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
 		return
 	}
 
-	resp.Diagnostics.Append(data.Fill(ctx, *httpResp.JSON200)...)
+	resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -235,14 +189,13 @@ func (r *SpendAlertResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	httpResp, err := r.client.DeleteOrganizationSpendAlertWithResponse(ctx, data.Id.ValueString())
+	_, err := r.client.Admin.Organization.SpendAlerts.Delete(ctx, data.Id.ValueString())
 	if err != nil {
+		if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.StatusCode == http.StatusNotFound {
+			return
+		}
+
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
-		return
-	} else if httpResp.StatusCode() == http.StatusNotFound {
-		return
-	} else if httpResp.StatusCode() != http.StatusOK {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got status code %d: %s", httpResp.StatusCode(), string(httpResp.Body)))
 		return
 	}
 }

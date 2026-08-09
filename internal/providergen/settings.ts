@@ -5,10 +5,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "groups",
     description: "Lists all groups in the organization.",
     api: {
-      model: "GroupResponse",
+      model: "Group",
       readStrategy: "paginate",
-      readMethod: "ListGroups",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Groups.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupListParams",
     },
     attributes: [
       {
@@ -50,12 +50,11 @@ export const DATASOURCES: Array<DataSource> = [
     name: "group_users",
     description: "Lists the users assigned to a group.",
     api: {
-      model: "GroupUserAssignment",
-      readMethod: "ListGroupUsers",
-      readRequestAttributes: ["group_id"],
-      readModel: "GroupUser",
+      model: "OrganizationGroupUser",
       readStrategy: "paginate",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Groups.Users.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupUserListParams",
+      readRequestAttributes: ["group_id"],
     },
     attributes: [
       {
@@ -97,11 +96,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a group within the organization.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListGroupRoleAssignments",
+      readMethod: "Admin.Organization.Groups.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationGroupRoleListParams",
       readRequestAttributes: ["group_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -166,7 +165,7 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Invite",
       readStrategy: "simple",
-      readMethod: "RetrieveInvite",
+      readMethod: "Admin.Organization.Invites.Get",
     },
     attributes: [
       {
@@ -223,7 +222,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Invite",
       readStrategy: "paginate",
-      readMethod: "ListInvites",
+      readMethod: "Admin.Organization.Invites.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationInviteListParams",
     },
     attributes: [
       {
@@ -288,8 +288,8 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "ListRoles",
-      readCursorParam: "Next",
+      readMethod: "Admin.Organization.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationRoleListParams",
     },
     attributes: [
       {
@@ -347,7 +347,7 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Project",
       readStrategy: "simple",
-      readMethod: "RetrieveProject",
+      readMethod: "Admin.Organization.Projects.Get",
     },
     attributes: [
       {
@@ -399,39 +399,28 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Project",
       readStrategy: "paginate",
-      readMethod: "ListProjects",
+      readMethod: "Admin.Organization.Projects.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectListParams",
       readInitLoop: `
-        params.IncludeArchived = data.IncludeArchived.ValueBoolPointer()
+        if data.IncludeArchived.IsKnown() {
+          params.IncludeArchived = openai.Bool(data.IncludeArchived.ValueBool())
+        }
 
         // Set the limit for the API request
-        if data.Limit.IsNull() {
-          params.Limit = new(int64(100))
-        } else {
+        if data.Limit.IsKnown() {
           requestLimit := data.Limit.ValueInt64()
           if requestLimit > 100 {
-            params.Limit = new(int64(100))
+            params.Limit = openai.Int(100)
           } else {
-            params.Limit = new(requestLimit)
+            params.Limit = openai.Int(requestLimit)
           }
-        }
-      `,
-      readPreIterate: `
-        // Recalculate the limit for each request to ensure we don't exceed the desired limit
-        if !data.Limit.IsNull() {
-          remainingLimit := data.Limit.ValueInt64() - int64(len(modelInstances))
-          if remainingLimit <= 0 {
-            break
-          }
-          if remainingLimit > 100 {
-            params.Limit = new(int64(100))
-          } else {
-            params.Limit = new(remainingLimit)
-          }
+        } else {
+          params.Limit = openai.Int(100)
         }
       `,
       readPostIterate: `
         // If limit is set and we have enough projects, break.
-        if !data.Limit.IsNull() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
+        if data.Limit.IsKnown() && len(modelInstances) >= int(data.Limit.ValueInt64()) {
           modelInstances = modelInstances[:data.Limit.ValueInt64()]
           break
         }
@@ -509,8 +498,11 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "ProjectRateLimit",
       readStrategy: "paginate",
-      readMethod: "ListProjectRateLimits",
+      readMethod:
+        "Admin.Organization.Projects.RateLimits.ListRateLimitsAutoPaging",
       readRequestAttributes: ["project_id"],
+      readRequestParamsStruct:
+        "AdminOrganizationProjectRateLimitListRateLimitsParams",
     },
     attributes: [
       {
@@ -587,9 +579,9 @@ export const DATASOURCES: Array<DataSource> = [
     api: {
       model: "Role",
       readStrategy: "paginate",
-      readMethod: "ListProjectRoles",
+      readMethod: "Admin.Organization.Projects.Roles.ListAutoPaging",
       readRequestAttributes: ["project_id"],
-      readCursorParam: "Next",
+      readRequestParamsStruct: "AdminOrganizationProjectRoleListParams",
     },
     attributes: [
       {
@@ -652,11 +644,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the project roles assigned to a group within a project.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationProjectGroupRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListProjectGroupRoleAssignments",
+      readMethod: "Admin.Organization.Projects.Groups.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
       readRequestAttributes: ["project_id", "group_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -725,11 +717,11 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_user_role_assignments",
     description: "Lists the project roles assigned to a user within a project.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationProjectUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListProjectUserRoleAssignments",
+      readMethod: "Admin.Organization.Projects.Users.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationProjectUserRoleListParams",
       readRequestAttributes: ["project_id", "user_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -798,9 +790,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "user",
     description: "Retrieves a user by their identifier.",
     api: {
-      model: "User",
+      model: "OrganizationUser",
       readStrategy: "simple",
-      readMethod: "RetrieveUser",
+      readMethod: "Admin.Organization.Users.Get",
     },
     attributes: [
       {
@@ -840,9 +832,10 @@ export const DATASOURCES: Array<DataSource> = [
     name: "users",
     description: "Lists all of the users in the organization.",
     api: {
-      model: "User",
+      model: "OrganizationUser",
       readStrategy: "paginate",
-      readMethod: "ListUsers",
+      readMethod: "Admin.Organization.Users.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationUserListParams",
     },
     attributes: [
       {
@@ -891,11 +884,11 @@ export const DATASOURCES: Array<DataSource> = [
     description:
       "Lists the organization roles assigned to a user within the organization.",
     api: {
-      model: "AssignedRoleDetails",
+      model: "AdminOrganizationUserRoleListResponse",
       readStrategy: "paginate",
-      readMethod: "ListUserRoleAssignments",
+      readMethod: "Admin.Organization.Users.Roles.ListAutoPaging",
+      readRequestParamsStruct: "AdminOrganizationUserRoleListParams",
       readRequestAttributes: ["user_id"],
-      readCursorParam: "Next",
     },
     attributes: [
       {
@@ -957,9 +950,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "spend_limit",
     description: "Retrieves organization spend limit.",
     api: {
-      model: "SpendLimit",
+      model: "OrganizationSpendLimit",
       readStrategy: "simple",
-      readMethod: "RetrieveOrganizationSpendLimit",
+      readMethod: "Admin.Organization.SpendLimit.Get",
       readRequestAttributes: [],
     },
     attributes: [
@@ -1003,9 +996,9 @@ export const DATASOURCES: Array<DataSource> = [
     name: "project_spend_limit",
     description: "Retrieves project spend limit.",
     api: {
-      model: "SpendLimit",
+      model: "ProjectSpendLimit",
       readStrategy: "simple",
-      readMethod: "RetrieveProjectSpendLimit",
+      readMethod: "Admin.Organization.Projects.SpendLimit.Get",
       readRequestAttributes: ["project_id"],
     },
     attributes: [
@@ -1058,10 +1051,11 @@ export const RESOURCES: Array<Resource> = [
     name: "admin_api_key",
     description: "Manages an organization admin API key.",
     api: {
-      createMethod: "AdminApiKeysCreate",
-      readMethod: "AdminApiKeysGet",
+      method: "Admin.Organization.AdminAPIKeys",
+      createMethod: "New",
+      readMethod: "Get",
       readRequestAttributes: ["id"],
-      deleteMethod: "AdminApiKeysDelete",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["id"],
     },
     attributes: [
@@ -1103,10 +1097,11 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Invite and manage invitations for an organization. Invited users are automatically added to the Default project.",
     api: {
-      createMethod: "InviteUser",
-      readMethod: "RetrieveInvite",
+      method: "Admin.Organization.Invites",
+      createMethod: "New",
+      readMethod: "Get",
       readRequestAttributes: ["id"],
-      deleteMethod: "DeleteInvite",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
@@ -1167,14 +1162,13 @@ export const RESOURCES: Array<Resource> = [
     name: "organization_role",
     description: "Creates a custom role for the organization.",
     api: {
-      model: "Role",
-      createMethod: "CreateRole",
-      readMethod: "ListRoles",
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      updateMethod: "UpdateRole",
+      method: "Admin.Organization.Roles",
+      createMethod: "New",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      updateMethod: "Update",
       updateRequestAttributes: ["id"],
-      deleteMethod: "DeleteRole",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
@@ -1211,12 +1205,13 @@ export const RESOURCES: Array<Resource> = [
     name: "project",
     description: "Project resource.",
     api: {
-      createMethod: "CreateProject",
-      readMethod: "RetrieveProject",
+      method: "Admin.Organization.Projects",
+      createMethod: "New",
+      readMethod: "Get",
       readRequestAttributes: ["id"],
-      updateMethod: "ModifyProject",
+      updateMethod: "Update",
       updateRequestAttributes: ["id"],
-      deleteMethod: "ArchiveProject",
+      deleteMethod: "Archive",
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
@@ -1280,14 +1275,12 @@ export const RESOURCES: Array<Resource> = [
     name: "project_group_role_assignment",
     description: "Assigns a project role to a group within a project.",
     api: {
-      model: "AssignedRoleDetails",
-      createMethod: "AssignProjectGroupRole",
+      method: "Admin.Organization.Projects.Groups.Roles",
+      createMethod: "New",
       createRequestAttributes: ["project_id", "group_id"],
-      readMethod: "ListProjectGroupRoleAssignments",
-      readRequestAttributes: ["project_id", "group_id"],
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      deleteMethod: "UnassignProjectGroupRole",
+      readMethod: "Get",
+      readRequestAttributes: ["project_id", "group_id", "role_id"],
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id", "group_id", "role_id"],
     },
     importStateAttributes: ["project_id", "group_id", "role_id"],
@@ -1319,14 +1312,12 @@ export const RESOURCES: Array<Resource> = [
     name: "project_user_role_assignment",
     description: "Assigns a project role to a user within a project.",
     api: {
-      model: "AssignedRoleDetails",
-      createMethod: "AssignProjectUserRole",
+      method: "Admin.Organization.Projects.Users.Roles",
+      createMethod: "New",
       createRequestAttributes: ["project_id", "user_id"],
-      readMethod: "ListProjectUserRoleAssignments",
-      readRequestAttributes: ["project_id", "user_id"],
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      deleteMethod: "UnassignProjectUserRole",
+      readMethod: "Get",
+      readRequestAttributes: ["project_id", "user_id", "role_id"],
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id", "user_id", "role_id"],
     },
     importStateAttributes: ["project_id", "user_id", "role_id"],
@@ -1359,13 +1350,16 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Manage rate limits per model for projects. Rate limits may be configured to be equal to or lower than the organization's rate limits.",
     api: {
-      model: "ProjectRateLimit",
-      createMethod: "UpdateProjectRateLimits",
+      method: "Admin.Organization.Projects.RateLimits",
+      createMethod: "UpdateRateLimit",
       createRequestAttributes: ["project_id", "rate_limit_id"],
-      readMethod: "ListProjectRateLimits",
-      readRequestAttributes: ["project_id"],
       readStrategy: "paginate",
-      updateMethod: "UpdateProjectRateLimits",
+      readModel: "ProjectRateLimit",
+      readMethod: "ListRateLimitsAutoPaging",
+      readRequestAttributes: ["project_id"],
+      readRequestParamsStruct:
+        "AdminOrganizationProjectRateLimitListRateLimitsParams",
+      updateMethod: "UpdateRateLimit",
       updateRequestAttributes: ["project_id", "rate_limit_id"],
     },
     attributes: [
@@ -1430,16 +1424,14 @@ export const RESOURCES: Array<Resource> = [
     name: "project_role",
     description: "Creates a custom role for a project.",
     api: {
-      model: "Role",
-      createMethod: "CreateProjectRole",
+      method: "Admin.Organization.Projects.Roles",
+      createMethod: "New",
       createRequestAttributes: ["project_id"],
-      readMethod: "ListProjectRoles",
-      readRequestAttributes: ["project_id"],
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      updateMethod: "UpdateProjectRole",
+      readMethod: "Get",
+      readRequestAttributes: ["project_id", "id"],
+      updateMethod: "Update",
       updateRequestAttributes: ["project_id", "id"],
-      deleteMethod: "DeleteProjectRole",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id", "id"],
     },
     importStateAttributes: ["project_id", "id"],
@@ -1483,11 +1475,14 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Manage service accounts within a project. A service account is a bot user that is not associated with a user. If a user leaves an organization, their keys and membership in projects will no longer work. Service accounts do not have this limitation. However, service accounts can also be deleted from a project.",
     api: {
-      createMethod: "CreateProjectServiceAccount",
+      method: "Admin.Organization.Projects.ServiceAccounts",
+      createMethod: "New",
       createRequestAttributes: ["project_id"],
-      readMethod: "RetrieveProjectServiceAccount",
+      readMethod: "Get",
       readRequestAttributes: ["project_id", "id"],
-      deleteMethod: "DeleteProjectServiceAccount",
+      updateMethod: "Update",
+      updateRequestAttributes: ["project_id", "id"],
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id", "id"],
     },
     attributes: [
@@ -1551,13 +1546,14 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Adds a user to the project. Users must already be members of the organization to be added to a project.",
     api: {
-      createMethod: "CreateProjectUser",
+      method: "Admin.Organization.Projects.Users",
+      createMethod: "New",
       createRequestAttributes: ["project_id"],
-      readMethod: "RetrieveProjectUser",
+      readMethod: "Get",
       readRequestAttributes: ["project_id", "user_id"],
-      updateMethod: "ModifyProjectUser",
+      updateMethod: "Update",
       updateRequestAttributes: ["project_id", "user_id"],
-      deleteMethod: "DeleteProjectUser",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id", "user_id"],
     },
     importStateAttributes: ["project_id", "user_id"],
@@ -1590,11 +1586,12 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Modifies a user's role in the organization.\n\n**NOTE:** The new `openai_user_role_assignment` resource supports predefined roles like `owner` and `reader` as well as custom roles. This resource may be removed in a future release.",
     api: {
-      createMethod: "ModifyUser",
+      method: "Admin.Organization.Users",
+      createMethod: "Update",
       createRequestAttributes: ["user_id"],
-      readMethod: "RetrieveUser",
+      readMethod: "Get",
       readRequestAttributes: ["user_id"],
-      updateMethod: "ModifyUser",
+      updateMethod: "Update",
       updateRequestAttributes: ["user_id"],
     },
     importStateAttributes: ["user_id"],
@@ -1619,16 +1616,14 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Assigns an organization role to a user within the organization.\n\n**NOTE:** Predefined organization roles like `owner` and `reader` are in the format of `role-api-organization-<role_name>__api-organization__<org_id>`. You can use the `provider::openai::predefined_role_id(role, organization_id)` function to generate the role ID.",
     api: {
-      model: "AssignedRoleDetails",
-      createMethod: "AssignUserRole",
+      method: "Admin.Organization.Users.Roles",
+      createMethod: "New",
       createRequestAttributes: ["user_id"],
-      readMethod: "ListUserRoleAssignments",
-      readRequestAttributes: ["user_id"],
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      updateMethod: "AssignUserRole",
+      readMethod: "Get",
+      readRequestAttributes: ["user_id", "role_id"],
+      updateMethod: "New",
       updateRequestAttributes: ["user_id"],
-      deleteMethod: "UnassignUserRole",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["user_id", "role_id"],
     },
     importStateAttributes: ["user_id", "role_id"],
@@ -1652,14 +1647,13 @@ export const RESOURCES: Array<Resource> = [
     name: "group",
     description: "Creates a new group in the organization.",
     api: {
-      model: "GroupResponse",
-      createMethod: "CreateGroup",
-      readMethod: "ListGroups",
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      updateMethod: "UpdateGroup",
+      method: "Admin.Organization.Groups",
+      createMethod: "New",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      updateMethod: "Update",
       updateRequestAttributes: ["id"],
-      deleteMethod: "DeleteGroup",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
@@ -1689,15 +1683,12 @@ export const RESOURCES: Array<Resource> = [
     name: "group_user",
     description: "Adds a user to a group.",
     api: {
-      model: "GroupUserAssignment",
-      createMethod: "AddGroupUser",
+      method: "Admin.Organization.Groups.Users",
+      createMethod: "New",
       createRequestAttributes: ["group_id"],
-      readMethod: "ListGroupUsers",
-      readRequestAttributes: ["group_id"],
-      readModel: "GroupUser",
-      readStrategy: "paginate",
-      readCursorParam: "Next",
-      deleteMethod: "RemoveGroupUser",
+      readMethod: "Get",
+      readRequestAttributes: ["group_id", "user_id"],
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["group_id", "user_id"],
     },
     importStateAttributes: ["group_id", "user_id"],
@@ -1723,15 +1714,12 @@ export const RESOURCES: Array<Resource> = [
     description:
       "Assigns an organization role to a group within the organization.",
     api: {
-      model: "GroupRoleAssignment",
-      createMethod: "AssignGroupRole",
+      method: "Admin.Organization.Groups.Roles",
+      createMethod: "New",
       createRequestAttributes: ["group_id"],
-      readMethod: "ListGroupRoleAssignments",
-      readRequestAttributes: ["group_id"],
-      readStrategy: "paginate",
-      readModel: "AssignedRoleDetails",
-      readCursorParam: "Next",
-      deleteMethod: "UnassignGroupRole",
+      readMethod: "Get",
+      readRequestAttributes: ["group_id", "role_id"],
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["group_id", "role_id"],
     },
     importStateAttributes: ["group_id", "role_id"],
@@ -1757,11 +1745,10 @@ export const RESOURCES: Array<Resource> = [
     name: "data_retention",
     description: "Updates organization data retention controls.",
     api: {
-      model: "DataRetention",
-      createMethod: "UpdateOrganizationDataRetention",
-      readMethod: "RetrieveOrganizationDataRetention",
-      readModel: "DataRetention",
-      updateMethod: "UpdateOrganizationDataRetention",
+      method: "Admin.Organization.DataRetention",
+      createMethod: "Update",
+      readMethod: "Get",
+      updateMethod: "Update",
     },
     attributes: [
       {
@@ -1780,12 +1767,11 @@ export const RESOURCES: Array<Resource> = [
     name: "spend_limit",
     description: "Updates organization spend limit.",
     api: {
-      model: "SpendLimit",
-      createMethod: "UpdateOrganizationSpendLimit",
-      readMethod: "RetrieveOrganizationSpendLimit",
-      readModel: "SpendLimit",
-      updateMethod: "UpdateOrganizationSpendLimit",
-      deleteMethod: "DeleteOrganizationSpendLimit",
+      method: "Admin.Organization.SpendLimit",
+      createMethod: "Update",
+      readMethod: "Get",
+      updateMethod: "Update",
+      deleteMethod: "Delete",
     },
     attributes: [
       {
@@ -1831,15 +1817,14 @@ export const RESOURCES: Array<Resource> = [
     name: "project_spend_limit",
     description: "Updates project spend limit.",
     api: {
-      model: "ProjectSpendLimit",
-      createMethod: "UpdateProjectSpendLimit",
+      method: "Admin.Organization.Projects.SpendLimit",
+      createMethod: "Update",
       createRequestAttributes: ["project_id"],
-      readMethod: "RetrieveProjectSpendLimit",
+      readMethod: "Get",
       readRequestAttributes: ["project_id"],
-      readModel: "ProjectSpendLimit",
-      updateMethod: "UpdateProjectSpendLimit",
+      updateMethod: "Update",
       updateRequestAttributes: ["project_id"],
-      deleteMethod: "DeleteProjectSpendLimit",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["project_id"],
     },
     importStateAttributes: ["project_id"],
@@ -1895,14 +1880,13 @@ export const RESOURCES: Array<Resource> = [
     name: "spend_alert",
     description: "Creates an organization spend alert.",
     api: {
-      model: "OrganizationSpendAlert",
-      createMethod: "CreateOrganizationSpendAlert",
-      readStrategy: "paginate",
-      readMethod: "ListOrganizationSpendAlerts",
-      readModel: "OrganizationSpendAlert",
-      updateMethod: "UpdateOrganizationSpendAlert",
+      method: "Admin.Organization.SpendAlerts",
+      createMethod: "New",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      updateMethod: "Update",
       updateRequestAttributes: ["id"],
-      deleteMethod: "DeleteOrganizationSpendAlert",
+      deleteMethod: "Delete",
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],

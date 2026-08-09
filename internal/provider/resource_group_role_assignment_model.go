@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
 func (m *GroupRoleAssignmentResourceModel) Fill(ctx context.Context, data any) diag.Diagnostics {
 	switch data := data.(type) {
-	case apiclient.GroupRoleAssignment:
-		m.GroupId = supertypes.NewStringValue(data.Group.Id)
-		m.RoleId = supertypes.NewStringValue(data.Role.Id)
+	case openai.AdminOrganizationGroupRoleNewResponse:
+		m.GroupId = supertypes.NewStringValue(data.Group.ID)
+		m.RoleId = supertypes.NewStringValue(data.Role.ID)
 		return nil
-	case apiclient.AssignedRoleDetails:
-		m.RoleId = supertypes.NewStringValue(data.Id)
+	case openai.AdminOrganizationGroupRoleGetResponse:
+		m.RoleId = supertypes.NewStringValue(data.ID)
 		return nil
 	default:
 		var diags diag.Diagnostics
@@ -25,12 +25,8 @@ func (m *GroupRoleAssignmentResourceModel) Fill(ctx context.Context, data any) d
 	}
 }
 
-func (r *GroupRoleAssignmentResource) resourceMatch(data GroupRoleAssignmentResourceModel, roleAssignment apiclient.AssignedRoleDetails) bool {
-	return data.RoleId.ValueString() == roleAssignment.Id
-}
-
-func (r *GroupRoleAssignmentResource) getCreateJSONRequestBody(ctx context.Context, data GroupRoleAssignmentResourceModel) (apiclient.AssignGroupRoleJSONRequestBody, diag.Diagnostics) {
-	return apiclient.AssignGroupRoleJSONRequestBody{
-		RoleId: data.RoleId.ValueString(),
+func (r *GroupRoleAssignmentResource) getNewParams(ctx context.Context, data GroupRoleAssignmentResourceModel) (*openai.AdminOrganizationGroupRoleNewParams, diag.Diagnostics) {
+	return &openai.AdminOrganizationGroupRoleNewParams{
+		RoleID: data.RoleId.ValueString(),
 	}, nil
 }

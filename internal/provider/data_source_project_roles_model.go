@@ -4,22 +4,21 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/jianyuan/terraform-provider-openai/internal/apiclient"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
-func (m *ProjectRolesDataSourceModel) Fill(ctx context.Context, data []apiclient.Role) diag.Diagnostics {
-	items := make([]ProjectRolesDataSourceModelRolesItem, len(data))
-	for i, role := range data {
-		items[i] = ProjectRolesDataSourceModelRolesItem{
-			Id:             supertypes.NewStringValue(role.Id),
+func (m *ProjectRolesDataSourceModel) Fill(ctx context.Context, roles []openai.Role) diag.Diagnostics {
+	m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(roles, func(role openai.Role, _ int) ProjectRolesDataSourceModelRolesItem {
+		return ProjectRolesDataSourceModelRolesItem{
+			Id:             supertypes.NewStringValue(role.ID),
 			Name:           supertypes.NewStringValue(role.Name),
-			Description:    supertypes.NewStringPointerValue(role.Description),
-			Permissions:    supertypes.NewSetValueOfSlice(ctx, deduplicate(role.Permissions)), // For some reason, the API returns duplicate permissions
+			Description:    supertypes.NewStringValue(role.Description),
+			Permissions:    supertypes.NewSetValueOfSlice(ctx, lo.Uniq(role.Permissions)), // For some reason, the API returns duplicate permissions
 			PredefinedRole: supertypes.NewBoolValue(role.PredefinedRole),
 			ResourceType:   supertypes.NewStringValue(role.ResourceType),
 		}
-	}
-	m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, items)
+	}))
 	return nil
 }
