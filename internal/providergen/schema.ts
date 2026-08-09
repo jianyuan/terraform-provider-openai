@@ -6,30 +6,46 @@ export type ComputedOptionalRequired =
 
 export type Attribute =
   | StringAttribute
-  | IntAttribute
+  | Int64Attribute
+  | Float64Attribute
   | BoolAttribute
   | ListAttribute
+  | ListNestedAttribute
   | SetAttribute
   | SetNestedAttribute
+  | MapAttribute
   | ObjectAttribute
   | SingleNestedAttribute;
 
 export interface BaseAttribute {
   name: string;
+  customType?: {
+    type: string;
+    value: string;
+  };
   description: string;
   computedOptionalRequired: ComputedOptionalRequired;
   sensitive?: boolean;
   planModifiers?: Array<string>;
   validators?: Array<string>;
   nullable?: boolean;
+  filler?: {
+    skip?: boolean;
+    sourceAttribute?: Array<string>;
+    destinationAttribute?: Array<string>;
+  };
 }
 
 export interface StringAttribute extends BaseAttribute {
   type: "string";
 }
 
-export interface IntAttribute extends BaseAttribute {
-  type: "int";
+export interface Int64Attribute extends BaseAttribute {
+  type: "int64";
+}
+
+export interface Float64Attribute extends BaseAttribute {
+  type: "float64";
 }
 
 export interface BoolAttribute extends BaseAttribute {
@@ -41,6 +57,14 @@ export interface ListAttribute extends BaseAttribute {
   elementType: "string";
 }
 
+export interface ListNestedAttribute extends BaseAttribute {
+  type: "list_nested";
+  attributes: Array<Attribute>;
+  filler?: BaseAttribute["filler"] & {
+    model: string;
+  };
+}
+
 export interface SetAttribute extends BaseAttribute {
   type: "set";
   elementType: "string";
@@ -49,6 +73,22 @@ export interface SetAttribute extends BaseAttribute {
 export interface SetNestedAttribute extends BaseAttribute {
   type: "set_nested";
   attributes: Array<Attribute>;
+  filler?: BaseAttribute["filler"] & {
+    model: string;
+  };
+}
+
+export interface MapAttribute extends BaseAttribute {
+  type: "map";
+  elementType: "string";
+}
+
+export interface SingleNestedAttribute extends BaseAttribute {
+  type: "single_nested";
+  attributes: Array<Attribute>;
+  filler?: BaseAttribute["filler"] & {
+    model: string;
+  };
 }
 
 export interface ObjectAttribute extends BaseAttribute {
@@ -59,7 +99,9 @@ export interface ObjectAttribute extends BaseAttribute {
 export interface SingleNestedAttribute extends BaseAttribute {
   type: "single_nested";
   attributes: Array<Attribute>;
-  model?: string;
+  filler?: BaseAttribute["filler"] & {
+    model: string;
+  };
 }
 
 export interface BaseDataSourceApiStrategy {
@@ -88,6 +130,9 @@ export interface DataSource {
   name: string;
   description: string;
   api: DataSourceApiStrategy;
+  filler?: {
+    model: string;
+  };
   attributes: Array<Attribute>;
 }
 
@@ -122,5 +167,8 @@ export interface Resource {
   description: string;
   api: ResourceApiStrategy;
   importStateAttributes?: Array<string>;
+  filler?: {
+    model: string;
+  };
   attributes: Array<Attribute>;
 }

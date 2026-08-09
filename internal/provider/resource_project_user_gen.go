@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -196,4 +197,11 @@ type ProjectUserResourceModel struct {
 	ProjectId supertypes.StringValue `tfsdk:"project_id"`
 	UserId    supertypes.StringValue `tfsdk:"user_id"`
 	Role      supertypes.StringValue `tfsdk:"role"`
+}
+
+func (m *ProjectUserResourceModel) Fill(ctx context.Context, data openai.ProjectUser) (diags diag.Diagnostics) {
+	m.UserId = supertypes.NewStringValue(string(data.ID))
+	m.Role = supertypes.NewStringValue(string(data.Role))
+
+	return
 }

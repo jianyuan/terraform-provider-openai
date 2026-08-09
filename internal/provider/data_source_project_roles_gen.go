@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &ProjectRolesDataSource{}
@@ -116,6 +118,16 @@ type ProjectRolesDataSourceModel struct {
 	Roles     supertypes.SetNestedObjectValueOf[ProjectRolesDataSourceModelRolesItem] `tfsdk:"roles"`
 }
 
+func (m *ProjectRolesDataSourceModel) Fill(ctx context.Context, data []openai.Role) (diags diag.Diagnostics) {
+	m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.Role, _ int) ProjectRolesDataSourceModelRolesItem {
+		var model ProjectRolesDataSourceModelRolesItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type ProjectRolesDataSourceModelRolesItem struct {
 	Id             supertypes.StringValue        `tfsdk:"id"`
 	Name           supertypes.StringValue        `tfsdk:"name"`
@@ -123,4 +135,15 @@ type ProjectRolesDataSourceModelRolesItem struct {
 	Permissions    supertypes.SetValueOf[string] `tfsdk:"permissions"`
 	PredefinedRole supertypes.BoolValue          `tfsdk:"predefined_role"`
 	ResourceType   supertypes.StringValue        `tfsdk:"resource_type"`
+}
+
+func (m *ProjectRolesDataSourceModelRolesItem) Fill(ctx context.Context, data openai.Role) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Description = supertypes.NewStringValue(string(data.Description))
+	m.Permissions = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.Permissions))
+	m.PredefinedRole = supertypes.NewBoolValue(bool(data.PredefinedRole))
+	m.ResourceType = supertypes.NewStringValue(string(data.ResourceType))
+
+	return
 }

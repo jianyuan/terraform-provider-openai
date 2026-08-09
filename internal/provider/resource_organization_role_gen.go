@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -14,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ resource.Resource = &OrganizationRoleResource{}
@@ -182,4 +184,13 @@ type OrganizationRoleResourceModel struct {
 	Name        supertypes.StringValue        `tfsdk:"name"`
 	Description supertypes.StringValue        `tfsdk:"description"`
 	Permissions supertypes.SetValueOf[string] `tfsdk:"permissions"`
+}
+
+func (m *OrganizationRoleResourceModel) Fill(ctx context.Context, data openai.Role) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Description = supertypes.NewStringValue(string(data.Description))
+	m.Permissions = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.Permissions))
+
+	return
 }

@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &UsersDataSource{}
@@ -105,10 +107,30 @@ type UsersDataSourceModel struct {
 	Users supertypes.SetNestedObjectValueOf[UsersDataSourceModelUsersItem] `tfsdk:"users"`
 }
 
+func (m *UsersDataSourceModel) Fill(ctx context.Context, data []openai.OrganizationUser) (diags diag.Diagnostics) {
+	m.Users = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.OrganizationUser, _ int) UsersDataSourceModelUsersItem {
+		var model UsersDataSourceModelUsersItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type UsersDataSourceModelUsersItem struct {
 	Id      supertypes.StringValue `tfsdk:"id"`
 	Email   supertypes.StringValue `tfsdk:"email"`
 	Name    supertypes.StringValue `tfsdk:"name"`
 	Role    supertypes.StringValue `tfsdk:"role"`
 	AddedAt supertypes.Int64Value  `tfsdk:"added_at"`
+}
+
+func (m *UsersDataSourceModelUsersItem) Fill(ctx context.Context, data openai.OrganizationUser) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Email = supertypes.NewStringValue(string(data.Email))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Role = supertypes.NewStringValue(string(data.Role))
+	m.AddedAt = supertypes.NewInt64Value(int64(data.AddedAt))
+
+	return
 }

@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -201,4 +202,35 @@ type ProjectRateLimitResourceModel struct {
 	MaxAudioMegabytesPer1Minute supertypes.Int64Value  `tfsdk:"max_audio_megabytes_per_1_minute"`
 	MaxRequestsPer1Day          supertypes.Int64Value  `tfsdk:"max_requests_per_1_day"`
 	Batch1DayMaxInputTokens     supertypes.Int64Value  `tfsdk:"batch_1_day_max_input_tokens"`
+}
+
+func (m *ProjectRateLimitResourceModel) Fill(ctx context.Context, data openai.ProjectRateLimit) (diags diag.Diagnostics) {
+	m.MaxRequestsPer1Minute = supertypes.NewInt64Value(int64(data.MaxRequestsPer1Minute))
+	m.MaxTokensPer1Minute = supertypes.NewInt64Value(int64(data.MaxTokensPer1Minute))
+	m.MaxImagesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxImagesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxImagesPer1Minute))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.MaxAudioMegabytesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxAudioMegabytesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxAudioMegabytesPer1Minute))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.MaxRequestsPer1Day = (func() supertypes.Int64Value {
+		if data.JSON.MaxRequestsPer1Day.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxRequestsPer1Day))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.Batch1DayMaxInputTokens = (func() supertypes.Int64Value {
+		if data.JSON.Batch1DayMaxInputTokens.Valid() {
+			return supertypes.NewInt64Value(int64(data.Batch1DayMaxInputTokens))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

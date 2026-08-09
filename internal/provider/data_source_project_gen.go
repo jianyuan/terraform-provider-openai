@@ -7,6 +7,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -94,4 +96,25 @@ type ProjectDataSourceModel struct {
 	ExternalKeyId supertypes.StringValue `tfsdk:"external_key_id"`
 	CreatedAt     supertypes.Int64Value  `tfsdk:"created_at"`
 	ArchivedAt    supertypes.Int64Value  `tfsdk:"archived_at"`
+}
+
+func (m *ProjectDataSourceModel) Fill(ctx context.Context, data openai.Project) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Status = supertypes.NewStringValue(string(data.Status))
+	m.ExternalKeyId = (func() supertypes.StringValue {
+		if data.JSON.ExternalKeyID.Valid() {
+			return supertypes.NewStringValue(string(data.ExternalKeyID))
+		}
+		return supertypes.NewStringNull()
+	}())
+	m.CreatedAt = supertypes.NewInt64Value(int64(data.CreatedAt))
+	m.ArchivedAt = (func() supertypes.Int64Value {
+		if data.JSON.ArchivedAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.ArchivedAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

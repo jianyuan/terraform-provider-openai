@@ -7,6 +7,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -100,4 +102,26 @@ type InviteDataSourceModel struct {
 	CreatedAt  supertypes.Int64Value  `tfsdk:"created_at"`
 	ExpiresAt  supertypes.Int64Value  `tfsdk:"expires_at"`
 	AcceptedAt supertypes.Int64Value  `tfsdk:"accepted_at"`
+}
+
+func (m *InviteDataSourceModel) Fill(ctx context.Context, data openai.Invite) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Email = supertypes.NewStringValue(string(data.Email))
+	m.Role = supertypes.NewStringValue(string(data.Role))
+	m.Status = supertypes.NewStringValue(string(data.Status))
+	m.CreatedAt = supertypes.NewInt64Value(int64(data.CreatedAt))
+	m.ExpiresAt = (func() supertypes.Int64Value {
+		if data.JSON.ExpiresAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.ExpiresAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.AcceptedAt = (func() supertypes.Int64Value {
+		if data.JSON.AcceptedAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.AcceptedAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

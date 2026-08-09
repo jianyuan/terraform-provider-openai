@@ -7,6 +7,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
 
@@ -97,6 +99,25 @@ type ProjectSpendLimitDataSourceModel struct {
 	Enforcement     supertypes.SingleNestedObjectValueOf[ProjectSpendLimitDataSourceModelEnforcement] `tfsdk:"enforcement"`
 }
 
+func (m *ProjectSpendLimitDataSourceModel) Fill(ctx context.Context, data openai.ProjectSpendLimit) (diags diag.Diagnostics) {
+	m.Currency = supertypes.NewStringValue(string(data.Currency))
+	m.Interval = supertypes.NewStringValue(string(data.Interval))
+	m.ThresholdAmount = supertypes.NewInt64Value(int64(data.ThresholdAmount))
+	m.Enforcement = supertypes.NewSingleNestedObjectValueOf(ctx, func() *ProjectSpendLimitDataSourceModelEnforcement {
+		var model ProjectSpendLimitDataSourceModelEnforcement
+		diags.Append(model.Fill(ctx, data.Enforcement)...)
+		return &model
+	}())
+
+	return
+}
+
 type ProjectSpendLimitDataSourceModelEnforcement struct {
 	Status supertypes.StringValue `tfsdk:"status"`
+}
+
+func (m *ProjectSpendLimitDataSourceModelEnforcement) Fill(ctx context.Context, data openai.ProjectSpendLimitEnforcement) (diags diag.Diagnostics) {
+	m.Status = supertypes.NewStringValue(string(data.Status))
+
+	return
 }

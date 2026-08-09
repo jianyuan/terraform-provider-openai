@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &GroupUsersDataSource{}
@@ -101,8 +103,26 @@ type GroupUsersDataSourceModel struct {
 	Users   supertypes.SetNestedObjectValueOf[GroupUsersDataSourceModelUsersItem] `tfsdk:"users"`
 }
 
+func (m *GroupUsersDataSourceModel) Fill(ctx context.Context, data []openai.OrganizationGroupUser) (diags diag.Diagnostics) {
+	m.Users = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.OrganizationGroupUser, _ int) GroupUsersDataSourceModelUsersItem {
+		var model GroupUsersDataSourceModelUsersItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type GroupUsersDataSourceModelUsersItem struct {
 	Id    supertypes.StringValue `tfsdk:"id"`
 	Email supertypes.StringValue `tfsdk:"email"`
 	Name  supertypes.StringValue `tfsdk:"name"`
+}
+
+func (m *GroupUsersDataSourceModelUsersItem) Fill(ctx context.Context, data openai.OrganizationGroupUser) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Email = supertypes.NewStringValue(string(data.Email))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+
+	return
 }

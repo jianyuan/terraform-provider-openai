@@ -10,18 +10,28 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Groups.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationGroupListParams",
     },
+    filler: {
+      model: "[]openai.Group",
+    },
     attributes: [
       {
         name: "groups",
         type: "set_nested",
         description: "List of groups.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.Group",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the group.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -37,7 +47,7 @@ export const DATASOURCES: Array<DataSource> = [
           },
           {
             name: "created_at",
-            type: "int",
+            type: "int64",
             description:
               "Unix timestamp (in seconds) when the group was created.",
             computedOptionalRequired: "computed",
@@ -56,24 +66,35 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct: "AdminOrganizationGroupUserListParams",
       readRequestAttributes: ["group_id"],
     },
+    filler: {
+      model: "[]openai.OrganizationGroupUser",
+    },
     attributes: [
       {
         name: "group_id",
         type: "string",
         description: "The ID of the group to update.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "users",
         type: "set_nested",
         description: "List of users.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.OrganizationGroupUser",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "User ID.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "email",
@@ -102,6 +123,9 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct: "AdminOrganizationGroupRoleListParams",
       readRequestAttributes: ["group_id"],
     },
+    filler: {
+      model: "[]openai.AdminOrganizationGroupRoleListResponse",
+    },
     attributes: [
       {
         name: "group_id",
@@ -109,18 +133,26 @@ export const DATASOURCES: Array<DataSource> = [
         description:
           "The ID of the group whose organization role assignments you want to list.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "roles",
         type: "set_nested",
         description: "List of organization roles",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.AdminOrganizationGroupRoleListResponse",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -166,12 +198,18 @@ export const DATASOURCES: Array<DataSource> = [
       readStrategy: "simple",
       readMethod: "Admin.Organization.Invites.Get",
     },
+    filler: {
+      model: "openai.Invite",
+    },
     attributes: [
       {
         name: "id",
         type: "string",
         description: "Invite ID.",
         computedOptionalRequired: "required",
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "email",
@@ -194,24 +232,26 @@ export const DATASOURCES: Array<DataSource> = [
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite was sent.",
         computedOptionalRequired: "computed",
       },
       {
         name: "expires_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite expires.",
         computedOptionalRequired: "computed",
+        nullable: true,
       },
       {
         name: "accepted_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite was accepted.",
         computedOptionalRequired: "computed",
+        nullable: true,
       },
     ],
   },
@@ -224,18 +264,28 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Invites.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationInviteListParams",
     },
+    filler: {
+      model: "[]openai.Invite",
+    },
     attributes: [
       {
         name: "invites",
         type: "set_nested",
         description: "List of invites.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.Invite",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Invite ID.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "email",
@@ -258,24 +308,26 @@ export const DATASOURCES: Array<DataSource> = [
           },
           {
             name: "created_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the invite was sent.",
             computedOptionalRequired: "computed",
           },
           {
             name: "expires_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the invite expires.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
           {
             name: "accepted_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the invite was accepted.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
         ],
       },
@@ -290,18 +342,28 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Roles.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationRoleListParams",
     },
+    filler: {
+      model: "[]openai.Role",
+    },
     attributes: [
       {
         name: "roles",
         type: "set_nested",
         description: "List of roles.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.Role",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -347,12 +409,18 @@ export const DATASOURCES: Array<DataSource> = [
       readStrategy: "simple",
       readMethod: "Admin.Organization.Projects.Get",
     },
+    filler: {
+      model: "openai.Project",
+    },
     attributes: [
       {
         name: "id",
         type: "string",
         description: "Project ID.",
         computedOptionalRequired: "required",
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "name",
@@ -373,17 +441,20 @@ export const DATASOURCES: Array<DataSource> = [
           "The ID of the customer-managed encryption key used for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
         computedOptionalRequired: "computed",
         nullable: true,
+        filler: {
+          sourceAttribute: ["ExternalKeyID"],
+        },
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the project was created.",
         computedOptionalRequired: "computed",
       },
       {
         name: "archived_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the project was archived or `null`.",
         computedOptionalRequired: "computed",
@@ -424,32 +495,44 @@ export const DATASOURCES: Array<DataSource> = [
         }
       `,
     },
+    filler: {
+      model: "[]openai.Project",
+    },
     attributes: [
       {
         name: "include_archived",
         type: "bool",
         description: "Include archived projects. Default is `false`.",
         computedOptionalRequired: "optional",
+        filler: { skip: true },
       },
       {
         name: "limit",
-        type: "int",
+        type: "int64",
         description:
           "Limit the number of projects to return. Default is to return all projects.",
         computedOptionalRequired: "optional",
         validators: ["int64validator.AtLeast(1)"],
+        filler: { skip: true },
       },
       {
         name: "projects",
         type: "set_nested",
         description: "List of projects.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.Project",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Project ID.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -470,17 +553,20 @@ export const DATASOURCES: Array<DataSource> = [
               "The ID of the customer-managed encryption key used for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
             computedOptionalRequired: "computed",
             nullable: true,
+            filler: {
+              sourceAttribute: ["ExternalKeyID"],
+            },
           },
           {
             name: "created_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the project was created.",
             computedOptionalRequired: "computed",
           },
           {
             name: "archived_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the project was archived or `null`.",
             computedOptionalRequired: "computed",
@@ -502,24 +588,35 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct:
         "AdminOrganizationProjectRateLimitListRateLimitsParams",
     },
+    filler: {
+      model: "[]openai.ProjectRateLimit",
+    },
     attributes: [
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "rate_limits",
         type: "set_nested",
         description: "List of rate limits.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.ProjectRateLimit",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "The rate limit identifier.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "model",
@@ -529,43 +626,47 @@ export const DATASOURCES: Array<DataSource> = [
           },
           {
             name: "max_requests_per_1_minute",
-            type: "int",
+            type: "int64",
             description: "The maximum requests per minute.",
             computedOptionalRequired: "computed",
           },
           {
             name: "max_tokens_per_1_minute",
-            type: "int",
+            type: "int64",
             description: "The maximum tokens per minute.",
             computedOptionalRequired: "computed",
           },
           {
             name: "max_images_per_1_minute",
-            type: "int",
+            type: "int64",
             description:
               "The maximum images per minute. Only present for relevant models.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
           {
             name: "max_audio_megabytes_per_1_minute",
-            type: "int",
+            type: "int64",
             description:
               "The maximum audio megabytes per minute. Only present for relevant models.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
           {
             name: "max_requests_per_1_day",
-            type: "int",
+            type: "int64",
             description:
               "The maximum requests per day. Only present for relevant models.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
           {
             name: "batch_1_day_max_input_tokens",
-            type: "int",
+            type: "int64",
             description:
               "The maximum batch input tokens per day. Only present for relevant models.",
             computedOptionalRequired: "computed",
+            nullable: true,
           },
         ],
       },
@@ -581,24 +682,35 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestAttributes: ["project_id"],
       readRequestParamsStruct: "AdminOrganizationProjectRoleListParams",
     },
+    filler: {
+      model: "[]openai.Role",
+    },
     attributes: [
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "roles",
         type: "set_nested",
         description: "List of roles configured for a project.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.Role",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -648,18 +760,23 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct: "AdminOrganizationProjectGroupRoleListParams",
       readRequestAttributes: ["project_id", "group_id"],
     },
+    filler: {
+      model: "[]openai.AdminOrganizationProjectGroupRoleListResponse",
+    },
     attributes: [
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "group_id",
         type: "string",
         description: "The ID of the group to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "roles",
@@ -667,12 +784,19 @@ export const DATASOURCES: Array<DataSource> = [
         description:
           "List of project roles assigned to the group within the project.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.AdminOrganizationProjectGroupRoleListResponse",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -721,18 +845,23 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct: "AdminOrganizationProjectUserRoleListParams",
       readRequestAttributes: ["project_id", "user_id"],
     },
+    filler: {
+      model: "[]openai.AdminOrganizationProjectUserRoleListResponse",
+    },
     attributes: [
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "user_id",
         type: "string",
         description: "The ID of the user to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "roles",
@@ -740,12 +869,19 @@ export const DATASOURCES: Array<DataSource> = [
         description:
           "List of project roles assigned to the group within the project.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.AdminOrganizationProjectUserRoleListResponse",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -791,12 +927,18 @@ export const DATASOURCES: Array<DataSource> = [
       readStrategy: "simple",
       readMethod: "Admin.Organization.Users.Get",
     },
+    filler: {
+      model: "openai.OrganizationUser",
+    },
     attributes: [
       {
         name: "id",
         type: "string",
         description: "User ID.",
         computedOptionalRequired: "required",
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "email",
@@ -818,7 +960,7 @@ export const DATASOURCES: Array<DataSource> = [
       },
       {
         name: "added_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the user was added.",
         computedOptionalRequired: "computed",
@@ -834,18 +976,28 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Users.ListAutoPaging",
       readRequestParamsStruct: "AdminOrganizationUserListParams",
     },
+    filler: {
+      model: "[]openai.OrganizationUser",
+    },
     attributes: [
       {
         name: "users",
         type: "set_nested",
         description: "List of users.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.OrganizationUser",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "User ID.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "email",
@@ -867,7 +1019,7 @@ export const DATASOURCES: Array<DataSource> = [
           },
           {
             name: "added_at",
-            type: "int",
+            type: "int64",
             description:
               "The Unix timestamp (in seconds) of when the user was added.",
             computedOptionalRequired: "computed",
@@ -887,24 +1039,35 @@ export const DATASOURCES: Array<DataSource> = [
       readRequestParamsStruct: "AdminOrganizationUserRoleListParams",
       readRequestAttributes: ["user_id"],
     },
+    filler: {
+      model: "[]openai.AdminOrganizationUserRoleListResponse",
+    },
     attributes: [
       {
         name: "user_id",
         type: "string",
         description: "The ID of the user to inspect.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "roles",
         type: "set_nested",
         description: "List of organization roles",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.AdminOrganizationUserRoleListResponse",
+          sourceAttribute: [],
+        },
         attributes: [
           {
             name: "id",
             type: "string",
             description: "Identifier for the role.",
             computedOptionalRequired: "computed",
+            filler: {
+              sourceAttribute: ["ID"],
+            },
           },
           {
             name: "name",
@@ -951,6 +1114,9 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.SpendLimit.Get",
       readRequestAttributes: [],
     },
+    filler: {
+      model: "openai.OrganizationSpendLimit",
+    },
     attributes: [
       {
         name: "currency",
@@ -968,7 +1134,7 @@ export const DATASOURCES: Array<DataSource> = [
       },
       {
         name: "threshold_amount",
-        type: "int",
+        type: "int64",
         description: "The hard spend limit amount, in cents.",
         computedOptionalRequired: "computed",
       },
@@ -977,6 +1143,9 @@ export const DATASOURCES: Array<DataSource> = [
         type: "single_nested",
         description: "The current enforcement state of the hard spend limit.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.OrganizationSpendLimitEnforcement",
+        },
         attributes: [
           {
             name: "status",
@@ -996,12 +1165,16 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Projects.SpendLimit.Get",
       readRequestAttributes: ["project_id"],
     },
+    filler: {
+      model: "openai.ProjectSpendLimit",
+    },
     attributes: [
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "currency",
@@ -1019,7 +1192,7 @@ export const DATASOURCES: Array<DataSource> = [
       },
       {
         name: "threshold_amount",
-        type: "int",
+        type: "int64",
         description: "The hard spend limit amount, in cents.",
         computedOptionalRequired: "computed",
       },
@@ -1028,6 +1201,9 @@ export const DATASOURCES: Array<DataSource> = [
         type: "single_nested",
         description: "The current enforcement state of the hard spend limit.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.ProjectSpendLimitEnforcement",
+        },
         attributes: [
           {
             name: "status",
@@ -1047,6 +1223,9 @@ export const DATASOURCES: Array<DataSource> = [
       readMethod: "Admin.Organization.Projects.ModelPermissions.Get",
       readRequestAttributes: ["project_id"],
     },
+    filler: {
+      model: "openai.ProjectModelPermissions",
+    },
     attributes: [
       {
         name: "project_id",
@@ -1054,6 +1233,7 @@ export const DATASOURCES: Array<DataSource> = [
         description:
           "The ID of the project for which model permissions are being set.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "mode",
@@ -1068,6 +1248,9 @@ export const DATASOURCES: Array<DataSource> = [
         elementType: "string",
         description: "The model IDs included in this permissions policy.",
         computedOptionalRequired: "computed",
+        filler: {
+          sourceAttribute: ["ModelIDs"],
+        },
       },
     ],
   },
@@ -1102,7 +1285,7 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the organization admin API key was created.",
         computedOptionalRequired: "computed",
@@ -1132,6 +1315,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
+    filler: {
+      model: "openai.Invite",
+    },
     attributes: [
       {
         name: "id",
@@ -1139,6 +1325,9 @@ export const RESOURCES: Array<Resource> = [
         description: "Invite ID.",
         computedOptionalRequired: "computed",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "email",
@@ -1164,24 +1353,26 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite was sent.",
         computedOptionalRequired: "computed",
       },
       {
         name: "expires_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite expires.",
         computedOptionalRequired: "computed",
+        nullable: true,
       },
       {
         name: "accepted_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the invite was accepted.",
         computedOptionalRequired: "computed",
+        nullable: true,
       },
     ],
   },
@@ -1199,6 +1390,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
+    filler: {
+      model: "openai.Role",
+    },
     attributes: [
       {
         name: "id",
@@ -1206,6 +1400,9 @@ export const RESOURCES: Array<Resource> = [
         description: "Identifier for the role.",
         computedOptionalRequired: "computed",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "name",
@@ -1242,6 +1439,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
+    filler: {
+      model: "openai.Project",
+    },
     attributes: [
       {
         name: "id",
@@ -1249,6 +1449,9 @@ export const RESOURCES: Array<Resource> = [
         description: "The ID of the project.",
         computedOptionalRequired: "computed",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "name",
@@ -1267,6 +1470,7 @@ export const RESOURCES: Array<Resource> = [
         validators: [
           'stringvalidator.OneOf("US", "EU", "JP", "IN", "KR", "CA", "AU", "SG")',
         ],
+        filler: { skip: true },
       },
       {
         name: "status",
@@ -1281,20 +1485,25 @@ export const RESOURCES: Array<Resource> = [
           "The ID of the customer-managed encryption key to use for Enterprise Key Management (EKM). EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API Article](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api).",
         computedOptionalRequired: "optional",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        nullable: true,
+        filler: {
+          sourceAttribute: ["ExternalKeyID"],
+        },
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the project was created.",
         computedOptionalRequired: "computed",
       },
       {
         name: "archived_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the project was archived or `null`.",
         computedOptionalRequired: "computed",
+        nullable: true,
       },
     ],
   },
@@ -1389,6 +1598,9 @@ export const RESOURCES: Array<Resource> = [
       updateMethod: "UpdateRateLimit",
       updateRequestAttributes: ["project_id", "rate_limit_id"],
     },
+    filler: {
+      model: "openai.ProjectRateLimit",
+    },
     attributes: [
       {
         name: "project_id",
@@ -1396,6 +1608,7 @@ export const RESOURCES: Array<Resource> = [
         description: "The ID of the project.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
       },
       {
         name: "rate_limit_id",
@@ -1404,46 +1617,51 @@ export const RESOURCES: Array<Resource> = [
           "The ID of the rate limit. This is typically in the format `rl-<model>`.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
       },
       {
         name: "max_requests_per_1_minute",
-        type: "int",
+        type: "int64",
         description: "The maximum requests per minute.",
         computedOptionalRequired: "computed_optional",
       },
       {
         name: "max_tokens_per_1_minute",
-        type: "int",
+        type: "int64",
         description: "The maximum tokens per minute.",
         computedOptionalRequired: "computed_optional",
       },
       {
         name: "max_images_per_1_minute",
-        type: "int",
+        type: "int64",
         description:
           "The maximum images per minute. Only relevant for certain models.",
         computedOptionalRequired: "computed_optional",
+        nullable: true,
       },
       {
         name: "max_audio_megabytes_per_1_minute",
-        type: "int",
+        type: "int64",
         description:
           "The maximum audio megabytes per minute. Only relevant for certain models.",
         computedOptionalRequired: "computed_optional",
+        nullable: true,
       },
       {
         name: "max_requests_per_1_day",
-        type: "int",
+        type: "int64",
         description:
           "The maximum requests per day. Only relevant for certain models.",
         computedOptionalRequired: "computed_optional",
+        nullable: true,
       },
       {
         name: "batch_1_day_max_input_tokens",
-        type: "int",
+        type: "int64",
         description:
           "The maximum batch input tokens per day. Only relevant for certain models.",
         computedOptionalRequired: "computed_optional",
+        nullable: true,
       },
     ],
   },
@@ -1462,6 +1680,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["project_id", "id"],
     },
     importStateAttributes: ["project_id", "id"],
+    filler: {
+      model: "openai.Role",
+    },
     attributes: [
       {
         name: "id",
@@ -1469,12 +1690,16 @@ export const RESOURCES: Array<Resource> = [
         description: "Identifier for the role.",
         computedOptionalRequired: "computed",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "project_id",
         type: "string",
         description: "The ID of the project to create the role for.",
         computedOptionalRequired: "required",
+        filler: { skip: true },
       },
       {
         name: "name",
@@ -1543,7 +1768,7 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description:
           "The Unix timestamp (in seconds) of when the service account was created.",
         computedOptionalRequired: "computed",
@@ -1584,6 +1809,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["project_id", "user_id"],
     },
     importStateAttributes: ["project_id", "user_id"],
+    filler: {
+      model: "openai.ProjectUser",
+    },
     attributes: [
       {
         name: "project_id",
@@ -1591,6 +1819,7 @@ export const RESOURCES: Array<Resource> = [
         description: "The ID of the project.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
       },
       {
         name: "user_id",
@@ -1598,6 +1827,9 @@ export const RESOURCES: Array<Resource> = [
         description: "The ID of the user.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "role",
@@ -1700,7 +1932,7 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "created_at",
-        type: "int",
+        type: "int64",
         description: "Unix timestamp (in seconds) when the group was created.",
         computedOptionalRequired: "computed",
       },
@@ -1777,6 +2009,9 @@ export const RESOURCES: Array<Resource> = [
       readMethod: "Get",
       updateMethod: "Update",
     },
+    filler: {
+      model: "openai.OrganizationDataRetention",
+    },
     attributes: [
       {
         name: "type",
@@ -1800,6 +2035,9 @@ export const RESOURCES: Array<Resource> = [
       updateMethod: "Update",
       deleteMethod: "Delete",
     },
+    filler: {
+      model: "openai.OrganizationSpendLimit",
+    },
     attributes: [
       {
         name: "currency",
@@ -1819,7 +2057,7 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "threshold_amount",
-        type: "int",
+        type: "int64",
         description: "The hard spend limit amount, in cents.",
         computedOptionalRequired: "required",
         validators: ["int64validator.AtLeast(1)"],
@@ -1829,6 +2067,9 @@ export const RESOURCES: Array<Resource> = [
         type: "single_nested",
         description: "The current enforcement state of the hard spend limit.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.OrganizationSpendLimitEnforcement",
+        },
         attributes: [
           {
             name: "status",
@@ -1855,6 +2096,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["project_id"],
     },
     importStateAttributes: ["project_id"],
+    filler: {
+      model: "openai.ProjectSpendLimit",
+    },
     attributes: [
       {
         name: "project_id",
@@ -1863,6 +2107,7 @@ export const RESOURCES: Array<Resource> = [
           "The ID of the project for which the spend limit is being set.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
       },
       {
         name: "currency",
@@ -1882,7 +2127,7 @@ export const RESOURCES: Array<Resource> = [
       },
       {
         name: "threshold_amount",
-        type: "int",
+        type: "int64",
         description: "The hard spend limit amount, in cents.",
         computedOptionalRequired: "required",
         validators: ["int64validator.AtLeast(1)"],
@@ -1892,6 +2137,9 @@ export const RESOURCES: Array<Resource> = [
         type: "single_nested",
         description: "The current enforcement state of the hard spend limit.",
         computedOptionalRequired: "computed",
+        filler: {
+          model: "openai.ProjectSpendLimitEnforcement",
+        },
         attributes: [
           {
             name: "status",
@@ -1918,6 +2166,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["project_id"],
     },
     importStateAttributes: ["project_id"],
+    filler: {
+      model: "openai.ProjectModelPermissions",
+    },
     attributes: [
       {
         name: "project_id",
@@ -1926,6 +2177,7 @@ export const RESOURCES: Array<Resource> = [
           "The ID of the project for which model permissions are being set.",
         computedOptionalRequired: "required",
         planModifiers: ["stringplanmodifier.RequiresReplace()"],
+        filler: { skip: true },
       },
       {
         name: "mode",
@@ -1941,6 +2193,9 @@ export const RESOURCES: Array<Resource> = [
         elementType: "string",
         description: "The model IDs included in this permissions policy.",
         computedOptionalRequired: "required",
+        filler: {
+          sourceAttribute: ["ModelIDs"],
+        },
       },
     ],
   },
@@ -1958,6 +2213,9 @@ export const RESOURCES: Array<Resource> = [
       deleteRequestAttributes: ["id"],
     },
     importStateAttributes: ["id"],
+    filler: {
+      model: "openai.OrganizationSpendAlert",
+    },
     attributes: [
       {
         name: "id",
@@ -1965,6 +2223,9 @@ export const RESOURCES: Array<Resource> = [
         description: "Spend alert ID.",
         computedOptionalRequired: "computed",
         planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+        filler: {
+          sourceAttribute: ["ID"],
+        },
       },
       {
         name: "currency",
@@ -1983,6 +2244,9 @@ export const RESOURCES: Array<Resource> = [
         type: "single_nested",
         description: "Email notification settings for a spend alert.",
         computedOptionalRequired: "required",
+        filler: {
+          model: "openai.OrganizationSpendAlertNotificationChannel",
+        },
         attributes: [
           {
             name: "type",
@@ -2005,12 +2269,13 @@ export const RESOURCES: Array<Resource> = [
             type: "string",
             description: "Optional subject prefix for alert emails.",
             computedOptionalRequired: "optional",
+            nullable: true,
           },
         ],
       },
       {
         name: "threshold_amount",
-        type: "int",
+        type: "int64",
         description: "The alert threshold amount, in cents.",
         computedOptionalRequired: "required",
       },

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ resource.Resource = &SpendAlertResource{}
@@ -212,8 +214,35 @@ type SpendAlertResourceModel struct {
 	ThresholdAmount     supertypes.Int64Value                                                            `tfsdk:"threshold_amount"`
 }
 
+func (m *SpendAlertResourceModel) Fill(ctx context.Context, data openai.OrganizationSpendAlert) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Currency = supertypes.NewStringValue(string(data.Currency))
+	m.Interval = supertypes.NewStringValue(string(data.Interval))
+	m.NotificationChannel = supertypes.NewSingleNestedObjectValueOf(ctx, func() *SpendAlertResourceModelNotificationChannel {
+		var model SpendAlertResourceModelNotificationChannel
+		diags.Append(model.Fill(ctx, data.NotificationChannel)...)
+		return &model
+	}())
+	m.ThresholdAmount = supertypes.NewInt64Value(int64(data.ThresholdAmount))
+
+	return
+}
+
 type SpendAlertResourceModelNotificationChannel struct {
 	Type          supertypes.StringValue        `tfsdk:"type"`
 	Recipients    supertypes.SetValueOf[string] `tfsdk:"recipients"`
 	SubjectPrefix supertypes.StringValue        `tfsdk:"subject_prefix"`
+}
+
+func (m *SpendAlertResourceModelNotificationChannel) Fill(ctx context.Context, data openai.OrganizationSpendAlertNotificationChannel) (diags diag.Diagnostics) {
+	m.Type = supertypes.NewStringValue(string(data.Type))
+	m.Recipients = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.Recipients))
+	m.SubjectPrefix = (func() supertypes.StringValue {
+		if data.JSON.SubjectPrefix.Valid() {
+			return supertypes.NewStringValue(string(data.SubjectPrefix))
+		}
+		return supertypes.NewStringNull()
+	}())
+
+	return
 }

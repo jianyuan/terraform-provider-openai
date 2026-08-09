@@ -8,9 +8,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &ProjectsDataSource{}
@@ -149,6 +151,16 @@ type ProjectsDataSourceModel struct {
 	Projects        supertypes.SetNestedObjectValueOf[ProjectsDataSourceModelProjectsItem] `tfsdk:"projects"`
 }
 
+func (m *ProjectsDataSourceModel) Fill(ctx context.Context, data []openai.Project) (diags diag.Diagnostics) {
+	m.Projects = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.Project, _ int) ProjectsDataSourceModelProjectsItem {
+		var model ProjectsDataSourceModelProjectsItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type ProjectsDataSourceModelProjectsItem struct {
 	Id            supertypes.StringValue `tfsdk:"id"`
 	Name          supertypes.StringValue `tfsdk:"name"`
@@ -156,4 +168,25 @@ type ProjectsDataSourceModelProjectsItem struct {
 	ExternalKeyId supertypes.StringValue `tfsdk:"external_key_id"`
 	CreatedAt     supertypes.Int64Value  `tfsdk:"created_at"`
 	ArchivedAt    supertypes.Int64Value  `tfsdk:"archived_at"`
+}
+
+func (m *ProjectsDataSourceModelProjectsItem) Fill(ctx context.Context, data openai.Project) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Status = supertypes.NewStringValue(string(data.Status))
+	m.ExternalKeyId = (func() supertypes.StringValue {
+		if data.JSON.ExternalKeyID.Valid() {
+			return supertypes.NewStringValue(string(data.ExternalKeyID))
+		}
+		return supertypes.NewStringNull()
+	}())
+	m.CreatedAt = supertypes.NewInt64Value(int64(data.CreatedAt))
+	m.ArchivedAt = (func() supertypes.Int64Value {
+		if data.JSON.ArchivedAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.ArchivedAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

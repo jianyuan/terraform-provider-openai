@@ -7,26 +7,7 @@ import (
 	"github.com/jianyuan/terraform-provider-openai/internal/openaiparam"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/shared/constant"
-	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
-
-func (m *SpendAlertResourceModel) Fill(ctx context.Context, data openai.OrganizationSpendAlert) diag.Diagnostics {
-	m.Id = supertypes.NewStringValue(data.ID)
-	m.Currency = supertypes.NewStringValue(string(data.Currency))
-	m.Interval = supertypes.NewStringValue(string(data.Interval))
-	m.ThresholdAmount = supertypes.NewInt64Value(data.ThresholdAmount)
-	m.NotificationChannel = supertypes.NewSingleNestedObjectValueOf(ctx, &SpendAlertResourceModelNotificationChannel{
-		Type:       supertypes.NewStringValue(string(data.NotificationChannel.Type)),
-		Recipients: supertypes.NewSetValueOfSlice(ctx, data.NotificationChannel.Recipients),
-		SubjectPrefix: (func() supertypes.StringValue {
-			if data.NotificationChannel.JSON.SubjectPrefix.Valid() {
-				return supertypes.NewStringValue(data.NotificationChannel.SubjectPrefix)
-			}
-			return supertypes.NewStringNull()
-		})(),
-	})
-	return nil
-}
 
 func (r *SpendAlertResource) getNewParams(ctx context.Context, data SpendAlertResourceModel) (*openai.AdminOrganizationSpendAlertNewParams, diag.Diagnostics) {
 	notificationChannel, diags := data.NotificationChannel.Get(ctx)

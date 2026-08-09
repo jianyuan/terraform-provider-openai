@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ resource.Resource = &ProjectModelPermissionsResource{}
@@ -181,4 +183,11 @@ type ProjectModelPermissionsResourceModel struct {
 	ProjectId supertypes.StringValue        `tfsdk:"project_id"`
 	Mode      supertypes.StringValue        `tfsdk:"mode"`
 	ModelIds  supertypes.SetValueOf[string] `tfsdk:"model_ids"`
+}
+
+func (m *ProjectModelPermissionsResourceModel) Fill(ctx context.Context, data openai.ProjectModelPermissions) (diags diag.Diagnostics) {
+	m.Mode = supertypes.NewStringValue(string(data.Mode))
+	m.ModelIds = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.ModelIDs))
+
+	return
 }

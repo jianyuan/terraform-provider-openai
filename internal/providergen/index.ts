@@ -4,6 +4,11 @@ import type { DataSource, Attribute, Resource } from "./schema";
 import { match, P } from "ts-pattern";
 import { parseArgs } from "util";
 import dedent from "dedent";
+import {
+  primitiveAttributeToTf,
+  primitiveToTfAttributeSetter,
+  tfAttributeValueType,
+} from "./go-types";
 
 function generateTerraformAttribute({
   parent,
@@ -49,7 +54,7 @@ function generateTerraformAttribute({
       parts.push("}");
       return parts.join("\n");
     })
-    .with({ type: "int" }, (attribute) => {
+    .with({ type: "int64" }, (attribute) => {
       const parts: string[] = [];
       parts.push("schema.Int64Attribute{");
       parts.push(...commonParts);
@@ -183,42 +188,6 @@ function generateTerraformAttribute({
     .exhaustive();
 }
 
-function generateTerraformValueType({
-  parent,
-  attribute,
-}: {
-  parent: string;
-  attribute: Attribute;
-}) {
-  return match(attribute)
-    .with({ type: "string" }, () => "supertypes.StringValue")
-    .with({ type: "int" }, () => "supertypes.Int64Value")
-    .with({ type: "bool" }, () => "supertypes.BoolValue")
-    .with(
-      { type: "list", elementType: "string" },
-      () => "supertypes.ListValueOf[string]",
-    )
-    .with(
-      { type: "set", elementType: "string" },
-      () => "supertypes.SetValueOf[string]",
-    )
-    .with(
-      { type: "set_nested" },
-      () =>
-        `supertypes.SetNestedObjectValueOf[${parent}${camelize(
-          attribute.name,
-        )}Item]`,
-    )
-    .with(
-      { type: "single_nested" },
-      () =>
-        `supertypes.SingleNestedObjectValueOf[${parent}${camelize(
-          attribute.name,
-        )}]`,
-    )
-    .exhaustive();
-}
-
 function generateTerraformToPrimitive({
   attribute,
   srcVar,
@@ -229,7 +198,7 @@ function generateTerraformToPrimitive({
   const srcVarName = `${srcVar}.${camelize(attribute.name)}`;
   return match(attribute)
     .with({ type: "string" }, () => `${srcVarName}.ValueString()`)
-    .with({ type: "int" }, () => `${srcVarName}.ValueInt64()`)
+    .with({ type: "int64" }, () => `${srcVarName}.ValueInt64()`)
     .with({ type: "bool" }, () => `${srcVarName}.ValueBool()`)
     .exhaustive();
 }
@@ -237,20 +206,33 @@ function generateTerraformToPrimitive({
 function generateModel({
   name,
   attributes,
+  filler,
 }: {
   name: string;
   attributes: Array<Attribute>;
+  filler?: {
+    model: string;
+  };
 }) {
   const structLines: string[] = [];
+  const fillerLines: string[] = [];
   const extras: string[] = [];
 
   for (const attribute of attributes) {
     structLines.push(
-      `${camelize(attribute.name)} ${generateTerraformValueType({
-        parent: name,
-        attribute,
-      })} \`tfsdk:"${attribute.name}"\``,
+      `${camelize(attribute.name)} ${tfAttributeValueType(attribute, name)} \`tfsdk:"${attribute.name}"\``,
     );
+
+    if (filler && !attribute.filler?.skip) {
+      fillerLines.push(
+        primitiveToTfAttributeSetter({
+          name,
+          attribute,
+          srcVar: "data",
+          destVar: "m",
+        }),
+      );
+    }
 
     extras.push(
       ...match(attribute)
@@ -258,12 +240,14 @@ function generateModel({
           generateModel({
             name: `${name}${camelize(attribute.name)}Item`,
             attributes: attribute.attributes,
+            filler: attribute.filler,
           }),
         ])
         .with({ type: "single_nested" }, (attribute) => [
           generateModel({
             name: `${name}${camelize(attribute.name)}`,
             attributes: attribute.attributes,
+            filler: attribute.filler,
           }),
         ])
         .otherwise(() => []),
@@ -275,6 +259,18 @@ type ${name} struct {
   ${structLines.join("\n")}
 }
 
+${
+  filler
+    ? `
+func (m *${name}) Fill(ctx context.Context, data ${filler.model}) (diags diag.Diagnostics) {
+  ${fillerLines.join("\n")}
+
+  return
+}
+`
+    : ""
+}
+
 ${extras.join("\n\n")}
 `;
 }
@@ -284,6 +280,7 @@ function generateDataSourceModel({ dataSource }: { dataSource: DataSource }) {
   return generateModel({
     name: modelName,
     attributes: dataSource.attributes,
+    filler: dataSource.filler,
   });
 }
 
@@ -472,6 +469,7 @@ function generateResourceModel({ resource }: { resource: Resource }) {
   return generateModel({
     name: modelName,
     attributes: resource.attributes,
+    filler: resource.filler,
   });
 }
 

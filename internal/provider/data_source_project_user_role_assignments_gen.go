@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &ProjectUserRoleAssignmentsDataSource{}
@@ -122,6 +124,16 @@ type ProjectUserRoleAssignmentsDataSourceModel struct {
 	Roles     supertypes.SetNestedObjectValueOf[ProjectUserRoleAssignmentsDataSourceModelRolesItem] `tfsdk:"roles"`
 }
 
+func (m *ProjectUserRoleAssignmentsDataSourceModel) Fill(ctx context.Context, data []openai.AdminOrganizationProjectUserRoleListResponse) (diags diag.Diagnostics) {
+	m.Roles = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.AdminOrganizationProjectUserRoleListResponse, _ int) ProjectUserRoleAssignmentsDataSourceModelRolesItem {
+		var model ProjectUserRoleAssignmentsDataSourceModelRolesItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type ProjectUserRoleAssignmentsDataSourceModelRolesItem struct {
 	Id             supertypes.StringValue        `tfsdk:"id"`
 	Name           supertypes.StringValue        `tfsdk:"name"`
@@ -129,4 +141,15 @@ type ProjectUserRoleAssignmentsDataSourceModelRolesItem struct {
 	Permissions    supertypes.SetValueOf[string] `tfsdk:"permissions"`
 	PredefinedRole supertypes.BoolValue          `tfsdk:"predefined_role"`
 	ResourceType   supertypes.StringValue        `tfsdk:"resource_type"`
+}
+
+func (m *ProjectUserRoleAssignmentsDataSourceModelRolesItem) Fill(ctx context.Context, data openai.AdminOrganizationProjectUserRoleListResponse) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.Description = supertypes.NewStringValue(string(data.Description))
+	m.Permissions = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.Permissions))
+	m.PredefinedRole = supertypes.NewBoolValue(bool(data.PredefinedRole))
+	m.ResourceType = supertypes.NewStringValue(string(data.ResourceType))
+
+	return
 }

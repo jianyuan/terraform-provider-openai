@@ -7,7 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &ProjectModelPermissionsDataSource{}
@@ -76,4 +79,11 @@ type ProjectModelPermissionsDataSourceModel struct {
 	ProjectId supertypes.StringValue        `tfsdk:"project_id"`
 	Mode      supertypes.StringValue        `tfsdk:"mode"`
 	ModelIds  supertypes.SetValueOf[string] `tfsdk:"model_ids"`
+}
+
+func (m *ProjectModelPermissionsDataSourceModel) Fill(ctx context.Context, data openai.ProjectModelPermissions) (diags diag.Diagnostics) {
+	m.Mode = supertypes.NewStringValue(string(data.Mode))
+	m.ModelIds = supertypes.NewSetValueOfSlice(ctx, lo.Uniq(data.ModelIDs))
+
+	return
 }

@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &GroupsDataSource{}
@@ -100,9 +102,28 @@ type GroupsDataSourceModel struct {
 	Groups supertypes.SetNestedObjectValueOf[GroupsDataSourceModelGroupsItem] `tfsdk:"groups"`
 }
 
+func (m *GroupsDataSourceModel) Fill(ctx context.Context, data []openai.Group) (diags diag.Diagnostics) {
+	m.Groups = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.Group, _ int) GroupsDataSourceModelGroupsItem {
+		var model GroupsDataSourceModelGroupsItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type GroupsDataSourceModelGroupsItem struct {
 	Id            supertypes.StringValue `tfsdk:"id"`
 	Name          supertypes.StringValue `tfsdk:"name"`
 	IsScimManaged supertypes.BoolValue   `tfsdk:"is_scim_managed"`
 	CreatedAt     supertypes.Int64Value  `tfsdk:"created_at"`
+}
+
+func (m *GroupsDataSourceModelGroupsItem) Fill(ctx context.Context, data openai.Group) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Name = supertypes.NewStringValue(string(data.Name))
+	m.IsScimManaged = supertypes.NewBoolValue(bool(data.IsScimManaged))
+	m.CreatedAt = supertypes.NewInt64Value(int64(data.CreatedAt))
+
+	return
 }

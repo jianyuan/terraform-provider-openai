@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -192,6 +193,25 @@ type SpendLimitResourceModel struct {
 	Enforcement     supertypes.SingleNestedObjectValueOf[SpendLimitResourceModelEnforcement] `tfsdk:"enforcement"`
 }
 
+func (m *SpendLimitResourceModel) Fill(ctx context.Context, data openai.OrganizationSpendLimit) (diags diag.Diagnostics) {
+	m.Currency = supertypes.NewStringValue(string(data.Currency))
+	m.Interval = supertypes.NewStringValue(string(data.Interval))
+	m.ThresholdAmount = supertypes.NewInt64Value(int64(data.ThresholdAmount))
+	m.Enforcement = supertypes.NewSingleNestedObjectValueOf(ctx, func() *SpendLimitResourceModelEnforcement {
+		var model SpendLimitResourceModelEnforcement
+		diags.Append(model.Fill(ctx, data.Enforcement)...)
+		return &model
+	}())
+
+	return
+}
+
 type SpendLimitResourceModelEnforcement struct {
 	Status supertypes.StringValue `tfsdk:"status"`
+}
+
+func (m *SpendLimitResourceModelEnforcement) Fill(ctx context.Context, data openai.OrganizationSpendLimitEnforcement) (diags diag.Diagnostics) {
+	m.Status = supertypes.NewStringValue(string(data.Status))
+
+	return
 }

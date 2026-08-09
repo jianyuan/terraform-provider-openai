@@ -7,8 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
 	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
+	"github.com/samber/lo"
 )
 
 var _ datasource.DataSource = &ProjectRateLimitsDataSource{}
@@ -126,6 +128,16 @@ type ProjectRateLimitsDataSourceModel struct {
 	RateLimits supertypes.SetNestedObjectValueOf[ProjectRateLimitsDataSourceModelRateLimitsItem] `tfsdk:"rate_limits"`
 }
 
+func (m *ProjectRateLimitsDataSourceModel) Fill(ctx context.Context, data []openai.ProjectRateLimit) (diags diag.Diagnostics) {
+	m.RateLimits = supertypes.NewSetNestedObjectValueOfValueSlice(ctx, lo.Map(data, func(item openai.ProjectRateLimit, _ int) ProjectRateLimitsDataSourceModelRateLimitsItem {
+		var model ProjectRateLimitsDataSourceModelRateLimitsItem
+		diags.Append(model.Fill(ctx, item)...)
+		return model
+	}))
+
+	return
+}
+
 type ProjectRateLimitsDataSourceModelRateLimitsItem struct {
 	Id                          supertypes.StringValue `tfsdk:"id"`
 	Model                       supertypes.StringValue `tfsdk:"model"`
@@ -135,4 +147,37 @@ type ProjectRateLimitsDataSourceModelRateLimitsItem struct {
 	MaxAudioMegabytesPer1Minute supertypes.Int64Value  `tfsdk:"max_audio_megabytes_per_1_minute"`
 	MaxRequestsPer1Day          supertypes.Int64Value  `tfsdk:"max_requests_per_1_day"`
 	Batch1DayMaxInputTokens     supertypes.Int64Value  `tfsdk:"batch_1_day_max_input_tokens"`
+}
+
+func (m *ProjectRateLimitsDataSourceModelRateLimitsItem) Fill(ctx context.Context, data openai.ProjectRateLimit) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Model = supertypes.NewStringValue(string(data.Model))
+	m.MaxRequestsPer1Minute = supertypes.NewInt64Value(int64(data.MaxRequestsPer1Minute))
+	m.MaxTokensPer1Minute = supertypes.NewInt64Value(int64(data.MaxTokensPer1Minute))
+	m.MaxImagesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxImagesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxImagesPer1Minute))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.MaxAudioMegabytesPer1Minute = (func() supertypes.Int64Value {
+		if data.JSON.MaxAudioMegabytesPer1Minute.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxAudioMegabytesPer1Minute))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.MaxRequestsPer1Day = (func() supertypes.Int64Value {
+		if data.JSON.MaxRequestsPer1Day.Valid() {
+			return supertypes.NewInt64Value(int64(data.MaxRequestsPer1Day))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.Batch1DayMaxInputTokens = (func() supertypes.Int64Value {
+		if data.JSON.Batch1DayMaxInputTokens.Valid() {
+			return supertypes.NewInt64Value(int64(data.Batch1DayMaxInputTokens))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

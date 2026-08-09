@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -184,4 +185,26 @@ type InviteResourceModel struct {
 	CreatedAt  supertypes.Int64Value  `tfsdk:"created_at"`
 	ExpiresAt  supertypes.Int64Value  `tfsdk:"expires_at"`
 	AcceptedAt supertypes.Int64Value  `tfsdk:"accepted_at"`
+}
+
+func (m *InviteResourceModel) Fill(ctx context.Context, data openai.Invite) (diags diag.Diagnostics) {
+	m.Id = supertypes.NewStringValue(string(data.ID))
+	m.Email = supertypes.NewStringValue(string(data.Email))
+	m.Role = supertypes.NewStringValue(string(data.Role))
+	m.Status = supertypes.NewStringValue(string(data.Status))
+	m.CreatedAt = supertypes.NewInt64Value(int64(data.CreatedAt))
+	m.ExpiresAt = (func() supertypes.Int64Value {
+		if data.JSON.ExpiresAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.ExpiresAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+	m.AcceptedAt = (func() supertypes.Int64Value {
+		if data.JSON.AcceptedAt.Valid() {
+			return supertypes.NewInt64Value(int64(data.AcceptedAt))
+		}
+		return supertypes.NewInt64Null()
+	}())
+
+	return
 }

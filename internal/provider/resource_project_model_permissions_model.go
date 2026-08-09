@@ -5,14 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/openai/openai-go/v3"
-	supertypes "github.com/orange-cloudavenue/terraform-plugin-framework-supertypes"
 )
-
-func (m *ProjectModelPermissionsResourceModel) Fill(ctx context.Context, data openai.ProjectModelPermissions) diag.Diagnostics {
-	m.Mode = supertypes.NewStringValue(string(data.Mode))
-	m.ModelIds = supertypes.NewSetValueOfSlice(ctx, data.ModelIDs)
-	return nil
-}
 
 func (r *ProjectModelPermissionsResource) getNewParams(ctx context.Context, data ProjectModelPermissionsResourceModel) (*openai.AdminOrganizationProjectModelPermissionUpdateParams, diag.Diagnostics) {
 	return r.getUpdateParams(ctx, data)
