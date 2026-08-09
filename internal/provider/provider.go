@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	inttflog "github.com/jianyuan/terraform-provider-openai/internal/tflog"
+	tflog "github.com/jianyuan/terraform-provider-openai/internal/tflog"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
 )
@@ -128,7 +128,7 @@ func (p *OpenAIProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		option.WithHeader("User-Agent", fmt.Sprintf("Terraform/%s (+https://www.terraform.io) terraform-provider-openai/%s", req.TerraformVersion, p.version)),
 		option.WithMaxRetries(maxRetries),
 		option.WithRequestTimeout(time.Duration(requestTimeoutSeconds)*time.Second),
-		option.WithDebugLog(inttflog.StandardLogger(ctx)),
+		option.WithDebugLog(tflog.StandardLogger(ctx)),
 	))
 
 	resp.DataSourceData = client

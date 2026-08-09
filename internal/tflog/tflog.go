@@ -24,6 +24,5 @@ func (w *tflogWriter) Write(p []byte) (n int, err error) {
 }
 
 func StandardLogger(ctx context.Context) *log.Logger {
-	// Pass 0 for flags if you don't want stdlib log to append duplicate timestamps/date prefixes
 	return log.New(&tflogWriter{ctx: ctx}, "", 0)
 }
