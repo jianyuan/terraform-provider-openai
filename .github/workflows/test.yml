@@ -42,7 +42,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
-      - uses: astral-sh/setup-uv@v9.0.0
+      - uses: astral-sh/setup-uv@v10.0.1
       - run: go generate ./
       - name: git diff
         run: |
