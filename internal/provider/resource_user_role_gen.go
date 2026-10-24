@@ -68,7 +68,7 @@ func (r *UserRoleResource) Create(ctx context.Context, req resource.CreateReques
 
 	modelInstance, err := r.client.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -98,7 +98,7 @@ func (r *UserRoleResource) Read(ctx context.Context, req resource.ReadRequest, r
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -129,7 +129,7 @@ func (r *UserRoleResource) Update(ctx context.Context, req resource.UpdateReques
 
 	modelInstance, err := r.client.Admin.Organization.Users.Update(ctx, data.UserId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")

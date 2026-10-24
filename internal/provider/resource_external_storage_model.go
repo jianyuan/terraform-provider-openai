@@ -167,20 +167,14 @@ func (r *ExternalStorageResource) validateAfterCreate(ctx context.Context, creat
 		return config, diags
 	}
 
-	// openai.Error's message only carries the HTTP status; the reason validation failed is
-	// in the API's error message.
-	detail := err.Error()
-	if apiErr, ok := errors.AsType[*openai.Error](err); ok && apiErr.Message != "" {
-		detail = apiErr.Message
-	}
-	diags.AddError("Validation Error", fmt.Sprintf("External storage %s failed validation, so it was deleted: %s", created.ID, detail))
+	diags.AddError("Validation Error", fmt.Sprintf("External storage %s failed validation, so it was deleted: %s", created.ID, clientErrorDetail(err)))
 
 	// Clean up even if the create was cancelled, so a failed apply leaves nothing behind.
 	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), time.Minute)
 	defer cancel()
 	if _, err := r.client.Admin.Organization.ExternalStorage.Delete(cleanupCtx, created.ID); err != nil {
 		if apiErr, ok := errors.AsType[*openai.Error](err); !ok || apiErr.StatusCode != http.StatusNotFound {
-			diags.AddError("Client Error", fmt.Sprintf("Unable to delete external storage %s after it failed validation. Delete it with the API, or import it into Terraform and destroy it: %s", created.ID, err))
+			diags.AddError("Client Error", fmt.Sprintf("Unable to delete external storage %s after it failed validation. Delete it with the API, or import it into Terraform and destroy it: %s", created.ID, clientErrorDetail(err)))
 		}
 	}
 

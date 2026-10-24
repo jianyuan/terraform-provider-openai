@@ -108,7 +108,7 @@ func (r *ProjectServiceAccountResource) Create(ctx context.Context, req resource
 
 	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.New(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -138,7 +138,7 @@ func (r *ProjectServiceAccountResource) Read(ctx context.Context, req resource.R
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -169,7 +169,7 @@ func (r *ProjectServiceAccountResource) Update(ctx context.Context, req resource
 
 	modelInstance, err := r.client.Admin.Organization.Projects.ServiceAccounts.Update(ctx, data.ProjectId.ValueString(), data.Id.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
@@ -198,7 +198,7 @@ func (r *ProjectServiceAccountResource) Delete(ctx context.Context, req resource
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", clientErrorDetail(err)))
 		return
 	}
 }

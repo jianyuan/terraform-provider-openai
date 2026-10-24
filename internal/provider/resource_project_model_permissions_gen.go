@@ -80,7 +80,7 @@ func (r *ProjectModelPermissionsResource) Create(ctx context.Context, req resour
 
 	modelInstance, err := r.client.Admin.Organization.Projects.ModelPermissions.Update(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -110,7 +110,7 @@ func (r *ProjectModelPermissionsResource) Read(ctx context.Context, req resource
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -141,7 +141,7 @@ func (r *ProjectModelPermissionsResource) Update(ctx context.Context, req resour
 
 	modelInstance, err := r.client.Admin.Organization.Projects.ModelPermissions.Update(ctx, data.ProjectId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
@@ -170,7 +170,7 @@ func (r *ProjectModelPermissionsResource) Delete(ctx context.Context, req resour
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", clientErrorDetail(err)))
 		return
 	}
 }

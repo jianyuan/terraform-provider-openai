@@ -73,7 +73,7 @@ func (r *GroupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	modelInstance, err := r.client.Admin.Organization.Groups.New(ctx, *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -103,7 +103,7 @@ func (r *GroupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -134,7 +134,7 @@ func (r *GroupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	modelInstance, err := r.client.Admin.Organization.Groups.Update(ctx, data.Id.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
@@ -163,7 +163,7 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", clientErrorDetail(err)))
 		return
 	}
 }
