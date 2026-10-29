@@ -155,6 +155,7 @@ export const projects = sqliteTable("projects", {
     .notNull()
     .default("active"),
   geography: text(),
+  external_key_id: text(),
   archived_at: integer(),
   created_at: createdAtColumn(),
 });
@@ -426,3 +427,14 @@ export const projectModelPermissions = sqliteTable(
     model_ids: text({ mode: "json" }).notNull().$type<string[]>(),
   },
 );
+
+export const externalKeys = sqliteTable("external_keys", {
+  object: objectColumn("organization.external_key"),
+  id: text().primaryKey().$defaultFn(idGenerator("extkey_")),
+  name: text().notNull(),
+  type: text({ enum: ["aws", "azure", "gcp"] }).notNull(),
+  purpose: text({ enum: ["ekm"] }).notNull(),
+  // The provider-specific fields, which the API returns flat beside the common ones.
+  config: text({ mode: "json" }).notNull().$type<Record<string, string>>(),
+  created_at: createdAtColumn(),
+});

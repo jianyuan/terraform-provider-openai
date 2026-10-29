@@ -1303,6 +1303,192 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "external_key",
+    description:
+      "Registers a customer-managed encryption key for Enterprise Key Management (EKM). Activate it on a project by setting the project's `external_key_id`. EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api) article. The API does not support updates, so changing any argument replaces the key.",
+    api: {
+      method: "Admin.Organization.ExternalKeys",
+      createMethod: "New",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the external key.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "A friendly name for the external key.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "aws",
+        type: "single_nested",
+        description:
+          "A key in AWS KMS. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "role_arn",
+            type: "string",
+            description:
+              "The ARN of the IAM role OpenAI assumes in your account.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_arn",
+            type: "string",
+            description: "The ARN of the KMS key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "external_id",
+            type: "string",
+            description:
+              "The external ID OpenAI presents when assuming the role: your organization ID or project ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "azure",
+        type: "single_nested",
+        description:
+          "A key in Azure Key Vault. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "tenant_id",
+            type: "string",
+            description: "The Microsoft Entra tenant ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "vault_uri",
+            type: "string",
+            description: "The URI of the Key Vault that holds the key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "key_name",
+            type: "string",
+            description: "The name of the key in the Key Vault.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "gcp",
+        type: "single_nested",
+        description:
+          "A key in Google Cloud KMS, accessed through Workload Identity Federation. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "workload_identity_project_number",
+            type: "string",
+            description:
+              "The number of the Google Cloud project that holds the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_pool_id",
+            type: "string",
+            description: "The ID of the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_provider_id",
+            type: "string",
+            description:
+              "The ID of the Workload Identity provider registered for OpenAI.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "audience",
+            type: "string",
+            description:
+              "The audience OpenAI uses when exchanging tokens with the Workload Identity provider. It must be one of the provider's allowed audiences.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_project_id",
+            type: "string",
+            description:
+              "The ID of the Google Cloud project that holds the key ring.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_ring_name",
+            type: "string",
+            description: "The name of the key ring.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_name",
+            type: "string",
+            description: "The name of the key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_location",
+            type: "string",
+            description:
+              "The location of the key ring, such as `us` or `europe-west1`.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "api_project_ids",
+        type: "set",
+        description: "The IDs of the projects that use this key.",
+        computedOptionalRequired: "computed",
+        elementType: "string",
+      },
+      {
+        name: "created_at",
+        type: "int64",
+        description:
+          "The Unix timestamp (in seconds) of when the key was registered.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["int64planmodifier.UseStateForUnknown()"],
+      },
+    ],
+  },
+  {
     name: "invite",
     description:
       "Invite and manage invitations for an organization. Invited users are automatically added to the Default project.",

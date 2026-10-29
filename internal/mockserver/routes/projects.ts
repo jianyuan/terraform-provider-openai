@@ -7,6 +7,13 @@ import * as schema from "../db-schema";
 import { now } from "../db-utils";
 import { requireProject } from "../middleware/project";
 
+async function externalKeyExists(id: string) {
+  const key = await db.query.externalKeys.findFirst({
+    where: eq(schema.externalKeys.id, id),
+  });
+  return !!key;
+}
+
 const route = new Hono();
 
 route.get(
@@ -43,16 +50,22 @@ route.post(
       geography: z
         .enum(["US", "EU", "JP", "IN", "KR", "CA", "AU", "SG"])
         .optional(),
+      external_key_id: z.string().optional(),
     }),
   ),
   async (c) => {
-    const { name, geography } = c.req.valid("json");
+    const { name, geography, external_key_id } = c.req.valid("json");
+
+    if (external_key_id && !(await externalKeyExists(external_key_id))) {
+      return c.json({ error: { message: "External key not found" } }, 400);
+    }
 
     const [project] = await db
       .insert(schema.projects)
       .values({
         name,
         geography,
+        external_key_id,
       })
       .returning();
     if (!project) {
@@ -74,14 +87,21 @@ route.get("/:project_id", requireProject, async (c) => {
 route.post(
   "/:project_id",
   requireProject,
-  zValidator("json", z.object({ name: z.string() })),
+  zValidator(
+    "json",
+    z.object({ name: z.string(), external_key_id: z.string().optional() }),
+  ),
   async (c) => {
     const project = c.get("project");
-    const { name } = c.req.valid("json");
+    const { name, external_key_id } = c.req.valid("json");
+
+    if (external_key_id && !(await externalKeyExists(external_key_id))) {
+      return c.json({ error: { message: "External key not found" } }, 400);
+    }
 
     const result = await db
       .update(schema.projects)
-      .set({ name })
+      .set({ name, external_key_id })
       .where(eq(schema.projects.id, project.id))
       .returning();
 
