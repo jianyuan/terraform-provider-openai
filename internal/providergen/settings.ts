@@ -1303,6 +1303,440 @@ export const RESOURCES: Array<Resource> = [
     ],
   },
   {
+    name: "external_key",
+    description:
+      "Registers a customer-managed encryption key for Enterprise Key Management (EKM). Activate it on a project by setting the project's `external_key_id`. EKM is only available on certain accounts. Refer to the [EKM (External Keys) in the Management API](https://help.openai.com/en/articles/20000953-ekm-external-keys-in-the-management-api) article. The API does not support updates, so changing any argument replaces the key.",
+    api: {
+      method: "Admin.Organization.ExternalKeys",
+      createMethod: "New",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the external key.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "A friendly name for the external key.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "aws",
+        type: "single_nested",
+        description:
+          "A key in AWS KMS. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "role_arn",
+            type: "string",
+            description:
+              "The ARN of the IAM role OpenAI assumes in your account.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_arn",
+            type: "string",
+            description: "The ARN of the KMS key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "external_id",
+            type: "string",
+            description:
+              "The external ID OpenAI presents when assuming the role: your organization ID or project ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "azure",
+        type: "single_nested",
+        description:
+          "A key in Azure Key Vault. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "tenant_id",
+            type: "string",
+            description: "The Microsoft Entra tenant ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "vault_uri",
+            type: "string",
+            description: "The URI of the Key Vault that holds the key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "key_name",
+            type: "string",
+            description: "The name of the key in the Key Vault.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "gcp",
+        type: "single_nested",
+        description:
+          "A key in Google Cloud KMS, accessed through Workload Identity Federation. Exactly one of `aws`, `azure` or `gcp` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"))',
+        ],
+        attributes: [
+          {
+            name: "workload_identity_project_number",
+            type: "string",
+            description:
+              "The number of the Google Cloud project that holds the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_pool_id",
+            type: "string",
+            description: "The ID of the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_provider_id",
+            type: "string",
+            description:
+              "The ID of the Workload Identity provider registered for OpenAI.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "audience",
+            type: "string",
+            description:
+              "The audience OpenAI uses when exchanging tokens with the Workload Identity provider. It must be one of the provider's allowed audiences.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_project_id",
+            type: "string",
+            description:
+              "The ID of the Google Cloud project that holds the key ring.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_ring_name",
+            type: "string",
+            description: "The name of the key ring.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_name",
+            type: "string",
+            description: "The name of the key.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "kms_key_location",
+            type: "string",
+            description:
+              "The location of the key ring, such as `us` or `europe-west1`.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "api_project_ids",
+        type: "set",
+        description: "The IDs of the projects that use this key.",
+        computedOptionalRequired: "computed",
+        elementType: "string",
+      },
+      {
+        name: "created_at",
+        type: "int64",
+        description:
+          "The Unix timestamp (in seconds) of when the key was registered.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["int64planmodifier.UseStateForUnknown()"],
+      },
+    ],
+  },
+  {
+    name: "external_storage",
+    description:
+      "Registers customer-managed storage for a project, so that OpenAI stores the project's data in your own cloud storage. Creating it validates the configuration and only succeeds once OpenAI reports it as `validated`; otherwise the configuration is deleted again and OpenAI's error is returned. The API does not support updates, so changing any argument replaces the configuration.\n\n~> **Warning:** Deleting a project's last external storage configuration switches the project back to the organization's default data retention. Data already written to your storage is not deleted.",
+    api: {
+      method: "Admin.Organization.ExternalStorage",
+      createMethod: "New",
+      postCreateMethod: "validateAfterCreate",
+      readMethod: "Get",
+      readRequestAttributes: ["id"],
+      deleteMethod: "Delete",
+      deleteRequestAttributes: ["id"],
+    },
+    importStateAttributes: ["id"],
+    attributes: [
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of the external storage configuration.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "project_id",
+        type: "string",
+        description: "The ID of the project whose data is stored.",
+        computedOptionalRequired: "required",
+        planModifiers: ["stringplanmodifier.RequiresReplace()"],
+      },
+      {
+        name: "aws",
+        type: "single_nested",
+        description:
+          "Amazon S3 storage. Exactly one of `aws`, `azure`, `gcp` or `oci` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"), path.MatchRoot("oci"))',
+        ],
+        attributes: [
+          {
+            name: "bucket",
+            type: "string",
+            description: "The S3 bucket name.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "role_arn",
+            type: "string",
+            description:
+              "The ARN of the IAM role OpenAI assumes to access the bucket.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "account_id",
+            type: "string",
+            description:
+              "The AWS account ID that owns the role, derived by OpenAI.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+          {
+            name: "external_id",
+            type: "string",
+            description:
+              "The external ID OpenAI presents when assuming the role, generated by OpenAI.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+          {
+            name: "region",
+            type: "string",
+            description: "The region of the bucket, derived by OpenAI.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+        ],
+      },
+      {
+        name: "azure",
+        type: "single_nested",
+        description:
+          "Azure Blob Storage. Exactly one of `aws`, `azure`, `gcp` or `oci` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"), path.MatchRoot("oci"))',
+        ],
+        attributes: [
+          {
+            name: "tenant_id",
+            type: "string",
+            description: "The Microsoft Entra tenant ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "subscription_id",
+            type: "string",
+            description: "The Azure subscription ID.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "resource_group",
+            type: "string",
+            description: "The resource group of the storage account.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "account_name",
+            type: "string",
+            description: "The storage account name.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "container",
+            type: "string",
+            description: "The blob container name.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "region",
+            type: "string",
+            description:
+              "The region of the storage account, derived by OpenAI.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+        ],
+      },
+      {
+        name: "gcp",
+        type: "single_nested",
+        description:
+          "Google Cloud Storage, accessed through Workload Identity Federation. Exactly one of `aws`, `azure`, `gcp` or `oci` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"), path.MatchRoot("oci"))',
+        ],
+        attributes: [
+          {
+            name: "bucket",
+            type: "string",
+            description: "The Cloud Storage bucket name.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_project_number",
+            type: "string",
+            description:
+              "The number of the Google Cloud project that holds the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_pool_id",
+            type: "string",
+            description: "The ID of the Workload Identity pool.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "workload_identity_provider_id",
+            type: "string",
+            description:
+              "The ID of the Workload Identity provider registered for OpenAI.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "audience",
+            type: "string",
+            description:
+              "The audience OpenAI uses when exchanging tokens with the Workload Identity provider: the OpenAI project ID. Add it to the provider's allowed audiences.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+          {
+            name: "region",
+            type: "string",
+            description: "The location of the bucket, derived by OpenAI.",
+            computedOptionalRequired: "computed",
+            planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+          },
+        ],
+      },
+      {
+        name: "oci",
+        type: "single_nested",
+        description:
+          "Oracle Cloud Infrastructure Object Storage. Exactly one of `aws`, `azure`, `gcp` or `oci` must be set.",
+        computedOptionalRequired: "optional",
+        validators: [
+          'objectvalidator.ExactlyOneOf(path.MatchRoot("aws"), path.MatchRoot("azure"), path.MatchRoot("gcp"), path.MatchRoot("oci"))',
+        ],
+        attributes: [
+          {
+            name: "tenancy_ocid",
+            type: "string",
+            description: "The OCID of the tenancy.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "region",
+            type: "string",
+            description: "The region of the bucket.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+          {
+            name: "bucket",
+            type: "string",
+            description: "The Object Storage bucket name.",
+            computedOptionalRequired: "required",
+            planModifiers: ["stringplanmodifier.RequiresReplace()"],
+          },
+        ],
+      },
+      {
+        name: "status",
+        type: "string",
+        description:
+          "The health of the configuration: `pending`, `validated`, `degraded` or `unhealthy`. A configuration that becomes `degraded` or `unhealthy` after creation is reported here and does not fail a refresh.",
+        computedOptionalRequired: "computed",
+      },
+      {
+        name: "geography",
+        type: "string",
+        description: "The data residency geography of the configuration.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["stringplanmodifier.UseStateForUnknown()"],
+      },
+      {
+        name: "created_at",
+        type: "int64",
+        description:
+          "The Unix timestamp (in seconds) of when the configuration was created.",
+        computedOptionalRequired: "computed",
+        planModifiers: ["int64planmodifier.UseStateForUnknown()"],
+      },
+    ],
+  },
+  {
     name: "invite",
     description:
       "Invite and manage invitations for an organization. Invited users are automatically added to the Default project.",

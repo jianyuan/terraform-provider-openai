@@ -385,7 +385,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
     }
 
     if err := iter.Err(); err != nil {
-      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
       return
     }
 
@@ -400,7 +400,7 @@ function generateDataSource({ dataSource }: { dataSource: DataSource }) {
       (api) => `
     modelInstance, err := d.client.${api.readMethod}(${readRequestParams.join(",")})
     if err != nil {
-      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+      resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
       return
     } else if modelInstance == nil {
       resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -632,13 +632,23 @@ func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest
 
   modelInstance, err := r.client.${resource.api.method}.${resource.api.createMethod}(${createRequestParams.join(",")})
   if err != nil {
-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
     return
   } else if modelInstance == nil {
     resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
     return
   }
-
+${
+  resource.api.postCreateMethod
+    ? `
+  modelInstance, diags = r.${resource.api.postCreateMethod}(ctx, modelInstance)
+  resp.Diagnostics.Append(diags...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+`
+    : ""
+}
   resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
   if resp.Diagnostics.HasError() {
     return
@@ -675,7 +685,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
         }
 
         if err := iter.Err(); err != nil {
-          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
           return
         } else if modelInstance == nil {
           resp.State.RemoveResource(ctx)
@@ -692,7 +702,7 @@ func (r *${resourceName}) Read(ctx context.Context, req resource.ReadRequest, re
             return
           }
 
-          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+          resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
           return
         } else if modelInstance == nil {
           resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -728,7 +738,7 @@ func (r *${resourceName}) Update(ctx context.Context, req resource.UpdateRequest
 
       modelInstance, err := r.client.${resource.api.method}.${resource.api.updateMethod}(${updateRequestParams.join(",")})
       if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
         return
       } else if modelInstance == nil {
         resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
@@ -765,7 +775,7 @@ func (r *${resourceName}) Delete(ctx context.Context, req resource.DeleteRequest
           return
         }
 
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", clientErrorDetail(err)))
         return
       }
       `

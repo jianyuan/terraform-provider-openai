@@ -80,7 +80,7 @@ func (r *ProjectGroupRoleAssignmentResource) Create(ctx context.Context, req res
 
 	modelInstance, err := r.client.Admin.Organization.Projects.Groups.Roles.New(ctx, data.ProjectId.ValueString(), data.GroupId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -110,7 +110,7 @@ func (r *ProjectGroupRoleAssignmentResource) Read(ctx context.Context, req resou
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to read, got empty response body")
@@ -143,7 +143,7 @@ func (r *ProjectGroupRoleAssignmentResource) Delete(ctx context.Context, req res
 			return
 		}
 
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete, got error: %s", clientErrorDetail(err)))
 		return
 	}
 }

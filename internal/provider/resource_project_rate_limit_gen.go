@@ -104,7 +104,7 @@ func (r *ProjectRateLimitResource) Create(ctx context.Context, req resource.Crea
 
 	modelInstance, err := r.client.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
@@ -143,7 +143,7 @@ func (r *ProjectRateLimitResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	if err := iter.Err(); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.State.RemoveResource(ctx)
@@ -174,7 +174,7 @@ func (r *ProjectRateLimitResource) Update(ctx context.Context, req resource.Upda
 
 	modelInstance, err := r.client.Admin.Organization.Projects.RateLimits.UpdateRateLimit(ctx, data.ProjectId.ValueString(), data.RateLimitId.ValueString(), *body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update, got error: %s", clientErrorDetail(err)))
 		return
 	} else if modelInstance == nil {
 		resp.Diagnostics.AddError("Client Error", "Unable to update, got empty response body")
