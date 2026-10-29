@@ -438,3 +438,19 @@ export const externalKeys = sqliteTable("external_keys", {
   config: text({ mode: "json" }).notNull().$type<Record<string, string>>(),
   created_at: createdAtColumn(),
 });
+
+export const externalStorage = sqliteTable("external_storage", {
+  object: objectColumn("organization.external_storage"),
+  id: text().primaryKey().$defaultFn(idGenerator("extstorage_")),
+  project_id: projectIdColumn(),
+  geography: text().notNull().default("US"),
+  status: text({ enum: ["pending", "validated", "degraded", "unhealthy"] })
+    .notNull()
+    .default("pending"),
+  provider: text({ mode: "json" })
+    .notNull()
+    .$type<
+      { type: "aws" | "azure" | "gcp" | "oci" } & Record<string, string>
+    >(),
+  created_at: createdAtColumn(),
+});

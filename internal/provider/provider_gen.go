@@ -13,6 +13,7 @@ func (p *OpenAIProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewAdminApiKeyResource,
 		NewDataRetentionResource,
 		NewExternalKeyResource,
+		NewExternalStorageResource,
 		NewGroupResource,
 		NewGroupRoleAssignmentResource,
 		NewGroupUserResource,

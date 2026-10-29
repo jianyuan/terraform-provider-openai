@@ -8,6 +8,7 @@ import * as schema from "./db-schema";
 import adminApiKeys from "./routes/admin-api-keys";
 import dataRetention from "./routes/data-retention";
 import externalKeys from "./routes/external-keys";
+import externalStorage from "./routes/external-storage";
 import spendLimit from "./routes/spend-limit";
 import projectSpendLimit from "./routes/project-spend-limit";
 import projectSpendAlerts from "./routes/project-spend-alerts";
@@ -48,6 +49,7 @@ app.get("/", (c) => c.text("Hello World"));
 app.route("/organization/admin_api_keys", adminApiKeys);
 app.route("/organization/data_retention", dataRetention);
 app.route("/organization/external_keys", externalKeys);
+app.route("/organization/external_storage", externalStorage);
 app.route("/organization/spend_limit", spendLimit);
 app.route("/organization/projects/:project_id/spend_limit", projectSpendLimit);
 app.route(
