@@ -638,7 +638,17 @@ func (r *${resourceName}) Create(ctx context.Context, req resource.CreateRequest
     resp.Diagnostics.AddError("Client Error", "Unable to create, got empty response body")
     return
   }
-
+${
+  resource.api.postCreateMethod
+    ? `
+  modelInstance, diags = r.${resource.api.postCreateMethod}(ctx, modelInstance)
+  resp.Diagnostics.Append(diags...)
+  if resp.Diagnostics.HasError() {
+    return
+  }
+`
+    : ""
+}
   resp.Diagnostics.Append(data.Fill(ctx, *modelInstance)...)
   if resp.Diagnostics.HasError() {
     return
