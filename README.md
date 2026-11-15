@@ -2,12 +2,18 @@
 
 Unofficial Terraform provider for OpenAI.
 
-## Support Development
+> [!WARNING]
+> **This provider is deprecated.** OpenAI now publishes an official Terraform provider. Please use it instead:
+>
+> - Terraform Registry: [openai/openai](https://registry.terraform.io/providers/openai/openai/latest/docs)
+> - Source code: [openai/terraform-provider-openai](https://github.com/openai/terraform-provider-openai)
+> - Guide: [Terraform guide on the OpenAI developer docs](https://developers.openai.com/api/docs/guides/terraform)
 
-If you find this provider useful, please consider supporting me through GitHub Sponsorship or Ko-Fi to help with its development.
+## Thank you
 
-[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jianyuan)
-[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/L3L71DQEL)
+Thank you to everyone who has used this provider since 2024.
+
+I built this provider and maintain the [Sentry provider](https://github.com/jianyuan/terraform-provider-sentry) (29.5M+ downloads). If you need a Terraform provider for your own API, or help building AI agents and LLM features, I take on consulting work through [jian.fyi](https://jian.fyi/?utm_source=github&utm_medium=referral&utm_campaign=terraform-provider-openai).
 
 ## Requirements
 
